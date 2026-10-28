@@ -42,22 +42,43 @@ const isSelfCheck = args.includes('--check-runner') || args.includes('--self-che
 const isAllowPending = args.includes('--allow-pending') || args.includes('--report');
 const isVerbose = args.includes('--verbose') || args.includes('-v');
 
-// --- Target File Detection ---
-const targetCandidates = ['index.html', 'h_n_i_12_ng_y_m_18_12_29_12_1972.html'];
-let htmlFile = null;
-for (const cand of targetCandidates) {
-    if (fs.existsSync(cand)) {
-        htmlFile = cand;
-        break;
-    }
-}
+const crypto = require('crypto');
 
-if (!htmlFile) {
-    console.error(`${c.red}FATAL: Neither index.html nor h_n_i_12_ng_y_m_18_12_29_12_1972.html was found.${c.reset}`);
+// --- Dual File Synchronization & Parity Gate ---
+const filePrimary = 'index.html';
+const fileDist = 'h_n_i_12_ng_y_m_18_12_29_12_1972.html';
+
+if (!fs.existsSync(filePrimary)) {
+    console.error(`${c.red}FATAL: Primary file '${filePrimary}' is missing.${c.reset}`);
+    process.exit(1);
+}
+if (!fs.existsSync(fileDist)) {
+    console.error(`${c.red}FATAL: Distribution file '${fileDist}' is missing.${c.reset}`);
+    console.error(`${c.yellow}Hint: Run 'python sync_distribution.py' to synchronize.${c.reset}`);
     process.exit(1);
 }
 
-const htmlContent = fs.readFileSync(htmlFile, 'utf8');
+const bufPrimary = fs.readFileSync(filePrimary);
+const bufDist = fs.readFileSync(fileDist);
+
+const hashPrimary = crypto.createHash('sha256').update(bufPrimary).digest('hex');
+const hashDist = crypto.createHash('sha256').update(bufDist).digest('hex');
+
+console.log(`${c.dim}[INIT] Checking dual-file cryptographic synchronization...${c.reset}`);
+console.log(`  ${filePrimary} (${bufPrimary.length} bytes): ${c.cyan}${hashPrimary}${c.reset}`);
+console.log(`  ${fileDist} (${bufDist.length} bytes): ${c.cyan}${hashDist}${c.reset}`);
+
+if (hashPrimary !== hashDist) {
+    console.error(`\n${c.bgRed}${c.white} CRITICAL INTEGRITY ERROR: Dual distribution files out of sync! ${c.reset}`);
+    console.error(`${c.red}index.html and h_n_i_12_ng_y_m_18_12_29_12_1972.html have differing SHA256 checksums.${c.reset}`);
+    console.error(`${c.yellow}Run 'python sync_distribution.py' to synchronize.${c.reset}\n`);
+    process.exit(1);
+} else {
+    console.log(`${c.green}✓ Dual distribution files are bit-for-bit identical.${c.reset}\n`);
+}
+
+const htmlFile = filePrimary;
+const htmlContent = bufPrimary.toString('utf8');
 
 // --- Mock DOM & Headless Audio Sandbox ---
 function createMockElement(id, tagName = 'div') {
@@ -460,6 +481,14 @@ runner.tier('Tier 1: Feature Coverage');
 
 // --- Feature 1 (F1): 12-Mission Dataset Validation ---
 runner.suite('F1: 12-Mission Dataset Validation');
+
+runner.test('T1.0', 'Dual distribution files exist and possess identical SHA256 checksums', 'M1', () => {
+    assert(fs.existsSync('index.html'), 'index.html must exist');
+    assert(fs.existsSync('h_n_i_12_ng_y_m_18_12_29_12_1972.html'), 'h_n_i_12_ng_y_m_18_12_29_12_1972.html must exist');
+    const h1 = crypto.createHash('sha256').update(fs.readFileSync('index.html')).digest('hex');
+    const h2 = crypto.createHash('sha256').update(fs.readFileSync('h_n_i_12_ng_y_m_18_12_29_12_1972.html')).digest('hex');
+    assertEqual(h1, h2, 'index.html and h_n_i_12_ng_y_m_18_12_29_12_1972.html must have identical SHA256 hashes');
+});
 
 runner.test('T1.1', 'MISSIONS array contains exactly 12 missions', 'M1', () => {
     const sb = createHeadlessSandbox();

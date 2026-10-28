@@ -8,9 +8,39 @@ sys.stdout.reconfigure(encoding='utf-8')
 print("=== STARTING COMPREHENSIVE VERIFICATION SUITE ===")
 
 import os
-target_file = 'index.html' if os.path.exists('index.html') else 'h_n_i_12_ng_y_m_18_12_29_12_1972.html'
-with open(target_file, 'r', encoding='utf-8') as f:
-    content = f.read()
+import hashlib
+
+FILE_PRIMARY = 'index.html'
+FILE_DIST = 'h_n_i_12_ng_y_m_18_12_29_12_1972.html'
+
+print("\n--- SECTION 0: Cryptographic Dual-File Synchronization Check ---")
+if not os.path.exists(FILE_PRIMARY):
+    print(f"✗ CRITICAL FAILURE: Primary file '{FILE_PRIMARY}' does not exist!")
+    sys.exit(1)
+if not os.path.exists(FILE_DIST):
+    print(f"✗ CRITICAL FAILURE: Distribution file '{FILE_DIST}' does not exist!")
+    print(f"  Run 'python sync_distribution.py' to generate and synchronize.")
+    sys.exit(1)
+
+with open(FILE_PRIMARY, 'rb') as f1, open(FILE_DIST, 'rb') as f2:
+    bytes_primary = f1.read()
+    bytes_dist = f2.read()
+
+hash_primary = hashlib.sha256(bytes_primary).hexdigest()
+hash_dist = hashlib.sha256(bytes_dist).hexdigest()
+
+print(f"  {FILE_PRIMARY} ({len(bytes_primary):,} bytes): {hash_primary}")
+print(f"  {FILE_DIST} ({len(bytes_dist):,} bytes): {hash_dist}")
+
+if hash_primary != hash_dist:
+    print(f"✗ INTEGRITY VIOLATION: Files are not bit-for-bit identical!")
+    print(f"  Size difference: {abs(len(bytes_primary) - len(bytes_dist))} bytes.")
+    print(f"  Action required: Run 'python sync_distribution.py' before running verification.")
+    sys.exit(1)
+
+print(f"✓ Dual-file cryptographic parity verified. SHA256: {hash_primary}\n")
+
+content = bytes_primary.decode('utf-8').replace('\r\n', '\n')
 
 # 1. HTML Syntax & DOM Structure Check
 class TagCollector(HTMLParser):
@@ -147,4 +177,20 @@ print(res_m.stdout)
 if res_m.stderr:
     print("Stderr:", res_m.stderr)
 
-print("=== VERIFICATION SUITE FINISHED ===")
+if res.returncode != 0:
+    print("✗ Node.js syntax check failed!")
+    sys.exit(1)
+
+if res_m.returncode != 0:
+    print("✗ MISSIONS evaluation failed!")
+    sys.exit(1)
+
+if parser.errors:
+    print(f"✗ HTML Parser errors encountered: {len(parser.errors)}")
+    sys.exit(1)
+
+if missing_ids:
+    print(f"✗ Verification failed due to missing required DOM IDs: {missing_ids}")
+    sys.exit(1)
+
+print("=== VERIFICATION SUITE FINISHED (ALL CHECKS PASSED) ===")

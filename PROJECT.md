@@ -35,8 +35,8 @@
 ## Milestones
 | # | Name | Scope | Dependencies | Status |
 |---|------|-------|-------------|--------|
-| M0| E2E Testing Track | Independent opaque-box test suite (Tiers 1-4) in test_e2e_suite.js / verify_suite.py | none | PLANNED |
-| M1| Campaign Data & UI Expansion | 12 historical missions in MISSIONS array, dynamic UI counters, timeline track, radio chatter | none | PLANNED |
+| M0| E2E Testing Track | Independent opaque-box test suite (Tiers 1-4) in test_e2e_suite.js / verify_suite.py | none | DONE |
+| M1| Campaign Data & UI Expansion | 12 historical missions in MISSIONS array, dynamic UI counters, timeline track, radio chatter | none | DONE |
 | M2| Combat Scale & Kill Calibration | Wave generation, 34 B-52 kill distribution, ammo tuning, cumulative stats tracking | M1 | PLANNED |
 | M3| Procedural Web Audio Engine | Upgraded SoundFX mixer, Doppler 3D, dual-stage SAM-2, carpet bomb sync, radio squelch, volume sliders | M1 | PLANNED |
 | M4| Final E2E Integration & Hardening | Pass 100% E2E test suite + Challenger adversarial testing + Forensic Audit | M0, M2, M3 | PLANNED |
@@ -59,7 +59,8 @@
   - `ammo`: number (missile allocation, 4 to 18)
   - `timeLimit`: number (mission duration in seconds, 180 to 420)
   - `waves`: array of wave spawn delay seconds
-  - `radio`: array of radio chatter dialogue objects `{ t: number, sender: string, text: string }`
+  - `radio`: array of radio chatter dialogue objects `{ at: number, who: string, text: string }` (engine also supports legacy aliases `{ t, sender, text }`)
+  - `jam`: object with electronic warfare parameters `{ freq, width, speed, chaff }` for SAM2 mode, or `null` for MIG21 mode
   - `history`: string (historical context fact)
 
 ### SoundFX Engine Contract (M3 ↔ Gameplay Loop)

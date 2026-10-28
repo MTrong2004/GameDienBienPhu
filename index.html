@@ -752,26 +752,33 @@
             font-weight: 600;
         }
 
-        /* Campaign Chronological Timeline Bar */
-        .timeline-track {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        /* Campaign Chronological Timeline Bar Container & Scroll Area */
+        .timeline-scroll-wrapper {
             position: relative;
             margin: 14px 0 6px;
-            padding: 0 10px 8px;
+            padding: 0 0 8px;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: thin;
             scrollbar-color: rgba(205, 247, 161, 0.3) transparent;
-            gap: 6px;
         }
-        .timeline-track::-webkit-scrollbar {
+        .timeline-scroll-wrapper::-webkit-scrollbar {
             height: 6px;
         }
-        .timeline-track::-webkit-scrollbar-thumb {
+        .timeline-scroll-wrapper::-webkit-scrollbar-thumb {
             background: rgba(205, 247, 161, 0.3);
             border-radius: 3px;
+        }
+
+        .timeline-track {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-width: 100%;
+            width: max-content;
+            position: relative;
+            padding: 0 10px;
+            gap: 6px;
         }
         .timeline-track::before {
             content: '';
@@ -952,8 +959,10 @@
                         TIẾN ĐỘ: 0/12 ĐÊM
                     </span>
                 </div>
-                <div id="timeline-track" class="timeline-track">
-                    <!-- Dynamic timeline nodes -->
+                <div class="timeline-scroll-wrapper">
+                    <div id="timeline-track" class="timeline-track">
+                        <!-- Dynamic timeline nodes -->
+                    </div>
                 </div>
             </div>
 
@@ -5501,11 +5510,15 @@
             }
         }
 
+        function getPilotCallsign() {
+            return (activeMission && activeMission.pilot) ? String(activeMission.pilot) : '5121';
+        }
+
         function fireK13() {
             const nowS = performance.now() / 1000;
-            if (missionAmmo <= 0) { showRadio('5121', 'Hết tên lửa!'); return; }
+            if (missionAmmo <= 0) { showRadio(getPilotCallsign(), 'Hết tên lửa!'); return; }
             if (nowS - lastFireTime < 1.2) return;
-            if (!mig.target || mig.irLock < 1.5) { showRadio('5121', `Chưa khóa được mục tiêu! ${mig.envelope}`); return; }
+            if (!mig.target || mig.irLock < 1.5) { showRadio(getPilotCallsign(), `Chưa khóa được mục tiêu! ${mig.envelope}`); return; }
             lastFireTime = nowS;
             missionAmmo--;
             missionShots++;
@@ -5522,7 +5535,7 @@
                 t: 0, life: 7, target: mig.target, guided: false, smokeTick: 0, prevNear: Infinity, flame
             });
             updateObjectiveHud();
-            showRadio('5121', missionAmmo === 1 ? 'Phóng quả thứ nhất!' : 'Phóng quả thứ hai!');
+            showRadio(getPilotCallsign(), missionAmmo === 1 ? 'Phóng quả thứ nhất!' : 'Phóng quả thứ hai!');
         }
 
         // ponytail: twin-barrel GSh-23L autocannon for MiG-21 close-in dogfighting
@@ -5531,7 +5544,7 @@
             const nowS = performance.now() / 1000;
             if (nowS - (mig.lastCannonFire || 0) < 0.12) return;
             if ((mig.cannonAmmo || 0) <= 0) {
-                showRadio('5121', 'Đã hết đạn pháo 23mm!');
+                showRadio(getPilotCallsign(), 'Đã hết đạn pháo 23mm!');
                 return;
             }
             mig.lastCannonFire = nowS;
@@ -5565,9 +5578,9 @@
                 if (dist < 140 && offBore < 14) {
                     spawnSparks(mig.target.mesh.position, 15, 12, 0.2);
                     if (damageBomber(mig.target)) {
-                        showRadio('5121', 'Pháo 23mm bắn trúng thùng nhiên liệu! B-52 nổ tung!');
+                        showRadio(getPilotCallsign(), 'Pháo 23mm bắn trúng thùng nhiên liệu! B-52 nổ tung!');
                     } else {
-                        showRadio('5121', `Pháo 23mm trúng thân! Còn ${mig.target.hp}% HP.`);
+                        showRadio(getPilotCallsign(), `Pháo 23mm trúng thân! Còn ${mig.target.hp}% HP.`);
                     }
                 }
             }
@@ -5733,7 +5746,7 @@
                 else killCamOff.copy(camera.position).sub(pos).setY(0).setLength(48).setY(14);
             }
             if (gameState === 'PLAYING' && !killed && (m.guided || m.kind === 'K13')) {
-                showRadio(big ? 'SĨ QUAN ĐIỀU KHIỂN' : '5121', hurt ? 'Mục tiêu bị thương nhưng vẫn bay! Bám tiếp, phóng quả khác!'
+                showRadio(big ? 'SĨ QUAN ĐIỀU KHIỂN' : getPilotCallsign(), hurt ? 'Mục tiêu bị thương nhưng vẫn bay! Bám tiếp, phóng quả khác!'
                     : reason === 'self' ? 'Đạn tự hủy — trượt mục tiêu.' : 'Đạn nổ trượt mục tiêu.');
             }
         }
@@ -5862,7 +5875,7 @@
                         mig.hp -= 20;
                         cameraShake = 0.6;
                         if (mig.hp <= 0) endMission(false, 'MiG-21 trúng đạn pháo đuôi B-52.');
-                        else showRadio('5121', `Trúng đạn pháo đuôi! Thân máy bay còn ${mig.hp}%.`);
+                        else showRadio(getPilotCallsign(), `Trúng đạn pháo đuôi! Thân máy bay còn ${mig.hp}%.`);
                     }
                 }
             }
@@ -6248,7 +6261,7 @@
             });
             ctx.fillStyle = '#C9F5D9';
             ctx.font = 'bold 12px "JetBrains Mono", monospace';
-            ctx.fillText(`ТЯГА ${Math.round(mig.throttle * 100)}%  · 5121 ·  ПРОЧНОСТЬ ${mig.hp}%`, 820, 385);
+            ctx.fillText(`ТЯГА ${Math.round(mig.throttle * 100)}%  · ${getPilotCallsign()} ·  ПРОЧНОСТЬ ${mig.hp}%`, 820, 385);
         }
 
         // ---- Radar scopes ----
@@ -7006,7 +7019,7 @@
 
 
         /* ============================================================================
-           14. CAMPAIGN: 5 MISSIONS FOLLOWING THE REAL TIMELINE OF 18/12 – 29/12/1972
+           14. CAMPAIGN: 12 MISSIONS FOLLOWING THE REAL TIMELINE OF 18/12 – 29/12/1972
            Figures are the Vietnamese official record unless stated otherwise.
            ============================================================================ */
         const CONTROLS_SAM2 = [
@@ -7568,7 +7581,25 @@ const MISSIONS = [
 
         function loadProgress() {
             try {
-                return JSON.parse(localStorage.getItem('hn12_progress')) || { unlocked: 1, best: {} };
+                const raw = localStorage.getItem('hn12_progress');
+                if (!raw) return { unlocked: 1, best: {} };
+                const parsed = JSON.parse(raw);
+                if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+                    return { unlocked: 1, best: {} };
+                }
+                const unlockedRaw = Number(parsed.unlocked);
+                const unlocked = (Number.isFinite(unlockedRaw) && unlockedRaw >= 1)
+                    ? Math.min(MISSIONS.length, Math.floor(unlockedRaw))
+                    : 1;
+                let best = {};
+                if (parsed.best && typeof parsed.best === 'object' && !Array.isArray(parsed.best)) {
+                    Object.entries(parsed.best).forEach(([k, v]) => {
+                        if (v && typeof v === 'object' && !Array.isArray(v)) {
+                            best[k] = v;
+                        }
+                    });
+                }
+                return { unlocked, best };
             } catch (e) {
                 return { unlocked: 1, best: {} };
             }
@@ -7906,8 +7937,9 @@ const MISSIONS = [
             clearCombatScene();
             Voice.stop();
             // Khau lenh xuat kich ngan gon, dut khoat (2 giay) de khong lam tre cac ban tin radar tiep theo
+            const pilotCallsign = m.pilot || '5121';
             const combatCue = m.mode === 'MIG21'
-                ? 'Tiêm kích 5121 bật tăng lực xuất kích, tiếp cận mục tiêu!'
+                ? `Tiêm kích ${pilotCallsign} bật tăng lực xuất kích, tiếp cận mục tiêu!`
                 : 'Tiểu đoàn vào cấp một! Tiêu diệt B-52 bảo vệ Hà Nội!';
             Voice.speak('SỞ CHỈ HUY', combatCue, true);
             showCombatAlert(m);
@@ -8084,7 +8116,8 @@ const MISSIONS = [
                 const timeStr = formatMMSS(item.time);
                 const isCmd = item.who.includes('SỞ CHỈ HUY');
                 const isObs = item.who.includes('ĐÀI') || item.who.includes('LOA');
-                const isPilot = item.who.includes('5121');
+                const currentPilot = (activeMission && activeMission.pilot) ? String(activeMission.pilot) : '5121';
+                const isPilot = item.who.includes('5121') || item.who.includes('046') || item.who.includes(currentPilot);
                 const badgeClass = isCmd ? 'text-amber-400 bg-amber-400/10 border-amber-400/30'
                     : isPilot ? 'text-cyan-300 bg-cyan-400/10 border-cyan-400/30'
                     : isObs ? 'text-teal-300 bg-teal-400/10 border-teal-400/30'
@@ -8359,9 +8392,13 @@ const MISSIONS = [
             const m = activeMission;
             missionTime += dt;
 
-            while (missionRadioIdx < m.radio.length && missionTime >= m.radio[missionRadioIdx].at) {
-                const r = m.radio[missionRadioIdx++];
-                showRadio(r.who, r.text);
+            while (missionRadioIdx < m.radio.length) {
+                const nextItem = m.radio[missionRadioIdx];
+                const at = nextItem.at !== undefined ? nextItem.at : nextItem.t;
+                if (missionTime < at) break;
+                missionRadioIdx++;
+                const who = nextItem.who !== undefined ? nextItem.who : nextItem.sender;
+                showRadio(who, nextItem.text);
             }
 
             while (missionWaveIdx < m.waves.length && missionTime >= m.waves[missionWaveIdx]) {
