@@ -256,10 +256,283 @@
         .mission-status { color: #CDF7A1; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; }
         .mission-status.is-done { color: #FDE68A; }
 
-        .debrief-stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0 4px; }
-        .debrief-stats div { padding: 10px 16px; background: rgba(8, 14, 12, 0.8); border: 1px solid rgba(205, 247, 161, 0.2); min-width: 130px; }
-        .debrief-stats span { display: block; color: #A1A1AA; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; }
-        .debrief-stats b { font-size: 28px; color: #FAFAFA; font-weight: 600; }
+        /* ---- Tactical Debrief HUD Styles ---- */
+        #screen-debrief.is-open {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            background: radial-gradient(circle at 50% 25%, rgba(6, 18, 15, 0.95) 0%, rgba(2, 5, 8, 0.98) 100%);
+            backdrop-filter: blur(12px);
+        }
+        .debrief-modal-card {
+            max-width: 1160px;
+            width: 100%;
+            max-height: 94vh;
+            margin: auto !important;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(165deg, rgba(11, 18, 22, 0.97) 0%, rgba(5, 9, 12, 0.99) 100%);
+            border: 1px solid rgba(205, 247, 161, 0.28);
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(16, 185, 129, 0.09);
+            position: relative;
+            overflow: hidden;
+        }
+        .debrief-modal-card::before, .debrief-modal-card::after {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .debrief-modal-card::before {
+            top: 6px;
+            left: 6px;
+            border-top: 2px solid #CDF7A1;
+            border-left: 2px solid #CDF7A1;
+        }
+        .debrief-modal-card::after {
+            bottom: 6px;
+            right: 6px;
+            border-bottom: 2px solid #CDF7A1;
+            border-right: 2px solid #CDF7A1;
+        }
+
+        .debrief-header-bar {
+            padding: 16px 22px 10px;
+            flex-shrink: 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(205, 247, 161, 0.15);
+        }
+        .classified-stamp {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            background: rgba(225, 29, 72, 0.15);
+            border: 1px dashed rgba(225, 29, 72, 0.6);
+            color: #FDA4AF;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 700;
+            border-radius: 2px;
+        }
+        .debrief-title {
+            margin: 2px 0 0 !important;
+            font-size: clamp(26px, 3.2vw, 42px) !important;
+        }
+
+        .debrief-body-scroll {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            padding: 14px 22px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(205, 247, 161, 0.3) rgba(0, 0, 0, 0.3);
+        }
+        .debrief-body-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .debrief-body-scroll::-webkit-scrollbar-thumb {
+            background: rgba(205, 247, 161, 0.3);
+            border-radius: 3px;
+        }
+
+        /* Stats Grid & Hero Medal Card */
+        .debrief-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin: 0;
+        }
+        .debrief-stats .medal-hero-card {
+            grid-column: 1 / -1;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.16) 0%, rgba(217, 119, 6, 0.08) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(245, 158, 11, 0.08);
+        }
+        .debrief-stats .medal-hero-card.is-fail {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(185, 28, 28, 0.08) 100%);
+            border-color: rgba(239, 68, 68, 0.45);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(239, 68, 68, 0.08);
+        }
+        .debrief-stats .stat-kpi-card {
+            padding: 10px 14px;
+            background: rgba(10, 18, 16, 0.85);
+            border: 1px solid rgba(205, 247, 161, 0.18);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 72px;
+            transition: all 0.2s ease;
+        }
+        .debrief-stats .stat-kpi-card:hover {
+            border-color: rgba(205, 247, 161, 0.45);
+            background: rgba(14, 24, 20, 0.95);
+            transform: translateY(-1px);
+        }
+        .debrief-stats .stat-kpi-card span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #A1A1AA;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 500;
+        }
+        .debrief-stats .stat-kpi-card b {
+            font-size: 24px;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 600;
+            color: #CDF7A1;
+            letter-spacing: 0.04em;
+            line-height: 1.1;
+            margin-top: 4px;
+        }
+        .debrief-stats .stat-kpi-card b.val-accent {
+            color: #FDE047;
+        }
+        .debrief-stats .stat-kpi-card b.val-muted {
+            color: #D4D4D8;
+        }
+
+        /* Historical Intelligence card */
+        .debrief-history-card {
+            background: rgba(7, 12, 10, 0.85);
+            border: 1px solid rgba(205, 247, 161, 0.15);
+            border-radius: 6px;
+            padding: 14px 16px;
+            max-height: 290px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(205, 247, 161, 0.25) rgba(0, 0, 0, 0.3);
+        }
+        .debrief-history-card::-webkit-scrollbar {
+            width: 5px;
+        }
+        .debrief-history-card::-webkit-scrollbar-thumb {
+            background: rgba(205, 247, 161, 0.25);
+            border-radius: 2px;
+        }
+        .debrief-history-card p {
+            margin: 0 0 10px;
+            font-family: 'Newsreader', Georgia, serif;
+            font-size: 15px;
+            line-height: 1.55;
+            color: #D4D4D8;
+        }
+        .debrief-history-card p:last-child {
+            margin-bottom: 0;
+        }
+        .debrief-history-card b {
+            color: #FDE68A;
+            font-weight: 600;
+        }
+
+        /* Fixed Bottom Footer Bar */
+        .debrief-footer-bar {
+            padding: 12px 22px;
+            flex-shrink: 0;
+            background: rgba(5, 9, 8, 0.95);
+            border-top: 1px solid rgba(205, 247, 161, 0.2);
+        }
+        .debrief-footer-bar .screen-actions {
+            margin-top: 0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .debrief-actions-group-primary {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .debrief-actions-group-secondary {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .debrief-btn {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-size: 15px;
+            padding: 10px 18px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .debrief-btn.primary {
+            background: #CDF7A1;
+            color: #0A0F0A;
+            border: 1px solid #CDF7A1;
+            font-weight: 700;
+            box-shadow: 0 0 18px rgba(205, 247, 161, 0.4);
+        }
+        .debrief-btn.primary:hover {
+            background: #E2FFC4;
+            transform: translateY(-1px);
+            box-shadow: 0 0 24px rgba(205, 247, 161, 0.65);
+        }
+        .debrief-btn.secondary {
+            background: rgba(14, 22, 20, 0.8);
+            color: #E4E4E7;
+            border: 1px solid rgba(205, 247, 161, 0.3);
+            font-weight: 500;
+        }
+        .debrief-btn.secondary:hover {
+            background: rgba(205, 247, 161, 0.15);
+            border-color: #CDF7A1;
+            color: #FFFFFF;
+        }
+        .debrief-btn.utility {
+            font-size: 13px;
+            padding: 8px 14px;
+            background: rgba(20, 26, 24, 0.6);
+            color: #A1A1AA;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .debrief-btn.utility:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .key-badge {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            padding: 1px 5px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 3px;
+            margin-left: 4px;
+        }
+        .debrief-btn.primary .key-badge {
+            background: rgba(0, 0, 0, 0.18);
+            border-color: rgba(0, 0, 0, 0.35);
+            color: #0A0F0A;
+        }
 
         /* ---- In-game HUD helpers ---- */
         body.in-menu .hud-el { display: none !important; }
@@ -706,15 +979,67 @@
         </div>
     </div>
 
+    <!-- 5. TACTICAL DEBRIEF SCREEN -->
     <div id="screen-debrief" class="screen">
-        <div class="screen-inner">
-            <div class="brief-date" id="debrief-date"></div>
-            <div class="screen-title" id="debrief-result"></div>
-            <div id="debrief-fail-analysis"></div>
-            <div class="debrief-stats" id="debrief-stats"></div>
-            <h3>Sự thật lịch sử</h3>
-            <div class="brief-body" id="debrief-history"></div>
-            <div class="screen-actions" id="debrief-actions"></div>
+        <div class="screen-inner wide debrief-modal-card">
+            <!-- Header bar with military command style -->
+            <div class="debrief-header-bar">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-emerald-500/20 pb-2.5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-amber-300 font-bold text-base shadow-[0_0_12px_rgba(245,158,11,0.3)]">
+                            ★
+                        </div>
+                        <div>
+                            <div class="font-mono text-[11px] sm:text-xs uppercase tracking-widest text-amber-400/90 font-semibold">
+                                QUÂN CHỦNG PHÒNG KHÔNG - KHÔNG QUÂN · BỘ TƯ LỆNH TIỀN PHƯƠNG
+                            </div>
+                            <div class="brief-date text-xs text-zinc-400" id="debrief-date"></div>
+                        </div>
+                    </div>
+                    <div class="classified-stamp">
+                        <span>TỐI MẬT · HỒ SƠ TỔNG KẾT TÁC CHIẾN</span>
+                    </div>
+                </div>
+
+                <div class="mt-2.5 flex items-baseline justify-between flex-wrap gap-2">
+                    <div class="screen-title debrief-title" id="debrief-result"></div>
+                </div>
+
+                <div id="debrief-fail-analysis"></div>
+            </div>
+
+            <!-- Two-column main body (scrollable if viewport is small) -->
+            <div class="debrief-body-scroll">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+                    <!-- Left Column: Combat record & KPIs (7 cols on lg) -->
+                    <div class="lg:col-span-7 flex flex-col gap-2.5">
+                        <div class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-semibold flex items-center gap-2">
+                            <span>🎖️</span> BÁO CÁO THÀNH TÍCH TÁC CHIẾN &amp; HUÂN CHƯƠNG
+                        </div>
+                        <div class="debrief-stats" id="debrief-stats"></div>
+                    </div>
+
+                    <!-- Right Column: Historical dispatch dossier (5 cols on lg) -->
+                    <div class="lg:col-span-5 flex flex-col gap-2.5">
+                        <div class="flex items-center justify-between">
+                            <div class="text-xs uppercase font-mono tracking-widest text-amber-400 font-semibold flex items-center gap-2">
+                                <span>📜</span> HỒ SƠ LỊCH SỬ &amp; CHIẾN SỰ 1972
+                            </div>
+                            <button class="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800/80 border border-zinc-700 hover:border-emerald-400 text-zinc-300 hover:text-emerald-300 transition-colors flex items-center gap-1.5" onclick="toggleRadioLog(true)" title="Xem lại các bức điện đài vô tuyến trong trận">
+                                <span>📻</span> Nhật ký đài [L]
+                            </button>
+                        </div>
+                        <div class="debrief-history-card">
+                            <div class="brief-body" id="debrief-history"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fixed Bottom Action Toolbar (Never gets clipped or hidden!) -->
+            <div class="debrief-footer-bar">
+                <div class="screen-actions" id="debrief-actions"></div>
+            </div>
         </div>
     </div>
 
@@ -4180,6 +4505,12 @@
                         } else {
                             restartMission();
                         }
+                    } else if (e.code === 'KeyM') {
+                        backToMenuAttract();
+                        showScreen('campaign');
+                    } else if (e.code === 'Escape') {
+                        backToMenuAttract();
+                        showScreen('menu');
                     }
                 } else if (gameState !== 'PLAYING' || gamePaused || archiveOpen || guideOpen || radioLogOpen) {
                     return;
@@ -7207,17 +7538,38 @@
             if (missionWon) {
                 let rankTitle = 'HOÀN THÀNH NHIỆM VỤ';
                 let stars = '★';
+                let rankQuote = 'Bộ Tư lệnh ghi nhận chiến công xuất sắc bảo vệ vững chắc vùng trời Thủ đô.';
                 if (missionShots <= m.kills * 2 || (m.mode === 'MIG21' && missionKills >= 1)) {
                     rankTitle = 'DŨNG SĨ DIỆT MỸ // HUÂN CHƯƠNG CHIẾN CÔNG HẠNG NHẤT';
                     stars = '★ ★ ★';
+                    rankQuote = 'Bắn rơi tại chỗ Pháo đài bay B-52, lập chiến công vẻ vang trong trang sử hào hùng.';
                 } else if (missionShots <= m.kills * 3) {
                     rankTitle = 'CHIẾN SĨ THI ĐUA // HUÂN CHƯƠNG QUÂN CÔNG';
                     stars = '★ ★';
+                    rankQuote = 'Đánh trúng đội hình địch, kiên cường giữ vững trận địa.';
                 }
-                rankBadge = `<div class="medal-badge"><span>${stars}</span> ${rankTitle}</div>`;
+                rankBadge = `
+                    <div class="medal-hero-card">
+                        <div class="flex items-center gap-3">
+                            <div class="medal-badge" style="margin-bottom:0"><span>${stars}</span> ${rankTitle}</div>
+                        </div>
+                        <div class="text-xs text-amber-200/80 font-serif italic max-w-sm text-right hidden sm:block">
+                            “${rankQuote}”
+                        </div>
+                    </div>
+                `;
                 if (failAnalysisEl) failAnalysisEl.innerHTML = '';
             } else {
-                rankBadge = `<div class="medal-badge is-fail"><span>⚠️</span> RÚT KINH NGHIỆM CHIẾN ĐẤU — QUYẾT TÂM ĐÁNH LẠI</div>`;
+                rankBadge = `
+                    <div class="medal-hero-card is-fail">
+                        <div class="medal-badge is-fail" style="margin-bottom:0">
+                            <span>⚠️</span> RÚT KINH NGHIỆM CHIẾN ĐẤU — QUYẾT TÂM ĐÁNH LẠI
+                        </div>
+                        <div class="text-xs text-rose-300/80 font-mono text-right hidden sm:block">
+                            TIẾP TỤC RÈN LUYỆN Ý CHÍ &amp; BẢN LĨNH
+                        </div>
+                    </div>
+                `;
                 let tacticalTip = '';
                 if (missionFailReason.includes('Hết đạn') || missionFailReason.includes('K-13')) {
                     tacticalTip = m.mode === 'MIG21'
@@ -7232,7 +7584,7 @@
                 }
                 if (failAnalysisEl) {
                     failAnalysisEl.innerHTML = `
-                        <div class="debrief-fail-box p-4 bg-red-950/40 border border-red-500/50 rounded-lg text-left my-3 space-y-2">
+                        <div class="debrief-fail-box p-3.5 bg-red-950/40 border border-red-500/50 rounded-lg text-left my-2 space-y-1.5 shadow-md">
                             <div class="flex items-center gap-2 text-rose-400 font-mono text-xs font-bold uppercase">
                                 <span>⚠️ NGUYÊN NHÂN CHƯA HOÀN THÀNH:</span>
                                 <span class="text-alabaster font-semibold">${missionFailReason}</span>
@@ -7245,22 +7597,81 @@
                 }
             }
 
-            document.getElementById('debrief-stats').innerHTML = [
-                ['Đánh giá', rankBadge],
-                ['B-52 bắn rơi', `${missionKills}/${m.kills}`],
-                ['Đạn đã dùng', `${missionShots}/${m.ammo}`],
-                ...(m.mode === 'SAM2' ? [['B-52 bị thương', missionStats.damaged], ['B-52 lọt qua', missionStats.leaked]] : []),
-                ['Thời gian', formatMMSS(missionTime)]
-            ].map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join('');
+            const hitRatio = missionShots > 0 ? Math.min(100, Math.round((missionKills / missionShots) * 100)) : 0;
+
+            const statCards = [
+                ['🎯 B-52 bắn rơi', `${missionKills}/${m.kills}`, 'val-accent'],
+                ['🚀 Đạn đã dùng', `${missionShots}/${m.ammo}`, 'val-muted'],
+                ['⚡ Hiệu suất trúng', `${hitRatio}%`, 'val-accent'],
+                ['⏱️ Thời gian', formatMMSS(missionTime), 'val-muted'],
+                ...(m.mode === 'SAM2' ? [
+                    ['💥 B-52 bị thương', `${missionStats.damaged}`, 'val-muted'],
+                    ['🛡️ B-52 lọt qua', `${missionStats.leaked}`, 'val-muted']
+                ] : [])
+            ].map(([k, v, cls]) => `
+                <div class="stat-kpi-card">
+                    <span>${k}</span>
+                    <b class="${cls}">${v}</b>
+                </div>
+            `).join('');
+
+            document.getElementById('debrief-stats').innerHTML = `${rankBadge}${statCards}`;
             document.getElementById('debrief-history').innerHTML = m.history.map(p => `<p>${p}</p>`).join('');
+
             const isLast = idx === MISSIONS.length - 1;
-            const buttons = [];
-            if (missionWon && !isLast) buttons.push(`<button class="menu-btn primary" onclick="openBriefing(${idx + 1})">Đêm tiếp theo: ${MISSIONS[idx + 1].dateLabel} →</button>`);
-            if (missionWon && isLast) buttons.push(`<button class="menu-btn primary" style="background:#D97706;border-color:#F59E0B;color:#000;font-weight:700;" onclick="showVictoryEpilogue()">★ ĐẠI THẮNG ĐIỆN BIÊN PHỦ TRÊN KHÔNG ★</button>`);
-            buttons.push(`<button class="menu-btn${missionWon ? '' : ' primary'}" onclick="openBriefing(${idx})">Chơi lại đêm này [R]</button>`);
-            buttons.push(`<button class="menu-btn" onclick="toggleTacticalGuide(true)">? Cẩm nang [H]</button>`);
-            buttons.push(`<button class="menu-btn subtle" onclick="backToMenuAttract(); showScreen('campaign')">Danh sách màn</button>`);
-            document.getElementById('debrief-actions').innerHTML = buttons.join('');
+            let primaryBtnHtml = '';
+            if (missionWon && !isLast) {
+                primaryBtnHtml = `<button class="menu-btn debrief-btn primary" onclick="openBriefing(${idx + 1})">
+                    <span>Đêm tiếp theo: ${MISSIONS[idx + 1].dateLabel} →</span>
+                    <span class="key-badge">Space / Enter</span>
+                </button>`;
+            } else if (missionWon && isLast) {
+                primaryBtnHtml = `<button class="menu-btn debrief-btn primary" style="background:#D97706;border-color:#F59E0B;color:#000;font-weight:700;box-shadow:0 0 25px rgba(245,158,11,0.6);" onclick="showVictoryEpilogue()">
+                    <span>★ ĐẠI THẮNG ĐIỆN BIÊN PHỦ TRÊN KHÔNG ★</span>
+                    <span class="key-badge">Enter</span>
+                </button>`;
+            } else {
+                primaryBtnHtml = `<button class="menu-btn debrief-btn primary" onclick="openBriefing(${idx})">
+                    <span>↺ Bắn lại đêm này</span>
+                    <span class="key-badge">Space / R</span>
+                </button>`;
+            }
+
+            const replayBtnHtml = missionWon ? `
+                <button class="menu-btn debrief-btn secondary" onclick="openBriefing(${idx})">
+                    <span>↺ Chơi lại đêm này</span>
+                    <span class="key-badge">R</span>
+                </button>
+            ` : '';
+
+            const utilityButtons = `
+                <div class="debrief-actions-group-secondary">
+                    <button class="menu-btn debrief-btn utility" onclick="toggleRadioLog(true)" title="Xem toàn bộ điện văn liên lạc chiến đấu">
+                        <span>📻 Nhật ký đài</span>
+                        <span class="key-badge">L</span>
+                    </button>
+                    <button class="menu-btn debrief-btn utility" onclick="toggleTacticalGuide(true)" title="Cẩm nang tác chiến B-52">
+                        <span>📖 Cẩm nang</span>
+                        <span class="key-badge">H</span>
+                    </button>
+                    <button class="menu-btn debrief-btn utility" onclick="backToMenuAttract(); showScreen('campaign')" title="Danh sách 5 đêm chiến dịch">
+                        <span>📋 Chọn màn</span>
+                        <span class="key-badge">M</span>
+                    </button>
+                    <button class="menu-btn debrief-btn utility" onclick="backToMenuAttract(); showScreen('menu')" title="Về màn hình chính">
+                        <span>🏠 Menu</span>
+                        <span class="key-badge">Esc</span>
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('debrief-actions').innerHTML = `
+                <div class="debrief-actions-group-primary">
+                    ${primaryBtnHtml}
+                    ${replayBtnHtml}
+                </div>
+                ${utilityButtons}
+            `;
             showScreen('debrief');
         }
 

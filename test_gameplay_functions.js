@@ -40,9 +40,9 @@ function createMockElement(id, tagName = 'div') {
         innerHTML: '',
         textContent: '',
         children: [],
-        addEventListener: () => {},
-        removeEventListener: () => {},
-        setAttribute: () => {},
+        addEventListener: () => { },
+        removeEventListener: () => { },
+        setAttribute: () => { },
         getAttribute: () => null
     };
 }
@@ -75,16 +75,16 @@ const documentMock = {
     },
     querySelectorAll: (sel) => [],
     querySelector: (sel) => null,
-    addEventListener: () => {}
+    addEventListener: () => { }
 };
 
 let timerCounter = 1;
 const timers = {};
 const windowMock = {
     localStorage: mockLocalStorage,
-    addEventListener: () => {},
+    addEventListener: () => { },
     requestAnimationFrame: (cb) => 1,
-    cancelAnimationFrame: () => {},
+    cancelAnimationFrame: () => { },
     setTimeout: (fn, delay) => {
         const tid = timerCounter++;
         timers[tid] = fn;
@@ -93,7 +93,7 @@ const windowMock = {
     clearTimeout: (tid) => {
         delete timers[tid];
     },
-    AudioContext: function() {
+    AudioContext: function () {
         return {
             state: 'running',
             currentTime: 0,
@@ -102,23 +102,23 @@ const windowMock = {
             createGain: () => ({
                 gain: {
                     value: 1,
-                    setValueAtTime: () => {},
-                    exponentialRampToValueAtTime: () => {},
-                    linearRampToValueAtTime: () => {}
+                    setValueAtTime: () => { },
+                    exponentialRampToValueAtTime: () => { },
+                    linearRampToValueAtTime: () => { }
                 },
-                connect: () => {}
+                connect: () => { }
             }),
-            createOscillator: () => ({ frequency: { setValueAtTime: () => {}, exponentialRampToValueAtTime: () => {} }, connect: () => {}, start: () => {}, stop: () => {} }),
-            createDynamicsCompressor: () => ({ threshold: {}, ratio: {}, attack: {}, release: {}, connect: () => {} }),
-            createConvolver: () => ({ connect: () => {} }),
-            createBufferSource: () => ({ buffer: null, connect: () => {}, start: () => {}, stop: () => {} }),
-            createBiquadFilter: () => ({ frequency: { setValueAtTime: () => {}, linearRampToValueAtTime: () => {} }, Q: {}, connect: () => {} }),
+            createOscillator: () => ({ frequency: { setValueAtTime: () => { }, exponentialRampToValueAtTime: () => { } }, connect: () => { }, start: () => { }, stop: () => { } }),
+            createDynamicsCompressor: () => ({ threshold: {}, ratio: {}, attack: {}, release: {}, connect: () => { } }),
+            createConvolver: () => ({ connect: () => { } }),
+            createBufferSource: () => ({ buffer: null, connect: () => { }, start: () => { }, stop: () => { } }),
+            createBiquadFilter: () => ({ frequency: { setValueAtTime: () => { }, linearRampToValueAtTime: () => { } }, Q: {}, connect: () => { } }),
             destination: {}
         };
     },
     speechSynthesis: {
-        speak: () => {},
-        cancel: () => {},
+        speak: () => { },
+        cancel: () => { },
         getVoices: () => []
     }
 };
@@ -136,17 +136,17 @@ const context = {
     requestAnimationFrame: (cb) => 1,
     THREE: new Proxy({}, {
         get: (target, prop) => {
-            const DummyClass = function() {
+            const DummyClass = function () {
                 this.x = 0; this.y = 0; this.z = 0;
-                this.position = { set: () => {}, copy: () => {} };
-                this.rotation = { set: () => {} };
-                this.scale = { set: () => {} };
-                this.add = () => {};
-                this.remove = () => {};
-                this.lookAt = () => {};
-                this.setPixelRatio = () => {};
-                this.setSize = () => {};
-                this.render = () => {};
+                this.position = { set: () => { }, copy: () => { } };
+                this.rotation = { set: () => { } };
+                this.scale = { set: () => { } };
+                this.add = () => { };
+                this.remove = () => { };
+                this.lookAt = () => { };
+                this.setPixelRatio = () => { };
+                this.setSize = () => { };
+                this.render = () => { };
             };
             return DummyClass;
         }
