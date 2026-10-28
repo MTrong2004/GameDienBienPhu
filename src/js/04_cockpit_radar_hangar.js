@@ -214,10 +214,9 @@
 
             ['MIG21', 'B52', 'SAM2', 'RADAR'].forEach(k => {
                 const btn = document.getElementById(`h-model-${k}`);
-                if (!btn) return;
                 btn.className = (k === key)
-                    ? 'hangar-dock-btn flex-1 p-2 rounded-lg border text-left transition bg-emerald-500/20 border-emerald-400 text-white shadow-[0_0_16px_rgba(16,185,129,0.35)]'
-                    : 'hangar-dock-btn flex-1 p-2 rounded-lg border border-white/10 bg-black/60 text-zinc-400 hover:text-white hover:border-white/30 text-left transition';
+                    ? 'p-2 rounded-lg border text-left transition bg-alabaster text-canvas border-alabaster'
+                    : 'p-2 rounded-lg border hairline-border bg-canvas text-muted hover:text-alabaster text-left transition';
             });
 
             document.getElementById('hangar-model-name').textContent = HANGAR_META[key].name;
@@ -225,9 +224,9 @@
             const specsEl = document.getElementById('hangar-model-specs');
             if (specsEl && HANGAR_META[key].specs) {
                 specsEl.innerHTML = HANGAR_META[key].specs.map(s => `
-                    <div class="p-1.5 rounded bg-black/60 border border-emerald-500/20">
-                        <span class="text-emerald-400 block text-[9px] uppercase tracking-wider font-semibold font-mono">${s.k}</span>
-                        <span class="text-alabaster font-mono text-[11px] font-medium">${s.v}</span>
+                    <div class="p-1.5 rounded bg-black/40 border hairline-border">
+                        <span class="text-emerald block text-[9px] uppercase tracking-wider font-semibold">${s.k}</span>
+                        <span class="text-alabaster font-mono text-[11px]">${s.v}</span>
                     </div>
                 `).join('');
             }
@@ -746,15 +745,8 @@
             });
 
             vp.addEventListener('mousedown', e => {
-                SoundEngine.init();
-                if (e.button === 2) {
-                    if (gameState === 'PLAYING' && currentMode === 'MIG21') {
-                        e.preventDefault();
-                        fireMiGCannon();
-                    }
-                    return;
-                }
                 if (e.button !== 0) return;
+                SoundEngine.init();
                 if (currentMode === 'HANGAR') {
                     hangarDrag = true;
                     prevHX = e.clientX;
@@ -762,10 +754,6 @@
                 } else if (gameState === 'PLAYING') {
                     triggerPrimaryWeaponFire();
                 }
-            });
-
-            vp.addEventListener('contextmenu', e => {
-                if (gameState === 'PLAYING' && currentMode === 'MIG21') e.preventDefault();
             });
 
             window.addEventListener('mouseup', () => { hangarDrag = false; });
@@ -843,12 +831,12 @@
             'card1': `
                 <div class="space-y-4">
                     <!-- Sticky Timeline Jump Navigator -->
-                    <div class="p-2.5 bg-black/85 border border-emerald-500/40 rounded-lg flex items-center justify-between flex-wrap gap-2 sticky top-0 z-20 backdrop-blur-md shadow-lg">
+                    <div class="p-2.5 bg-black/85 border border-emerald-500/40 rounded-lg flex items-center gap-2 sticky top-0 z-20 backdrop-blur-md shadow-lg">
                         <div class="flex items-center gap-2">
                             <span class="font-mono text-[11px] text-emerald-400 font-bold uppercase tracking-wider">// TRỤC 12 ĐÊM:</span>
-                            <span class="font-mono text-[10px] text-zinc-400 hidden sm:inline">18.12 → 30.12.1972</span>
+                            <span class="font-mono text-[10px] text-zinc-400 hidden sm:inline shrink-0">18.12 → 30.12.1972</span>
                         </div>
-                        <div class="flex flex-wrap gap-1">
+                        <div class="flex flex-nowrap gap-1 overflow-x-auto pb-1">
                             <button onclick="document.getElementById('night-node-1').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-zinc-300 border border-white/10 hover:border-emerald-400">Đ1</button>
                             <button onclick="document.getElementById('night-node-2').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-zinc-300 border border-white/10 hover:border-emerald-400">Đ2</button>
                             <button onclick="document.getElementById('night-node-3').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-amber-300 border border-amber-400/40 hover:border-emerald-400 font-bold">Đ3</button>
@@ -878,7 +866,7 @@
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
-                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 90 lần chiếc B-52 cùng 135 máy bay chiến thuật ném bom dồn dập vào Đông Anh, Gia Lâm, Yên Viên và đài phát thanh Mễ Trì.</div>
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 90 lần chiếc B-52 (phía Mỹ ghi 129 lần chiếc) cùng 135 máy bay chiến thuật ném bom dồn dập vào Đông Anh, Gia Lâm, Yên Viên và đài phát thanh Mễ Trì.</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Lúc <strong>20 giờ 13 phút</strong>, kíp chiến đấu <strong>Tiểu đoàn 59 (Trung đoàn Tên lửa 261)</strong> dưới sự chỉ huy của Tiểu đoàn trưởng Nguyễn Văn Phiệt đã phóng 2 quả tên lửa SAM-2, bắn rơi tại chỗ chiếc B-52G đầu tiên trên cánh đồng Chuôm (xã Phù Lỗ, Đông Anh cũ). Cả đêm ta bắn rơi 3 B-52.</div>
                                     <div class="text-emerald-300 font-mono italic text-[11px] bg-emerald-950/30 p-2 rounded border border-emerald-500/20">“Báo cáo Sở chỉ huy: Tiểu đoàn 59 đã bắn rơi B-52 đầu tiên! Pháo đài bay cháy đỏ rực bầu trời phía Bắc!”</div>
                                 </div>
@@ -891,6 +879,16 @@
                                         <a href="https://www.google.com/maps/search/?api=1&query=Tuong+dai+Chien+thang+B52+Phu+Lo+Soc+Son+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
+                                    </div>
+                                    <div class="pt-2 mt-1 border-t border-white/10 space-y-2">
+                                        <div class="text-zinc-200 font-semibold">Trận địa Cổ Loa – Tráng Việt (Tiểu đoàn 59)</div>
+                                        <div class="text-zinc-400 text-[11px]">Vị trí: Xã Cổ Loa, huyện Đông Anh &amp; xã Tráng Việt, huyện Mê Linh, TP. Hà Nội.</div>
+                                        <div class="text-zinc-400 text-[11px]">Nơi Tiểu đoàn 59 phóng 2 quả đạn hạ chiếc B-52 đầu tiên đêm 18/12; xác máy bay rơi tại cánh đồng Phù Lỗ.</div>
+                                        <div class="pt-1 flex flex-wrap gap-1.5">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Co+Loa+Dong+Anh+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1073,7 +1071,7 @@
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
-                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Đợt tập kích quy mô tàn bạo nhất trong lịch sử: Mỹ huy động <strong>105 lần chiếc B-52</strong> và 110 máy bay chiến thuật đồng loạt ném bom rải thảm phố Khâm Thiên, khu dân cư An Dương, Bệnh viện Bạch Mai; làm 287 đồng bào vô tội thiệt mạng.</div>
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Đợt tập kích quy mô tàn bạo nhất trong lịch sử: Mỹ huy động <strong>105 lần chiếc B-52</strong> (phía Mỹ ghi 120 lần chiếc) và 110 máy bay chiến thuật đồng loạt ném bom rải thảm phố Khâm Thiên, khu dân cư An Dương, Bệnh viện Bạch Mai; làm 287 đồng bào vô tội thiệt mạng (bảng thống kê chi tiết ghi 278 người chết, 290 người bị thương, 178 trẻ mồ côi).</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Trong hơn 1 giờ đồng hồ giao tranh ác liệt, toàn bộ lực lượng phòng không ba thứ quân đã trút bão lửa giáng trả: bắn rơi <strong>8 pháo đài bay B-52</strong> (4 chiếc rơi tại chỗ), đập tan hoàn toàn mưu toan khuất phục nhân dân ta bằng bom đạn hủy diệt.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
@@ -1085,6 +1083,16 @@
                                         <a href="https://www.google.com/maps/search/?api=1&query=Dai+tuong+niem+Kham+Thien+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
+                                    </div>
+                                    <div class="pt-2 mt-1 border-t border-white/10 space-y-2">
+                                        <div class="text-zinc-200 font-semibold">Khu lao động An Dương</div>
+                                        <div class="text-zinc-400 text-[11px]">Vị trí: Phố An Dương, quận Tây Hồ, TP. Hà Nội.</div>
+                                        <div class="text-zinc-400 text-[11px]">Cùng đêm 26/12, khu lao động An Dương cũng bị bom B-52 rải thảm cùng lúc với Khâm Thiên và Bạch Mai.</div>
+                                        <div class="pt-1 flex flex-wrap gap-1.5">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=An+Duong+Tay+Ho+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1111,6 +1119,16 @@
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                     </div>
+                                    <div class="pt-2 mt-1 border-t border-white/10 space-y-2">
+                                        <div class="text-zinc-200 font-semibold">Vùng trời Yên Bái</div>
+                                        <div class="text-zinc-400 text-[11px]">Vị trí: TP. Yên Bái, tỉnh Yên Bái.</div>
+                                        <div class="text-zinc-400 text-[11px]">Nơi Phạm Tuân xuất kích đêm 27/12, bắn rơi B-52 rồi hạ cánh an toàn.</div>
+                                        <div class="pt-1 flex flex-wrap gap-1.5">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Yen+Bai" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1135,6 +1153,16 @@
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                     </div>
+                                    <div class="pt-2 mt-1 border-t border-white/10 space-y-2">
+                                        <div class="text-zinc-200 font-semibold">Vùng trời Phù Yên – Nà Sản, Sơn La</div>
+                                        <div class="text-zinc-400 text-[11px]">Vị trí: Huyện Phù Yên, tỉnh Sơn La.</div>
+                                        <div class="text-zinc-400 text-[11px]">Nơi Vũ Xuân Thiều hy sinh sau khi bắn cháy B-52 đêm 28/12; ban đầu an táng tại Sơn La, sau đưa về nghĩa trang Văn Điển, Hà Nội.</div>
+                                        <div class="pt-1 flex flex-wrap gap-1.5">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Na+San+Son+La" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1158,6 +1186,22 @@
                                         <a href="https://www.google.com/maps/search/?api=1&query=Bao+tang+Chien+thang+B52+157+Doi+Can+Ba+Dinh+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
+                                    </div>
+                                    <div class="pt-2 mt-1 border-t border-white/10 space-y-2">
+                                        <div class="text-zinc-200 font-semibold">Các khu vực bị đánh đêm 29/12</div>
+                                        <div class="text-zinc-400 text-[11px]">Vị trí: Gang thép Thái Nguyên – Trại Cau (Đồng Hỷ, Thái Nguyên); Đồng Mỏ (Chi Lăng, Lạng Sơn); Kim Anh (Vĩnh Phúc).</div>
+                                        <div class="text-zinc-400 text-[11px]">Đợt 60 lần chiếc B-52 lúc 23h16 chia 3 hướng: 30 đánh Thái Nguyên–Trại Cau, 18 đánh Đồng Mỏ, 12 đánh Kim Anh.</div>
+                                        <div class="pt-1 flex flex-wrap gap-1.5">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Trai+Cau+Dong+Hy+Thai+Nguyen" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [TRẠI CAU ↗ ↗]
+                                        </a>
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Dong+Mo+Chi+Lang+Lang+Son" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [ĐỒNG MỎ ↗ ↗]
+                                        </a>
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Kim+Anh+Vinh+Phuc" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [KIM ANH ↗ ↗]
+                                        </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1423,7 +1467,7 @@
                                 <span class="text-[10px] font-mono text-zinc-400">ĐẠI LỘ THĂNG LONG</span>
                             </div>
                             <div class="text-xs text-zinc-300 leading-relaxed">
-                                Lưu giữ 2 Bảo vật Quốc gia vô giá: Tiêm kích MiG-21bis số hiệu 5121 của Anh hùng Phạm Tuân và mảnh xác pháo đài bay B-52 đầu tiên rơi tại Phù Lỗ.
+                                Lưu giữ 2 Bảo vật Quốc gia vô giá: Tiêm kích MiG-21MF số hiệu 5121 của Anh hùng Phạm Tuân và mảnh xác pháo đài bay B-52 đầu tiên rơi tại Phù Lỗ.
                             </div>
                             <div class="text-[11px] font-mono text-zinc-400">Địa chỉ: Đại lộ Thăng Long, phường Tây Mỗ, quận Nam Từ Liêm, TP. Hà Nội.</div>
                             <div class="pt-1">
@@ -1432,6 +1476,20 @@
                                 </a>
                             </div>
                         </div>
+                    </div>
+                </div>
+            `            ,
+            'card6': `
+                <div class="space-y-4">
+                    <div class="p-4 rounded-lg bg-black/70 border border-amber-400/40 space-y-3">
+                        <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// NGUỒN THAM KHẢO &amp; GHI CHÚ NGUỒN</div>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">Chỉ 3 nguồn chính thống nhất của Việt Nam, đủ bao quát các số liệu chính trong game. Số liệu phía Mỹ được ghi riêng trong các ghi chú, không chọn một chiều.</p>
+                        <ul class="text-xs sm:text-sm text-zinc-300 space-y-2 list-disc pl-5">
+                            <li>Đề cương tuyên truyền kỷ niệm 50 năm chiến thắng “Hà Nội – Điện Biên Phủ trên không” (Hội Cựu chiến binh tỉnh Khánh Hòa, trang .gov.vn) — tổng kết 81 máy bay: 34 B-52, 5 F-111A, 21 F-4CE, 4 A-6A, 12 A-7, 1 F-105D, 2 RA-5C, 1 HH-53, 1 UAV 147-SC; 663 lần chiếc B-52, 3.920 lần chiếc chiến thuật; riêng Hà Nội 441 lần chiếc B-52, 5.480 nhà sập, 2.368 dân chết, 1.355 bị thương; 7 giờ sáng 30/12/1972 Mỹ tuyên bố ngừng ném bom từ vĩ tuyến 20 trở ra. <a class="text-amber-300 underline" href="https://cuuchienbinh.khanhhoa.gov.vn/article/thong-bao/de-cuong-tuyen-truyen-ky-niem-50-nam-chien-thang-ha-noi-dien-bien-phu-tren-khong-121972-122022.html" target="_blank" rel="noopener">cuuchienbinh.khanhhoa.gov.vn</a></li>
+                            <li>Tạp chí Quốc phòng toàn dân (Bộ Quốc phòng) — lời tiên đoán của Chủ tịch Hồ Chí Minh năm 1967 (“Sớm muộn rồi đế quốc Mỹ cũng sẽ đưa B-52 ra đánh Hà Nội, rồi có thua nó mới chịu thua”); Hà Nội 2.380 người chết, 1.355 bị thương; 81 máy bay, 34 B-52. <a class="text-amber-300 underline" href="https://tapchiqptd.vn/vi/an-pham-tap-chi-in/tu-chien-thang-dien-bien-phu-tren-khong-suy-nghi-ve-cong-tac-phong-khong-nhan-dan-bao-ve-t/3295.html" target="_blank" rel="noopener">tapchiqptd.vn</a></li>
+                            <li>Bảo tàng Lịch sử Quốc gia — Phạm Tuân 22h20 Yên Bái (đêm 27/12); Vũ Xuân Thiều 21h40 Cẩm Thủy (đêm 28/12); đêm 26/12: 8 B-52; tổng kết 81/34. <a class="text-amber-300 underline" href="https://baotanglichsu.vn/vi/Articles/2001/68211/dje-dji-djen-tran-thang-b52-thang-12-nam-1972-cua-bo-djoi-ten-lua-viet-nam-phan-2-va-het.html" target="_blank" rel="noopener">baotanglichsu.vn</a></li>
+                        </ul>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed"><b class="text-amber-300">Ghi chú các số liệu vênh nhau:</b> (1) Khâm Thiên: game ghi 287 theo bia tưởng niệm tại 51 Khâm Thiên; bảng thống kê chi tiết ghi 278 chết, 290 bị thương, 178 trẻ mồ côi. (2) B-52: phía Việt Nam 34; phía Mỹ ghi 15 bị bắn rơi, một số tổng kết ghi 16; tính cả hỏng nặng: 22–27. (3) 43 phi công: con số game dùng theo nguồn phía Việt Nam; phía Mỹ ghi 43 chết, 49 bị bắt — đừng nhầm hai con số 43. (4) Đêm 29/12: bản game ghi Tiểu đoàn 79 bắn rơi B-52 thứ 34 trên bầu trời Hòa Bình lúc 23h16; bản tường thuật khác của phía Việt Nam ghi các tiểu đoàn 72, 78, 79 ở vòng ngoài bắn rơi 1 B-52 + 1 F-4 trong đợt 60 lần chiếc chia 30 Thái Nguyên–Trại Cau / 18 Đồng Mỏ / 12 Kim Anh; phía Mỹ không ghi nhận tổn thất đêm đó. (5) Đêm 28/12: phía Việt Nam ghi Vũ Xuân Thiều bắn rơi B-52 và hy sinh; phía Mỹ không ghi nhận B-52 mất đêm đó. (6) Các nhãn mô hình 3D và khí tài trong game vẫn ghi MiG-21bis theo thiết kế; về lịch sử, chiếc 5121 của Phạm Tuân là MiG-21MF. (7) Số B-52 rơi tại Hà Nội còn vênh nhau giữa các nguồn — game hiện không nêu con số này nên không sửa gì thêm. (8) Trước khi xuất bản chính thức nên đối chiếu thêm với sách của NXB Quân đội nhân dân và qdnd.vn.</p>
                     </div>
                 </div>
             `
@@ -1460,7 +1518,7 @@
         }
 
         function renderArchiveTab(tabKey) {
-            ['card1', 'card2', 'card3', 'card4', 'card5'].forEach(k => {
+            ['card1', 'card2', 'card3', 'card4', 'card5', 'card6'].forEach(k => {
                 const btn = document.getElementById(`tab-btn-${k}`);
                 if (btn) {
                     const isActive = (k === tabKey);
@@ -1476,8 +1534,104 @@
             if (contentArea && CAMPAIGN_ARCHIVE_CARDS[tabKey]) {
                 contentArea.innerHTML = CAMPAIGN_ARCHIVE_CARDS[tabKey];
                 contentArea.scrollTop = 0;
+                initArchiveCards();
             }
         }
+
+
+        function normVi(s) {
+            return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+        }
+        function initArchiveCards() {
+            const area = document.getElementById('archive-content-area');
+            if (!area) return;
+            area.querySelectorAll('[id^="night-node-"]').forEach(card => {
+                if (card.dataset.collapseInit) return;
+                card.dataset.collapseInit = '1';
+                const header = card.children[0];
+                if (!header) return;
+                const body = document.createElement('div');
+                body.className = 'night-body';
+                while (card.children.length > 1) body.appendChild(card.children[1]);
+                card.appendChild(body);
+                body.style.display = 'none';
+                const chev = document.createElement('span');
+                chev.className = 'night-chev font-mono text-emerald-300 text-xs';
+                chev.textContent = ' ▼';
+                header.appendChild(chev);
+                header.style.cursor = 'pointer';
+                header.title = 'Bấm để mở / thu gọn';
+                header.addEventListener('click', () => toggleNight(card.id));
+            });
+            area.querySelectorAll('button[onclick*="night-node-"]').forEach(btn => {
+                const m = (btn.getAttribute('onclick') || '').match(/night-node-\d+/);
+                if (!m) return;
+                btn.onclick = () => {
+                    const inp = document.getElementById('archive-search');
+                    if (inp) inp.value = '';
+                    filterArchive('');
+                    expandNight(m[0]);
+                    const el = document.getElementById(m[0]);
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                };
+            });
+            const inp = document.getElementById('archive-search');
+            if (inp && inp.value) filterArchive(inp.value);
+            updateArchiveCount();
+        }
+        function toggleNight(id) {
+            const card = document.getElementById(id);
+            if (!card) return;
+            const body = card.querySelector('.night-body');
+            const chev = card.querySelector('.night-chev');
+            if (!body) return;
+            const open = body.style.display === 'none';
+            body.style.display = open ? '' : 'none';
+            if (chev) chev.textContent = open ? ' ▲' : ' ▼';
+        }
+        function expandNight(id) {
+            const card = document.getElementById(id);
+            if (!card) return;
+            const body = card.querySelector('.night-body');
+            const chev = card.querySelector('.night-chev');
+            if (body) body.style.display = '';
+            if (chev) chev.textContent = ' ▲';
+        }
+        function setAllNights(open) {
+            document.querySelectorAll('#archive-content-area [id^="night-node-"]').forEach(card => {
+                const body = card.querySelector('.night-body');
+                const chev = card.querySelector('.night-chev');
+                if (body) body.style.display = open ? '' : 'none';
+                if (chev) chev.textContent = open ? ' ▲' : ' ▼';
+            });
+        }
+        function filterArchive(q) {
+            const query = normVi(q).trim();
+            const cards = document.querySelectorAll('#archive-content-area [id^="night-node-"]');
+            let shown = 0;
+            cards.forEach(card => {
+                const match = !query || normVi(card.textContent).includes(query);
+                card.style.display = match ? '' : 'none';
+                if (match) {
+                    shown++;
+                    if (query) expandNight(card.id);
+                }
+            });
+            updateArchiveCount(shown, cards.length);
+        }
+        function updateArchiveCount(shown, total) {
+            const el = document.getElementById('archive-search-count');
+            if (!el) return;
+            const cards = document.querySelectorAll('#archive-content-area [id^="night-node-"]');
+            if (!cards.length) { el.textContent = 'Tìm áp dụng cho thẻ 12 đêm'; return; }
+            const s = (shown === undefined) ? cards.length : shown;
+            const t = (total === undefined) ? cards.length : total;
+            el.textContent = s + '/' + t + ' đêm';
+        }
+        window.filterArchive = filterArchive;
+        window.setAllNights = setAllNights;
+        window.expandNight = expandNight;
+        window.toggleNight = toggleNight;
 
         function copyCampaignSummary() {
             const text = `TÓM TẮT CHIẾN DỊCH: HÀ NỘI 12 NGÀY ĐÊM (18/12 – 29/12/1972) — KỲ TÍCH ĐIỆN BIÊN PHỦ TRÊN KHÔNG
@@ -1516,7 +1670,7 @@
                     toast.textContent = '✓ Đã sao chép toàn bộ bản tóm tắt chiến dịch vào bộ nhớ tạm!';
                     toast.classList.add('text-emerald');
                     setTimeout(() => {
-                        toast.textContent = 'Nguồn tư liệu: Viện Lịch sử Quân sự Việt Nam · Bảo tàng Chiến thắng B-52 Hà Nội';
+                        toast.textContent = 'Nguồn: Đề cương .gov.vn · Tạp chí Quốc phòng toàn dân · Bảo tàng Lịch sử Quốc gia';
                     }, 3500);
                 }
             } catch (e) {}
