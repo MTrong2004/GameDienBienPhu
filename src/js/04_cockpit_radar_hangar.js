@@ -865,6 +865,33 @@
                         </div>
                     </div>
 
+                    <!-- Schematic Hanoi map: click a dot to open its night card -->
+                    <div class="p-3 rounded-lg bg-black/70 border border-emerald-500/30 space-y-2">
+                        <div class="font-mono text-[11px] text-emerald-400 uppercase font-bold tracking-wider">// SƠ ĐỒ HÀ NỘI &amp; VÒNG NGOÀI — BẤM VÀO ĐIỂM ĐỂ MỞ THẺ ĐÊM</div>
+                        <svg viewBox="0 0 100 74" class="w-full rounded bg-zinc-950/80 border border-white/10">
+                            <text x="1" y="3" font-size="3" fill="#71717a">↑ BẮC</text>
+<g onclick="mapJump('night-node-1')" style="cursor:pointer"><title>Đ1 · Phù Lỗ – Cổ Loa — bấm để mở thẻ đêm</title><circle cx="44" cy="10" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="48" y="11.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ1 · Phù Lỗ – Cổ Loa</text></g>
+<g onclick="mapJump('night-node-2')" style="cursor:pointer"><title>Đ2 · Chèm – Mễ Trì — bấm để mở thẻ đêm</title><circle cx="28" cy="26" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="32" y="27.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ2 · Chèm – Mễ Trì</text></g>
+<g onclick="mapJump('night-node-3')" style="cursor:pointer"><title>Đ3 · Yên Viên – Cầu Đuống — bấm để mở thẻ đêm</title><circle cx="74" cy="28" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="70" y="29.2" font-size="3.4" fill="#d4d4d8" text-anchor="end">Đ3 · Yên Viên – Cầu Đuống</text></g>
+<g onclick="mapJump('night-node-4')" style="cursor:pointer"><title>Đ4 · An Khánh — bấm để mở thẻ đêm</title><circle cx="18" cy="48" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="22" y="49.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ4 · An Khánh</text></g>
+<g onclick="mapJump('night-node-5')" style="cursor:pointer"><title>Đ5 · Bạch Mai — bấm để mở thẻ đêm</title><circle cx="52" cy="58" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="56" y="59.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ5 · Bạch Mai</text></g>
+<g onclick="mapJump('night-node-6')" style="cursor:pointer"><title>Đ6 · Giáp Bát – Văn Điển — bấm để mở thẻ đêm</title><circle cx="56" cy="68" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="60" y="69.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ6 · Giáp Bát – Văn Điển</text></g>
+<g onclick="mapJump('night-node-7')" style="cursor:pointer"><title>Đ7 · Đan Phượng — bấm để mở thẻ đêm</title><circle cx="12" cy="32" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="16" y="33.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ7 · Đan Phượng</text></g>
+<g onclick="mapJump('night-node-8')" style="cursor:pointer"><title>Đ8 · A31 / Z119 — bấm để mở thẻ đêm</title><circle cx="22" cy="64" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="26" y="65.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ8 · A31 / Z119</text></g>
+<g onclick="mapJump('night-node-9')" style="cursor:pointer"><title>Đ9 · Khâm Thiên — bấm để mở thẻ đêm</title><circle cx="47" cy="44" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="51" y="45.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ9 · Khâm Thiên</text></g>
+<g onclick="mapJump('night-node-9')" style="cursor:pointer"><title>Đ9 · An Dương — bấm để mở thẻ đêm</title><circle cx="33" cy="41" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="37" y="42.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ9 · An Dương</text></g>
+<g onclick="mapJump('night-node-10')" style="cursor:pointer"><title>Đ10 · Hồ Hữu Tiệp — bấm để mở thẻ đêm</title><circle cx="44" cy="36" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="48" y="37.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ10 · Hồ Hữu Tiệp</text></g>
+<g onclick="mapJump('night-node-11')" style="cursor:pointer"><title>Đ11 · Sài Đồng — bấm để mở thẻ đêm</title><circle cx="68" cy="42" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="64" y="43.2" font-size="3.4" fill="#d4d4d8" text-anchor="end">Đ11 · Sài Đồng</text></g>
+<g onclick="mapJump('night-node-12')" style="cursor:pointer"><title>Đ12 · Bảo tàng B-52 — bấm để mở thẻ đêm</title><circle cx="58" cy="50" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="62" y="51.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ12 · Bảo tàng B-52</text></g>
+<g onclick="mapJump('night-node-10')" style="cursor:pointer"><title>Đ10 · Yên Bái — bấm để mở thẻ đêm</title><circle cx="14" cy="8" r="2.6" fill="#fbbf24" stroke="#000" stroke-opacity="0.4"/><text x="18" y="9.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ10 · Yên Bái</text></g>
+<g onclick="mapJump('night-node-11')" style="cursor:pointer"><title>Đ11 · Sơn La — bấm để mở thẻ đêm</title><circle cx="4" cy="40" r="2.6" fill="#fbbf24" stroke="#000" stroke-opacity="0.4"/><text x="8" y="41.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ11 · Sơn La</text></g>
+<g onclick="mapJump('night-node-12')" style="cursor:pointer"><title>Đ12 · Trại Cau — bấm để mở thẻ đêm</title><circle cx="58" cy="3" r="2.6" fill="#fbbf24" stroke="#000" stroke-opacity="0.4"/><text x="62" y="4.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ12 · Trại Cau</text></g>
+<g onclick="mapJump('night-node-12')" style="cursor:pointer"><title>Đ12 · Đồng Mỏ — bấm để mở thẻ đêm</title><circle cx="90" cy="10" r="2.6" fill="#fbbf24" stroke="#000" stroke-opacity="0.4"/><text x="86" y="11.2" font-size="3.4" fill="#d4d4d8" text-anchor="end">Đ12 · Đồng Mỏ</text></g>
+<g onclick="mapJump('night-node-12')" style="cursor:pointer"><title>Đ12 · Kim Anh — bấm để mở thẻ đêm</title><circle cx="32" cy="3" r="2.6" fill="#fbbf24" stroke="#000" stroke-opacity="0.4"/><text x="36" y="4.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ12 · Kim Anh</text></g>
+                        </svg>
+                        <div class="text-[11px] text-zinc-400 leading-relaxed">Vị trí tương đối, <b class="text-zinc-200">không theo tỷ lệ</b>, chỉ để định hướng. Điểm xanh = Hà Nội &amp; vùng ven; điểm hổ phách = vòng ngoài (Yên Bái, Sơn La, Thái Nguyên, Lạng Sơn, Vĩnh Phúc). Mỗi điểm mở đúng thẻ đêm có địa danh đó.</div>
+                    </div>
+
                     <!-- 12 Nights Timeline Cards with Modern Day Site & Direct Google Maps Direction Link -->
                     <div class="space-y-4">
 
@@ -914,7 +941,7 @@
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
-                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 87 lần chiếc B-52 dội bom Đài phát thanh Mễ Trì, Ga Hàng Cỏ, các khu dân cư An Dương, Gia Lâm nhằm bẻ gãy hệ thống truyền thông quốc gia.</div>
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 93 lần chiếc B-52 (theo phía Mỹ) dội bom Đài phát thanh Mễ Trì, Ga Hàng Cỏ, các khu dân cư An Dương, Gia Lâm nhằm bẻ gãy hệ thống truyền thông quốc gia.</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Địch bay thấp dọc triền sông Hồng để luồn tránh radar. <strong>Tiểu đoàn 77 (Trung đoàn 257)</strong> tại trận địa Chèm áp dụng phương pháp bắn đón nửa góc, bắn rơi 1 B-52; Đài Mễ Trì bị đánh sập nhưng chỉ gián đoạn phát sóng 9 phút rồi tiếp tục phát đi từ trạm dự phòng.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
@@ -938,7 +965,7 @@
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
-                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Mỹ tung 93 lần chiếc B-52 ném bom hủy diệt trung tâm đầu mối giao thông Yên Viên, Cầu Đuống, kho xăng Đức Giang và khu dân cư Gia Lâm.</div>
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Mỹ tung 99 lần chiếc B-52 (theo phía Mỹ) ném bom hủy diệt trung tâm đầu mối giao thông Yên Viên, Cầu Đuống, kho xăng Đức Giang và khu dân cư Gia Lâm.</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Vận dụng xuất sắc “Cẩm nang bìa đỏ”, các <strong>Tiểu đoàn 57, 77, 79, 93</strong> đan lưới lửa SAM-2 tiêu diệt kỷ lục <strong>7 pháo đài bay B-52 trong 1 đêm</strong> (5 chiếc rơi tại chỗ). Đêm đánh xuất thần bẻ gãy đợt tập kích thứ nhất của Mỹ.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
@@ -986,7 +1013,7 @@
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
-                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Lúc 04h45 rạng sáng 22/12, bom rải thảm phá hủy hoàn toàn Bệnh viện Bạch Mai — bệnh viện lớn nhất miền Bắc, sát hại 28 y bác sĩ, điều dưỡng và bệnh nhân.</div>
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Lúc 04h45 rạng sáng 22/12, bom rải thảm phá hủy gần như toàn bộ Bệnh viện Bạch Mai — bệnh viện lớn nhất miền Bắc, sát hại 28 y bác sĩ, điều dưỡng và bệnh nhân.</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Biến căm thù thành hành động, các trận địa tên lửa hạ gục 3 pháo đài bay B-52; pháo cao xạ đan lưới tầm thấp bắn rơi 1 máy bay cánh cụp cánh xòe F-111 tối tân của Mỹ tại bến phà Khuyến Lương.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
@@ -1011,7 +1038,7 @@
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
-                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 54 lần chiếc B-52 tập trung oanh tạc các ga hàng hóa phía Nam: Giáp Bát, Văn Điển, Thường Tín nhằm cắt đứt nguồn vận chuyển lương thực, đạn dược chi viện.</div>
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 30 lần chiếc B-52 (theo phía Mỹ) tập trung oanh tạc các ga hàng hóa phía Nam: Giáp Bát, Văn Điển, Thường Tín nhằm cắt đứt nguồn vận chuyển lương thực, đạn dược chi viện.</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Các trận địa SAM-2 bố trí vòng ngoài phối hợp cao xạ bảo vệ ga tàu, bắn rơi 2 B-52, giữ vững mạch máu tiếp tế cho Thủ đô.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
@@ -1083,7 +1110,7 @@
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
-                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Đợt tập kích quy mô tàn bạo nhất trong lịch sử: Mỹ huy động <strong>105 lần chiếc B-52</strong> (phía Mỹ ghi 120 lần chiếc) và 110 máy bay chiến thuật đồng loạt ném bom rải thảm phố Khâm Thiên, khu dân cư An Dương, Bệnh viện Bạch Mai; làm 287 đồng bào vô tội thiệt mạng (bảng thống kê chi tiết ghi 278 người chết, 290 người bị thương, 178 trẻ mồ côi).</div>
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Đợt tập kích quy mô tàn bạo nhất trong lịch sử: Mỹ huy động <strong>105 lần chiếc B-52</strong> theo một số tài liệu phía Việt Nam (phía Mỹ ghi 120 lần chiếc B-52 và 113 lần chiếc cường kích yểm hộ) đồng loạt ném bom rải thảm phố Khâm Thiên, khu dân cư An Dương, Bệnh viện Bạch Mai; làm 287 đồng bào vô tội thiệt mạng (bảng thống kê chi tiết ghi 278 người chết, 290 người bị thương, 178 trẻ mồ côi).</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Trong hơn 1 giờ đồng hồ giao tranh ác liệt, toàn bộ lực lượng phòng không ba thứ quân đã trút bão lửa giáng trả: bắn rơi <strong>8 pháo đài bay B-52</strong> (4 chiếc rơi tại chỗ), đập tan hoàn toàn mưu toan khuất phục nhân dân ta bằng bom đạn hủy diệt.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
@@ -1118,7 +1145,7 @@
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
-                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 54 lần chiếc B-52 tiếp tục ném bom rải thảm khu vực Đông Anh, Yên Viên và ngoại vi Thủ đô.</div>
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 60 lần chiếc B-52 (theo phía Mỹ) tiếp tục ném bom rải thảm khu vực Đông Anh, Yên Viên và ngoại vi Thủ đô.</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> 22h20, Anh hùng <strong>Phạm Tuân</strong> điều khiển tiêm kích MiG-21MF (số hiệu 5121) xuất kích từ sân bay dã chiến Yên Bái, bay luồn dưới trần mây, bất ngờ vút lên tiếp cận tốp B-52 ở cự ly 4 km và phóng 2 quả tên lửa K-13 bắn hạ B-52 trên bầu trời Mộc Châu. Đêm đó, <strong>Tiểu đoàn tên lửa 72</strong> cũng lập công bắn rơi 1 B-52 cắm xác xuống hồ Hữu Tiệp.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
@@ -1154,7 +1181,7 @@
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
                                     <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Địch huy động B-52 đánh phá vòng ngoài hướng Tây Bắc.</div>
-                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Phi công <strong>Vũ Xuân Thiều</strong> lái tiêm kích MiG-21 (số hiệu 046) xuất kích từ sân bay Cẩm Thủy (Thanh Hóa), vượt qua màn nhiễu tiếp cận B-52 trên bầu trời Nà Sản (Sơn La). Sau khi phóng 2 tên lửa K-13 ở cự ly quá gần, anh đã quả cảm lao thẳng chiếc MiG-21 vào thân pháo đài bay địch, cùng chiếc B-52 nổ tung giữa bầu trời Tổ quốc.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Phi công <strong>Vũ Xuân Thiều</strong> lái tiêm kích MiG-21 (số hiệu 046) xuất kích từ sân bay Cẩm Thủy (Thanh Hóa), vượt qua màn nhiễu tiếp cận B-52 trên bầu trời Yên Châu (Sơn La). Sau khi phóng 2 tên lửa K-13 ở cự ly quá gần, anh đã quả cảm lao thẳng chiếc MiG-21 vào thân pháo đài bay địch, cùng chiếc B-52 nổ tung giữa bầu trời Tổ quốc.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
                                     <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
@@ -1166,11 +1193,11 @@
                                         </a>
                                     </div>
                                     <div class="pt-2 mt-1 border-t border-white/10 space-y-2">
-                                        <div class="text-zinc-200 font-semibold">Vùng trời Phù Yên – Nà Sản, Sơn La</div>
-                                        <div class="text-zinc-400 text-[11px]">Vị trí: Huyện Phù Yên, tỉnh Sơn La.</div>
-                                        <div class="text-zinc-400 text-[11px]">Nơi Vũ Xuân Thiều hy sinh sau khi bắn cháy B-52 đêm 28/12; ban đầu an táng tại Sơn La, sau đưa về nghĩa trang Văn Điển, Hà Nội.</div>
+                                        <div class="text-zinc-200 font-semibold">Vùng trời Yên Châu, Sơn La</div>
+                                        <div class="text-zinc-400 text-[11px]">Vị trí: Huyện Yên Châu, tỉnh Sơn La.</div>
+                                        <div class="text-zinc-400 text-[11px]">Nơi Vũ Xuân Thiều hy sinh sau khi bắn cháy B-52 đêm 28/12 (xác B-52 và MiG-21 rơi tại xã Tạ Khoa); ban đầu an táng tại Sơn La, sau đưa về nghĩa trang Văn Điển, Hà Nội.</div>
                                         <div class="pt-1 flex flex-wrap gap-1.5">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Na+San+Son+La" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Yen+Chau+Son+La" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                         </div>
@@ -1188,7 +1215,7 @@
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
                                     <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Đợt oanh tạc tuyệt vọng của Mỹ vào các trận địa phòng không và kho tàng xung quanh Hà Nội, Thái Nguyên.</div>
-                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Lúc 23h16, <strong>Tiểu đoàn 79 (Trung đoàn 257)</strong> bắn rơi chiếc B-52 thứ 34 của chiến dịch trên bầu trời Hòa Bình. Đây là chiếc pháo đài bay cuối cùng bị tiêu diệt trong 12 ngày đêm. Thất bại thảm hại buộc Nhà Trắng phải đầu hàng trên bầu trời Hà Nội.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Lúc 23h29, <strong>Tiểu đoàn 79 (Trung đoàn 257)</strong> tại trận địa Đa Phúc phóng 2 quả đạn, bắn rơi tại chỗ chiếc B-52 thứ 34 của chiến dịch, rơi tại Phúc Yên. Đây là chiếc pháo đài bay cuối cùng bị tiêu diệt trong 12 ngày đêm. Thất bại thảm hại buộc Nhà Trắng phải đầu hàng trên bầu trời Hà Nội.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
                                     <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
@@ -1202,7 +1229,7 @@
                                     <div class="pt-2 mt-1 border-t border-white/10 space-y-2">
                                         <div class="text-zinc-200 font-semibold">Các khu vực bị đánh đêm 29/12</div>
                                         <div class="text-zinc-400 text-[11px]">Vị trí: Gang thép Thái Nguyên – Trại Cau (Đồng Hỷ, Thái Nguyên); Đồng Mỏ (Chi Lăng, Lạng Sơn); Kim Anh (Vĩnh Phúc).</div>
-                                        <div class="text-zinc-400 text-[11px]">Đợt 60 lần chiếc B-52 lúc 23h16 chia 3 hướng: 30 đánh Thái Nguyên–Trại Cau, 18 đánh Đồng Mỏ, 12 đánh Kim Anh.</div>
+                                        <div class="text-zinc-400 text-[11px]">Đợt 60 lần chiếc B-52 lúc 23h16 chia 3 hướng: 30 đánh Thái Nguyên–Trại Cau, 18 đánh Đồng Mỏ, 12 đánh Kim Anh (Wikipedia tiếng Việt ghi 54 lần chiếc chia 24/9/21).</div>
                                         <div class="pt-1 flex flex-wrap gap-1.5">
                                         <a href="https://www.google.com/maps/search/?api=1&query=Trai+Cau+Dong+Hy+Thai+Nguyen" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [TRẠI CAU ↗ ↗]
@@ -1365,7 +1392,7 @@
                         </p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-300 pt-1">
                             <div class="space-y-1">
-                                <div>• <strong class="text-amber-300">34 siêu pháo đài bay B-52</strong> (16 chiếc rơi tại chỗ)</div>
+                                <div>• <strong class="text-amber-300">34 siêu pháo đài bay B-52</strong> (Quân chủng PK-KQ bắn rơi 32 chiếc, 16 chiếc rơi tại chỗ; 2 chiếc còn lại do MiG-21 của Không quân hạ)</div>
                                 <div>• <strong class="text-alabaster">5 máy bay cánh cụp cánh xòe F-111A</strong></div>
                                 <div>• <strong class="text-zinc-200">21 tiêm kích F-4 Phantom</strong></div>
                                 <div>• <strong class="text-zinc-200">12 cường kích A-7 Corsair</strong></div>
@@ -1376,6 +1403,9 @@
                                 <div>• <strong class="text-zinc-200">2 máy bay trinh sát RA-5C</strong></div>
                                 <div>• <strong class="text-zinc-200">1 trực thăng HH-53 &amp; 1 trinh sát không người lái</strong></div>
                             </div>
+                        </div>
+                        <div class="p-2.5 rounded bg-black/50 border border-white/10 text-xs text-zinc-400 mt-2">
+                            *Tỷ lệ 17,6%: 34 chiếc B-52 theo phía Việt Nam so với tổng số B-52 Mỹ ở Đông Nam Á — Bảo tàng Lịch sử Quốc gia ghi “gần 18%”.
                         </div>
                         <div class="p-2.5 rounded bg-black/50 border border-white/10 text-xs text-zinc-300 mt-2">
                             Bắt sống <strong class="text-amber-300">hàng chục phi công giặc lái Mỹ</strong> (trong đó có nhiều chỉ huy, hoa tiêu kỳ cựu B-52), giam giữ nhân đạo tại trại giam Hỏa Lò (“Hà Nội Hilton”).
@@ -1499,9 +1529,111 @@
                         <ul class="text-xs sm:text-sm text-zinc-300 space-y-2 list-disc pl-5">
                             <li>Đề cương tuyên truyền kỷ niệm 50 năm chiến thắng “Hà Nội – Điện Biên Phủ trên không” (Hội Cựu chiến binh tỉnh Khánh Hòa, trang .gov.vn) — tổng kết 81 máy bay: 34 B-52, 5 F-111A, 21 F-4CE, 4 A-6A, 12 A-7, 1 F-105D, 2 RA-5C, 1 HH-53, 1 UAV 147-SC; 663 lần chiếc B-52, 3.920 lần chiếc chiến thuật; riêng Hà Nội 441 lần chiếc B-52, 5.480 nhà sập, 2.368 dân chết, 1.355 bị thương; 7 giờ sáng 30/12/1972 Mỹ tuyên bố ngừng ném bom từ vĩ tuyến 20 trở ra. <a class="text-amber-300 underline" href="https://cuuchienbinh.khanhhoa.gov.vn/article/thong-bao/de-cuong-tuyen-truyen-ky-niem-50-nam-chien-thang-ha-noi-dien-bien-phu-tren-khong-121972-122022.html" target="_blank" rel="noopener">cuuchienbinh.khanhhoa.gov.vn</a></li>
                             <li>Tạp chí Quốc phòng toàn dân (Bộ Quốc phòng) — lời tiên đoán của Chủ tịch Hồ Chí Minh năm 1967 (“Sớm muộn rồi đế quốc Mỹ cũng sẽ đưa B-52 ra đánh Hà Nội, rồi có thua nó mới chịu thua”); Hà Nội 2.380 người chết, 1.355 bị thương; 81 máy bay, 34 B-52. <a class="text-amber-300 underline" href="https://tapchiqptd.vn/vi/an-pham-tap-chi-in/tu-chien-thang-dien-bien-phu-tren-khong-suy-nghi-ve-cong-tac-phong-khong-nhan-dan-bao-ve-t/3295.html" target="_blank" rel="noopener">tapchiqptd.vn</a></li>
-                            <li>Bảo tàng Lịch sử Quốc gia — Phạm Tuân 22h20 Yên Bái (đêm 27/12); Vũ Xuân Thiều 21h40 Cẩm Thủy (đêm 28/12); đêm 26/12: 8 B-52; tổng kết 81/34. <a class="text-amber-300 underline" href="https://baotanglichsu.vn/vi/Articles/2001/68211/dje-dji-djen-tran-thang-b52-thang-12-nam-1972-cua-bo-djoi-ten-lua-viet-nam-phan-2-va-het.html" target="_blank" rel="noopener">baotanglichsu.vn</a></li>
+                            <li>Bảo tàng Lịch sử Quốc gia — Phạm Tuân cất cánh 22h20 từ Yên Bái (đêm 27/12); Vũ Xuân Thiều cất cánh 21h40 từ Cẩm Thủy (đêm 28/12); đêm 26/12: 8 B-52; tổng kết 81/34. <a class="text-amber-300 underline" href="https://baotanglichsu.vn/vi/Articles/2001/68211/dje-dji-djen-tran-thang-b52-thang-12-nam-1972-cua-bo-djoi-ten-lua-viet-nam-phan-2-va-het.html" target="_blank" rel="noopener">baotanglichsu.vn</a></li>
                         </ul>
-                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed"><b class="text-amber-300">Ghi chú các số liệu vênh nhau:</b> (1) Khâm Thiên: game ghi 287 theo bia tưởng niệm tại 51 Khâm Thiên; bảng thống kê chi tiết ghi 278 chết, 290 bị thương, 178 trẻ mồ côi. (2) B-52: phía Việt Nam 34; phía Mỹ ghi 15 bị bắn rơi, một số tổng kết ghi 16; tính cả hỏng nặng: 22–27. (3) 43 phi công: con số game dùng theo nguồn phía Việt Nam; phía Mỹ ghi 43 chết, 49 bị bắt — đừng nhầm hai con số 43. (4) Đêm 29/12: bản game ghi Tiểu đoàn 79 bắn rơi B-52 thứ 34 trên bầu trời Hòa Bình lúc 23h16; bản tường thuật khác của phía Việt Nam ghi các tiểu đoàn 72, 78, 79 ở vòng ngoài bắn rơi 1 B-52 + 1 F-4 trong đợt 60 lần chiếc chia 30 Thái Nguyên–Trại Cau / 18 Đồng Mỏ / 12 Kim Anh; phía Mỹ không ghi nhận tổn thất đêm đó. (5) Đêm 28/12: phía Việt Nam ghi Vũ Xuân Thiều bắn rơi B-52 và hy sinh; phía Mỹ không ghi nhận B-52 mất đêm đó. (6) Các nhãn mô hình 3D và khí tài trong game vẫn ghi MiG-21bis theo thiết kế; về lịch sử, chiếc 5121 của Phạm Tuân là MiG-21MF. (7) Số B-52 rơi tại Hà Nội còn vênh nhau giữa các nguồn — game hiện không nêu con số này nên không sửa gì thêm. (8) Trước khi xuất bản chính thức nên đối chiếu thêm với sách của NXB Quân đội nhân dân và qdnd.vn.</p>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed"><b class="text-amber-300">Ghi chú các số liệu vênh nhau:</b> (1) Khâm Thiên: game ghi 287 theo bia tưởng niệm tại 51 Khâm Thiên; bảng thống kê chi tiết ghi 278 chết, 290 bị thương, 178 trẻ mồ côi. (2) B-52: phía Việt Nam 34; phía Mỹ ghi 15 bị bắn rơi, một số tổng kết ghi 16; tính cả hỏng nặng: 22–27. (3) 43 giặc lái là số quân dân Hà Nội bắt sống theo TTXVN (trưng bày 50 năm), không phải tổng toàn miền Bắc; phía Mỹ ghi 49 người bị bắt trong toàn chiến dịch. (4) Đêm 29/12: bản game ghi Tiểu đoàn 79 (Đa Phúc) bắn rơi B-52 thứ 34 lúc 23h29, rơi tại Phúc Yên; một bản tường thuật khác của phía Việt Nam ghi các tiểu đoàn 72, 78, 79 ở vòng ngoài bắn rơi 1 B-52 + 1 F-4 trong đợt 60 lần chiếc chia 30 Thái Nguyên–Trại Cau / 18 Đồng Mỏ / 12 Kim Anh; Wikipedia tiếng Việt ghi 54 lần chiếc chia 24/9/21; phía Mỹ không ghi nhận tổn thất đêm đó. (5) Đêm 28/12: phía Việt Nam ghi Vũ Xuân Thiều bắn rơi B-52 và hy sinh; phía Mỹ không ghi nhận B-52 mất đêm đó. (6) Các nhãn mô hình 3D và khí tài trong game vẫn ghi MiG-21bis theo thiết kế; về lịch sử, chiếc 5121 của Phạm Tuân là MiG-21MF. (7) Số B-52 rơi tại Hà Nội còn vênh nhau giữa các nguồn — game hiện không nêu con số này nên không sửa gì thêm. (8) Trước khi xuất bản chính thức nên đối chiếu thêm với sách của NXB Quân đội nhân dân và qdnd.vn. (9) Đêm 27/12: phía Việt Nam ghi Phạm Tuân (MiG-21MF 5121) bắn rơi B-52; phía Mỹ khẳng định không có B-52 nào bị MiG bắn rơi trong chiến tranh Việt Nam và quy cả 2 chiếc mất đêm đó cho SAM (phân tích sau chiến tranh cho rằng chiếc rơi tại chỗ trúng SAM của Tiểu đoàn 72).</p>
+                    </div>
+                </div>
+            `            ,
+            'card7': `
+                <div class="space-y-4">
+                    <div class="p-4 rounded-lg bg-black/70 border border-amber-400/40 space-y-3">
+                        <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// TƯỞNG NIỆM — NHỮNG NGƯỜI ĐÃ NGÃ XUỐNG</div>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">12 ngày đêm không chỉ là những con số chiến công. Đằng sau mỗi trận địa là những mái nhà, bệnh viện, trường học bị bom san phẳng và những người dân vô tội. Trang này dành cho họ.</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
+                        <div class="font-mono text-[11px] text-amber-300 uppercase font-bold">PHỐ KHÂM THIÊN — ĐÊM 26/12/1972</div>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">Đợt rải thảm tàn bạo nhất: bia tưởng niệm tại số nhà 51 Khâm Thiên ghi <b class="text-amber-300">287 đồng bào thiệt mạng</b>; bảng thống kê chi tiết ghi 278 người chết, 290 người bị thương, <b class="text-amber-300">178 trẻ mồ côi</b>. Ngôi nhà 51 Khâm Thiên — nơi 7 người trong một gia đình tử nạn — nay là đài tưởng niệm.</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Dai+tuong+niem+Kham+Thien+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">[BẢN ĐỒ GOOGLE MAPS ↗]</a>
+                    </div>
+                    <div class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
+                        <div class="font-mono text-[11px] text-amber-300 uppercase font-bold">BỆNH VIỆN BẠCH MAI — ĐÊM 22/12/1972</div>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">Bom B-52 đánh trúng bệnh viện tuyến cuối đang cứu chữa thương bệnh binh và dân thường: <b class="text-amber-300">28 cán bộ y tế hy sinh</b> trong ca trực (theo Liên hiệp các tổ chức hữu nghị Việt Nam). Tấm bia tưởng niệm trong khuôn viên bệnh viện vẫn ghi tên họ.</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Benh+vien+Bach+Mai+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">[BẢN ĐỒ GOOGLE MAPS ↗]</a>
+                    </div>
+                    <div class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
+                        <div class="font-mono text-[11px] text-amber-300 uppercase font-bold">KHU LAO ĐỘNG AN DƯƠNG — ĐÊM 26/12/1972</div>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">Cùng đêm với Khâm Thiên và Bạch Mai, khu lao động nghèo An Dương (nay thuộc quận Tây Hồ) cũng bị bom rải thảm. Thẻ đêm 26/12 có chỉ đường tới phố An Dương hôm nay.</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=An+Duong+Tay+Ho+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">[BẢN ĐỒ GOOGLE MAPS ↗]</a>
+                    </div>
+                    <div class="p-4 rounded-lg bg-black/70 border border-amber-400/40 space-y-2">
+                        <div class="font-mono text-[11px] text-amber-300 uppercase font-bold">CON SỐ CHUNG CỦA HÀ NỘI</div>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">Cả chiến dịch: Hà Nội có <b class="text-amber-300">2.368 người chết, 1.355 người bị thương</b> (Đề cương tuyên truyền 50 năm, trang .gov.vn); Tạp chí Quốc phòng toàn dân ghi 2.380 người chết. Hơn 50 vạn đồng bào đã sơ tán khỏi thành phố trước và trong chiến dịch.</p>
+                        <p class="text-xs sm:text-sm text-zinc-400 italic leading-relaxed">Chiến thắng này được gọi là “Điện Biên Phủ trên không” — không phải bằng bom đạn, mà bằng ý chí không chịu khuất phục của cả một thành phố.</p>
+                    </div>
+                </div>
+            `            ,
+            'card8': `
+                <div class="space-y-4">
+                    <div class="p-4 rounded-lg bg-black/70 border border-cyan-400/40 flex items-center justify-between flex-wrap gap-2">
+                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold tracking-wider">// TRẮC NGHIỆM — 7 CÂU VỀ 12 NGÀY ĐÊM</div>
+                        <div class="flex items-center gap-2">
+                            <span id="quiz-score" class="font-mono text-[11px] text-zinc-300">Điểm: 0/7 · Đã trả lời: 0/7</span>
+                            <button onclick="quizReset()" class="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/15 text-[11px] font-mono">Chơi lại</button>
+                        </div>
+                    </div>
+                    <div data-quiz-q="0" class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
+                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold">CÂU 1</div>
+                        <div class="text-xs sm:text-sm text-zinc-100 font-semibold leading-relaxed">Chiếc B-52 đầu tiên bị bắn rơi lúc mấy giờ, đêm nào?</div>
+                        <button onclick="quizAnswer(0,0,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">20h13, đêm 18/12</button>
+                        <button onclick="quizAnswer(0,1,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">22h20, đêm 27/12</button>
+                        <button onclick="quizAnswer(0,2,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">21h40, đêm 28/12</button>
+                        <button onclick="quizAnswer(0,3,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">23h16, đêm 29/12</button>
+                        <div class="quiz-expl hidden text-xs text-emerald-300 leading-relaxed bg-emerald-950/30 p-2 rounded border border-emerald-500/20">Tiểu đoàn 59 (Trung đoàn Tên lửa 261) phóng 2 quả SAM-2, hạ B-52G đầu tiên tại cánh đồng Chuôm, Phù Lỗ.</div>
+                    </div>
+                    <div data-quiz-q="1" class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
+                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold">CÂU 2</div>
+                        <div class="text-xs sm:text-sm text-zinc-100 font-semibold leading-relaxed">Đêm nào phòng không ta bắn rơi nhiều B-52 nhất?</div>
+                        <button onclick="quizAnswer(1,0,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Đêm 18/12 (3 chiếc)</button>
+                        <button onclick="quizAnswer(1,1,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Đêm 20/12 (7 chiếc)</button>
+                        <button onclick="quizAnswer(1,2,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Đêm 26/12 (8 chiếc)</button>
+                        <button onclick="quizAnswer(1,3,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Đêm 29/12 (1 chiếc)</button>
+                        <div class="quiz-expl hidden text-xs text-emerald-300 leading-relaxed bg-emerald-950/30 p-2 rounded border border-emerald-500/20">Hơn 1 giờ giao tranh đêm 26/12, lưới lửa ba thứ quân bắn rơi 8 B-52, trong đó 4 chiếc rơi tại chỗ.</div>
+                    </div>
+                    <div data-quiz-q="2" class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
+                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold">CÂU 3</div>
+                        <div class="text-xs sm:text-sm text-zinc-100 font-semibold leading-relaxed">Anh hùng Phạm Tuân lái máy bay nào bắn rơi B-52 đêm 27/12?</div>
+                        <button onclick="quizAnswer(2,0,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">MiG-21bis số hiệu 5121</button>
+                        <button onclick="quizAnswer(2,1,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">MiG-21MF số hiệu 5121</button>
+                        <button onclick="quizAnswer(2,2,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">MiG-21MF số hiệu 5046</button>
+                        <button onclick="quizAnswer(2,3,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">F-4</button>
+                        <div class="quiz-expl hidden text-xs text-emerald-300 leading-relaxed bg-emerald-950/30 p-2 rounded border border-emerald-500/20">Cất cánh từ Yên Bái lúc 22h20, bắn rơi B-52 trên vùng trời Mộc Châu (Sơn La). Lưu ý: nhãn mô hình trong game vẫn ghi “bis” theo thiết kế, nhưng chiếc 5121 lịch sử là MiG-21MF.</div>
+                    </div>
+                    <div data-quiz-q="3" class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
+                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold">CÂU 4</div>
+                        <div class="text-xs sm:text-sm text-zinc-100 font-semibold leading-relaxed">Bia tưởng niệm phố Khâm Thiên ghi bao nhiêu đồng bào thiệt mạng đêm 26/12?</div>
+                        <button onclick="quizAnswer(3,0,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">178 người</button>
+                        <button onclick="quizAnswer(3,1,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">290 người</button>
+                        <button onclick="quizAnswer(3,2,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">278 người</button>
+                        <button onclick="quizAnswer(3,3,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">287 người</button>
+                        <div class="quiz-expl hidden text-xs text-emerald-300 leading-relaxed bg-emerald-950/30 p-2 rounded border border-emerald-500/20">287 là số trên bia tại 51 Khâm Thiên; bảng thống kê chi tiết ghi 278 chết, 290 bị thương, 178 trẻ mồ côi.</div>
+                    </div>
+                    <div data-quiz-q="4" class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
+                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold">CÂU 5</div>
+                        <div class="text-xs sm:text-sm text-zinc-100 font-semibold leading-relaxed">36 giờ ngừng ném bom dịp Giáng sinh, ta dùng để làm gì?</div>
+                        <button onclick="quizAnswer(4,0,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Sơ tán dân khỏi Hà Nội</button>
+                        <button onclick="quizAnswer(4,1,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Cơ động trận địa, lắp ráp đạn SAM-2</button>
+                        <button onclick="quizAnswer(4,2,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Đàm phán ở Paris</button>
+                        <button onclick="quizAnswer(4,3,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Nghỉ ngơi đón lễ</button>
+                        <div class="quiz-expl hidden text-xs text-emerald-300 leading-relaxed bg-emerald-950/30 p-2 rounded border border-emerald-500/20">“36 giờ quý hơn vàng”: thần tốc lắp ráp đạn, cơ động trận địa, sẵn sàng cho đợt đánh lớn đêm 26/12.</div>
+                    </div>
+                    <div data-quiz-q="5" class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
+                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold">CÂU 6</div>
+                        <div class="text-xs sm:text-sm text-zinc-100 font-semibold leading-relaxed">Tổng kết chiến dịch: ta bắn rơi bao nhiêu máy bay, trong đó bao nhiêu B-52?</div>
+                        <button onclick="quizAnswer(5,0,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">81 máy bay, 34 B-52</button>
+                        <button onclick="quizAnswer(5,1,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">81 máy bay, 15 B-52</button>
+                        <button onclick="quizAnswer(5,2,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">34 máy bay, 5 F-111</button>
+                        <button onclick="quizAnswer(5,3,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">129 máy bay, 90 B-52</button>
+                        <div class="quiz-expl hidden text-xs text-emerald-300 leading-relaxed bg-emerald-950/30 p-2 rounded border border-emerald-500/20">Đầy đủ: 34 B-52, 5 F-111A, 21 F-4CE, 4 A-6A, 12 A-7, 1 F-105D, 2 RA-5C, 1 HH-53, 1 UAV 147-SC. (15 là số phía Mỹ thừa nhận.)</div>
+                    </div>
+                    <div data-quiz-q="6" class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
+                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold">CÂU 7</div>
+                        <div class="text-xs sm:text-sm text-zinc-100 font-semibold leading-relaxed">Sau chiến dịch, Hiệp định Paris được ký ngày nào?</div>
+                        <button onclick="quizAnswer(6,0,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">30/12/1972</button>
+                        <button onclick="quizAnswer(6,1,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">8/1/1973</button>
+                        <button onclick="quizAnswer(6,2,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">27/1/1973</button>
+                        <button onclick="quizAnswer(6,3,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">29/12/1972</button>
+                        <div class="quiz-expl hidden text-xs text-emerald-300 leading-relaxed bg-emerald-950/30 p-2 rounded border border-emerald-500/20">Mỹ ngừng ném bom từ vĩ tuyến 20 trở ra ngày 30/12/1972; đàm phán nối lại 8/1/1973; Hiệp định ký ngày 27/1/1973.</div>
                     </div>
                 </div>
             `
@@ -1530,7 +1662,7 @@
         }
 
         function renderArchiveTab(tabKey) {
-            ['card1', 'card2', 'card3', 'card4', 'card5', 'card6'].forEach(k => {
+            ['card1', 'card2', 'card3', 'card4', 'card5', 'card6', 'card7', 'card8'].forEach(k => {
                 const btn = document.getElementById(`tab-btn-${k}`);
                 if (btn) {
                     const isActive = (k === tabKey);
@@ -1640,6 +1772,54 @@
             const t = (total === undefined) ? cards.length : total;
             el.textContent = s + '/' + t + ' đêm';
         }
+
+        const QUIZ_ANSWERS = [0, 2, 1, 3, 1, 0, 2];
+        function quizAnswer(q, o, el) {
+            const box = el ? el.closest('[data-quiz-q]') : null;
+            if (!box || box.dataset.done) return;
+            box.dataset.done = '1';
+            const correct = QUIZ_ANSWERS[q];
+            box.dataset.correct = (o === correct) ? '1' : '0';
+            box.querySelectorAll('.quiz-opt').forEach((b, j) => {
+                b.disabled = true;
+                b.classList.remove('hover:border-emerald-400');
+                if (j === correct) b.classList.add('bg-emerald-500/20', 'border-emerald-400', 'text-emerald-200');
+                else if (b === el) b.classList.add('bg-red-500/20', 'border-red-400', 'text-red-200');
+            });
+            const expl = box.querySelector('.quiz-expl');
+            if (expl) expl.classList.remove('hidden');
+            const boxes = document.querySelectorAll('#archive-content-area [data-quiz-q]');
+            let done = 0, score = 0;
+            boxes.forEach(b => { if (b.dataset.done) { done++; if (b.dataset.correct === '1') score++; } });
+            const sc = document.getElementById('quiz-score');
+            if (sc) sc.textContent = 'Điểm: ' + score + '/7 · Đã trả lời: ' + done + '/7';
+        }
+        function quizReset() {
+            document.querySelectorAll('#archive-content-area [data-quiz-q]').forEach(box => {
+                delete box.dataset.done;
+                delete box.dataset.correct;
+                box.querySelectorAll('.quiz-opt').forEach(b => {
+                    b.disabled = false;
+                    b.classList.remove('bg-emerald-500/20', 'border-emerald-400', 'text-emerald-200', 'bg-red-500/20', 'border-red-400', 'text-red-200');
+                    b.classList.add('hover:border-emerald-400');
+                });
+                const expl = box.querySelector('.quiz-expl');
+                if (expl) expl.classList.add('hidden');
+            });
+            const sc = document.getElementById('quiz-score');
+            if (sc) sc.textContent = 'Điểm: 0/7 · Đã trả lời: 0/7';
+        }
+        window.quizAnswer = quizAnswer;
+        window.quizReset = quizReset;
+        function mapJump(id) {
+            const inp = document.getElementById('archive-search');
+            if (inp) inp.value = '';
+            filterArchive('');
+            expandNight(id);
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        window.mapJump = mapJump;
         window.filterArchive = filterArchive;
         window.setAllNights = setAllNights;
         window.expandNight = expandNight;
