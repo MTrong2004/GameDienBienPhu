@@ -2687,55 +2687,7 @@
             createHanoi1972SkylineProps() {
                 const g = new THREE.Group();
 
-                // 1. St. Joseph's Cathedral (Nhà thờ Lớn Hà Nội - Twin Gothic Towers glowing warm amber across river as in Image 3)
-                const cathGroup = new THREE.Group();
-                // Weathered stone, warmly up-lit from the street (not self-glowing)
-                const cathMat = new THREE.MeshStandardMaterial({ color: 0x8A7560, emissive: 0x2A1405, emissiveIntensity: 0.6, roughness: 0.85 });
-                const roofMatC = new THREE.MeshStandardMaterial({ color: 0x2B2622, roughness: 0.7 });
-                const glowWin = new THREE.MeshBasicMaterial({ color: 0xFFB45C });
-                const nave = new THREE.Mesh(new THREE.BoxGeometry(7.5, 9.0, 14.0), cathMat);
-                nave.position.y = 4.5;
-                cathGroup.add(nave);
-                const naveRoof = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 4.4, 3.2, 4, 1), roofMatC);
-                naveRoof.rotation.y = Math.PI / 4;
-                naveRoof.scale.set(1, 1, 2.2);
-                naveRoof.position.y = 10.6;
-                cathGroup.add(naveRoof);
-
-                // facade: rose window + portal
-                const rose = new THREE.Mesh(new THREE.CircleGeometry(1.1, 24), glowWin);
-                rose.position.set(0, 7.2, 7.02);
-                cathGroup.add(rose);
-                const portal = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 3.2), glowWin);
-                portal.position.set(0, 1.6, 7.02);
-                cathGroup.add(portal);
-
-                [-2.6, 2.6].forEach(tx => {
-                    [[2.8, 7.0, 3.5], [2.5, 5.0, 9.5], [2.2, 3.6, 13.8]].forEach(([w, h, y]) => {
-                        const tier = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), cathMat);
-                        tier.position.set(tx, y, 6.2);
-                        cathGroup.add(tier);
-                    });
-                    // tall lancet windows on each tower tier
-                    [4.2, 9.6, 14.0].forEach(y => {
-                        const lw = new THREE.Mesh(new THREE.PlaneGeometry(0.42, 1.6), glowWin);
-                        lw.position.set(tx, y, 7.62);
-                        cathGroup.add(lw);
-                    });
-                    const spire = new THREE.Mesh(new THREE.ConeGeometry(1.25, 5.0, 8), roofMatC);
-                    spire.position.set(tx, 18.1, 6.2);
-                    cathGroup.add(spire);
-                    const cross = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.9, 0.08), glowWin);
-                    cross.position.set(tx, 21.0, 6.2);
-                    cathGroup.add(cross);
-                });
-                const upLight = new THREE.PointLight(0xFF9A3C, 2.2, 30, 1.6);
-                upLight.position.set(0, 1.5, 12);
-                cathGroup.add(upLight);
-                cathGroup.position.set(-26, 0, -48);
-                g.add(cathGroup);
-
-                // 2. Traditional Hanoi Curved-Roof Houses (Nhà mái ngói cổ Hà Nội as in Image 4)
+                // Traditional Hanoi Curved-Roof Houses (Nhà mái ngói cổ Hà Nội)
                 const wallMat = new THREE.MeshStandardMaterial({ color: 0x27272A, roughness: 0.7 });
                 const roofMat = new THREE.MeshStandardMaterial({ color: 0x18181B, roughness: 0.6 });
                 const winGlow = new THREE.MeshBasicMaterial({ color: 0xFDE68A });
@@ -8331,19 +8283,23 @@
 
         let aaaRounds = [], aaaTracerGeo = null, aaaTracerMat = null;
 
+        let lastAAASoundTime = 0, lastFlakSoundTime = 0;
+
+
+
         function updateAAA(dt) {
 
             if (!aaaSites.length) {
 
-                for (let i = 0; i < 16; i++) {
+                for (let i = 0; i < 8; i++) {
 
-                    const a = Math.random() * Math.PI * 2, r = 60 + Math.random() * 240;
+                    const a = Math.random() * Math.PI * 2, r = 70 + Math.random() * 220;
 
                     const x = Math.cos(a) * r, z = Math.sin(a) * r * 0.8 + 20;
 
-                    if (Math.hypot(x, z - 20) < 45) continue;
+                    if (Math.hypot(x, z - 20) < 50) continue;
 
-                    aaaSites.push({ pos: new THREE.Vector3(x, 1, z), cd: Math.random() * 4, heavy: Math.random() < 0.35 });
+                    aaaSites.push({ pos: new THREE.Vector3(x, 1, z), cd: Math.random() * 5, heavy: Math.random() < 0.35 });
 
                 }
 
@@ -8353,19 +8309,23 @@
 
             }
 
+
+
             const firing = currentMode === 'SAM2' && !gamePaused && (gameState === 'PLAYING' || gameState === 'MENU') &&
 
                 activeBombers.some(b => distKm(b) < 42);
 
             if (firing) {
 
+                const nowS = performance.now() / 1000;
+
                 aaaSites.forEach(site => {
 
                     site.cd -= dt;
 
-                    if (site.cd > 0 || aaaRounds.length > 240) return;
+                    if (site.cd > 0 || aaaRounds.length > 160) return;
 
-                    site.cd = (site.heavy ? 2.6 : 1.1) + Math.random() * 2.8;
+                    site.cd = (site.heavy ? 4.8 : 3.2) + Math.random() * 4.2;
 
                     const b = activeBombers[Math.floor(Math.random() * activeBombers.length)];
 
@@ -8375,7 +8335,7 @@
 
                     const dir = aim.sub(site.pos).normalize();
 
-                    const speed = site.heavy ? 70 : 55, n = site.heavy ? 2 : 5 + Math.floor(Math.random() * 4);
+                    const speed = site.heavy ? 70 : 55, n = site.heavy ? 2 : 3 + Math.floor(Math.random() * 2);
 
                     for (let k = 0; k < n; k++) {
 
@@ -8391,11 +8351,19 @@
 
                     }
 
-                    if (gameState === 'PLAYING' || Math.random() < 0.3) SoundFX.aaa(site.pos.distanceTo(camera.position), site.heavy);
+                    if (nowS - lastAAASoundTime > 1.8 && (gameState === 'PLAYING' ? Math.random() < 0.35 : Math.random() < 0.15)) {
+
+                        lastAAASoundTime = nowS;
+
+                        SoundFX.aaa(site.pos.distanceTo(camera.position), site.heavy);
+
+                    }
 
                 });
 
             }
+
+
 
             for (let i = aaaRounds.length - 1; i >= 0; i--) {
 
@@ -8407,7 +8375,7 @@
 
                     r.started = true;
 
-                    spawnSmokePuff(r.pos.clone(), r.heavy ? 3.2 : 1.6, new THREE.Vector3(0, 1, 0), 0.12, 'fire');   // muzzle flash
+                    spawnSmokePuff(r.pos.clone(), r.heavy ? 3.2 : 1.6, new THREE.Vector3(0, 1, 0), 0.12, 'fire');
 
                     if (r.mesh) r.mesh.visible = true;
 
@@ -8421,15 +8389,21 @@
 
                 if (r.pos.y >= r.burstAlt || r.vel.y < 0) {
 
-                    // self-destruct fuze: a flash and a dark puff that drifts
-
                     spawnSmokePuff(r.pos.clone(), r.heavy ? 5 : 2.2, new THREE.Vector3(), 0.18, 'fire');
 
                     spawnSmokePuff(r.pos.clone(), r.heavy ? 7 : 3, new THREE.Vector3((Math.random() - 0.5) * 2, 0.4, 0), r.heavy ? 4 : 2.2, 'blacksmoke');
 
                     if (typeof SoundFX !== 'undefined' && SoundFX.flakBurst) {
 
-                        SoundFX.flakBurst(r.pos.distanceTo(camera.position), r.heavy);
+                        const nowS = performance.now() / 1000;
+
+                        if (nowS - lastFlakSoundTime > 1.4 && (r.heavy || Math.random() < 0.12)) {
+
+                            lastFlakSoundTime = nowS;
+
+                            SoundFX.flakBurst(r.pos.distanceTo(camera.position), r.heavy);
+
+                        }
 
                     }
 
@@ -8442,6 +8416,8 @@
             }
 
         }
+
+
 
         function clearAAA() {
 
@@ -11115,47 +11091,45 @@
                 this.burst({ t0: t + 0.15, type: 'highpass', freq: 3500, peak: 0.08, a: 0.02, hold: 0.1, rel: 0.3 });
             },
 
-            // Súng/Pháo phòng không bảo vệ bầu trời Hà Nội (Cao xạ 37mm, 57mm, 100mm)
+            // Súng/Pháo phòng không bảo vệ bầu trời Hà Nội (Cao xạ 37mm, 57mm, 100mm) - âm lượng nền êm dịu, không chát chúa
             aaa(dist, heavy) {
                 if (!this.ensure()) return;
                 const ctx = SoundEngine.ctx;
                 const d = Math.max(0, dist || 0);
-                // Truyền âm nhanh để khớp chặt chẽ với vệt đạn vút lên bầu trời
                 const t = ctx.currentTime + Math.min(0.25, d * 0.001);
-                // Độ suy giảm khoảng cách thực tế (nghe rõ rền vang khắp nội ngoại thành)
-                const atten = 1 / Math.sqrt(1 + d / 110);
-                const v = Math.min(1, (heavy ? 0.75 : 0.55) * atten);
+                const atten = 1 / Math.sqrt(1 + d / 130);
+                const v = Math.min(0.25, (heavy ? 0.22 : 0.14) * atten);
 
                 if (heavy) {
-                    // Pháo cao xạ hạng nặng 100mm KS-19: Tiếng nổ trầm uy lực rung chuyển trận địa
-                    this.tone({ t0: t, type: 'triangle', freq: 150, freqEnd: 36, peak: v * 0.9, a: 0.003, dur: 0.45, wet: 0.65 });
-                    this.burst({ t0: t, brown: true, type: 'lowpass', freq: 800, freqEnd: 180, peak: v * 0.95, a: 0.002, hold: 0.05, rel: 0.4, wet: 0.6 });
-                    this.burst({ t0: t, type: 'bandpass', freq: 1600, Q: 1.4, peak: v * 0.6, a: 0.001, hold: 0.02, rel: 0.15 });
-                    // Tiếng vọng rền vang mặt đất
-                    this.tone({ t0: t + 0.16, type: 'sine', freq: 90, freqEnd: 28, peak: v * 0.45, a: 0.01, dur: 0.55, wet: 0.75 });
+                    // Pháo cao xạ hạng nặng 100mm: Tiếng nổ trầm vọng từ xa, ấm và rền nhẹ
+                    this.tone({ t0: t, type: 'triangle', freq: 110, freqEnd: 32, peak: v * 0.6, a: 0.005, dur: 0.35, wet: 0.75 });
+                    this.burst({ t0: t, brown: true, type: 'lowpass', freq: 450, freqEnd: 120, peak: v * 0.65, a: 0.003, hold: 0.04, rel: 0.35, wet: 0.7 });
+                    this.burst({ t0: t, type: 'bandpass', freq: 900, Q: 1.0, peak: v * 0.25, a: 0.001, hold: 0.015, rel: 0.12 });
+                    this.tone({ t0: t + 0.14, type: 'sine', freq: 70, freqEnd: 24, peak: v * 0.3, a: 0.015, dur: 0.45, wet: 0.8 });
                 } else {
-                    // Pháo cao xạ 37mm / 57mm: Loạt bắn giòn giã liên thanh của bộ đội & tự vệ
-                    const n = 4 + Math.floor(Math.random() * 3);
+                    // Pháo cao xạ 37mm / 57mm: Loạt bắn ngắn 2-3 viên điểm xuyết, âm trầm không chói tai
+                    const n = 2 + Math.floor(Math.random() * 2);
                     for (let k = 0; k < n; k++) {
-                        const tk = t + k * 0.082;
-                        const roundV = v * (0.85 + Math.random() * 0.3);
-                        this.tone({ t0: tk, type: 'sawtooth', freq: 210 + Math.random() * 35, freqEnd: 70, peak: roundV * 0.65, a: 0.002, dur: 0.07, wet: 0.35 });
-                        this.burst({ t0: tk, type: 'bandpass', freq: 1700 + Math.random() * 400, Q: 1.6, peak: roundV * 0.75, a: 0.001, hold: 0.012, rel: 0.08, wet: 0.3 });
-                        this.burst({ t0: tk, brown: true, type: 'lowpass', freq: 520, peak: roundV * 0.55, a: 0.002, hold: 0.02, rel: 0.09 });
+                        const tk = t + k * 0.095;
+                        const roundV = v * (0.7 + Math.random() * 0.25);
+                        this.tone({ t0: tk, type: 'triangle', freq: 160, freqEnd: 55, peak: roundV * 0.4, a: 0.003, dur: 0.06, wet: 0.5 });
+                        this.burst({ t0: tk, type: 'bandpass', freq: 1100 + Math.random() * 250, Q: 1.2, peak: roundV * 0.4, a: 0.002, hold: 0.01, rel: 0.06, wet: 0.4 });
+                        this.burst({ t0: tk, brown: true, type: 'lowpass', freq: 380, peak: roundV * 0.3, a: 0.003, hold: 0.015, rel: 0.07 });
                     }
                 }
             },
 
-            // Đạn pháo phòng không phát nổ trên không (Flak airburst shrapnel)
+            // Đạn pháo phòng không phát nổ trên không (Flak airburst shrapnel) - tiếng nổ xa trầm ấm
             flakBurst(dist, heavy) {
                 if (!this.ensure()) return;
                 const ctx = SoundEngine.ctx;
                 const d = Math.max(0, dist || 0);
                 const t = ctx.currentTime + Math.min(0.45, d * 0.0018);
-                const v = Math.min(0.9, (heavy ? 0.65 : 0.45) / Math.sqrt(1 + d / 130));
-                this.tone({ t0: t, type: 'triangle', freq: 175, freqEnd: 50, peak: v * 0.7, a: 0.003, dur: 0.22, wet: 0.5 });
-                this.burst({ t0: t, type: 'bandpass', freq: 2400, Q: 1.2, peak: v * 0.8, a: 0.001, hold: 0.02, rel: 0.16, wet: 0.4 });
-                this.burst({ t0: t + 0.01, brown: true, type: 'lowpass', freq: 600, freqEnd: 140, peak: v * 0.85, a: 0.003, hold: 0.03, rel: 0.35, wet: 0.6 });
+                const atten = 1 / Math.sqrt(1 + d / 140);
+                const v = Math.min(0.2, (heavy ? 0.18 : 0.11) * atten);
+                this.tone({ t0: t, type: 'triangle', freq: 120, freqEnd: 40, peak: v * 0.45, a: 0.004, dur: 0.16, wet: 0.75 });
+                this.burst({ t0: t, type: 'bandpass', freq: 1050, Q: 1.0, peak: v * 0.4, a: 0.002, hold: 0.015, rel: 0.12, wet: 0.6 });
+                this.burst({ t0: t + 0.01, brown: true, type: 'lowpass', freq: 380, freqEnd: 110, peak: v * 0.5, a: 0.004, hold: 0.02, rel: 0.22, wet: 0.8 });
             },
 
             // Đạn pháo 23mm MiG-21 (GSh-23L) hoặc súng máy phòng thủ đuôi B-52
@@ -11164,39 +11138,29 @@
                 const ctx = SoundEngine.ctx;
                 const t = ctx.currentTime;
                 const isCockpit = !dist || dist < 6;
-                const v = isCockpit ? 0.85 : 0.5 / Math.sqrt(1 + (dist || 0) / 70);
-                const numShots = isCockpit ? 7 : 4;
+                const v = isCockpit ? 0.45 : 0.22 / Math.sqrt(1 + (dist || 0) / 70);
+                const numShots = isCockpit ? 4 : 3;
                 for (let k = 0; k < numShots; k++) {
-                    const tk = t + k * (isCockpit ? 0.045 : 0.065);
+                    const tk = t + k * (isCockpit ? 0.055 : 0.075);
                     this.tone({
                         t0: tk,
                         type: isCockpit ? 'sawtooth' : 'triangle',
-                        freq: isCockpit ? 190 : 160,
-                        freqEnd: 52,
-                        peak: v * 0.85,
-                        a: 0.001,
-                        dur: isCockpit ? 0.055 : 0.05,
-                        wet: isCockpit ? 0.2 : 0.4
+                        freq: isCockpit ? 170 : 140,
+                        freqEnd: 48,
+                        peak: v * 0.6,
+                        a: 0.002,
+                        dur: 0.045,
+                        wet: 0.35
                     });
                     this.burst({
                         t0: tk,
-                        type: 'highpass',
-                        freq: isCockpit ? 2400 : 1700,
-                        peak: v * 0.8,
-                        a: 0.001,
-                        hold: 0.014,
-                        rel: 0.04,
-                        wet: isCockpit ? 0.15 : 0.3
-                    });
-                    this.burst({
-                        t0: tk + 0.006,
                         type: 'bandpass',
-                        freq: 1200,
-                        Q: 2,
-                        peak: v * 0.6,
+                        freq: isCockpit ? 1600 : 1100,
+                        peak: v * 0.5,
                         a: 0.001,
-                        hold: 0.01,
-                        rel: 0.045
+                        hold: 0.012,
+                        rel: 0.035,
+                        wet: 0.3
                     });
                 }
             },

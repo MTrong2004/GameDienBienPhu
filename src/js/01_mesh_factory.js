@@ -919,55 +919,7 @@
             createHanoi1972SkylineProps() {
                 const g = new THREE.Group();
 
-                // 1. St. Joseph's Cathedral (Nhà thờ Lớn Hà Nội - Twin Gothic Towers glowing warm amber across river as in Image 3)
-                const cathGroup = new THREE.Group();
-                // Weathered stone, warmly up-lit from the street (not self-glowing)
-                const cathMat = new THREE.MeshStandardMaterial({ color: 0x8A7560, emissive: 0x2A1405, emissiveIntensity: 0.6, roughness: 0.85 });
-                const roofMatC = new THREE.MeshStandardMaterial({ color: 0x2B2622, roughness: 0.7 });
-                const glowWin = new THREE.MeshBasicMaterial({ color: 0xFFB45C });
-                const nave = new THREE.Mesh(new THREE.BoxGeometry(7.5, 9.0, 14.0), cathMat);
-                nave.position.y = 4.5;
-                cathGroup.add(nave);
-                const naveRoof = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 4.4, 3.2, 4, 1), roofMatC);
-                naveRoof.rotation.y = Math.PI / 4;
-                naveRoof.scale.set(1, 1, 2.2);
-                naveRoof.position.y = 10.6;
-                cathGroup.add(naveRoof);
-
-                // facade: rose window + portal
-                const rose = new THREE.Mesh(new THREE.CircleGeometry(1.1, 24), glowWin);
-                rose.position.set(0, 7.2, 7.02);
-                cathGroup.add(rose);
-                const portal = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 3.2), glowWin);
-                portal.position.set(0, 1.6, 7.02);
-                cathGroup.add(portal);
-
-                [-2.6, 2.6].forEach(tx => {
-                    [[2.8, 7.0, 3.5], [2.5, 5.0, 9.5], [2.2, 3.6, 13.8]].forEach(([w, h, y]) => {
-                        const tier = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), cathMat);
-                        tier.position.set(tx, y, 6.2);
-                        cathGroup.add(tier);
-                    });
-                    // tall lancet windows on each tower tier
-                    [4.2, 9.6, 14.0].forEach(y => {
-                        const lw = new THREE.Mesh(new THREE.PlaneGeometry(0.42, 1.6), glowWin);
-                        lw.position.set(tx, y, 7.62);
-                        cathGroup.add(lw);
-                    });
-                    const spire = new THREE.Mesh(new THREE.ConeGeometry(1.25, 5.0, 8), roofMatC);
-                    spire.position.set(tx, 18.1, 6.2);
-                    cathGroup.add(spire);
-                    const cross = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.9, 0.08), glowWin);
-                    cross.position.set(tx, 21.0, 6.2);
-                    cathGroup.add(cross);
-                });
-                const upLight = new THREE.PointLight(0xFF9A3C, 2.2, 30, 1.6);
-                upLight.position.set(0, 1.5, 12);
-                cathGroup.add(upLight);
-                cathGroup.position.set(-26, 0, -48);
-                g.add(cathGroup);
-
-                // 2. Traditional Hanoi Curved-Roof Houses (Nhà mái ngói cổ Hà Nội as in Image 4)
+                // Traditional Hanoi Curved-Roof Houses (Nhà mái ngói cổ Hà Nội)
                 const wallMat = new THREE.MeshStandardMaterial({ color: 0x27272A, roughness: 0.7 });
                 const roofMat = new THREE.MeshStandardMaterial({ color: 0x18181B, roughness: 0.6 });
                 const winGlow = new THREE.MeshBasicMaterial({ color: 0xFDE68A });

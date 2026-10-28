@@ -604,29 +604,33 @@
         // Their shells top out well below the B-52s at ~10 km (as in 1972): a barrage, not a threat.
         const aaaSites = [];
         let aaaRounds = [], aaaTracerGeo = null, aaaTracerMat = null;
+        let lastAAASoundTime = 0, lastFlakSoundTime = 0;
+
         function updateAAA(dt) {
             if (!aaaSites.length) {
-                for (let i = 0; i < 16; i++) {
-                    const a = Math.random() * Math.PI * 2, r = 60 + Math.random() * 240;
+                for (let i = 0; i < 8; i++) {
+                    const a = Math.random() * Math.PI * 2, r = 70 + Math.random() * 220;
                     const x = Math.cos(a) * r, z = Math.sin(a) * r * 0.8 + 20;
-                    if (Math.hypot(x, z - 20) < 45) continue;
-                    aaaSites.push({ pos: new THREE.Vector3(x, 1, z), cd: Math.random() * 4, heavy: Math.random() < 0.35 });
+                    if (Math.hypot(x, z - 20) < 50) continue;
+                    aaaSites.push({ pos: new THREE.Vector3(x, 1, z), cd: Math.random() * 5, heavy: Math.random() < 0.35 });
                 }
                 aaaTracerGeo = new THREE.BoxGeometry(0.22, 0.22, 4.5);
                 aaaTracerMat = new THREE.MeshBasicMaterial({ color: 0xFF6A2A, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false });
             }
+
             const firing = currentMode === 'SAM2' && !gamePaused && (gameState === 'PLAYING' || gameState === 'MENU') &&
                 activeBombers.some(b => distKm(b) < 42);
             if (firing) {
+                const nowS = performance.now() / 1000;
                 aaaSites.forEach(site => {
                     site.cd -= dt;
-                    if (site.cd > 0 || aaaRounds.length > 240) return;
-                    site.cd = (site.heavy ? 2.6 : 1.1) + Math.random() * 2.8;
+                    if (site.cd > 0 || aaaRounds.length > 160) return;
+                    site.cd = (site.heavy ? 4.8 : 3.2) + Math.random() * 4.2;
                     const b = activeBombers[Math.floor(Math.random() * activeBombers.length)];
                     const burstAlt = site.heavy ? 150 + Math.random() * 110 : 70 + Math.random() * 80;
                     const aim = new THREE.Vector3(b.mesh.position.x + (Math.random() - 0.5) * 260, burstAlt, b.mesh.position.z * 0.55 + (Math.random() - 0.5) * 260);
                     const dir = aim.sub(site.pos).normalize();
-                    const speed = site.heavy ? 70 : 55, n = site.heavy ? 2 : 5 + Math.floor(Math.random() * 4);
+                    const speed = site.heavy ? 70 : 55, n = site.heavy ? 2 : 3 + Math.floor(Math.random() * 2);
                     for (let k = 0; k < n; k++) {
                         const d = dir.clone().add(new THREE.Vector3((Math.random() - 0.5) * 0.04, (Math.random() - 0.5) * 0.04, (Math.random() - 0.5) * 0.04)).normalize();
                         const mesh = site.heavy ? null : new THREE.Mesh(aaaTracerGeo, aaaTracerMat);
@@ -634,32 +638,40 @@
                         aaaRounds.push({ mesh, pos: site.pos.clone(), vel: d.multiplyScalar(speed), delay: k * (site.heavy ? 0.45 : 0.09),
                             burstAlt, heavy: site.heavy, started: false });
                     }
-                    if (gameState === 'PLAYING' || Math.random() < 0.3) SoundFX.aaa(site.pos.distanceTo(camera.position), site.heavy);
+                    if (nowS - lastAAASoundTime > 1.8 && (gameState === 'PLAYING' ? Math.random() < 0.35 : Math.random() < 0.15)) {
+                        lastAAASoundTime = nowS;
+                        SoundFX.aaa(site.pos.distanceTo(camera.position), site.heavy);
+                    }
                 });
             }
+
             for (let i = aaaRounds.length - 1; i >= 0; i--) {
                 const r = aaaRounds[i];
                 if (r.delay > 0) { r.delay -= dt; continue; }
                 if (!r.started) {
                     r.started = true;
-                    spawnSmokePuff(r.pos.clone(), r.heavy ? 3.2 : 1.6, new THREE.Vector3(0, 1, 0), 0.12, 'fire');   // muzzle flash
+                    spawnSmokePuff(r.pos.clone(), r.heavy ? 3.2 : 1.6, new THREE.Vector3(0, 1, 0), 0.12, 'fire');
                     if (r.mesh) r.mesh.visible = true;
                 }
                 r.vel.y -= 2.2 * dt;
                 r.pos.addScaledVector(r.vel, dt);
                 if (r.mesh) { r.mesh.position.copy(r.pos); r.mesh.lookAt(_tmpV2.copy(r.pos).add(r.vel)); }
                 if (r.pos.y >= r.burstAlt || r.vel.y < 0) {
-                    // self-destruct fuze: a flash and a dark puff that drifts
                     spawnSmokePuff(r.pos.clone(), r.heavy ? 5 : 2.2, new THREE.Vector3(), 0.18, 'fire');
                     spawnSmokePuff(r.pos.clone(), r.heavy ? 7 : 3, new THREE.Vector3((Math.random() - 0.5) * 2, 0.4, 0), r.heavy ? 4 : 2.2, 'blacksmoke');
                     if (typeof SoundFX !== 'undefined' && SoundFX.flakBurst) {
-                        SoundFX.flakBurst(r.pos.distanceTo(camera.position), r.heavy);
+                        const nowS = performance.now() / 1000;
+                        if (nowS - lastFlakSoundTime > 1.4 && (r.heavy || Math.random() < 0.12)) {
+                            lastFlakSoundTime = nowS;
+                            SoundFX.flakBurst(r.pos.distanceTo(camera.position), r.heavy);
+                        }
                     }
                     if (r.mesh) worldCombatGroup.remove(r.mesh);
                     aaaRounds.splice(i, 1);
                 }
             }
         }
+
         function clearAAA() {
             aaaRounds.forEach(r => { if (r.mesh) worldCombatGroup.remove(r.mesh); });
             aaaRounds = [];

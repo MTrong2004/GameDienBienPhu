@@ -414,47 +414,45 @@
                 this.burst({ t0: t + 0.15, type: 'highpass', freq: 3500, peak: 0.08, a: 0.02, hold: 0.1, rel: 0.3 });
             },
 
-            // Súng/Pháo phòng không bảo vệ bầu trời Hà Nội (Cao xạ 37mm, 57mm, 100mm)
+            // Súng/Pháo phòng không bảo vệ bầu trời Hà Nội (Cao xạ 37mm, 57mm, 100mm) - âm lượng nền êm dịu, không chát chúa
             aaa(dist, heavy) {
                 if (!this.ensure()) return;
                 const ctx = SoundEngine.ctx;
                 const d = Math.max(0, dist || 0);
-                // Truyền âm nhanh để khớp chặt chẽ với vệt đạn vút lên bầu trời
                 const t = ctx.currentTime + Math.min(0.25, d * 0.001);
-                // Độ suy giảm khoảng cách thực tế (nghe rõ rền vang khắp nội ngoại thành)
-                const atten = 1 / Math.sqrt(1 + d / 110);
-                const v = Math.min(1, (heavy ? 0.75 : 0.55) * atten);
+                const atten = 1 / Math.sqrt(1 + d / 130);
+                const v = Math.min(0.25, (heavy ? 0.22 : 0.14) * atten);
 
                 if (heavy) {
-                    // Pháo cao xạ hạng nặng 100mm KS-19: Tiếng nổ trầm uy lực rung chuyển trận địa
-                    this.tone({ t0: t, type: 'triangle', freq: 150, freqEnd: 36, peak: v * 0.9, a: 0.003, dur: 0.45, wet: 0.65 });
-                    this.burst({ t0: t, brown: true, type: 'lowpass', freq: 800, freqEnd: 180, peak: v * 0.95, a: 0.002, hold: 0.05, rel: 0.4, wet: 0.6 });
-                    this.burst({ t0: t, type: 'bandpass', freq: 1600, Q: 1.4, peak: v * 0.6, a: 0.001, hold: 0.02, rel: 0.15 });
-                    // Tiếng vọng rền vang mặt đất
-                    this.tone({ t0: t + 0.16, type: 'sine', freq: 90, freqEnd: 28, peak: v * 0.45, a: 0.01, dur: 0.55, wet: 0.75 });
+                    // Pháo cao xạ hạng nặng 100mm: Tiếng nổ trầm vọng từ xa, ấm và rền nhẹ
+                    this.tone({ t0: t, type: 'triangle', freq: 110, freqEnd: 32, peak: v * 0.6, a: 0.005, dur: 0.35, wet: 0.75 });
+                    this.burst({ t0: t, brown: true, type: 'lowpass', freq: 450, freqEnd: 120, peak: v * 0.65, a: 0.003, hold: 0.04, rel: 0.35, wet: 0.7 });
+                    this.burst({ t0: t, type: 'bandpass', freq: 900, Q: 1.0, peak: v * 0.25, a: 0.001, hold: 0.015, rel: 0.12 });
+                    this.tone({ t0: t + 0.14, type: 'sine', freq: 70, freqEnd: 24, peak: v * 0.3, a: 0.015, dur: 0.45, wet: 0.8 });
                 } else {
-                    // Pháo cao xạ 37mm / 57mm: Loạt bắn giòn giã liên thanh của bộ đội & tự vệ
-                    const n = 4 + Math.floor(Math.random() * 3);
+                    // Pháo cao xạ 37mm / 57mm: Loạt bắn ngắn 2-3 viên điểm xuyết, âm trầm không chói tai
+                    const n = 2 + Math.floor(Math.random() * 2);
                     for (let k = 0; k < n; k++) {
-                        const tk = t + k * 0.082;
-                        const roundV = v * (0.85 + Math.random() * 0.3);
-                        this.tone({ t0: tk, type: 'sawtooth', freq: 210 + Math.random() * 35, freqEnd: 70, peak: roundV * 0.65, a: 0.002, dur: 0.07, wet: 0.35 });
-                        this.burst({ t0: tk, type: 'bandpass', freq: 1700 + Math.random() * 400, Q: 1.6, peak: roundV * 0.75, a: 0.001, hold: 0.012, rel: 0.08, wet: 0.3 });
-                        this.burst({ t0: tk, brown: true, type: 'lowpass', freq: 520, peak: roundV * 0.55, a: 0.002, hold: 0.02, rel: 0.09 });
+                        const tk = t + k * 0.095;
+                        const roundV = v * (0.7 + Math.random() * 0.25);
+                        this.tone({ t0: tk, type: 'triangle', freq: 160, freqEnd: 55, peak: roundV * 0.4, a: 0.003, dur: 0.06, wet: 0.5 });
+                        this.burst({ t0: tk, type: 'bandpass', freq: 1100 + Math.random() * 250, Q: 1.2, peak: roundV * 0.4, a: 0.002, hold: 0.01, rel: 0.06, wet: 0.4 });
+                        this.burst({ t0: tk, brown: true, type: 'lowpass', freq: 380, peak: roundV * 0.3, a: 0.003, hold: 0.015, rel: 0.07 });
                     }
                 }
             },
 
-            // Đạn pháo phòng không phát nổ trên không (Flak airburst shrapnel)
+            // Đạn pháo phòng không phát nổ trên không (Flak airburst shrapnel) - tiếng nổ xa trầm ấm
             flakBurst(dist, heavy) {
                 if (!this.ensure()) return;
                 const ctx = SoundEngine.ctx;
                 const d = Math.max(0, dist || 0);
                 const t = ctx.currentTime + Math.min(0.45, d * 0.0018);
-                const v = Math.min(0.9, (heavy ? 0.65 : 0.45) / Math.sqrt(1 + d / 130));
-                this.tone({ t0: t, type: 'triangle', freq: 175, freqEnd: 50, peak: v * 0.7, a: 0.003, dur: 0.22, wet: 0.5 });
-                this.burst({ t0: t, type: 'bandpass', freq: 2400, Q: 1.2, peak: v * 0.8, a: 0.001, hold: 0.02, rel: 0.16, wet: 0.4 });
-                this.burst({ t0: t + 0.01, brown: true, type: 'lowpass', freq: 600, freqEnd: 140, peak: v * 0.85, a: 0.003, hold: 0.03, rel: 0.35, wet: 0.6 });
+                const atten = 1 / Math.sqrt(1 + d / 140);
+                const v = Math.min(0.2, (heavy ? 0.18 : 0.11) * atten);
+                this.tone({ t0: t, type: 'triangle', freq: 120, freqEnd: 40, peak: v * 0.45, a: 0.004, dur: 0.16, wet: 0.75 });
+                this.burst({ t0: t, type: 'bandpass', freq: 1050, Q: 1.0, peak: v * 0.4, a: 0.002, hold: 0.015, rel: 0.12, wet: 0.6 });
+                this.burst({ t0: t + 0.01, brown: true, type: 'lowpass', freq: 380, freqEnd: 110, peak: v * 0.5, a: 0.004, hold: 0.02, rel: 0.22, wet: 0.8 });
             },
 
             // Đạn pháo 23mm MiG-21 (GSh-23L) hoặc súng máy phòng thủ đuôi B-52
@@ -463,39 +461,29 @@
                 const ctx = SoundEngine.ctx;
                 const t = ctx.currentTime;
                 const isCockpit = !dist || dist < 6;
-                const v = isCockpit ? 0.85 : 0.5 / Math.sqrt(1 + (dist || 0) / 70);
-                const numShots = isCockpit ? 7 : 4;
+                const v = isCockpit ? 0.45 : 0.22 / Math.sqrt(1 + (dist || 0) / 70);
+                const numShots = isCockpit ? 4 : 3;
                 for (let k = 0; k < numShots; k++) {
-                    const tk = t + k * (isCockpit ? 0.045 : 0.065);
+                    const tk = t + k * (isCockpit ? 0.055 : 0.075);
                     this.tone({
                         t0: tk,
                         type: isCockpit ? 'sawtooth' : 'triangle',
-                        freq: isCockpit ? 190 : 160,
-                        freqEnd: 52,
-                        peak: v * 0.85,
-                        a: 0.001,
-                        dur: isCockpit ? 0.055 : 0.05,
-                        wet: isCockpit ? 0.2 : 0.4
+                        freq: isCockpit ? 170 : 140,
+                        freqEnd: 48,
+                        peak: v * 0.6,
+                        a: 0.002,
+                        dur: 0.045,
+                        wet: 0.35
                     });
                     this.burst({
                         t0: tk,
-                        type: 'highpass',
-                        freq: isCockpit ? 2400 : 1700,
-                        peak: v * 0.8,
-                        a: 0.001,
-                        hold: 0.014,
-                        rel: 0.04,
-                        wet: isCockpit ? 0.15 : 0.3
-                    });
-                    this.burst({
-                        t0: tk + 0.006,
                         type: 'bandpass',
-                        freq: 1200,
-                        Q: 2,
-                        peak: v * 0.6,
+                        freq: isCockpit ? 1600 : 1100,
+                        peak: v * 0.5,
                         a: 0.001,
-                        hold: 0.01,
-                        rel: 0.045
+                        hold: 0.012,
+                        rel: 0.035,
+                        wet: 0.3
                     });
                 }
             },
