@@ -214,9 +214,10 @@
 
             ['MIG21', 'B52', 'SAM2', 'RADAR'].forEach(k => {
                 const btn = document.getElementById(`h-model-${k}`);
+                if (!btn) return;
                 btn.className = (k === key)
-                    ? 'p-2 rounded-lg border text-left transition bg-alabaster text-canvas border-alabaster'
-                    : 'p-2 rounded-lg border hairline-border bg-canvas text-muted hover:text-alabaster text-left transition';
+                    ? 'hangar-dock-btn flex-1 p-2 rounded-lg border text-left transition bg-emerald-500/20 border-emerald-400 text-white shadow-[0_0_16px_rgba(16,185,129,0.35)]'
+                    : 'hangar-dock-btn flex-1 p-2 rounded-lg border border-white/10 bg-black/60 text-zinc-400 hover:text-white hover:border-white/30 text-left transition';
             });
 
             document.getElementById('hangar-model-name').textContent = HANGAR_META[key].name;
@@ -224,9 +225,9 @@
             const specsEl = document.getElementById('hangar-model-specs');
             if (specsEl && HANGAR_META[key].specs) {
                 specsEl.innerHTML = HANGAR_META[key].specs.map(s => `
-                    <div class="p-1.5 rounded bg-black/40 border hairline-border">
-                        <span class="text-emerald block text-[9px] uppercase tracking-wider font-semibold">${s.k}</span>
-                        <span class="text-alabaster font-mono text-[11px]">${s.v}</span>
+                    <div class="p-1.5 rounded bg-black/60 border border-emerald-500/20">
+                        <span class="text-emerald-400 block text-[9px] uppercase tracking-wider font-semibold font-mono">${s.k}</span>
+                        <span class="text-alabaster font-mono text-[11px] font-medium">${s.v}</span>
                     </div>
                 `).join('');
             }
@@ -745,8 +746,15 @@
             });
 
             vp.addEventListener('mousedown', e => {
-                if (e.button !== 0) return;
                 SoundEngine.init();
+                if (e.button === 2) {
+                    if (gameState === 'PLAYING' && currentMode === 'MIG21') {
+                        e.preventDefault();
+                        fireMiGCannon();
+                    }
+                    return;
+                }
+                if (e.button !== 0) return;
                 if (currentMode === 'HANGAR') {
                     hangarDrag = true;
                     prevHX = e.clientX;
@@ -754,6 +762,10 @@
                 } else if (gameState === 'PLAYING') {
                     triggerPrimaryWeaponFire();
                 }
+            });
+
+            vp.addEventListener('contextmenu', e => {
+                if (gameState === 'PLAYING' && currentMode === 'MIG21') e.preventDefault();
             });
 
             window.addEventListener('mouseup', () => { hangarDrag = false; });

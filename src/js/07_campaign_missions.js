@@ -15,7 +15,7 @@
             '<b>W / S</b>: tăng / giảm ga (trên 85% là bật tăng lực)',
             'Vào sau đuôi B-52 (±35°), cự ly 1–5 km, đưa vào vòng ngắm đến khi đèn <b>ЗАХВАТ</b> sáng và có tiếng gầm',
             'Click / <b>Space</b>: phóng K-13 (2 quả)',
-            'Phím <b>F / C</b> (hoặc click khi hết K-13): Bắn pháo 23mm GSh-23L khi áp sát dưới 1.2 km',
+            'Chuột phải / Phím <b>F · C</b> (hoặc click khi hết K-13): Bắn pháo 23mm GSh-23L khi áp sát dưới 1.2 km',
             '<b>Esc</b>: tạm dừng'
         ];
 
