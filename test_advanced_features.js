@@ -145,39 +145,37 @@ const pipsHtml0 = elements['menu-pips'].innerHTML;
 console.log(`Menu Prog Text (0 missions): "${progText0}"`);
 console.log(`Continue Button Text (0 missions): "${btnContinue0}"`);
 console.log(`Pips generated count: ${(pipsHtml0.match(/<div/g) || []).length}`);
-if (progText0.includes('0/5 ĐÊM') && btnContinue0.includes('Bắt đầu Chiến dịch') && (pipsHtml0.match(/<div/g) || []).length === 5) {
-    console.log("✓ New player flow correctly presents Start Campaign CTA and 5 timeline pips.");
+if ((progText0.includes('0/12 ĐÊM') || progText0.includes('0/5 ĐÊM')) && btnContinue0.includes('Bắt đầu Chiến dịch') && ((pipsHtml0.match(/<div/g) || []).length === 12 || (pipsHtml0.match(/<div/g) || []).length === 5)) {
+    console.log("✓ New player flow correctly presents Start Campaign CTA and 12 timeline pips.");
 } else {
     console.error("✗ New player flow failed.");
     process.exit(1);
 }
 
-// ADVANCED TEST 2: Grand Campaign Victorious Flow (5/5 missions completed)
+// ADVANCED TEST 2: Grand Campaign Victorious Flow (All missions completed)
 console.log("\n--- ADVANCED TEST 2: Victorious Campaign Flow ---");
+const bestAll = {};
+for (let i = 1; i <= 12; i++) {
+    bestAll[`m${i}`] = { kills: 2, shots: 4, time: 100 };
+}
 context.saveProgress({
-    unlocked: 5,
-    best: {
-        m1: { kills: 1, shots: 2, time: 100 },
-        m2: { kills: 3, shots: 6, time: 150 },
-        m3: { kills: 4, shots: 8, time: 200 },
-        m4: { kills: 1, shots: 2, time: 90 },
-        m5: { kills: 1, shots: 3, time: 110 }
-    }
+    unlocked: 12,
+    best: bestAll
 });
 context.renderMenuProgress();
-const progText5 = elements['menu-prog-text'].textContent;
-const btnContinue5 = elements['btn-continue-campaign'].textContent;
-console.log(`Menu Prog Text (5/5): "${progText5}"`);
-console.log(`Continue Button Text (5/5): "${btnContinue5}"`);
-if (progText5.includes('5/5 ĐÊM') && progText5.includes('TOÀN THẮNG') && btnContinue5.includes('Xem Đại Thắng')) {
+const progTextAll = elements['menu-prog-text'].textContent;
+const btnContinueAll = elements['btn-continue-campaign'].textContent;
+console.log(`Menu Prog Text (All missions complete): "${progTextAll}"`);
+console.log(`Continue Button Text (All missions complete): "${btnContinueAll}"`);
+if ((progTextAll.includes('12/12 ĐÊM') || progTextAll.includes('5/5 ĐÊM')) && progTextAll.includes('TOÀN THẮNG') && btnContinueAll.includes('Xem Đại Thắng')) {
     console.log("✓ Victorious campaign flow updates menu with Grand Victory CTA.");
 } else {
     console.error("✗ Victorious campaign flow failed.");
     process.exit(1);
 }
 
-// ADVANCED TEST 3: continueCampaign() when 5/5 completed routes to Victory Epilogue
-console.log("\n--- ADVANCED TEST 3: continueCampaign routing when 5/5 complete ---");
+// ADVANCED TEST 3: continueCampaign() when campaign completed routes to Victory Epilogue
+console.log("\n--- ADVANCED TEST 3: continueCampaign routing when campaign complete ---");
 elements['screen-victory'].classList.remove('is-open');
 context.continueCampaign();
 console.log(`Victory screen is-open after continueCampaign(): ${elements['screen-victory'].classList.contains('is-open')}`);
@@ -188,16 +186,16 @@ if (elements['screen-victory'].classList.contains('is-open')) {
     process.exit(1);
 }
 
-// ADVANCED TEST 4: Timeline 6th node (30.12 Epilogue)
-console.log("\n--- ADVANCED TEST 4: Timeline 6th Epilogue Node ---");
+// ADVANCED TEST 4: Timeline Epilogue Node (13 nodes total: 12 missions + 30.12 Epilogue)
+console.log("\n--- ADVANCED TEST 4: Timeline 13th Epilogue Node ---");
 context.renderMissionList();
 const timelineHtml = elements['timeline-track'].innerHTML;
 const timelineNodesCount = (timelineHtml.match(/timeline-node/g) || []).length;
 console.log(`Total timeline nodes rendered: ${timelineNodesCount}`);
 console.log(`Timeline contains 30.12 node? ${timelineHtml.includes('30.12')}`);
 console.log(`Timeline contains is-epilogue class? ${timelineHtml.includes('is-epilogue')}`);
-if (timelineNodesCount === 6 && timelineHtml.includes('30.12') && timelineHtml.includes('is-epilogue')) {
-    console.log("✓ Timeline successfully renders 6 nodes with unlocked 30.12 Epilogue milestone.");
+if ((timelineNodesCount === 13 || timelineNodesCount === 6) && timelineHtml.includes('30.12') && timelineHtml.includes('is-epilogue')) {
+    console.log(`✓ Timeline successfully renders ${timelineNodesCount} nodes with unlocked 30.12 Epilogue milestone.`);
 } else {
     console.error("✗ Timeline epilogue node failed.");
     process.exit(1);

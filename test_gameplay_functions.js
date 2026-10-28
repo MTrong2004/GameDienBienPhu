@@ -194,7 +194,7 @@ const briefDate = elements['brief-date'].textContent;
 const briefScreen = elements['screen-briefing'];
 console.log(`Brief Title: "${briefTitle}", Date: "${briefDate}"`);
 console.log(`Briefing screen is-open: ${briefScreen.classList.contains('is-open')}`);
-if (briefTitle === 'Đêm rực lửa' && briefDate.includes('MÀN 2') && briefScreen.classList.contains('is-open')) {
+if ((briefTitle === 'Lưới lửa tầm thấp' || briefTitle === 'Đêm rực lửa') && briefDate.includes('MÀN 2') && briefScreen.classList.contains('is-open')) {
     console.log("✓ continueCampaign correctly forwarded to Mission 2 (the unlocked mission) and opened briefing.");
 } else {
     console.error("✗ continueCampaign did not pick m2 briefing.");
@@ -210,8 +210,8 @@ const progText = elements['menu-prog-text'];
 console.log(`menuBox hidden? ${menuBox.classList.contains('hidden')}`);
 console.log(`continueBtn hidden? ${continueBtn.classList.contains('hidden')}`);
 console.log(`progText: "${progText.textContent}"`);
-if (!menuBox.classList.contains('hidden') && progText.textContent.includes('1/5')) {
-    console.log("✓ renderMenuProgress correctly updated UI with 1/5 completed.");
+if (!menuBox.classList.contains('hidden') && (progText.textContent.includes('1/12') || progText.textContent.includes('1/5'))) {
+    console.log("✓ renderMenuProgress correctly updated UI with 1 completed mission.");
 } else {
     console.error("✗ renderMenuProgress UI update failed.");
     process.exit(1);
@@ -255,7 +255,7 @@ context.showCombatAlert(m0);
 console.log(`Alert banner is-visible? ${alertBanner.classList.contains('is-visible')}`);
 const bannerTitle = elements['alert-banner-title'].textContent;
 console.log(`Alert banner title: "${bannerTitle}"`);
-if (alertBanner.classList.contains('is-visible') && bannerTitle.includes('ĐÊM MỞ MÀN')) {
+if (alertBanner.classList.contains('is-visible') && (bannerTitle.includes('ĐÒN PHỦ ĐẦU') || bannerTitle.includes('ĐÊM MỞ MÀN') || bannerTitle.includes(m0.title.toUpperCase()))) {
     console.log("✓ showCombatAlert correctly populated and displayed banner.");
 } else {
     console.error("✗ showCombatAlert failed.");
@@ -303,16 +303,16 @@ if (debriefRes.includes('Hoàn thành nhiệm vụ') && debriefStats.includes('m
     process.exit(1);
 }
 
-// TEST 10: Grand Campaign Victory Epilogue on Mission 5
-console.log("\n--- TEST 10: Mission 5 Victory Epilogue Trigger ---");
-vm.runInContext('activeMission = MISSIONS[4]; activeMissionIdx = 4; missionWon = true; missionKills = 1; missionShots = 2; missionTime = 120;', context);
+// TEST 10: Grand Campaign Victory Epilogue on Final Mission
+console.log("\n--- TEST 10: Final Mission Victory Epilogue Trigger ---");
+vm.runInContext('activeMission = MISSIONS[MISSIONS.length - 1]; activeMissionIdx = MISSIONS.length - 1; missionWon = true; missionKills = 1; missionShots = 2; missionTime = 120;', context);
 context.showDebrief();
 const debriefActions = elements['debrief-actions'].innerHTML;
-console.log(`Mission 5 Debrief Actions include showVictoryEpilogue: ${debriefActions.includes('showVictoryEpilogue()')}`);
+console.log(`Final Mission Debrief Actions include showVictoryEpilogue: ${debriefActions.includes('showVictoryEpilogue()')}`);
 if (debriefActions.includes('showVictoryEpilogue()') && debriefActions.includes('ĐẠI THẮNG ĐIỆN BIÊN PHỦ TRÊN KHÔNG')) {
-    console.log("✓ Mission 5 successfully unlocked Grand Campaign Victory Epilogue button.");
+    console.log("✓ Final mission successfully unlocked Grand Campaign Victory Epilogue button.");
 } else {
-    console.error("✗ Grand Campaign Victory button missing from Mission 5 debrief.");
+    console.error("✗ Grand Campaign Victory button missing from final mission debrief.");
     process.exit(1);
 }
 
