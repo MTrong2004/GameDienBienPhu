@@ -203,9 +203,10 @@
         .screen-title { font-size: clamp(30px, 4vw, 56px); font-weight: 600; text-transform: uppercase; color: #CDF7A1; line-height: 1.05; margin: 4px 0 6px; text-shadow: 0 0 14px rgba(163, 255, 120, 0.25); }
         .screen-title.is-fail { color: #FDBA74; }
         .kicker, .brief-date { font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase; color: #FDBA74; }
-        .brief-unit { color: #A1A1AA; font-size: 16px; margin-bottom: 18px; }
-        .brief-body { font-family: 'Newsreader', Georgia, serif; font-size: 18px; line-height: 1.6; color: #E4E4E7; }
-        .brief-body p { margin: 0 0 12px; }
+        .brief-unit { color: #A1A1AA; font-size: 14px; margin-bottom: 12px; }
+        .brief-body { font-family: 'Newsreader', Georgia, serif; font-size: 15px; line-height: 1.55; color: #E4E4E7; }
+        .brief-body p { margin: 0 0 10px; }
+        .brief-body p:last-child { margin-bottom: 0; }
         .brief-body b { color: #FDE68A; font-weight: 600; }
         .brief-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 18px; }
         .screen h3 { font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: #CDF7A1; margin: 18px 0 8px; }
@@ -213,6 +214,11 @@
         .brief-cols li { padding: 6px 0 6px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.07); position: relative; }
         .brief-cols li::before { content: '›'; position: absolute; left: 0; color: #CDF7A1; }
         .brief-cols b { color: #FAFAFA; }
+        .brief-list { list-style: none; padding: 0; margin: 0; }
+        .brief-list li { padding: 4px 0 4px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); position: relative; font-size: 13px; line-height: 1.4; color: #D4D4D8; }
+        .brief-list li:last-child { border-bottom: none; }
+        .brief-list li::before { content: '›'; position: absolute; left: 0; color: #10B981; font-weight: bold; }
+        .brief-list b { color: #FAFAFA; }
         .screen-actions, .menu-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
         .menu-buttons { flex-direction: column; align-items: stretch; max-width: 440px; }
         .menu-btn {
@@ -267,7 +273,7 @@
             background: radial-gradient(circle at 50% 25%, rgba(6, 18, 15, 0.95) 0%, rgba(2, 5, 8, 0.98) 100%);
             backdrop-filter: blur(12px);
         }
-        .debrief-modal-card {
+        .debrief-modal-card, .briefing-modal-card {
             max-width: 1160px;
             width: 100%;
             max-height: 94vh;
@@ -281,7 +287,8 @@
             position: relative;
             overflow: hidden;
         }
-        .debrief-modal-card::before, .debrief-modal-card::after {
+        .debrief-modal-card::before, .debrief-modal-card::after,
+        .briefing-modal-card::before, .briefing-modal-card::after {
             content: '';
             position: absolute;
             width: 14px;
@@ -289,20 +296,20 @@
             pointer-events: none;
             z-index: 10;
         }
-        .debrief-modal-card::before {
+        .debrief-modal-card::before, .briefing-modal-card::before {
             top: 6px;
             left: 6px;
             border-top: 2px solid #CDF7A1;
             border-left: 2px solid #CDF7A1;
         }
-        .debrief-modal-card::after {
+        .debrief-modal-card::after, .briefing-modal-card::after {
             bottom: 6px;
             right: 6px;
             border-bottom: 2px solid #CDF7A1;
             border-right: 2px solid #CDF7A1;
         }
 
-        .debrief-header-bar {
+        .debrief-header-bar, .briefing-header-bar {
             padding: 16px 22px 10px;
             flex-shrink: 0;
             background: rgba(0, 0, 0, 0.3);
@@ -327,18 +334,28 @@
             margin: 2px 0 0 !important;
             font-size: clamp(26px, 3.2vw, 42px) !important;
         }
+        .briefing-title {
+            margin: 2px 0 0 !important;
+            font-size: clamp(20px, 2.4vw, 34px) !important;
+            font-weight: 700 !important;
+            color: #CDF7A1 !important;
+            line-height: 1.15 !important;
+            letter-spacing: 0.02em !important;
+            white-space: normal !important;
+            overflow-wrap: break-word !important;
+        }
 
-        .debrief-body-scroll {
+        .debrief-body-scroll, .briefing-body-scroll {
             flex: 1 1 auto;
             overflow-y: auto;
             padding: 14px 22px;
             scrollbar-width: thin;
             scrollbar-color: rgba(205, 247, 161, 0.3) rgba(0, 0, 0, 0.3);
         }
-        .debrief-body-scroll::-webkit-scrollbar {
+        .debrief-body-scroll::-webkit-scrollbar, .briefing-body-scroll::-webkit-scrollbar {
             width: 6px;
         }
-        .debrief-body-scroll::-webkit-scrollbar-thumb {
+        .debrief-body-scroll::-webkit-scrollbar-thumb, .briefing-body-scroll::-webkit-scrollbar-thumb {
             background: rgba(205, 247, 161, 0.3);
             border-radius: 3px;
         }
@@ -1010,7 +1027,6 @@
             <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
                 <div class="flex items-center gap-3">
                     <button class="link-btn" onclick="showScreen('menu')">← Menu chính</button>
-                    <button class="tool-btn btn-toggle-bgm text-emerald-300 border-emerald-500/40 hover:border-emerald-400" onclick="MusicSystem.toggle()">Nhạc: BẬT<kbd>B</kbd></button>
                 </div>
                 <button class="link-btn text-emerald hover:text-emerald-300" onclick="toggleTacticalGuide(true)">Cẩm nang tác chiến [H]</button>
             </div>
@@ -1039,20 +1055,83 @@
     </div>
 
     <div id="screen-briefing" class="screen">
-        <div class="screen-inner">
-            <div class="brief-date" id="brief-date"></div>
-            <div class="screen-title" id="brief-title"></div>
-            <div class="brief-unit" id="brief-unit"></div>
-            <div id="brief-story-quote" class="brief-prologue mb-4 p-3.5 bg-black/70 border-l-4 border-amber-400 font-serif italic text-amber-200/95 text-sm sm:text-base leading-relaxed rounded-r shadow-lg"></div>
-            <div class="brief-body" id="brief-body"></div>
-            <div class="brief-cols">
-                <div><h3>Nhiệm vụ</h3><ul id="brief-objectives"></ul></div>
-                <div><h3>Điều khiển</h3><ul id="brief-controls"></ul></div>
+        <div class="screen-inner wide briefing-modal-card">
+            <!-- Header bar with military command style -->
+            <div class="briefing-header-bar">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-emerald-500/20 pb-2.5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-300 font-bold text-base shadow-[0_0_12px_rgba(16,185,129,0.3)]">
+                            ★
+                        </div>
+                        <div>
+                            <div class="font-mono text-[11px] sm:text-xs uppercase tracking-widest text-emerald-400/90 font-semibold">
+                                QUÂN CHỦNG PHÒNG KHÔNG - KHÔNG QUÂN · BỘ TƯ LỆNH TIỀN PHƯƠNG
+                            </div>
+                            <div class="brief-date text-xs text-amber-400 font-mono" id="brief-date"></div>
+                        </div>
+                    </div>
+                    <div class="classified-stamp">
+                        <span>MỆNH LỆNH TÁC CHIẾN // TỐI MẬT</span>
+                    </div>
+                </div>
+
+                <div class="mt-2.5 flex flex-col gap-0.5">
+                    <h2 class="screen-title briefing-title m-0" id="brief-title"></h2>
+                    <div class="brief-unit text-xs sm:text-sm text-zinc-400 font-mono m-0" id="brief-unit"></div>
+                </div>
             </div>
-            <div class="screen-actions">
-                <button class="menu-btn primary" onclick="beginMission()">Vào trận</button>
-                <button class="menu-btn" onclick="toggleTacticalGuide(true)">Cẩm nang tác chiến [H]</button>
-                <button class="menu-btn subtle" onclick="showScreen('campaign')">← Danh sách màn</button>
+
+            <!-- Two-column main body -->
+            <div class="briefing-body-scroll">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                    
+                    <!-- Left Column: Situation & Historical Intelligence (7 cols on lg) -->
+                    <div class="lg:col-span-7 flex flex-col gap-3">
+                        <div id="brief-story-quote" class="brief-prologue p-3.5 bg-amber-950/20 border-l-4 border-amber-400 font-serif italic text-amber-200/95 text-xs sm:text-sm leading-relaxed rounded-r shadow-md"></div>
+                        <div class="p-3.5 bg-black/60 border border-emerald-500/20 rounded-lg">
+                            <div class="text-[11px] uppercase font-mono tracking-widest text-emerald-400 font-bold mb-2 flex items-center gap-1.5">
+                                <span class="font-mono text-amber-400">//</span> TÌNH BÁO TÁC CHIẾN &amp; DIỄN BIẾN
+                            </div>
+                            <div class="brief-body" id="brief-body"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Mission Objectives, Armament & Direct Action (5 cols on lg) -->
+                    <div class="lg:col-span-5 flex flex-col gap-3">
+                        <!-- Direct Objectives Card -->
+                        <div class="p-3.5 bg-emerald/10 border border-emerald/30 rounded-lg">
+                            <div class="text-xs uppercase font-mono tracking-widest text-emerald font-bold mb-2 flex items-center gap-1.5">
+                                <span class="font-mono text-emerald-400">[01]</span> NHIỆM VỤ TIÊU DIỆT
+                            </div>
+                            <ul id="brief-objectives" class="brief-list"></ul>
+                        </div>
+
+                        <!-- Controls Guide Card -->
+                        <div class="p-3.5 bg-black/60 border border-white/10 rounded-lg">
+                            <div class="text-[11px] uppercase font-mono tracking-widest text-zinc-400 font-semibold mb-1.5 flex items-center gap-1.5">
+                                <span class="font-mono text-zinc-500">[02]</span> QUY TẮC ĐIỀU KHIỂN &amp; KHÍ TÀI
+                            </div>
+                            <ul id="brief-controls" class="brief-list font-mono text-xs"></ul>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="screen-actions flex flex-col gap-2 mt-1">
+                            <button class="menu-btn primary w-full text-center py-2.5 text-sm sm:text-base font-bold flex items-center justify-center gap-2" onclick="beginMission()">
+                                <span>VÀO TRẬN CHIẾN ĐẤU →</span>
+                                <span class="key-badge">Space / Enter</span>
+                            </button>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button class="menu-btn w-full text-center py-1.5 text-xs" onclick="toggleTacticalGuide(true)">
+                                    Cẩm nang [H]
+                                </button>
+                                <button class="menu-btn subtle w-full text-center py-1.5 text-xs" onclick="showScreen('campaign')">
+                                    ← Danh sách màn
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
@@ -1437,7 +1516,6 @@
         </div>
         <div class="poster-h2 poster-amber">CÒN: <span id="obj-timer" class="tabular-nums">02:30</span> · <span id="poster-state">SẴN SÀNG</span></div>
         <div id="game-toolbar" class="pointer-events-auto flex justify-end gap-2 mt-2">
-            <button class="tool-btn btn-toggle-bgm text-emerald-300 border-emerald-500/40 hover:border-emerald-400" onclick="MusicSystem.toggle()">Nhạc: BẬT<kbd>B</kbd></button>
             <button class="tool-btn text-amber-300 border-amber-500/40 hover:border-amber-400" onclick="toggleRadioLog(true)">Nhật ký<kbd>L</kbd></button>
             <button class="tool-btn text-teal-300 border-teal-500/40 hover:border-teal-400" onclick="toggleTacticalGuide(true)">Cẩm nang<kbd>H</kbd></button>
             <button class="tool-btn" onclick="pauseMission()">Tạm dừng<kbd>Esc</kbd></button>
@@ -1504,52 +1582,77 @@
     </div>
 
     <!-- 8. MODE [3] HANGAR STUDIO FLOATING CONTROLS + .GLB/.GLTF EXTERNAL LOADER -->
-    <div id="hangar-floating-bar" class="fixed bottom-16 inset-x-0 z-[25] hidden justify-center pointer-events-none px-4">
-        <div class="glass-pill rounded-2xl p-3.5 max-w-4xl w-full pointer-events-auto space-y-2.5 shadow-2xl">
-            <div class="flex flex-wrap items-center justify-between gap-2 border-b hairline-border pb-2">
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald animate-pulse"></span>
-                    <span id="hangar-model-name" class="font-mono text-xs font-bold uppercase text-alabaster">
-                        TIÊM KÍCH MIG-21BIS (#5121 — 5 NGÔI SAO ĐỎ CHIẾN CÔNG)
-                    </span>
-                </div>
-                <div class="flex flex-wrap items-center gap-2">
-                    <button onclick="leaveHangar()" class="px-2.5 py-1 rounded bg-canvas border hairline-border font-mono text-[10px] text-alabaster hover:text-emerald">← MENU</button>
-                    <label class="px-2.5 py-1 rounded bg-emerald/20 border border-emerald text-emerald hover:bg-emerald hover:text-canvas font-mono text-[10px] font-bold cursor-pointer transition">
-                        + NẠP FILE .GLB / .GLTF TỪ MÁY
-                        <input type="file" id="glb-file-input" accept=".glb,.gltf" class="hidden" onchange="handleExternalGLBUpload(event)">
-                    </label>
-                    <button onclick="toggleHangarWireframe()" id="btn-wireframe" class="px-2.5 py-1 rounded bg-canvas border hairline-border font-mono text-[10px] text-muted hover:text-alabaster">
-                        KHUNG DÂY ĐA GIÁC: TẮT
-                    </button>
+    <div id="hangar-floating-bar" class="fixed inset-0 z-[25] hidden pointer-events-none">
+        
+        <!-- Top Command Header Bar -->
+        <div class="fixed top-3 inset-x-3 sm:inset-x-6 flex items-center justify-between gap-3 pointer-events-none z-30">
+            <div class="pointer-events-auto flex items-center gap-3 px-3.5 py-2 rounded-lg bg-black/85 backdrop-blur-md border border-emerald-500/30 shadow-2xl">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#10B981]"></span>
+                <div>
+                    <div class="font-mono text-[10px] uppercase tracking-widest text-emerald-400 font-bold">
+                        BẢO TÀNG KHÍ TÀI QUÂN SỰ 3D // 1972
+                    </div>
+                    <div id="hangar-model-name" class="font-serif text-sm font-semibold text-alabaster tracking-wide">
+                        Tiêm kích MiG-21bis (#5121)
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <button onclick="loadHangarShowcaseModel('MIG21')" id="h-model-MIG21" class="p-2 rounded-lg border text-left transition bg-alabaster text-canvas border-alabaster">
-                    <div class="font-mono text-[9px] font-bold uppercase">TRUNG ĐOÀN SAO ĐỎ</div>
-                    <div class="font-serif text-sm font-semibold">Tiêm kích MiG-21bis (#5121)</div>
+            <div class="pointer-events-auto flex items-center gap-2">
+                <label class="px-2.5 py-1.5 rounded bg-black/75 hover:bg-zinc-800 border border-white/15 text-zinc-300 hover:text-white font-mono text-[11px] cursor-pointer transition flex items-center gap-1.5 shadow-lg" title="Nạp file 3D .glb / .gltf từ máy tính">
+                    <span class="font-mono text-emerald-400 font-bold">[+]</span>
+                    <span class="hidden sm:inline">Nạp file 3D .GLB</span>
+                    <input type="file" id="glb-file-input" accept=".glb,.gltf" class="hidden" onchange="handleExternalGLBUpload(event)">
+                </label>
+                <button onclick="toggleHangarWireframe()" id="btn-wireframe" class="px-2.5 py-1.5 rounded bg-black/75 hover:bg-zinc-800 border border-white/15 text-zinc-300 hover:text-white font-mono text-[11px] transition shadow-lg">
+                    Khung dây: Tắt
                 </button>
-                <button onclick="loadHangarShowcaseModel('B52')" id="h-model-B52" class="p-2 rounded-lg border hairline-border bg-canvas text-muted hover:text-alabaster text-left transition">
-                    <div class="font-mono text-[9px] font-bold uppercase text-vermilion">KHÔNG QUÂN CHIẾN LƯỢC MỸ</div>
-                    <div class="font-serif text-sm font-semibold text-alabaster">Pháo đài bay B-52G</div>
+                <button onclick="leaveHangar()" class="px-3.5 py-1.5 rounded bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/50 text-emerald-300 hover:text-white font-mono text-xs font-bold tracking-wider transition shadow-[0_0_15px_rgba(16,185,129,0.25)]">
+                    ← MENU [Esc]
                 </button>
-                <button onclick="loadHangarShowcaseModel('SAM2')" id="h-model-SAM2" class="p-2 rounded-lg border hairline-border bg-canvas text-muted hover:text-alabaster text-left transition">
-                    <div class="font-mono text-[9px] font-bold uppercase text-emerald">BỘ ĐỘI TÊN LỬA VIỆT NAM</div>
-                    <div class="font-serif text-sm font-semibold text-alabaster">Tổ hợp Tên lửa SAM-2</div>
-                </button>
-                <button onclick="loadHangarShowcaseModel('RADAR')" id="h-model-RADAR" class="p-2 rounded-lg border hairline-border bg-canvas text-muted hover:text-alabaster text-left transition">
-                    <div class="font-mono text-[9px] font-bold uppercase text-brass">ĐÔI MẮT THẦN TRẬN ĐỊA</div>
-                    <div class="font-serif text-sm font-semibold text-alabaster">Đài Radar SNR-75 Fan Song</div>
-                </button>
+            </div>
+        </div>
+
+        <!-- Left Museum Telemetry Plaque -->
+        <div class="fixed top-20 left-4 z-30 w-72 sm:w-80 max-w-[calc(100vw-32px)] p-4 rounded-xl bg-black/85 backdrop-blur-md border border-emerald-500/30 pointer-events-auto space-y-2.5 shadow-2xl hidden md:flex md:flex-col">
+            <div class="flex items-center justify-between border-b border-emerald-500/20 pb-2">
+                <span class="text-[10px] font-mono uppercase tracking-widest text-emerald-400 font-bold">// THÔNG SỐ CHIẾN THUẬT</span>
+                <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">CAD 3D</span>
             </div>
 
             <!-- Structured Museum-grade Specifications Grid -->
-            <div id="hangar-model-specs" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono border-t hairline-border pt-2"></div>
+            <div id="hangar-model-specs" class="grid grid-cols-2 gap-1.5 text-[11px] font-mono"></div>
 
-            <p id="hangar-model-desc" class="text-xs text-muted leading-relaxed">
-                Dài 15.5m, sải cánh 7.15m, sơn phủ hợp kim nhôm bạc phản xạ PBR với 5 ngôi sao đỏ chiến công và số hiệu 5121 trên mũi, cánh tam giác 57°, bình dầu phụ dưới bụng, 2 tên lửa tầm nhiệt K-13 Atoll trên giá phóng APU-13 và luồng lửa tăng lực R-25-300 Mach Diamonds.
+            <p id="hangar-model-desc" class="text-xs text-zinc-300 font-sans leading-relaxed border-t border-white/10 pt-2.5 m-0">
+                Dài 15.5m, sải cánh 7.15m, trang bị động cơ phản lực R-25-300 với 5 ngôi sao đỏ chiến công bắn rơi máy bay Mỹ trên mũi.
             </p>
+
+            <div class="text-[10px] font-mono text-zinc-400 border-t border-white/10 pt-2 flex items-center justify-between">
+                <span>Kéo chuột: Xoay 360°</span>
+                <span>Cuộn: Thu phóng</span>
+            </div>
+        </div>
+
+        <!-- Bottom Horizontal Model Selector Dock -->
+        <div class="fixed bottom-4 inset-x-0 z-30 flex justify-center pointer-events-none px-4">
+            <div class="pointer-events-auto flex items-center gap-2 p-1.5 rounded-xl bg-black/85 backdrop-blur-md border border-white/15 shadow-2xl max-w-2xl w-full">
+                <button onclick="loadHangarShowcaseModel('MIG21')" id="h-model-MIG21" class="hangar-dock-btn flex-1 p-2 rounded-lg border text-left transition">
+                    <div class="font-mono text-[9px] font-bold text-amber-400 uppercase">TRUNG ĐOÀN 921</div>
+                    <div class="font-serif text-xs sm:text-sm font-semibold truncate">MiG-21bis #5121</div>
+                </button>
+                <button onclick="loadHangarShowcaseModel('B52')" id="h-model-B52" class="hangar-dock-btn flex-1 p-2 rounded-lg border text-left transition">
+                    <div class="font-mono text-[9px] font-bold text-rose-400 uppercase">SAC USAF</div>
+                    <div class="font-serif text-xs sm:text-sm font-semibold truncate">Pháo đài B-52G</div>
+                </button>
+                <button onclick="loadHangarShowcaseModel('SAM2')" id="h-model-SAM2" class="hangar-dock-btn flex-1 p-2 rounded-lg border text-left transition">
+                    <div class="font-mono text-[9px] font-bold text-emerald-400 uppercase">TÊN LỬA PK</div>
+                    <div class="font-serif text-xs sm:text-sm font-semibold truncate">Tổ hợp SAM-2</div>
+                </button>
+                <button onclick="loadHangarShowcaseModel('RADAR')" id="h-model-RADAR" class="hangar-dock-btn flex-1 p-2 rounded-lg border text-left transition">
+                    <div class="font-mono text-[9px] font-bold text-cyan-400 uppercase">ĐÀI ĐIỀU KHIỂN</div>
+                    <div class="font-serif text-xs sm:text-sm font-semibold truncate">Radar Fan Song</div>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -2668,7 +2771,6 @@
                 if (this.ctx && this.ctx.state === 'suspended') {
                     try { this.ctx.resume().catch(() => {}); } catch(e){}
                 }
-                if (typeof MusicSystem !== 'undefined') MusicSystem.init();
                 return this.ctx;
             },
 
@@ -2676,14 +2778,7 @@
                 this.init();
                 if (this.ctx && this.ctx.state === 'suspended') {
                     try {
-                        this.ctx.resume().then(() => {
-                            if (typeof MusicSystem !== 'undefined') {
-                                MusicSystem.init();
-                                if (MusicSystem.enabled && MusicSystem.chordNodes && MusicSystem.chordNodes.length === 0) {
-                                    MusicSystem.updateChord();
-                                }
-                            }
-                        }).catch(() => {});
+                        this.ctx.resume().catch(() => {});
                     } catch(e){}
                 }
                 return this.ctx;
@@ -4125,9 +4220,10 @@
 
             ['MIG21', 'B52', 'SAM2', 'RADAR'].forEach(k => {
                 const btn = document.getElementById(`h-model-${k}`);
+                if (!btn) return;
                 btn.className = (k === key)
-                    ? 'p-2 rounded-lg border text-left transition bg-alabaster text-canvas border-alabaster'
-                    : 'p-2 rounded-lg border hairline-border bg-canvas text-muted hover:text-alabaster text-left transition';
+                    ? 'hangar-dock-btn flex-1 p-2 rounded-lg border text-left transition bg-emerald-500/20 border-emerald-400 text-white shadow-[0_0_16px_rgba(16,185,129,0.35)]'
+                    : 'hangar-dock-btn flex-1 p-2 rounded-lg border border-white/10 bg-black/60 text-zinc-400 hover:text-white hover:border-white/30 text-left transition';
             });
 
             document.getElementById('hangar-model-name').textContent = HANGAR_META[key].name;
@@ -4135,9 +4231,9 @@
             const specsEl = document.getElementById('hangar-model-specs');
             if (specsEl && HANGAR_META[key].specs) {
                 specsEl.innerHTML = HANGAR_META[key].specs.map(s => `
-                    <div class="p-1.5 rounded bg-black/40 border hairline-border">
-                        <span class="text-emerald block text-[9px] uppercase tracking-wider font-semibold">${s.k}</span>
-                        <span class="text-alabaster font-mono text-[11px]">${s.v}</span>
+                    <div class="p-1.5 rounded bg-black/60 border border-emerald-500/20">
+                        <span class="text-emerald-400 block text-[9px] uppercase tracking-wider font-semibold font-mono">${s.k}</span>
+                        <span class="text-alabaster font-mono text-[11px] font-medium">${s.v}</span>
                     </div>
                 `).join('');
             }
@@ -4656,8 +4752,15 @@
             });
 
             vp.addEventListener('mousedown', e => {
-                if (e.button !== 0) return;
                 SoundEngine.init();
+                if (e.button === 2) {
+                    if (gameState === 'PLAYING' && currentMode === 'MIG21') {
+                        e.preventDefault();
+                        fireMiGCannon();
+                    }
+                    return;
+                }
+                if (e.button !== 0) return;
                 if (currentMode === 'HANGAR') {
                     hangarDrag = true;
                     prevHX = e.clientX;
@@ -4665,6 +4768,10 @@
                 } else if (gameState === 'PLAYING') {
                     triggerPrimaryWeaponFire();
                 }
+            });
+
+            vp.addEventListener('contextmenu', e => {
+                if (gameState === 'PLAYING' && currentMode === 'MIG21') e.preventDefault();
             });
 
             window.addEventListener('mouseup', () => { hangarDrag = false; });
@@ -6075,6 +6182,9 @@
                     // self-destruct fuze: a flash and a dark puff that drifts
                     spawnSmokePuff(r.pos.clone(), r.heavy ? 5 : 2.2, new THREE.Vector3(), 0.18, 'fire');
                     spawnSmokePuff(r.pos.clone(), r.heavy ? 7 : 3, new THREE.Vector3((Math.random() - 0.5) * 2, 0.4, 0), r.heavy ? 4 : 2.2, 'blacksmoke');
+                    if (typeof SoundFX !== 'undefined' && SoundFX.flakBurst) {
+                        SoundFX.flakBurst(r.pos.distanceTo(camera.position), r.heavy);
+                    }
                     if (r.mesh) worldCombatGroup.remove(r.mesh);
                     aaaRounds.splice(i, 1);
                 }
@@ -7391,7 +7501,10 @@
                 const f = this.filter(o.type || 'lowpass', o.freq || 1000, o.Q || 0.7);
                 const g = ctx.createGain();
                 const a = o.a || 0.01, hold = o.hold || 0, rel = o.rel || 0.3, peak = Math.max(0.0002, o.peak || 0.3);
-                if (o.freqEnd) f.frequency.exponentialRampToValueAtTime(o.freqEnd, t0 + a + hold + rel);
+                if (o.freqEnd) {
+                    f.frequency.setValueAtTime(o.freq || 1000, t0);
+                    f.frequency.exponentialRampToValueAtTime(Math.max(10, o.freqEnd), t0 + a + hold + rel);
+                }
                 g.gain.setValueAtTime(0.0001, t0);
                 g.gain.exponentialRampToValueAtTime(peak, t0 + a);
                 g.gain.setValueAtTime(peak, t0 + a + hold);
@@ -7599,26 +7712,89 @@
                 this.burst({ t0: t + 0.15, type: 'highpass', freq: 3500, peak: 0.08, a: 0.02, hold: 0.1, rel: 0.3 });
             },
 
+            // Súng/Pháo phòng không bảo vệ bầu trời Hà Nội (Cao xạ 37mm, 57mm, 100mm)
             aaa(dist, heavy) {
                 if (!this.ensure()) return;
-                // sound reaches the battery late and muffled from far guns
-                const t = SoundEngine.ctx.currentTime + Math.min(1.4, dist * 0.004), v = (heavy ? 0.5 : 0.32) / (1 + dist / 90);
+                const ctx = SoundEngine.ctx;
+                const d = Math.max(0, dist || 0);
+                // Truyền âm nhanh để khớp chặt chẽ với vệt đạn vút lên bầu trời
+                const t = ctx.currentTime + Math.min(0.25, d * 0.001);
+                // Độ suy giảm khoảng cách thực tế (nghe rõ rền vang khắp nội ngoại thành)
+                const atten = 1 / Math.sqrt(1 + d / 110);
+                const v = Math.min(1, (heavy ? 0.75 : 0.55) * atten);
+
                 if (heavy) {
-                    this.burst({ t0: t, brown: true, type: 'lowpass', freq: 220, freqEnd: 70, peak: v, a: 0.004, hold: 0.05, rel: 1.1, wet: 0.6 });
-                    this.burst({ t0: t + 0.45, brown: true, type: 'lowpass', freq: 200, freqEnd: 70, peak: v * 0.8, a: 0.004, hold: 0.05, rel: 1.0, wet: 0.6 });
+                    // Pháo cao xạ hạng nặng 100mm KS-19: Tiếng nổ trầm uy lực rung chuyển trận địa
+                    this.tone({ t0: t, type: 'triangle', freq: 150, freqEnd: 36, peak: v * 0.9, a: 0.003, dur: 0.45, wet: 0.65 });
+                    this.burst({ t0: t, brown: true, type: 'lowpass', freq: 800, freqEnd: 180, peak: v * 0.95, a: 0.002, hold: 0.05, rel: 0.4, wet: 0.6 });
+                    this.burst({ t0: t, type: 'bandpass', freq: 1600, Q: 1.4, peak: v * 0.6, a: 0.001, hold: 0.02, rel: 0.15 });
+                    // Tiếng vọng rền vang mặt đất
+                    this.tone({ t0: t + 0.16, type: 'sine', freq: 90, freqEnd: 28, peak: v * 0.45, a: 0.01, dur: 0.55, wet: 0.75 });
                 } else {
-                    const n = 5 + Math.floor(Math.random() * 4);
+                    // Pháo cao xạ 37mm / 57mm: Loạt bắn giòn giã liên thanh của bộ đội & tự vệ
+                    const n = 4 + Math.floor(Math.random() * 3);
                     for (let k = 0; k < n; k++) {
-                        this.burst({ t0: t + k * 0.09, brown: true, type: 'bandpass', freq: 240 + Math.random() * 60, Q: 0.9, peak: v, a: 0.002, hold: 0.02, rel: 0.22, wet: 0.45 });
+                        const tk = t + k * 0.082;
+                        const roundV = v * (0.85 + Math.random() * 0.3);
+                        this.tone({ t0: tk, type: 'sawtooth', freq: 210 + Math.random() * 35, freqEnd: 70, peak: roundV * 0.65, a: 0.002, dur: 0.07, wet: 0.35 });
+                        this.burst({ t0: tk, type: 'bandpass', freq: 1700 + Math.random() * 400, Q: 1.6, peak: roundV * 0.75, a: 0.001, hold: 0.012, rel: 0.08, wet: 0.3 });
+                        this.burst({ t0: tk, brown: true, type: 'lowpass', freq: 520, peak: roundV * 0.55, a: 0.002, hold: 0.02, rel: 0.09 });
                     }
                 }
             },
 
+            // Đạn pháo phòng không phát nổ trên không (Flak airburst shrapnel)
+            flakBurst(dist, heavy) {
+                if (!this.ensure()) return;
+                const ctx = SoundEngine.ctx;
+                const d = Math.max(0, dist || 0);
+                const t = ctx.currentTime + Math.min(0.45, d * 0.0018);
+                const v = Math.min(0.9, (heavy ? 0.65 : 0.45) / Math.sqrt(1 + d / 130));
+                this.tone({ t0: t, type: 'triangle', freq: 175, freqEnd: 50, peak: v * 0.7, a: 0.003, dur: 0.22, wet: 0.5 });
+                this.burst({ t0: t, type: 'bandpass', freq: 2400, Q: 1.2, peak: v * 0.8, a: 0.001, hold: 0.02, rel: 0.16, wet: 0.4 });
+                this.burst({ t0: t + 0.01, brown: true, type: 'lowpass', freq: 600, freqEnd: 140, peak: v * 0.85, a: 0.003, hold: 0.03, rel: 0.35, wet: 0.6 });
+            },
+
+            // Đạn pháo 23mm MiG-21 (GSh-23L) hoặc súng máy phòng thủ đuôi B-52
             gunBurst(dist) {
                 if (!this.ensure()) return;
-                const t = SoundEngine.ctx.currentTime, v = 0.3 / (1 + dist / 80);
-                for (let k = 0; k < 9; k++) {
-                    this.burst({ t0: t + k * 0.055, type: 'bandpass', freq: 900, Q: 1, peak: v, a: 0.001, hold: 0.01, rel: 0.06 });
+                const ctx = SoundEngine.ctx;
+                const t = ctx.currentTime;
+                const isCockpit = !dist || dist < 6;
+                const v = isCockpit ? 0.85 : 0.5 / Math.sqrt(1 + (dist || 0) / 70);
+                const numShots = isCockpit ? 7 : 4;
+                for (let k = 0; k < numShots; k++) {
+                    const tk = t + k * (isCockpit ? 0.045 : 0.065);
+                    this.tone({
+                        t0: tk,
+                        type: isCockpit ? 'sawtooth' : 'triangle',
+                        freq: isCockpit ? 190 : 160,
+                        freqEnd: 52,
+                        peak: v * 0.85,
+                        a: 0.001,
+                        dur: isCockpit ? 0.055 : 0.05,
+                        wet: isCockpit ? 0.2 : 0.4
+                    });
+                    this.burst({
+                        t0: tk,
+                        type: 'highpass',
+                        freq: isCockpit ? 2400 : 1700,
+                        peak: v * 0.8,
+                        a: 0.001,
+                        hold: 0.014,
+                        rel: 0.04,
+                        wet: isCockpit ? 0.15 : 0.3
+                    });
+                    this.burst({
+                        t0: tk + 0.006,
+                        type: 'bandpass',
+                        freq: 1200,
+                        Q: 2,
+                        peak: v * 0.6,
+                        a: 0.001,
+                        hold: 0.01,
+                        rel: 0.045
+                    });
                 }
             },
 
@@ -7690,359 +7866,23 @@
         SoundEngine.playExplosion = function (pos, big) { this.init(); SoundFX.boom(pos, big); };
 
         /* ============================================================================
-           CINEMATIC MILITARY BGM ENGINE (PROCEDURAL WEB AUDIO ORCHESTRA)
-           Nhạc nền hành khúc / hào hùng tự tổng hợp bằng sóng âm, 100% offline, mượt mà
+           BGM ENGINE: Đã tắt hoàn toàn nhạc nền theo yêu cầu của người chơi.
+           Không gian âm thanh ưu tiên 100% tiếng súng đạn, động cơ và còi báo động thực tế.
            ============================================================================ */
         const MusicSystem = {
-            enabled: true,
-            volume: 0.35,
+            enabled: false,
+            volume: 0,
             ctx: null,
-            masterGain: null,
-            timer: null,
-            step: 0,
-            phrase: 0,
-            theme: 'MENU', // 'MENU' | 'PLAYING' | 'VICTORY'
-            chordNodes: [],
-
             init() {
-                if (this.masterGain && this.ctx) {
-                    if (this.ctx.state === 'suspended') {
-                        try { this.ctx.resume().catch(() => {}); } catch(e){}
-                    }
-                    return;
-                }
-                const ctx = SoundEngine.ctx;
-                if (!ctx) return;
-                this.ctx = ctx;
-                this.masterGain = ctx.createGain();
-                try {
-                    const saved = localStorage.getItem('game_bgm_enabled');
-                    if (saved !== null) this.enabled = saved === '1';
-                } catch(e){}
-                this.masterGain.gain.setValueAtTime(this.enabled ? this.volume : 0, ctx.currentTime);
-                this.masterGain.connect(ctx.destination);
-                this.startLoop();
-                this.updateUI();
+                this.enabled = false;
+                try { localStorage.removeItem('game_bgm_enabled'); } catch(e){}
             },
-
-            setTheme(newTheme) {
-                if (this.theme === newTheme) return;
-                this.theme = newTheme;
-                this.step = 0;
-                this.phrase = 0;
-                this.updateChord();
-            },
-
-            toggle() {
-                SoundEngine.unlock();
-                this.enabled = !this.enabled;
-                if (this.masterGain && this.ctx) {
-                    const t = this.ctx.currentTime;
-                    this.masterGain.gain.setTargetAtTime(this.enabled ? this.volume : 0, t, 0.05);
-                }
-                this.updateUI();
-                try { localStorage.setItem('game_bgm_enabled', this.enabled ? '1' : '0'); } catch(e){}
-                if (this.enabled && this.chordNodes.length === 0) this.updateChord();
-            },
-
-            updateUI() {
-                if (typeof document === 'undefined') return;
-                const btns = document.querySelectorAll('.btn-toggle-bgm');
-                btns.forEach(btn => {
-                    btn.innerHTML = `<span>🎵</span> Nhạc: ${this.enabled ? 'BẬT' : 'TẮT'}<kbd>B</kbd>`;
-                    btn.classList.toggle('text-emerald-300', this.enabled);
-                    btn.classList.toggle('text-zinc-500', !this.enabled);
-                });
-            },
-
-            startLoop() {
-                const clrInt = typeof clearInterval !== 'undefined' ? clearInterval : (typeof window !== 'undefined' && window.clearInterval ? window.clearInterval : null);
-                const setInt = typeof setInterval !== 'undefined' ? setInterval : (typeof window !== 'undefined' && window.setInterval ? window.setInterval : null);
-                if (this.timer && clrInt) clrInt(this.timer);
-                this.step = 0;
-                this.phrase = 0;
-                if (setInt) {
-                    this.timer = setInt(() => {
-                        if (!this.enabled || !this.ctx || this.ctx.state !== 'running') return;
-                        this.tick();
-                    }, 125);
-                }
-                this.updateChord();
-            },
-
-            updateChord() {
-                if (!this.ctx || !this.masterGain) return;
-                const t = this.ctx.currentTime;
-
-                this.chordNodes.forEach(n => {
-                    try {
-                        n.gain.gain.setTargetAtTime(0, t, 0.4);
-                        setTimeout(() => { try { n.osc.stop(); n.osc.disconnect(); }catch(e){} }, 500);
-                    } catch(e){}
-                });
-                this.chordNodes = [];
-
-                if (!this.enabled) return;
-
-                let freqs = [];
-                if (this.theme === 'VICTORY') {
-                    // D major tráng lệ khải hoàn: D3, F#3, A3, D4
-                    freqs = [146.83, 185.00, 220.00, 293.66];
-                } else if (this.theme === 'PLAYING') {
-                    // D minor hành khúc chiến đấu khẩn trương: D2 (trầm), D3, F3, A3
-                    freqs = [73.42, 146.83, 174.61, 220.00];
-                } else {
-                    // MENU / BRIEFING: D minor trầm hùng, bi tráng: D2, A2, D3, F3
-                    freqs = [73.42, 110.00, 146.83, 174.61];
-                }
-
-                freqs.forEach((freq, idx) => {
-                    const osc = this.ctx.createOscillator();
-                    const filter = this.ctx.createBiquadFilter();
-                    const gain = this.ctx.createGain();
-
-                    osc.type = idx === 0 ? 'sine' : 'sawtooth';
-                    osc.frequency.setValueAtTime(freq + (Math.random() - 0.5) * 0.6, t);
-
-                    filter.type = 'lowpass';
-                    filter.frequency.setValueAtTime(this.theme === 'PLAYING' ? 420 : 280, t);
-                    filter.Q.value = 1.6;
-
-                    const targetGain = (idx === 0 ? 0.32 : 0.1) * (this.theme === 'PLAYING' ? 1.15 : 0.85);
-                    gain.gain.setValueAtTime(0.001, t);
-                    gain.gain.setTargetAtTime(targetGain, t + 0.1, 0.7);
-
-                    osc.connect(filter);
-                    filter.connect(gain);
-                    gain.connect(this.masterGain);
-
-                    osc.start(t);
-                    this.chordNodes.push({ osc, gain });
-                });
-            },
-
-            // Dàn kèn đồng quân đội hào sảng (French Horn / Trumpet military fanfares)
-            playBrass(t, freq, dur = 0.35, vol = 0.28) {
-                if (!this.ctx || !this.masterGain) return;
-                const osc1 = this.ctx.createOscillator();
-                const osc2 = this.ctx.createOscillator();
-                const filter = this.ctx.createBiquadFilter();
-                const gain = this.ctx.createGain();
-
-                osc1.type = 'sawtooth';
-                osc2.type = 'sawtooth';
-                osc1.frequency.setValueAtTime(freq, t);
-                osc2.frequency.setValueAtTime(freq * 1.006, t); // rich detuned brass unison
-
-                filter.type = 'lowpass';
-                filter.Q.value = 2.8;
-                // Brass attack envelope: crisp brass bite opening up to 2800Hz then settling to warm body
-                filter.frequency.setValueAtTime(380, t);
-                filter.frequency.exponentialRampToValueAtTime(Math.min(3200, freq * 7), t + 0.035);
-                filter.frequency.exponentialRampToValueAtTime(Math.min(1800, freq * 4), t + dur * 0.5);
-                filter.frequency.exponentialRampToValueAtTime(280, t + dur + 0.08);
-
-                gain.gain.setValueAtTime(0.001, t);
-                gain.gain.exponentialRampToValueAtTime(vol * 0.38, t + 0.02);
-                gain.gain.setValueAtTime(vol * 0.34, t + dur * 0.6);
-                gain.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.08);
-
-                osc1.connect(filter);
-                osc2.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.masterGain);
-
-                osc1.start(t);
-                osc2.start(t);
-                osc1.stop(t + dur + 0.1);
-                osc2.stop(t + dur + 0.1);
-            },
-
-            // Dàn dây vĩ cầm dồn dập (Cinematic staccato string ostinato)
-            playStrings(t, freq, dur = 0.12, vol = 0.16) {
-                if (!this.ctx || !this.masterGain) return;
-                const osc = this.ctx.createOscillator();
-                const filter = this.ctx.createBiquadFilter();
-                const gain = this.ctx.createGain();
-
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(freq, t);
-
-                filter.type = 'bandpass';
-                filter.frequency.setValueAtTime(Math.max(450, freq * 2.2), t);
-                filter.Q.value = 1.4;
-
-                gain.gain.setValueAtTime(0.001, t);
-                gain.gain.exponentialRampToValueAtTime(vol * 0.25, t + 0.015);
-                gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-
-                osc.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.masterGain);
-
-                osc.start(t);
-                osc.stop(t + dur + 0.02);
-            },
-
-            // Tiếng trống trận trầm hùng (War Drum / Timpani)
-            playTimpani(t, freq = 65, vol = 0.45, isWarDrum = false) {
-                if (!this.ctx || !this.masterGain) return;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = isWarDrum ? 'triangle' : 'sine';
-                osc.frequency.setValueAtTime(isWarDrum ? freq * 1.6 : freq, t);
-                osc.frequency.exponentialRampToValueAtTime(isWarDrum ? 32 : 26, t + 0.42);
-
-                gain.gain.setValueAtTime(vol * 0.75, t);
-                gain.gain.exponentialRampToValueAtTime(0.001, t + (isWarDrum ? 0.6 : 0.48));
-                osc.connect(gain);
-                gain.connect(this.masterGain);
-                osc.start(t);
-                osc.stop(t + (isWarDrum ? 0.65 : 0.52));
-            },
-
-            // Tiếng trống duyệt binh hành quân (Marching Snare)
-            playSnareBrush(t, vol = 0.22, isRoll = false) {
-                if (!this.ctx || !this.masterGain) return;
-                const dur = isRoll ? 0.07 : 0.14;
-                const bufLen = Math.floor(this.ctx.sampleRate * dur);
-                const buf = this.ctx.createBuffer(1, bufLen, this.ctx.sampleRate);
-                const data = buf.getChannelData(0);
-                for (let i = 0; i < bufLen; i++) {
-                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * (isRoll ? 0.22 : 0.35)));
-                }
-                const src = this.ctx.createBufferSource();
-                const filter = this.ctx.createBiquadFilter();
-                const gain = this.ctx.createGain();
-                filter.type = 'bandpass';
-                filter.frequency.value = isRoll ? 2300 : 1800;
-                filter.Q.value = 1.8;
-                src.buffer = buf;
-                gain.gain.setValueAtTime(vol * 0.35, t);
-                gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
-                src.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.masterGain);
-                src.start(t);
-            },
-
-            // Chũm chọe / Tiếng kẻng lệnh xuất kích (Cymbal clash)
-            playCymbal(t, vol = 0.18) {
-                if (!this.ctx || !this.masterGain) return;
-                const dur = 0.65;
-                const bufLen = Math.floor(this.ctx.sampleRate * dur);
-                const buf = this.ctx.createBuffer(1, bufLen, this.ctx.sampleRate);
-                const data = buf.getChannelData(0);
-                for (let i = 0; i < bufLen; i++) {
-                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.18));
-                }
-                const src = this.ctx.createBufferSource();
-                const filter = this.ctx.createBiquadFilter();
-                const gain = this.ctx.createGain();
-                filter.type = 'highpass';
-                filter.frequency.value = 4200;
-                src.buffer = buf;
-                gain.gain.setValueAtTime(vol * 0.2, t);
-                gain.gain.exponentialRampToValueAtTime(0.0005, t + dur);
-                src.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.masterGain);
-                src.start(t);
-            },
-
-            tick() {
-                const step = this.step;
-                this.step = (this.step + 1) % 32;
-                if (this.step === 0) this.phrase = (this.phrase + 1) % 2;
-                const t = this.ctx.currentTime;
-                const isAir = typeof currentMode !== 'undefined' && currentMode === 'MIG21';
-
-                if (this.theme === 'PLAYING') {
-                    // === CHIẾN ĐẤU: HÀNH KHÚC HÀO HÙNG, XUNG TRẬN DŨNG MÃNH ===
-                    if (step === 0) {
-                        this.playTimpani(t, 72, 0.6, true);
-                        this.playCymbal(t, 0.22);
-                    } else if (step === 8) {
-                        this.playTimpani(t, 55, 0.42);
-                        this.playSnareBrush(t, 0.25);
-                    } else if (step === 16) {
-                        this.playTimpani(t, 65, 0.5, true);
-                    } else if (step === 24) {
-                        this.playTimpani(t, 55, 0.45);
-                        this.playSnareBrush(t, 0.28);
-                    }
-
-                    if (step === 4 || step === 20) {
-                        this.playSnareBrush(t, 0.22);
-                    } else if (step === 12) {
-                        this.playSnareBrush(t, 0.18, true);
-                    } else if (step === 13) {
-                        this.playSnareBrush(t, 0.24);
-                    } else if (step >= 28) {
-                        this.playSnareBrush(t, 0.16 + (step - 28) * 0.06, true);
-                    }
-
-                    if (step % 2 === 0) {
-                        const strNote = step < 16 ? (step % 4 === 0 ? 146.83 : 174.61) : (step % 4 === 0 ? 220.00 : 196.00);
-                        this.playStrings(t, strNote, 0.1, isAir ? 0.2 : 0.14);
-                    }
-
-                    if (this.phrase === 0) {
-                        if (step === 0) this.playBrass(t, 146.83, 0.45, 0.32);
-                        else if (step === 4) this.playBrass(t, 174.61, 0.3, 0.3);
-                        else if (step === 8) this.playBrass(t, 220.00, 0.4, 0.34);
-                        else if (step === 12) this.playBrass(t, 293.66, 0.65, 0.38);
-                        else if (step === 16) this.playBrass(t, 293.66, 0.35, 0.32);
-                        else if (step === 20) this.playBrass(t, 261.63, 0.3, 0.3);
-                        else if (step === 24) this.playBrass(t, 220.00, 0.4, 0.32);
-                        else if (step === 28) this.playBrass(t, 174.61, 0.25, 0.28);
-                    } else {
-                        if (step === 0) this.playBrass(t, 220.00, 0.4, 0.32);
-                        else if (step === 4) this.playBrass(t, 261.63, 0.3, 0.3);
-                        else if (step === 8) this.playBrass(t, 293.66, 0.4, 0.35);
-                        else if (step === 12) this.playBrass(t, 349.23, 0.7, 0.4);
-                        else if (step === 16) this.playBrass(t, 329.63, 0.35, 0.32);
-                        else if (step === 20) this.playBrass(t, 293.66, 0.35, 0.32);
-                        else if (step === 24) this.playBrass(t, 220.00, 0.4, 0.3);
-                        else if (step === 28) this.playBrass(t, 293.66, 0.6, 0.35);
-                    }
-                } else if (this.theme === 'MENU') {
-                    // === MENU / BRIEFING: TRANG NGHIÊM, HÀO HÙNG, BI TRÁNG ===
-                    if (step === 0) {
-                        this.playTimpani(t, 52, 0.38, true);
-                        this.playCymbal(t, 0.14);
-                        this.playBrass(t, 146.83, 0.8, 0.28);
-                    } else if (step === 8) {
-                        this.playSnareBrush(t, 0.16);
-                        this.playBrass(t, 174.61, 0.5, 0.26);
-                    } else if (step === 16) {
-                        this.playTimpani(t, 46, 0.3);
-                        this.playBrass(t, 220.00, 0.7, 0.3);
-                    } else if (step === 24) {
-                        this.playSnareBrush(t, 0.2);
-                        this.playBrass(t, 293.66, 0.9, 0.32);
-                    } else if (step === 28 || step === 30) {
-                        this.playSnareBrush(t, 0.12, true);
-                    }
-                } else if (this.theme === 'VICTORY') {
-                    // === VICTORY: ĐẠI THẮNG KHẢI HOÀN, RẠNG RỠ NON SÔNG ===
-                    if (step % 8 === 0) {
-                        this.playTimpani(t, 73.4, 0.48, true);
-                        this.playCymbal(t, 0.2);
-                    }
-                    if (step % 4 === 2) {
-                        this.playSnareBrush(t, 0.26, true);
-                    }
-                    if (step === 0) this.playBrass(t, 146.83, 0.35, 0.35);
-                    else if (step === 4) this.playBrass(t, 185.00, 0.35, 0.35);
-                    else if (step === 8) this.playBrass(t, 220.00, 0.35, 0.35);
-                    else if (step === 12) this.playBrass(t, 293.66, 0.7, 0.42);
-                    else if (step === 16) this.playBrass(t, 369.99, 0.4, 0.38);
-                    else if (step === 20) this.playBrass(t, 329.63, 0.35, 0.35);
-                    else if (step === 24) this.playBrass(t, 293.66, 0.4, 0.38);
-                    else if (step === 28) this.playBrass(t, 220.00, 0.5, 0.35);
-                }
-            }
+            setTheme() {},
+            toggle() { return false; },
+            updateUI() {},
+            startLoop() {},
+            updateChord() {},
+            tick() {}
         };
 
         if (typeof window !== 'undefined') {
@@ -8068,7 +7908,7 @@
             '<b>W / S</b>: tăng / giảm ga (trên 85% là bật tăng lực)',
             'Vào sau đuôi B-52 (±35°), cự ly 1–5 km, đưa vào vòng ngắm đến khi đèn <b>ЗАХВАТ</b> sáng và có tiếng gầm',
             'Click / <b>Space</b>: phóng K-13 (2 quả)',
-            'Phím <b>F / C</b> (hoặc click khi hết K-13): Bắn pháo 23mm GSh-23L khi áp sát dưới 1.2 km',
+            'Chuột phải / Phím <b>F · C</b> (hoặc click khi hết K-13): Bắn pháo 23mm GSh-23L khi áp sát dưới 1.2 km',
             '<b>Esc</b>: tạm dừng'
         ];
 
@@ -8656,15 +8496,6 @@ const MISSIONS = [
             if (name === 'campaign') renderMissionList();
             if (name === 'menu') renderMenuProgress();
             if (name === 'archive' && typeof renderArchiveTab === 'function') renderArchiveTab('card1');
-            if (typeof MusicSystem !== 'undefined' && MusicSystem.ctx) {
-                if (name === 'victory' || (name === 'debrief' && missionWon)) {
-                    MusicSystem.setTheme('VICTORY');
-                } else if (name === null) {
-                    MusicSystem.setTheme('PLAYING');
-                } else {
-                    MusicSystem.setTheme('MENU');
-                }
-            }
         }
 
         function continueCampaign() {

@@ -181,7 +181,10 @@
                 const f = this.filter(o.type || 'lowpass', o.freq || 1000, o.Q || 0.7);
                 const g = ctx.createGain();
                 const a = o.a || 0.01, hold = o.hold || 0, rel = o.rel || 0.3, peak = Math.max(0.0002, o.peak || 0.3);
-                if (o.freqEnd) f.frequency.exponentialRampToValueAtTime(o.freqEnd, t0 + a + hold + rel);
+                if (o.freqEnd) {
+                    f.frequency.setValueAtTime(o.freq || 1000, t0);
+                    f.frequency.exponentialRampToValueAtTime(Math.max(10, o.freqEnd), t0 + a + hold + rel);
+                }
                 g.gain.setValueAtTime(0.0001, t0);
                 g.gain.exponentialRampToValueAtTime(peak, t0 + a);
                 g.gain.setValueAtTime(peak, t0 + a + hold);
@@ -389,26 +392,89 @@
                 this.burst({ t0: t + 0.15, type: 'highpass', freq: 3500, peak: 0.08, a: 0.02, hold: 0.1, rel: 0.3 });
             },
 
+            // Súng/Pháo phòng không bảo vệ bầu trời Hà Nội (Cao xạ 37mm, 57mm, 100mm)
             aaa(dist, heavy) {
                 if (!this.ensure()) return;
-                // sound reaches the battery late and muffled from far guns
-                const t = SoundEngine.ctx.currentTime + Math.min(1.4, dist * 0.004), v = (heavy ? 0.5 : 0.32) / (1 + dist / 90);
+                const ctx = SoundEngine.ctx;
+                const d = Math.max(0, dist || 0);
+                // Truyền âm nhanh để khớp chặt chẽ với vệt đạn vút lên bầu trời
+                const t = ctx.currentTime + Math.min(0.25, d * 0.001);
+                // Độ suy giảm khoảng cách thực tế (nghe rõ rền vang khắp nội ngoại thành)
+                const atten = 1 / Math.sqrt(1 + d / 110);
+                const v = Math.min(1, (heavy ? 0.75 : 0.55) * atten);
+
                 if (heavy) {
-                    this.burst({ t0: t, brown: true, type: 'lowpass', freq: 220, freqEnd: 70, peak: v, a: 0.004, hold: 0.05, rel: 1.1, wet: 0.6 });
-                    this.burst({ t0: t + 0.45, brown: true, type: 'lowpass', freq: 200, freqEnd: 70, peak: v * 0.8, a: 0.004, hold: 0.05, rel: 1.0, wet: 0.6 });
+                    // Pháo cao xạ hạng nặng 100mm KS-19: Tiếng nổ trầm uy lực rung chuyển trận địa
+                    this.tone({ t0: t, type: 'triangle', freq: 150, freqEnd: 36, peak: v * 0.9, a: 0.003, dur: 0.45, wet: 0.65 });
+                    this.burst({ t0: t, brown: true, type: 'lowpass', freq: 800, freqEnd: 180, peak: v * 0.95, a: 0.002, hold: 0.05, rel: 0.4, wet: 0.6 });
+                    this.burst({ t0: t, type: 'bandpass', freq: 1600, Q: 1.4, peak: v * 0.6, a: 0.001, hold: 0.02, rel: 0.15 });
+                    // Tiếng vọng rền vang mặt đất
+                    this.tone({ t0: t + 0.16, type: 'sine', freq: 90, freqEnd: 28, peak: v * 0.45, a: 0.01, dur: 0.55, wet: 0.75 });
                 } else {
-                    const n = 5 + Math.floor(Math.random() * 4);
+                    // Pháo cao xạ 37mm / 57mm: Loạt bắn giòn giã liên thanh của bộ đội & tự vệ
+                    const n = 4 + Math.floor(Math.random() * 3);
                     for (let k = 0; k < n; k++) {
-                        this.burst({ t0: t + k * 0.09, brown: true, type: 'bandpass', freq: 240 + Math.random() * 60, Q: 0.9, peak: v, a: 0.002, hold: 0.02, rel: 0.22, wet: 0.45 });
+                        const tk = t + k * 0.082;
+                        const roundV = v * (0.85 + Math.random() * 0.3);
+                        this.tone({ t0: tk, type: 'sawtooth', freq: 210 + Math.random() * 35, freqEnd: 70, peak: roundV * 0.65, a: 0.002, dur: 0.07, wet: 0.35 });
+                        this.burst({ t0: tk, type: 'bandpass', freq: 1700 + Math.random() * 400, Q: 1.6, peak: roundV * 0.75, a: 0.001, hold: 0.012, rel: 0.08, wet: 0.3 });
+                        this.burst({ t0: tk, brown: true, type: 'lowpass', freq: 520, peak: roundV * 0.55, a: 0.002, hold: 0.02, rel: 0.09 });
                     }
                 }
             },
 
+            // Đạn pháo phòng không phát nổ trên không (Flak airburst shrapnel)
+            flakBurst(dist, heavy) {
+                if (!this.ensure()) return;
+                const ctx = SoundEngine.ctx;
+                const d = Math.max(0, dist || 0);
+                const t = ctx.currentTime + Math.min(0.45, d * 0.0018);
+                const v = Math.min(0.9, (heavy ? 0.65 : 0.45) / Math.sqrt(1 + d / 130));
+                this.tone({ t0: t, type: 'triangle', freq: 175, freqEnd: 50, peak: v * 0.7, a: 0.003, dur: 0.22, wet: 0.5 });
+                this.burst({ t0: t, type: 'bandpass', freq: 2400, Q: 1.2, peak: v * 0.8, a: 0.001, hold: 0.02, rel: 0.16, wet: 0.4 });
+                this.burst({ t0: t + 0.01, brown: true, type: 'lowpass', freq: 600, freqEnd: 140, peak: v * 0.85, a: 0.003, hold: 0.03, rel: 0.35, wet: 0.6 });
+            },
+
+            // Đạn pháo 23mm MiG-21 (GSh-23L) hoặc súng máy phòng thủ đuôi B-52
             gunBurst(dist) {
                 if (!this.ensure()) return;
-                const t = SoundEngine.ctx.currentTime, v = 0.3 / (1 + dist / 80);
-                for (let k = 0; k < 9; k++) {
-                    this.burst({ t0: t + k * 0.055, type: 'bandpass', freq: 900, Q: 1, peak: v, a: 0.001, hold: 0.01, rel: 0.06 });
+                const ctx = SoundEngine.ctx;
+                const t = ctx.currentTime;
+                const isCockpit = !dist || dist < 6;
+                const v = isCockpit ? 0.85 : 0.5 / Math.sqrt(1 + (dist || 0) / 70);
+                const numShots = isCockpit ? 7 : 4;
+                for (let k = 0; k < numShots; k++) {
+                    const tk = t + k * (isCockpit ? 0.045 : 0.065);
+                    this.tone({
+                        t0: tk,
+                        type: isCockpit ? 'sawtooth' : 'triangle',
+                        freq: isCockpit ? 190 : 160,
+                        freqEnd: 52,
+                        peak: v * 0.85,
+                        a: 0.001,
+                        dur: isCockpit ? 0.055 : 0.05,
+                        wet: isCockpit ? 0.2 : 0.4
+                    });
+                    this.burst({
+                        t0: tk,
+                        type: 'highpass',
+                        freq: isCockpit ? 2400 : 1700,
+                        peak: v * 0.8,
+                        a: 0.001,
+                        hold: 0.014,
+                        rel: 0.04,
+                        wet: isCockpit ? 0.15 : 0.3
+                    });
+                    this.burst({
+                        t0: tk + 0.006,
+                        type: 'bandpass',
+                        freq: 1200,
+                        Q: 2,
+                        peak: v * 0.6,
+                        a: 0.001,
+                        hold: 0.01,
+                        rel: 0.045
+                    });
                 }
             },
 
@@ -480,359 +546,23 @@
         SoundEngine.playExplosion = function (pos, big) { this.init(); SoundFX.boom(pos, big); };
 
         /* ============================================================================
-           CINEMATIC MILITARY BGM ENGINE (PROCEDURAL WEB AUDIO ORCHESTRA)
-           Nhạc nền hành khúc / hào hùng tự tổng hợp bằng sóng âm, 100% offline, mượt mà
+           BGM ENGINE: Đã tắt hoàn toàn nhạc nền theo yêu cầu của người chơi.
+           Không gian âm thanh ưu tiên 100% tiếng súng đạn, động cơ và còi báo động thực tế.
            ============================================================================ */
         const MusicSystem = {
-            enabled: true,
-            volume: 0.35,
+            enabled: false,
+            volume: 0,
             ctx: null,
-            masterGain: null,
-            timer: null,
-            step: 0,
-            phrase: 0,
-            theme: 'MENU', // 'MENU' | 'PLAYING' | 'VICTORY'
-            chordNodes: [],
-
             init() {
-                if (this.masterGain && this.ctx) {
-                    if (this.ctx.state === 'suspended') {
-                        try { this.ctx.resume().catch(() => {}); } catch(e){}
-                    }
-                    return;
-                }
-                const ctx = SoundEngine.ctx;
-                if (!ctx) return;
-                this.ctx = ctx;
-                this.masterGain = ctx.createGain();
-                try {
-                    const saved = localStorage.getItem('game_bgm_enabled');
-                    if (saved !== null) this.enabled = saved === '1';
-                } catch(e){}
-                this.masterGain.gain.setValueAtTime(this.enabled ? this.volume : 0, ctx.currentTime);
-                this.masterGain.connect(ctx.destination);
-                this.startLoop();
-                this.updateUI();
+                this.enabled = false;
+                try { localStorage.removeItem('game_bgm_enabled'); } catch(e){}
             },
-
-            setTheme(newTheme) {
-                if (this.theme === newTheme) return;
-                this.theme = newTheme;
-                this.step = 0;
-                this.phrase = 0;
-                this.updateChord();
-            },
-
-            toggle() {
-                SoundEngine.unlock();
-                this.enabled = !this.enabled;
-                if (this.masterGain && this.ctx) {
-                    const t = this.ctx.currentTime;
-                    this.masterGain.gain.setTargetAtTime(this.enabled ? this.volume : 0, t, 0.05);
-                }
-                this.updateUI();
-                try { localStorage.setItem('game_bgm_enabled', this.enabled ? '1' : '0'); } catch(e){}
-                if (this.enabled && this.chordNodes.length === 0) this.updateChord();
-            },
-
-            updateUI() {
-                if (typeof document === 'undefined') return;
-                const btns = document.querySelectorAll('.btn-toggle-bgm');
-                btns.forEach(btn => {
-                    btn.innerHTML = `<span>🎵</span> Nhạc: ${this.enabled ? 'BẬT' : 'TẮT'}<kbd>B</kbd>`;
-                    btn.classList.toggle('text-emerald-300', this.enabled);
-                    btn.classList.toggle('text-zinc-500', !this.enabled);
-                });
-            },
-
-            startLoop() {
-                const clrInt = typeof clearInterval !== 'undefined' ? clearInterval : (typeof window !== 'undefined' && window.clearInterval ? window.clearInterval : null);
-                const setInt = typeof setInterval !== 'undefined' ? setInterval : (typeof window !== 'undefined' && window.setInterval ? window.setInterval : null);
-                if (this.timer && clrInt) clrInt(this.timer);
-                this.step = 0;
-                this.phrase = 0;
-                if (setInt) {
-                    this.timer = setInt(() => {
-                        if (!this.enabled || !this.ctx || this.ctx.state !== 'running') return;
-                        this.tick();
-                    }, 125);
-                }
-                this.updateChord();
-            },
-
-            updateChord() {
-                if (!this.ctx || !this.masterGain) return;
-                const t = this.ctx.currentTime;
-
-                this.chordNodes.forEach(n => {
-                    try {
-                        n.gain.gain.setTargetAtTime(0, t, 0.4);
-                        setTimeout(() => { try { n.osc.stop(); n.osc.disconnect(); }catch(e){} }, 500);
-                    } catch(e){}
-                });
-                this.chordNodes = [];
-
-                if (!this.enabled) return;
-
-                let freqs = [];
-                if (this.theme === 'VICTORY') {
-                    // D major tráng lệ khải hoàn: D3, F#3, A3, D4
-                    freqs = [146.83, 185.00, 220.00, 293.66];
-                } else if (this.theme === 'PLAYING') {
-                    // D minor hành khúc chiến đấu khẩn trương: D2 (trầm), D3, F3, A3
-                    freqs = [73.42, 146.83, 174.61, 220.00];
-                } else {
-                    // MENU / BRIEFING: D minor trầm hùng, bi tráng: D2, A2, D3, F3
-                    freqs = [73.42, 110.00, 146.83, 174.61];
-                }
-
-                freqs.forEach((freq, idx) => {
-                    const osc = this.ctx.createOscillator();
-                    const filter = this.ctx.createBiquadFilter();
-                    const gain = this.ctx.createGain();
-
-                    osc.type = idx === 0 ? 'sine' : 'sawtooth';
-                    osc.frequency.setValueAtTime(freq + (Math.random() - 0.5) * 0.6, t);
-
-                    filter.type = 'lowpass';
-                    filter.frequency.setValueAtTime(this.theme === 'PLAYING' ? 420 : 280, t);
-                    filter.Q.value = 1.6;
-
-                    const targetGain = (idx === 0 ? 0.32 : 0.1) * (this.theme === 'PLAYING' ? 1.15 : 0.85);
-                    gain.gain.setValueAtTime(0.001, t);
-                    gain.gain.setTargetAtTime(targetGain, t + 0.1, 0.7);
-
-                    osc.connect(filter);
-                    filter.connect(gain);
-                    gain.connect(this.masterGain);
-
-                    osc.start(t);
-                    this.chordNodes.push({ osc, gain });
-                });
-            },
-
-            // Dàn kèn đồng quân đội hào sảng (French Horn / Trumpet military fanfares)
-            playBrass(t, freq, dur = 0.35, vol = 0.28) {
-                if (!this.ctx || !this.masterGain) return;
-                const osc1 = this.ctx.createOscillator();
-                const osc2 = this.ctx.createOscillator();
-                const filter = this.ctx.createBiquadFilter();
-                const gain = this.ctx.createGain();
-
-                osc1.type = 'sawtooth';
-                osc2.type = 'sawtooth';
-                osc1.frequency.setValueAtTime(freq, t);
-                osc2.frequency.setValueAtTime(freq * 1.006, t); // rich detuned brass unison
-
-                filter.type = 'lowpass';
-                filter.Q.value = 2.8;
-                // Brass attack envelope: crisp brass bite opening up to 2800Hz then settling to warm body
-                filter.frequency.setValueAtTime(380, t);
-                filter.frequency.exponentialRampToValueAtTime(Math.min(3200, freq * 7), t + 0.035);
-                filter.frequency.exponentialRampToValueAtTime(Math.min(1800, freq * 4), t + dur * 0.5);
-                filter.frequency.exponentialRampToValueAtTime(280, t + dur + 0.08);
-
-                gain.gain.setValueAtTime(0.001, t);
-                gain.gain.exponentialRampToValueAtTime(vol * 0.38, t + 0.02);
-                gain.gain.setValueAtTime(vol * 0.34, t + dur * 0.6);
-                gain.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.08);
-
-                osc1.connect(filter);
-                osc2.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.masterGain);
-
-                osc1.start(t);
-                osc2.start(t);
-                osc1.stop(t + dur + 0.1);
-                osc2.stop(t + dur + 0.1);
-            },
-
-            // Dàn dây vĩ cầm dồn dập (Cinematic staccato string ostinato)
-            playStrings(t, freq, dur = 0.12, vol = 0.16) {
-                if (!this.ctx || !this.masterGain) return;
-                const osc = this.ctx.createOscillator();
-                const filter = this.ctx.createBiquadFilter();
-                const gain = this.ctx.createGain();
-
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(freq, t);
-
-                filter.type = 'bandpass';
-                filter.frequency.setValueAtTime(Math.max(450, freq * 2.2), t);
-                filter.Q.value = 1.4;
-
-                gain.gain.setValueAtTime(0.001, t);
-                gain.gain.exponentialRampToValueAtTime(vol * 0.25, t + 0.015);
-                gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-
-                osc.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.masterGain);
-
-                osc.start(t);
-                osc.stop(t + dur + 0.02);
-            },
-
-            // Tiếng trống trận trầm hùng (War Drum / Timpani)
-            playTimpani(t, freq = 65, vol = 0.45, isWarDrum = false) {
-                if (!this.ctx || !this.masterGain) return;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = isWarDrum ? 'triangle' : 'sine';
-                osc.frequency.setValueAtTime(isWarDrum ? freq * 1.6 : freq, t);
-                osc.frequency.exponentialRampToValueAtTime(isWarDrum ? 32 : 26, t + 0.42);
-
-                gain.gain.setValueAtTime(vol * 0.75, t);
-                gain.gain.exponentialRampToValueAtTime(0.001, t + (isWarDrum ? 0.6 : 0.48));
-                osc.connect(gain);
-                gain.connect(this.masterGain);
-                osc.start(t);
-                osc.stop(t + (isWarDrum ? 0.65 : 0.52));
-            },
-
-            // Tiếng trống duyệt binh hành quân (Marching Snare)
-            playSnareBrush(t, vol = 0.22, isRoll = false) {
-                if (!this.ctx || !this.masterGain) return;
-                const dur = isRoll ? 0.07 : 0.14;
-                const bufLen = Math.floor(this.ctx.sampleRate * dur);
-                const buf = this.ctx.createBuffer(1, bufLen, this.ctx.sampleRate);
-                const data = buf.getChannelData(0);
-                for (let i = 0; i < bufLen; i++) {
-                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * (isRoll ? 0.22 : 0.35)));
-                }
-                const src = this.ctx.createBufferSource();
-                const filter = this.ctx.createBiquadFilter();
-                const gain = this.ctx.createGain();
-                filter.type = 'bandpass';
-                filter.frequency.value = isRoll ? 2300 : 1800;
-                filter.Q.value = 1.8;
-                src.buffer = buf;
-                gain.gain.setValueAtTime(vol * 0.35, t);
-                gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
-                src.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.masterGain);
-                src.start(t);
-            },
-
-            // Chũm chọe / Tiếng kẻng lệnh xuất kích (Cymbal clash)
-            playCymbal(t, vol = 0.18) {
-                if (!this.ctx || !this.masterGain) return;
-                const dur = 0.65;
-                const bufLen = Math.floor(this.ctx.sampleRate * dur);
-                const buf = this.ctx.createBuffer(1, bufLen, this.ctx.sampleRate);
-                const data = buf.getChannelData(0);
-                for (let i = 0; i < bufLen; i++) {
-                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.18));
-                }
-                const src = this.ctx.createBufferSource();
-                const filter = this.ctx.createBiquadFilter();
-                const gain = this.ctx.createGain();
-                filter.type = 'highpass';
-                filter.frequency.value = 4200;
-                src.buffer = buf;
-                gain.gain.setValueAtTime(vol * 0.2, t);
-                gain.gain.exponentialRampToValueAtTime(0.0005, t + dur);
-                src.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.masterGain);
-                src.start(t);
-            },
-
-            tick() {
-                const step = this.step;
-                this.step = (this.step + 1) % 32;
-                if (this.step === 0) this.phrase = (this.phrase + 1) % 2;
-                const t = this.ctx.currentTime;
-                const isAir = typeof currentMode !== 'undefined' && currentMode === 'MIG21';
-
-                if (this.theme === 'PLAYING') {
-                    // === CHIẾN ĐẤU: HÀNH KHÚC HÀO HÙNG, XUNG TRẬN DŨNG MÃNH ===
-                    if (step === 0) {
-                        this.playTimpani(t, 72, 0.6, true);
-                        this.playCymbal(t, 0.22);
-                    } else if (step === 8) {
-                        this.playTimpani(t, 55, 0.42);
-                        this.playSnareBrush(t, 0.25);
-                    } else if (step === 16) {
-                        this.playTimpani(t, 65, 0.5, true);
-                    } else if (step === 24) {
-                        this.playTimpani(t, 55, 0.45);
-                        this.playSnareBrush(t, 0.28);
-                    }
-
-                    if (step === 4 || step === 20) {
-                        this.playSnareBrush(t, 0.22);
-                    } else if (step === 12) {
-                        this.playSnareBrush(t, 0.18, true);
-                    } else if (step === 13) {
-                        this.playSnareBrush(t, 0.24);
-                    } else if (step >= 28) {
-                        this.playSnareBrush(t, 0.16 + (step - 28) * 0.06, true);
-                    }
-
-                    if (step % 2 === 0) {
-                        const strNote = step < 16 ? (step % 4 === 0 ? 146.83 : 174.61) : (step % 4 === 0 ? 220.00 : 196.00);
-                        this.playStrings(t, strNote, 0.1, isAir ? 0.2 : 0.14);
-                    }
-
-                    if (this.phrase === 0) {
-                        if (step === 0) this.playBrass(t, 146.83, 0.45, 0.32);
-                        else if (step === 4) this.playBrass(t, 174.61, 0.3, 0.3);
-                        else if (step === 8) this.playBrass(t, 220.00, 0.4, 0.34);
-                        else if (step === 12) this.playBrass(t, 293.66, 0.65, 0.38);
-                        else if (step === 16) this.playBrass(t, 293.66, 0.35, 0.32);
-                        else if (step === 20) this.playBrass(t, 261.63, 0.3, 0.3);
-                        else if (step === 24) this.playBrass(t, 220.00, 0.4, 0.32);
-                        else if (step === 28) this.playBrass(t, 174.61, 0.25, 0.28);
-                    } else {
-                        if (step === 0) this.playBrass(t, 220.00, 0.4, 0.32);
-                        else if (step === 4) this.playBrass(t, 261.63, 0.3, 0.3);
-                        else if (step === 8) this.playBrass(t, 293.66, 0.4, 0.35);
-                        else if (step === 12) this.playBrass(t, 349.23, 0.7, 0.4);
-                        else if (step === 16) this.playBrass(t, 329.63, 0.35, 0.32);
-                        else if (step === 20) this.playBrass(t, 293.66, 0.35, 0.32);
-                        else if (step === 24) this.playBrass(t, 220.00, 0.4, 0.3);
-                        else if (step === 28) this.playBrass(t, 293.66, 0.6, 0.35);
-                    }
-                } else if (this.theme === 'MENU') {
-                    // === MENU / BRIEFING: TRANG NGHIÊM, HÀO HÙNG, BI TRÁNG ===
-                    if (step === 0) {
-                        this.playTimpani(t, 52, 0.38, true);
-                        this.playCymbal(t, 0.14);
-                        this.playBrass(t, 146.83, 0.8, 0.28);
-                    } else if (step === 8) {
-                        this.playSnareBrush(t, 0.16);
-                        this.playBrass(t, 174.61, 0.5, 0.26);
-                    } else if (step === 16) {
-                        this.playTimpani(t, 46, 0.3);
-                        this.playBrass(t, 220.00, 0.7, 0.3);
-                    } else if (step === 24) {
-                        this.playSnareBrush(t, 0.2);
-                        this.playBrass(t, 293.66, 0.9, 0.32);
-                    } else if (step === 28 || step === 30) {
-                        this.playSnareBrush(t, 0.12, true);
-                    }
-                } else if (this.theme === 'VICTORY') {
-                    // === VICTORY: ĐẠI THẮNG KHẢI HOÀN, RẠNG RỠ NON SÔNG ===
-                    if (step % 8 === 0) {
-                        this.playTimpani(t, 73.4, 0.48, true);
-                        this.playCymbal(t, 0.2);
-                    }
-                    if (step % 4 === 2) {
-                        this.playSnareBrush(t, 0.26, true);
-                    }
-                    if (step === 0) this.playBrass(t, 146.83, 0.35, 0.35);
-                    else if (step === 4) this.playBrass(t, 185.00, 0.35, 0.35);
-                    else if (step === 8) this.playBrass(t, 220.00, 0.35, 0.35);
-                    else if (step === 12) this.playBrass(t, 293.66, 0.7, 0.42);
-                    else if (step === 16) this.playBrass(t, 369.99, 0.4, 0.38);
-                    else if (step === 20) this.playBrass(t, 329.63, 0.35, 0.35);
-                    else if (step === 24) this.playBrass(t, 293.66, 0.4, 0.38);
-                    else if (step === 28) this.playBrass(t, 220.00, 0.5, 0.35);
-                }
-            }
+            setTheme() {},
+            toggle() { return false; },
+            updateUI() {},
+            startLoop() {},
+            updateChord() {},
+            tick() {}
         };
 
         if (typeof window !== 'undefined') {

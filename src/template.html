@@ -203,9 +203,10 @@
         .screen-title { font-size: clamp(30px, 4vw, 56px); font-weight: 600; text-transform: uppercase; color: #CDF7A1; line-height: 1.05; margin: 4px 0 6px; text-shadow: 0 0 14px rgba(163, 255, 120, 0.25); }
         .screen-title.is-fail { color: #FDBA74; }
         .kicker, .brief-date { font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase; color: #FDBA74; }
-        .brief-unit { color: #A1A1AA; font-size: 16px; margin-bottom: 18px; }
-        .brief-body { font-family: 'Newsreader', Georgia, serif; font-size: 18px; line-height: 1.6; color: #E4E4E7; }
-        .brief-body p { margin: 0 0 12px; }
+        .brief-unit { color: #A1A1AA; font-size: 14px; margin-bottom: 12px; }
+        .brief-body { font-family: 'Newsreader', Georgia, serif; font-size: 15px; line-height: 1.55; color: #E4E4E7; }
+        .brief-body p { margin: 0 0 10px; }
+        .brief-body p:last-child { margin-bottom: 0; }
         .brief-body b { color: #FDE68A; font-weight: 600; }
         .brief-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 18px; }
         .screen h3 { font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: #CDF7A1; margin: 18px 0 8px; }
@@ -213,6 +214,11 @@
         .brief-cols li { padding: 6px 0 6px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.07); position: relative; }
         .brief-cols li::before { content: '›'; position: absolute; left: 0; color: #CDF7A1; }
         .brief-cols b { color: #FAFAFA; }
+        .brief-list { list-style: none; padding: 0; margin: 0; }
+        .brief-list li { padding: 4px 0 4px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); position: relative; font-size: 13px; line-height: 1.4; color: #D4D4D8; }
+        .brief-list li:last-child { border-bottom: none; }
+        .brief-list li::before { content: '›'; position: absolute; left: 0; color: #10B981; font-weight: bold; }
+        .brief-list b { color: #FAFAFA; }
         .screen-actions, .menu-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
         .menu-buttons { flex-direction: column; align-items: stretch; max-width: 440px; }
         .menu-btn {
@@ -267,7 +273,7 @@
             background: radial-gradient(circle at 50% 25%, rgba(6, 18, 15, 0.95) 0%, rgba(2, 5, 8, 0.98) 100%);
             backdrop-filter: blur(12px);
         }
-        .debrief-modal-card {
+        .debrief-modal-card, .briefing-modal-card {
             max-width: 1160px;
             width: 100%;
             max-height: 94vh;
@@ -281,7 +287,8 @@
             position: relative;
             overflow: hidden;
         }
-        .debrief-modal-card::before, .debrief-modal-card::after {
+        .debrief-modal-card::before, .debrief-modal-card::after,
+        .briefing-modal-card::before, .briefing-modal-card::after {
             content: '';
             position: absolute;
             width: 14px;
@@ -289,20 +296,20 @@
             pointer-events: none;
             z-index: 10;
         }
-        .debrief-modal-card::before {
+        .debrief-modal-card::before, .briefing-modal-card::before {
             top: 6px;
             left: 6px;
             border-top: 2px solid #CDF7A1;
             border-left: 2px solid #CDF7A1;
         }
-        .debrief-modal-card::after {
+        .debrief-modal-card::after, .briefing-modal-card::after {
             bottom: 6px;
             right: 6px;
             border-bottom: 2px solid #CDF7A1;
             border-right: 2px solid #CDF7A1;
         }
 
-        .debrief-header-bar {
+        .debrief-header-bar, .briefing-header-bar {
             padding: 16px 22px 10px;
             flex-shrink: 0;
             background: rgba(0, 0, 0, 0.3);
@@ -327,18 +334,28 @@
             margin: 2px 0 0 !important;
             font-size: clamp(26px, 3.2vw, 42px) !important;
         }
+        .briefing-title {
+            margin: 2px 0 0 !important;
+            font-size: clamp(20px, 2.4vw, 34px) !important;
+            font-weight: 700 !important;
+            color: #CDF7A1 !important;
+            line-height: 1.15 !important;
+            letter-spacing: 0.02em !important;
+            white-space: normal !important;
+            overflow-wrap: break-word !important;
+        }
 
-        .debrief-body-scroll {
+        .debrief-body-scroll, .briefing-body-scroll {
             flex: 1 1 auto;
             overflow-y: auto;
             padding: 14px 22px;
             scrollbar-width: thin;
             scrollbar-color: rgba(205, 247, 161, 0.3) rgba(0, 0, 0, 0.3);
         }
-        .debrief-body-scroll::-webkit-scrollbar {
+        .debrief-body-scroll::-webkit-scrollbar, .briefing-body-scroll::-webkit-scrollbar {
             width: 6px;
         }
-        .debrief-body-scroll::-webkit-scrollbar-thumb {
+        .debrief-body-scroll::-webkit-scrollbar-thumb, .briefing-body-scroll::-webkit-scrollbar-thumb {
             background: rgba(205, 247, 161, 0.3);
             border-radius: 3px;
         }
@@ -1010,7 +1027,6 @@
             <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
                 <div class="flex items-center gap-3">
                     <button class="link-btn" onclick="showScreen('menu')">← Menu chính</button>
-                    <button class="tool-btn btn-toggle-bgm text-emerald-300 border-emerald-500/40 hover:border-emerald-400" onclick="MusicSystem.toggle()">Nhạc: BẬT<kbd>B</kbd></button>
                 </div>
                 <button class="link-btn text-emerald hover:text-emerald-300" onclick="toggleTacticalGuide(true)">Cẩm nang tác chiến [H]</button>
             </div>
@@ -1039,20 +1055,83 @@
     </div>
 
     <div id="screen-briefing" class="screen">
-        <div class="screen-inner">
-            <div class="brief-date" id="brief-date"></div>
-            <div class="screen-title" id="brief-title"></div>
-            <div class="brief-unit" id="brief-unit"></div>
-            <div id="brief-story-quote" class="brief-prologue mb-4 p-3.5 bg-black/70 border-l-4 border-amber-400 font-serif italic text-amber-200/95 text-sm sm:text-base leading-relaxed rounded-r shadow-lg"></div>
-            <div class="brief-body" id="brief-body"></div>
-            <div class="brief-cols">
-                <div><h3>Nhiệm vụ</h3><ul id="brief-objectives"></ul></div>
-                <div><h3>Điều khiển</h3><ul id="brief-controls"></ul></div>
+        <div class="screen-inner wide briefing-modal-card">
+            <!-- Header bar with military command style -->
+            <div class="briefing-header-bar">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-emerald-500/20 pb-2.5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-300 font-bold text-base shadow-[0_0_12px_rgba(16,185,129,0.3)]">
+                            ★
+                        </div>
+                        <div>
+                            <div class="font-mono text-[11px] sm:text-xs uppercase tracking-widest text-emerald-400/90 font-semibold">
+                                QUÂN CHỦNG PHÒNG KHÔNG - KHÔNG QUÂN · BỘ TƯ LỆNH TIỀN PHƯƠNG
+                            </div>
+                            <div class="brief-date text-xs text-amber-400 font-mono" id="brief-date"></div>
+                        </div>
+                    </div>
+                    <div class="classified-stamp">
+                        <span>MỆNH LỆNH TÁC CHIẾN // TỐI MẬT</span>
+                    </div>
+                </div>
+
+                <div class="mt-2.5 flex flex-col gap-0.5">
+                    <h2 class="screen-title briefing-title m-0" id="brief-title"></h2>
+                    <div class="brief-unit text-xs sm:text-sm text-zinc-400 font-mono m-0" id="brief-unit"></div>
+                </div>
             </div>
-            <div class="screen-actions">
-                <button class="menu-btn primary" onclick="beginMission()">Vào trận</button>
-                <button class="menu-btn" onclick="toggleTacticalGuide(true)">Cẩm nang tác chiến [H]</button>
-                <button class="menu-btn subtle" onclick="showScreen('campaign')">← Danh sách màn</button>
+
+            <!-- Two-column main body -->
+            <div class="briefing-body-scroll">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                    
+                    <!-- Left Column: Situation & Historical Intelligence (7 cols on lg) -->
+                    <div class="lg:col-span-7 flex flex-col gap-3">
+                        <div id="brief-story-quote" class="brief-prologue p-3.5 bg-amber-950/20 border-l-4 border-amber-400 font-serif italic text-amber-200/95 text-xs sm:text-sm leading-relaxed rounded-r shadow-md"></div>
+                        <div class="p-3.5 bg-black/60 border border-emerald-500/20 rounded-lg">
+                            <div class="text-[11px] uppercase font-mono tracking-widest text-emerald-400 font-bold mb-2 flex items-center gap-1.5">
+                                <span class="font-mono text-amber-400">//</span> TÌNH BÁO TÁC CHIẾN &amp; DIỄN BIẾN
+                            </div>
+                            <div class="brief-body" id="brief-body"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Mission Objectives, Armament & Direct Action (5 cols on lg) -->
+                    <div class="lg:col-span-5 flex flex-col gap-3">
+                        <!-- Direct Objectives Card -->
+                        <div class="p-3.5 bg-emerald/10 border border-emerald/30 rounded-lg">
+                            <div class="text-xs uppercase font-mono tracking-widest text-emerald font-bold mb-2 flex items-center gap-1.5">
+                                <span class="font-mono text-emerald-400">[01]</span> NHIỆM VỤ TIÊU DIỆT
+                            </div>
+                            <ul id="brief-objectives" class="brief-list"></ul>
+                        </div>
+
+                        <!-- Controls Guide Card -->
+                        <div class="p-3.5 bg-black/60 border border-white/10 rounded-lg">
+                            <div class="text-[11px] uppercase font-mono tracking-widest text-zinc-400 font-semibold mb-1.5 flex items-center gap-1.5">
+                                <span class="font-mono text-zinc-500">[02]</span> QUY TẮC ĐIỀU KHIỂN &amp; KHÍ TÀI
+                            </div>
+                            <ul id="brief-controls" class="brief-list font-mono text-xs"></ul>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="screen-actions flex flex-col gap-2 mt-1">
+                            <button class="menu-btn primary w-full text-center py-2.5 text-sm sm:text-base font-bold flex items-center justify-center gap-2" onclick="beginMission()">
+                                <span>VÀO TRẬN CHIẾN ĐẤU →</span>
+                                <span class="key-badge">Space / Enter</span>
+                            </button>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button class="menu-btn w-full text-center py-1.5 text-xs" onclick="toggleTacticalGuide(true)">
+                                    Cẩm nang [H]
+                                </button>
+                                <button class="menu-btn subtle w-full text-center py-1.5 text-xs" onclick="showScreen('campaign')">
+                                    ← Danh sách màn
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
@@ -1437,7 +1516,6 @@
         </div>
         <div class="poster-h2 poster-amber">CÒN: <span id="obj-timer" class="tabular-nums">02:30</span> · <span id="poster-state">SẴN SÀNG</span></div>
         <div id="game-toolbar" class="pointer-events-auto flex justify-end gap-2 mt-2">
-            <button class="tool-btn btn-toggle-bgm text-emerald-300 border-emerald-500/40 hover:border-emerald-400" onclick="MusicSystem.toggle()">Nhạc: BẬT<kbd>B</kbd></button>
             <button class="tool-btn text-amber-300 border-amber-500/40 hover:border-amber-400" onclick="toggleRadioLog(true)">Nhật ký<kbd>L</kbd></button>
             <button class="tool-btn text-teal-300 border-teal-500/40 hover:border-teal-400" onclick="toggleTacticalGuide(true)">Cẩm nang<kbd>H</kbd></button>
             <button class="tool-btn" onclick="pauseMission()">Tạm dừng<kbd>Esc</kbd></button>
@@ -1504,52 +1582,77 @@
     </div>
 
     <!-- 8. MODE [3] HANGAR STUDIO FLOATING CONTROLS + .GLB/.GLTF EXTERNAL LOADER -->
-    <div id="hangar-floating-bar" class="fixed bottom-16 inset-x-0 z-[25] hidden justify-center pointer-events-none px-4">
-        <div class="glass-pill rounded-2xl p-3.5 max-w-4xl w-full pointer-events-auto space-y-2.5 shadow-2xl">
-            <div class="flex flex-wrap items-center justify-between gap-2 border-b hairline-border pb-2">
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald animate-pulse"></span>
-                    <span id="hangar-model-name" class="font-mono text-xs font-bold uppercase text-alabaster">
-                        TIÊM KÍCH MIG-21BIS (#5121 — 5 NGÔI SAO ĐỎ CHIẾN CÔNG)
-                    </span>
-                </div>
-                <div class="flex flex-wrap items-center gap-2">
-                    <button onclick="leaveHangar()" class="px-2.5 py-1 rounded bg-canvas border hairline-border font-mono text-[10px] text-alabaster hover:text-emerald">← MENU</button>
-                    <label class="px-2.5 py-1 rounded bg-emerald/20 border border-emerald text-emerald hover:bg-emerald hover:text-canvas font-mono text-[10px] font-bold cursor-pointer transition">
-                        + NẠP FILE .GLB / .GLTF TỪ MÁY
-                        <input type="file" id="glb-file-input" accept=".glb,.gltf" class="hidden" onchange="handleExternalGLBUpload(event)">
-                    </label>
-                    <button onclick="toggleHangarWireframe()" id="btn-wireframe" class="px-2.5 py-1 rounded bg-canvas border hairline-border font-mono text-[10px] text-muted hover:text-alabaster">
-                        KHUNG DÂY ĐA GIÁC: TẮT
-                    </button>
+    <div id="hangar-floating-bar" class="fixed inset-0 z-[25] hidden pointer-events-none">
+        
+        <!-- Top Command Header Bar -->
+        <div class="fixed top-3 inset-x-3 sm:inset-x-6 flex items-center justify-between gap-3 pointer-events-none z-30">
+            <div class="pointer-events-auto flex items-center gap-3 px-3.5 py-2 rounded-lg bg-black/85 backdrop-blur-md border border-emerald-500/30 shadow-2xl">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#10B981]"></span>
+                <div>
+                    <div class="font-mono text-[10px] uppercase tracking-widest text-emerald-400 font-bold">
+                        BẢO TÀNG KHÍ TÀI QUÂN SỰ 3D // 1972
+                    </div>
+                    <div id="hangar-model-name" class="font-serif text-sm font-semibold text-alabaster tracking-wide">
+                        Tiêm kích MiG-21bis (#5121)
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <button onclick="loadHangarShowcaseModel('MIG21')" id="h-model-MIG21" class="p-2 rounded-lg border text-left transition bg-alabaster text-canvas border-alabaster">
-                    <div class="font-mono text-[9px] font-bold uppercase">TRUNG ĐOÀN SAO ĐỎ</div>
-                    <div class="font-serif text-sm font-semibold">Tiêm kích MiG-21bis (#5121)</div>
+            <div class="pointer-events-auto flex items-center gap-2">
+                <label class="px-2.5 py-1.5 rounded bg-black/75 hover:bg-zinc-800 border border-white/15 text-zinc-300 hover:text-white font-mono text-[11px] cursor-pointer transition flex items-center gap-1.5 shadow-lg" title="Nạp file 3D .glb / .gltf từ máy tính">
+                    <span class="font-mono text-emerald-400 font-bold">[+]</span>
+                    <span class="hidden sm:inline">Nạp file 3D .GLB</span>
+                    <input type="file" id="glb-file-input" accept=".glb,.gltf" class="hidden" onchange="handleExternalGLBUpload(event)">
+                </label>
+                <button onclick="toggleHangarWireframe()" id="btn-wireframe" class="px-2.5 py-1.5 rounded bg-black/75 hover:bg-zinc-800 border border-white/15 text-zinc-300 hover:text-white font-mono text-[11px] transition shadow-lg">
+                    Khung dây: Tắt
                 </button>
-                <button onclick="loadHangarShowcaseModel('B52')" id="h-model-B52" class="p-2 rounded-lg border hairline-border bg-canvas text-muted hover:text-alabaster text-left transition">
-                    <div class="font-mono text-[9px] font-bold uppercase text-vermilion">KHÔNG QUÂN CHIẾN LƯỢC MỸ</div>
-                    <div class="font-serif text-sm font-semibold text-alabaster">Pháo đài bay B-52G</div>
+                <button onclick="leaveHangar()" class="px-3.5 py-1.5 rounded bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/50 text-emerald-300 hover:text-white font-mono text-xs font-bold tracking-wider transition shadow-[0_0_15px_rgba(16,185,129,0.25)]">
+                    ← MENU [Esc]
                 </button>
-                <button onclick="loadHangarShowcaseModel('SAM2')" id="h-model-SAM2" class="p-2 rounded-lg border hairline-border bg-canvas text-muted hover:text-alabaster text-left transition">
-                    <div class="font-mono text-[9px] font-bold uppercase text-emerald">BỘ ĐỘI TÊN LỬA VIỆT NAM</div>
-                    <div class="font-serif text-sm font-semibold text-alabaster">Tổ hợp Tên lửa SAM-2</div>
-                </button>
-                <button onclick="loadHangarShowcaseModel('RADAR')" id="h-model-RADAR" class="p-2 rounded-lg border hairline-border bg-canvas text-muted hover:text-alabaster text-left transition">
-                    <div class="font-mono text-[9px] font-bold uppercase text-brass">ĐÔI MẮT THẦN TRẬN ĐỊA</div>
-                    <div class="font-serif text-sm font-semibold text-alabaster">Đài Radar SNR-75 Fan Song</div>
-                </button>
+            </div>
+        </div>
+
+        <!-- Left Museum Telemetry Plaque -->
+        <div class="fixed top-20 left-4 z-30 w-72 sm:w-80 max-w-[calc(100vw-32px)] p-4 rounded-xl bg-black/85 backdrop-blur-md border border-emerald-500/30 pointer-events-auto space-y-2.5 shadow-2xl hidden md:flex md:flex-col">
+            <div class="flex items-center justify-between border-b border-emerald-500/20 pb-2">
+                <span class="text-[10px] font-mono uppercase tracking-widest text-emerald-400 font-bold">// THÔNG SỐ CHIẾN THUẬT</span>
+                <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">CAD 3D</span>
             </div>
 
             <!-- Structured Museum-grade Specifications Grid -->
-            <div id="hangar-model-specs" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono border-t hairline-border pt-2"></div>
+            <div id="hangar-model-specs" class="grid grid-cols-2 gap-1.5 text-[11px] font-mono"></div>
 
-            <p id="hangar-model-desc" class="text-xs text-muted leading-relaxed">
-                Dài 15.5m, sải cánh 7.15m, sơn phủ hợp kim nhôm bạc phản xạ PBR với 5 ngôi sao đỏ chiến công và số hiệu 5121 trên mũi, cánh tam giác 57°, bình dầu phụ dưới bụng, 2 tên lửa tầm nhiệt K-13 Atoll trên giá phóng APU-13 và luồng lửa tăng lực R-25-300 Mach Diamonds.
+            <p id="hangar-model-desc" class="text-xs text-zinc-300 font-sans leading-relaxed border-t border-white/10 pt-2.5 m-0">
+                Dài 15.5m, sải cánh 7.15m, trang bị động cơ phản lực R-25-300 với 5 ngôi sao đỏ chiến công bắn rơi máy bay Mỹ trên mũi.
             </p>
+
+            <div class="text-[10px] font-mono text-zinc-400 border-t border-white/10 pt-2 flex items-center justify-between">
+                <span>Kéo chuột: Xoay 360°</span>
+                <span>Cuộn: Thu phóng</span>
+            </div>
+        </div>
+
+        <!-- Bottom Horizontal Model Selector Dock -->
+        <div class="fixed bottom-4 inset-x-0 z-30 flex justify-center pointer-events-none px-4">
+            <div class="pointer-events-auto flex items-center gap-2 p-1.5 rounded-xl bg-black/85 backdrop-blur-md border border-white/15 shadow-2xl max-w-2xl w-full">
+                <button onclick="loadHangarShowcaseModel('MIG21')" id="h-model-MIG21" class="hangar-dock-btn flex-1 p-2 rounded-lg border text-left transition">
+                    <div class="font-mono text-[9px] font-bold text-amber-400 uppercase">TRUNG ĐOÀN 921</div>
+                    <div class="font-serif text-xs sm:text-sm font-semibold truncate">MiG-21bis #5121</div>
+                </button>
+                <button onclick="loadHangarShowcaseModel('B52')" id="h-model-B52" class="hangar-dock-btn flex-1 p-2 rounded-lg border text-left transition">
+                    <div class="font-mono text-[9px] font-bold text-rose-400 uppercase">SAC USAF</div>
+                    <div class="font-serif text-xs sm:text-sm font-semibold truncate">Pháo đài B-52G</div>
+                </button>
+                <button onclick="loadHangarShowcaseModel('SAM2')" id="h-model-SAM2" class="hangar-dock-btn flex-1 p-2 rounded-lg border text-left transition">
+                    <div class="font-mono text-[9px] font-bold text-emerald-400 uppercase">TÊN LỬA PK</div>
+                    <div class="font-serif text-xs sm:text-sm font-semibold truncate">Tổ hợp SAM-2</div>
+                </button>
+                <button onclick="loadHangarShowcaseModel('RADAR')" id="h-model-RADAR" class="hangar-dock-btn flex-1 p-2 rounded-lg border text-left transition">
+                    <div class="font-mono text-[9px] font-bold text-cyan-400 uppercase">ĐÀI ĐIỀU KHIỂN</div>
+                    <div class="font-serif text-xs sm:text-sm font-semibold truncate">Radar Fan Song</div>
+                </button>
+            </div>
         </div>
     </div>
 

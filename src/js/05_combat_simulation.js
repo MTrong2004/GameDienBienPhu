@@ -651,6 +651,9 @@
                     // self-destruct fuze: a flash and a dark puff that drifts
                     spawnSmokePuff(r.pos.clone(), r.heavy ? 5 : 2.2, new THREE.Vector3(), 0.18, 'fire');
                     spawnSmokePuff(r.pos.clone(), r.heavy ? 7 : 3, new THREE.Vector3((Math.random() - 0.5) * 2, 0.4, 0), r.heavy ? 4 : 2.2, 'blacksmoke');
+                    if (typeof SoundFX !== 'undefined' && SoundFX.flakBurst) {
+                        SoundFX.flakBurst(r.pos.distanceTo(camera.position), r.heavy);
+                    }
                     if (r.mesh) worldCombatGroup.remove(r.mesh);
                     aaaRounds.splice(i, 1);
                 }

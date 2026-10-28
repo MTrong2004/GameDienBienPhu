@@ -42,15 +42,6 @@
             if (name === 'campaign') renderMissionList();
             if (name === 'menu') renderMenuProgress();
             if (name === 'archive' && typeof renderArchiveTab === 'function') renderArchiveTab('card1');
-            if (typeof MusicSystem !== 'undefined' && MusicSystem.ctx) {
-                if (name === 'victory' || (name === 'debrief' && missionWon)) {
-                    MusicSystem.setTheme('VICTORY');
-                } else if (name === null) {
-                    MusicSystem.setTheme('PLAYING');
-                } else {
-                    MusicSystem.setTheme('MENU');
-                }
-            }
         }
 
         function continueCampaign() {

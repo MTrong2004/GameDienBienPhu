@@ -19,7 +19,6 @@
                 if (this.ctx && this.ctx.state === 'suspended') {
                     try { this.ctx.resume().catch(() => {}); } catch(e){}
                 }
-                if (typeof MusicSystem !== 'undefined') MusicSystem.init();
                 return this.ctx;
             },
 
@@ -27,14 +26,7 @@
                 this.init();
                 if (this.ctx && this.ctx.state === 'suspended') {
                     try {
-                        this.ctx.resume().then(() => {
-                            if (typeof MusicSystem !== 'undefined') {
-                                MusicSystem.init();
-                                if (MusicSystem.enabled && MusicSystem.chordNodes && MusicSystem.chordNodes.length === 0) {
-                                    MusicSystem.updateChord();
-                                }
-                            }
-                        }).catch(() => {});
+                        this.ctx.resume().catch(() => {});
                     } catch(e){}
                 }
                 return this.ctx;
