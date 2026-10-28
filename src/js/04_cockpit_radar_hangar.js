@@ -865,33 +865,6 @@
                         </div>
                     </div>
 
-                    <!-- Schematic Hanoi map: click a dot to open its night card -->
-                    <div class="p-3 rounded-lg bg-black/70 border border-emerald-500/30 space-y-2">
-                        <div class="font-mono text-[11px] text-emerald-400 uppercase font-bold tracking-wider">// SƠ ĐỒ HÀ NỘI &amp; VÒNG NGOÀI — BẤM VÀO ĐIỂM ĐỂ MỞ THẺ ĐÊM</div>
-                        <svg viewBox="0 0 100 74" class="w-full rounded bg-zinc-950/80 border border-white/10">
-                            <text x="1" y="3" font-size="3" fill="#71717a">↑ BẮC</text>
-<g onclick="mapJump('night-node-1')" style="cursor:pointer"><title>Đ1 · Phù Lỗ – Cổ Loa — bấm để mở thẻ đêm</title><circle cx="44" cy="10" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="48" y="11.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ1 · Phù Lỗ – Cổ Loa</text></g>
-<g onclick="mapJump('night-node-2')" style="cursor:pointer"><title>Đ2 · Chèm – Mễ Trì — bấm để mở thẻ đêm</title><circle cx="28" cy="26" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="32" y="27.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ2 · Chèm – Mễ Trì</text></g>
-<g onclick="mapJump('night-node-3')" style="cursor:pointer"><title>Đ3 · Yên Viên – Cầu Đuống — bấm để mở thẻ đêm</title><circle cx="74" cy="28" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="70" y="29.2" font-size="3.4" fill="#d4d4d8" text-anchor="end">Đ3 · Yên Viên – Cầu Đuống</text></g>
-<g onclick="mapJump('night-node-4')" style="cursor:pointer"><title>Đ4 · An Khánh — bấm để mở thẻ đêm</title><circle cx="18" cy="48" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="22" y="49.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ4 · An Khánh</text></g>
-<g onclick="mapJump('night-node-5')" style="cursor:pointer"><title>Đ5 · Bạch Mai — bấm để mở thẻ đêm</title><circle cx="52" cy="58" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="56" y="59.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ5 · Bạch Mai</text></g>
-<g onclick="mapJump('night-node-6')" style="cursor:pointer"><title>Đ6 · Giáp Bát – Văn Điển — bấm để mở thẻ đêm</title><circle cx="56" cy="68" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="60" y="69.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ6 · Giáp Bát – Văn Điển</text></g>
-<g onclick="mapJump('night-node-7')" style="cursor:pointer"><title>Đ7 · Đan Phượng — bấm để mở thẻ đêm</title><circle cx="12" cy="32" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="16" y="33.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ7 · Đan Phượng</text></g>
-<g onclick="mapJump('night-node-8')" style="cursor:pointer"><title>Đ8 · A31 / Z119 — bấm để mở thẻ đêm</title><circle cx="22" cy="64" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="26" y="65.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ8 · A31 / Z119</text></g>
-<g onclick="mapJump('night-node-9')" style="cursor:pointer"><title>Đ9 · Khâm Thiên — bấm để mở thẻ đêm</title><circle cx="47" cy="44" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="51" y="45.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ9 · Khâm Thiên</text></g>
-<g onclick="mapJump('night-node-9')" style="cursor:pointer"><title>Đ9 · An Dương — bấm để mở thẻ đêm</title><circle cx="33" cy="41" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="37" y="42.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ9 · An Dương</text></g>
-<g onclick="mapJump('night-node-10')" style="cursor:pointer"><title>Đ10 · Hồ Hữu Tiệp — bấm để mở thẻ đêm</title><circle cx="44" cy="36" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="48" y="37.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ10 · Hồ Hữu Tiệp</text></g>
-<g onclick="mapJump('night-node-11')" style="cursor:pointer"><title>Đ11 · Sài Đồng — bấm để mở thẻ đêm</title><circle cx="68" cy="42" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="64" y="43.2" font-size="3.4" fill="#d4d4d8" text-anchor="end">Đ11 · Sài Đồng</text></g>
-<g onclick="mapJump('night-node-12')" style="cursor:pointer"><title>Đ12 · Bảo tàng B-52 — bấm để mở thẻ đêm</title><circle cx="58" cy="50" r="2.6" fill="#34d399" stroke="#000" stroke-opacity="0.4"/><text x="62" y="51.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ12 · Bảo tàng B-52</text></g>
-<g onclick="mapJump('night-node-10')" style="cursor:pointer"><title>Đ10 · Yên Bái — bấm để mở thẻ đêm</title><circle cx="14" cy="8" r="2.6" fill="#fbbf24" stroke="#000" stroke-opacity="0.4"/><text x="18" y="9.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ10 · Yên Bái</text></g>
-<g onclick="mapJump('night-node-11')" style="cursor:pointer"><title>Đ11 · Sơn La — bấm để mở thẻ đêm</title><circle cx="4" cy="40" r="2.6" fill="#fbbf24" stroke="#000" stroke-opacity="0.4"/><text x="8" y="41.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ11 · Sơn La</text></g>
-<g onclick="mapJump('night-node-12')" style="cursor:pointer"><title>Đ12 · Trại Cau — bấm để mở thẻ đêm</title><circle cx="58" cy="3" r="2.6" fill="#fbbf24" stroke="#000" stroke-opacity="0.4"/><text x="62" y="4.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ12 · Trại Cau</text></g>
-<g onclick="mapJump('night-node-12')" style="cursor:pointer"><title>Đ12 · Đồng Mỏ — bấm để mở thẻ đêm</title><circle cx="90" cy="10" r="2.6" fill="#fbbf24" stroke="#000" stroke-opacity="0.4"/><text x="86" y="11.2" font-size="3.4" fill="#d4d4d8" text-anchor="end">Đ12 · Đồng Mỏ</text></g>
-<g onclick="mapJump('night-node-12')" style="cursor:pointer"><title>Đ12 · Kim Anh — bấm để mở thẻ đêm</title><circle cx="32" cy="3" r="2.6" fill="#fbbf24" stroke="#000" stroke-opacity="0.4"/><text x="36" y="4.2" font-size="3.4" fill="#d4d4d8" text-anchor="start">Đ12 · Kim Anh</text></g>
-                        </svg>
-                        <div class="text-[11px] text-zinc-400 leading-relaxed">Vị trí tương đối, <b class="text-zinc-200">không theo tỷ lệ</b>, chỉ để định hướng. Điểm xanh = Hà Nội &amp; vùng ven; điểm hổ phách = vòng ngoài (Yên Bái, Sơn La, Thái Nguyên, Lạng Sơn, Vĩnh Phúc). Mỗi điểm mở đúng thẻ đêm có địa danh đó.</div>
-                    </div>
-
                     <!-- 12 Nights Timeline Cards with Modern Day Site & Direct Google Maps Direction Link -->
                     <div class="space-y-4">
 
@@ -1811,15 +1784,6 @@
         }
         window.quizAnswer = quizAnswer;
         window.quizReset = quizReset;
-        function mapJump(id) {
-            const inp = document.getElementById('archive-search');
-            if (inp) inp.value = '';
-            filterArchive('');
-            expandNight(id);
-            const el = document.getElementById(id);
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-        window.mapJump = mapJump;
         window.filterArchive = filterArchive;
         window.setAllNights = setAllNights;
         window.expandNight = expandNight;
