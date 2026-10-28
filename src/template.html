@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HÀ NỘI 12 NGÀY ĐÊM (18/12 – 29/12/1972) — Kỳ tích Điện Biên Phủ trên không</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js r128 Core, Post-Processing (UnrealBloomPass) & GLTFLoader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+
+    <!-- Google Fonts: Newsreader, Plus Jakarta Sans, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        canvas: '#09090B',
+                        surface: '#121215',
+                        alabaster: '#FAFAFA',
+                        muted: '#A1A1AA',
+                        vermilion: '#E11D48',
+                        brass: '#D97706',
+                        emerald: '#10B981',
+                        cockpit: '#137A63'
+                    },
+                    fontFamily: {
+                        serif: ['Newsreader', 'Georgia', 'serif'],
+                        sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg-canvas: #09090B;
+            --bg-surface: rgba(8, 13, 17, 0.86);
+            --border-hairline: rgba(255, 255, 255, 0.14);
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #09090B;
+            color: #FAFAFA;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #webgl-viewport {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            cursor: crosshair;
+        }
+
+        .glass-pill {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-hairline);
+        }
+
+        .tactical-panel {
+            background: rgba(6, 16, 14, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(16, 185, 129, 0.36);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.72), inset 0 0 14px rgba(16, 185, 129, 0.08);
+        }
+
+        .command-panel-cyan {
+            background: rgba(6, 18, 26, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(45, 212, 191, 0.42);
+            box-shadow: 0 0 28px rgba(6, 182, 212, 0.18), inset 0 0 12px rgba(45, 212, 191, 0.08);
+        }
+
+        .hairline-border {
+            border-color: var(--border-hairline);
+        }
+
+        .tabular-nums {
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Range Slider for ECCM Anti-Jamming */
+        input[type="range"].eccm-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 110px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.22);
+            border-radius: 2px;
+            outline: none;
+        }
+        input[type="range"].eccm-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 16px;
+            background: #10B981;
+            border: 1px solid #09090B;
+            border-radius: 2px;
+            cursor: ew-resize;
+        }
+
+        /* GPU Screen-Space Target Lock Bracket */
+        .hud-lock-box {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 72px;
+            height: 72px;
+            margin-left: -36px;
+            margin-top: -36px;
+            pointer-events: none;
+            z-index: 12;
+            will-change: transform;
+            transition: opacity 0.12s ease;
+        }
+
+        /* 3D Map Tactical Callout Pin */
+        .map-pin-label {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -100%);
+            pointer-events: none;
+            z-index: 11;
+            will-change: transform;
+            transition: opacity 0.15s ease;
+        }
+
+        #jamming-scanlines {
+            position: fixed;
+            inset: 0;
+            z-index: 4;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(225, 29, 72, 0.08) 0px,
+                rgba(225, 29, 72, 0.08) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        #explosion-flash {
+            position: fixed;
+            inset: 0;
+            z-index: 5;
+            pointer-events: none;
+            background: radial-gradient(circle at center, rgba(254, 240, 138, 0.42), rgba(234, 88, 12, 0.22), transparent 74%);
+            opacity: 0;
+            transition: opacity 0.08s ease-out;
+        }
+
+        /* ---- Full-screen menus over the live 3D scene ---- */
+        .screen {
+            position: fixed;
+            inset: 0;
+            z-index: 55;
+            display: none;
+            overflow-y: auto;
+            padding: 24px 16px;
+            background: linear-gradient(90deg, rgba(3, 6, 10, 0.92) 0%, rgba(3, 6, 10, 0.72) 55%, rgba(3, 6, 10, 0.35) 100%);
+            font-family: 'Oswald', 'Plus Jakarta Sans', sans-serif;
+        }
+        .screen.is-open { display: flex; }
+        .screen-inner { width: 100%; max-width: 720px; margin: auto auto auto max(0px, 5vw); } /* auto margins centre without clipping tall content */
+        .screen-inner.wide { max-width: 1120px; }
+        .screen-inner.narrow { max-width: 420px; }
+        .screen-title { font-size: clamp(30px, 4vw, 56px); font-weight: 600; text-transform: uppercase; color: #CDF7A1; line-height: 1.05; margin: 4px 0 6px; text-shadow: 0 0 14px rgba(163, 255, 120, 0.25); }
+        .screen-title.is-fail { color: #FDBA74; }
+        .kicker, .brief-date { font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase; color: #FDBA74; }
+        .brief-unit { color: #A1A1AA; font-size: 16px; margin-bottom: 18px; }
+        .brief-body { font-family: 'Newsreader', Georgia, serif; font-size: 18px; line-height: 1.6; color: #E4E4E7; }
+        .brief-body p { margin: 0 0 12px; }
+        .brief-body b { color: #FDE68A; font-weight: 600; }
+        .brief-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 18px; }
+        .screen h3 { font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: #CDF7A1; margin: 18px 0 8px; }
+        .brief-cols ul { list-style: none; padding: 0; margin: 0; color: #D4D4D8; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; }
+        .brief-cols li { padding: 6px 0 6px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.07); position: relative; }
+        .brief-cols li::before { content: '›'; position: absolute; left: 0; color: #CDF7A1; }
+        .brief-cols b { color: #FAFAFA; }
+        .screen-actions, .menu-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+        .menu-buttons { flex-direction: column; align-items: stretch; max-width: 440px; }
+        .menu-btn {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 15px;
+            padding: 9px 16px;
+            color: #E4E4E7;
+            background: rgba(8, 14, 12, 0.78);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+            text-align: left;
+            transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
+            cursor: pointer;
+        }
+        .menu-btn:hover, .menu-btn:focus-visible { background: rgba(16, 185, 129, 0.18); border-color: #34D399; color: #FFFFFF; outline: none; box-shadow: 0 0 12px rgba(16, 185, 129, 0.25); }
+        .menu-btn.primary { background: #10B981; color: #040906; border-color: #34D399; font-weight: 700; box-shadow: 0 0 18px rgba(16, 185, 129, 0.4); }
+        .menu-btn.primary:hover { background: #34D399; color: #000; box-shadow: 0 0 24px rgba(16, 185, 129, 0.6); }
+        .menu-btn.subtle { font-size: 13px; color: #A1A1AA; }
+        .link-btn { font-family: 'Oswald', sans-serif; color: #A1A1AA; text-transform: uppercase; letter-spacing: 0.08em; font-size: 15px; background: none; border: 0; cursor: pointer; }
+        .link-btn:hover { color: #FFFFFF; }
+        .menu-title { font-size: clamp(30px, 3.8vw, 52px) !important; line-height: 1.08; letter-spacing: 0.02em; }
+        .menu-foot { margin-top: 14px; color: #71717A; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; max-width: 440px; }
+        .menu-btn-continue { padding: 12px 18px; min-height: 48px; }
+        .menu-btn-tactical { font-size: 14px; padding: 10px 14px; }
+
+        .mission-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 18px; }
+        .mission-card {
+            display: flex; flex-direction: column; gap: 4px; text-align: left;
+            padding: 16px 16px 14px; min-height: 200px;
+            background: rgba(8, 14, 12, 0.78);
+            border: 1px solid rgba(205, 247, 161, 0.22);
+            border-top: 3px solid #CDF7A1;
+            cursor: pointer; transition: border-color 0.15s, background 0.15s;
+        }
+        .mission-card:hover:not(:disabled) { border-color: #CDF7A1; background: rgba(16, 26, 20, 0.9); }
+        .mission-card.is-locked { opacity: 0.45; cursor: not-allowed; border-top-color: #52525B; }
+        .mission-num { color: #FDBA74; font-size: 13px; letter-spacing: 0.14em; }
+        .mission-date { color: #A1A1AA; font-size: 14px; }
+        .mission-title { color: #FAFAFA; font-size: 23px; font-weight: 600; text-transform: uppercase; line-height: 1.1; margin: 4px 0; }
+        .mission-unit { color: #A1A1AA; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; flex: 1; }
+        .mission-status { color: #CDF7A1; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; }
+        .mission-status.is-done { color: #FDE68A; }
+
+        /* ---- Tactical Debrief HUD Styles ---- */
+        #screen-debrief.is-open {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            background: radial-gradient(circle at 50% 25%, rgba(6, 18, 15, 0.95) 0%, rgba(2, 5, 8, 0.98) 100%);
+            backdrop-filter: blur(12px);
+        }
+        .debrief-modal-card {
+            max-width: 1160px;
+            width: 100%;
+            max-height: 94vh;
+            margin: auto !important;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(165deg, rgba(11, 18, 22, 0.97) 0%, rgba(5, 9, 12, 0.99) 100%);
+            border: 1px solid rgba(205, 247, 161, 0.28);
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(16, 185, 129, 0.09);
+            position: relative;
+            overflow: hidden;
+        }
+        .debrief-modal-card::before, .debrief-modal-card::after {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .debrief-modal-card::before {
+            top: 6px;
+            left: 6px;
+            border-top: 2px solid #CDF7A1;
+            border-left: 2px solid #CDF7A1;
+        }
+        .debrief-modal-card::after {
+            bottom: 6px;
+            right: 6px;
+            border-bottom: 2px solid #CDF7A1;
+            border-right: 2px solid #CDF7A1;
+        }
+
+        .debrief-header-bar {
+            padding: 16px 22px 10px;
+            flex-shrink: 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(205, 247, 161, 0.15);
+        }
+        .classified-stamp {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            background: rgba(225, 29, 72, 0.15);
+            border: 1px dashed rgba(225, 29, 72, 0.6);
+            color: #FDA4AF;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 700;
+            border-radius: 2px;
+        }
+        .debrief-title {
+            margin: 2px 0 0 !important;
+            font-size: clamp(26px, 3.2vw, 42px) !important;
+        }
+
+        .debrief-body-scroll {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            padding: 14px 22px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(205, 247, 161, 0.3) rgba(0, 0, 0, 0.3);
+        }
+        .debrief-body-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .debrief-body-scroll::-webkit-scrollbar-thumb {
+            background: rgba(205, 247, 161, 0.3);
+            border-radius: 3px;
+        }
+
+        /* Stats Grid & Hero Medal Card */
+        .debrief-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin: 0;
+        }
+        .debrief-stats .medal-hero-card {
+            grid-column: 1 / -1;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.16) 0%, rgba(217, 119, 6, 0.08) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(245, 158, 11, 0.08);
+        }
+        .debrief-stats .medal-hero-card.is-fail {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(185, 28, 28, 0.08) 100%);
+            border-color: rgba(239, 68, 68, 0.45);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(239, 68, 68, 0.08);
+        }
+        .debrief-stats .stat-kpi-card {
+            padding: 10px 14px;
+            background: rgba(10, 18, 16, 0.85);
+            border: 1px solid rgba(205, 247, 161, 0.18);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 72px;
+            transition: all 0.2s ease;
+        }
+        .debrief-stats .stat-kpi-card:hover {
+            border-color: rgba(205, 247, 161, 0.45);
+            background: rgba(14, 24, 20, 0.95);
+            transform: translateY(-1px);
+        }
+        .debrief-stats .stat-kpi-card span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #A1A1AA;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 500;
+        }
+        .debrief-stats .stat-kpi-card b {
+            font-size: 24px;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 600;
+            color: #CDF7A1;
+            letter-spacing: 0.04em;
+            line-height: 1.1;
+            margin-top: 4px;
+        }
+        .debrief-stats .stat-kpi-card b.val-accent {
+            color: #FDE047;
+        }
+        .debrief-stats .stat-kpi-card b.val-muted {
+            color: #D4D4D8;
+        }
+
+        /* Historical Intelligence card */
+        .debrief-history-card {
+            background: rgba(7, 12, 10, 0.85);
+            border: 1px solid rgba(205, 247, 161, 0.15);
+            border-radius: 6px;
+            padding: 14px 16px;
+            max-height: 290px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(205, 247, 161, 0.25) rgba(0, 0, 0, 0.3);
+        }
+        .debrief-history-card::-webkit-scrollbar {
+            width: 5px;
+        }
+        .debrief-history-card::-webkit-scrollbar-thumb {
+            background: rgba(205, 247, 161, 0.25);
+            border-radius: 2px;
+        }
+        .debrief-history-card p {
+            margin: 0 0 10px;
+            font-family: 'Newsreader', Georgia, serif;
+            font-size: 15px;
+            line-height: 1.55;
+            color: #D4D4D8;
+        }
+        .debrief-history-card p:last-child {
+            margin-bottom: 0;
+        }
+        .debrief-history-card b {
+            color: #FDE68A;
+            font-weight: 600;
+        }
+
+        /* Fixed Bottom Footer Bar */
+        .debrief-footer-bar {
+            padding: 12px 22px;
+            flex-shrink: 0;
+            background: rgba(5, 9, 8, 0.95);
+            border-top: 1px solid rgba(205, 247, 161, 0.2);
+        }
+        .debrief-footer-bar .screen-actions {
+            margin-top: 0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .debrief-actions-group-primary {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .debrief-actions-group-secondary {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .debrief-btn {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-size: 15px;
+            padding: 10px 18px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .debrief-btn.primary {
+            background: #CDF7A1;
+            color: #0A0F0A;
+            border: 1px solid #CDF7A1;
+            font-weight: 700;
+            box-shadow: 0 0 18px rgba(205, 247, 161, 0.4);
+        }
+        .debrief-btn.primary:hover {
+            background: #E2FFC4;
+            transform: translateY(-1px);
+            box-shadow: 0 0 24px rgba(205, 247, 161, 0.65);
+        }
+        .debrief-btn.secondary {
+            background: rgba(14, 22, 20, 0.8);
+            color: #E4E4E7;
+            border: 1px solid rgba(205, 247, 161, 0.3);
+            font-weight: 500;
+        }
+        .debrief-btn.secondary:hover {
+            background: rgba(205, 247, 161, 0.15);
+            border-color: #CDF7A1;
+            color: #FFFFFF;
+        }
+        .debrief-btn.utility {
+            font-size: 13px;
+            padding: 8px 14px;
+            background: rgba(20, 26, 24, 0.6);
+            color: #A1A1AA;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .debrief-btn.utility:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .key-badge {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            padding: 1px 5px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 3px;
+            margin-left: 4px;
+        }
+        .debrief-btn.primary .key-badge {
+            background: rgba(0, 0, 0, 0.18);
+            border-color: rgba(0, 0, 0, 0.35);
+            color: #0A0F0A;
+        }
+
+        /* ---- In-game HUD helpers ---- */
+        body.in-menu .hud-el { display: none !important; } .hidden { display: none;} #modal-tactical-guide, #modal-radio-log, #archive-drawer { background: rgba(3, 6, 10, 0.98); z-index: 60;}
+        .archive-nav-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #A1A1AA;
+            cursor: pointer;
+        }
+        .archive-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(205, 247, 161, 0.3);
+            color: #F4F4F5;
+        }
+        .archive-nav-btn.is-active {
+            background: rgba(5, 150, 105, 0.22);
+            border-color: #34D399;
+            color: #CDF7A1;
+            box-shadow: 0 0 12px rgba(52, 211, 153, 0.15);
+        }
+        .tool-btn {
+            font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.05em; font-size: 12px;
+            padding: 3px 10px; color: #E4E4E7; background: rgba(4, 8, 10, 0.6); border: 1px solid rgba(255, 255, 255, 0.16); cursor: pointer;
+        }
+        .tool-btn:hover { border-color: #CDF7A1; color: #FFFFFF; }
+        kbd { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 0 5px; margin-left: 4px; border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 3px; color: #A1A1AA; }
+        #radio-box {
+            position: fixed; left: 16px; top: 108px; transform: translateY(-6px);
+            z-index: 32; max-width: min(400px, calc(100vw - 32px)); pointer-events: none;
+            padding: 8px 14px; background: rgba(4, 8, 10, 0.72); border-left: 3px solid #FDBA74;
+            font-family: 'Oswald', sans-serif; font-size: 15px; line-height: 1.35; color: #FAFAFA; text-align: left;
+            opacity: 0; transition: opacity 0.25s, transform 0.25s;
+        }
+        #radio-box.is-visible { opacity: 1; transform: translateY(0); }
+        #radio-who { display: block; font-size: 11px; letter-spacing: 0.16em; color: #FDBA74; }
+        #action-bar { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 31; }
+        #reload-btn {
+            font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase;
+            padding: 2px 10px; color: #FDE68A; background: rgba(20, 16, 6, 0.8); border: 1px solid rgba(253, 230, 138, 0.5); cursor: pointer;
+        }
+        #reload-btn:hover { background: rgba(120, 80, 10, 0.85); }
+        #fire-btn.is-blocked { background: rgba(48, 50, 56, 0.85); border-color: #71717A; color: #D4D4D8; }
+        #missile-hud { position: fixed; inset: 0; pointer-events: none; z-index: 12; }
+        #missile-hud .mh-cross { position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; transform: translate(-50%, -50%); }
+        #missile-hud .mh-cross::before, #missile-hud .mh-cross::after { content: ''; position: absolute; background: rgba(253, 186, 116, 0.85); }
+        #missile-hud .mh-cross::before { left: 0; right: 0; top: 50%; height: 1.5px; }
+        #missile-hud .mh-cross::after { top: 0; bottom: 0; left: 50%; width: 1.5px; }
+        #missile-hud-text {
+            position: absolute; left: 50%; top: 60%; transform: translateX(-50%); text-align: center; width: max-content; max-width: calc(100vw - 32px);
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #FDBA74; text-shadow: 0 1px 3px #000;
+            background: rgba(4, 8, 10, 0.55); padding: 6px 12px;
+        }
+        #stick-dot {
+            position: fixed; z-index: 13; width: 16px; height: 16px; border: 2px solid rgba(250, 250, 250, 0.8); border-radius: 50%;
+            transform: translate(-50%, -50%); pointer-events: none; display: none;
+        }
+        .brief-forces { border-left: 3px solid #FDBA74; padding-left: 12px; }
+        #fire-btn {
+            font-family: 'Oswald', sans-serif; font-size: 17px; letter-spacing: 0.08em; text-transform: uppercase;
+            padding: 8px 20px; min-width: 250px; color: #FFF; background: rgba(190, 18, 60, 0.85); border: 1px solid #FDA4AF; cursor: pointer;
+            clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+        }
+        #fire-btn:hover { background: #E11D48; }
+        /* lost-track coaching: relocated to bottom-right above ECCM radar panel so center of screen is unobstructed */
+        #jam-prompt {
+            position: fixed; right: 16px; bottom: 236px; z-index: 32; display: none; text-align: right;
+            width: max-content; max-width: min(340px, calc(100vw - 32px)); padding: 8px 12px 10px;
+            background: rgba(30, 6, 10, 0.92); border: 1px solid rgba(248, 113, 113, 0.75);
+            border-radius: 6px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.75);
+        }
+        @media (max-width: 639px) {
+            #jam-prompt { right: auto; left: 50%; transform: translateX(-50%); bottom: 84px; text-align: center; }
+        }
+        #jam-prompt .jp-title { font-family: 'Oswald', sans-serif; font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: #FCA5A5; }
+        #jam-prompt .jp-hint { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #FDE68A; margin: 3px 0 8px; }
+        #jam-prompt .jp-keys { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .jp-key {
+            font-family: 'Oswald', sans-serif; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; min-width: 130px;
+            padding: 4px 12px; color: #D4D4D8; background: rgba(10, 12, 14, 0.85); border: 1px solid rgba(255, 255, 255, 0.25); cursor: pointer;
+        }
+        .jp-key b { display: inline-block; min-width: 24px; margin-right: 8px; border: 1px solid currentColor; border-radius: 3px; }
+        .jp-key.is-best { color: #111; background: #FDE047; border-color: #FDE047; animation: jpPulse 0.8s ease-in-out infinite; }
+        #jam-prompt.is-info { background: rgba(10, 16, 24, 0.85); border-color: rgba(148, 163, 184, 0.6); }
+        #jam-prompt.is-info .jp-title { color: #CBD5E1; }
+        #jam-prompt.is-info .jp-keys { display: none; }
+        @keyframes jpPulse { 50% { box-shadow: 0 0 0 6px rgba(253, 224, 71, 0.28); } }
+        #fire-btn kbd { color: #FFE4E6; border-color: rgba(255, 255, 255, 0.4); }
+
+        /* Tactical corner HUD (compact, translucent, flight-sim styling) */
+        .poster-block {
+            font-family: 'Oswald', 'Plus Jakarta Sans', sans-serif;
+            text-transform: uppercase;
+            color: #CDF7A1;
+            background: rgba(4, 10, 8, 0.72);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(16, 185, 129, 0.28);
+            border-radius: 4px;
+            padding: 6px 12px;
+            letter-spacing: 0.02em;
+            line-height: 1.25;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+        }
+        .poster-h1 { font-size: clamp(12px, 1.1vw, 15px); font-weight: 600; letter-spacing: 0.08em; color: #10B981; }
+        .poster-h2 { font-size: clamp(11px, 0.95vw, 13px); font-weight: 500; }
+        .poster-amber { color: #FDBA74; }
+        .poster-state-live { animation: posterBlink 0.5s steps(2) infinite; }
+        @keyframes posterBlink { 50% { opacity: 0.45; } }
+
+        #hud-left-telemetry, #hud-right-radar {
+            font-family: 'Oswald', 'JetBrains Mono', sans-serif !important;
+            letter-spacing: 0.02em;
+            border-radius: 0 !important;
+            background: rgba(4, 10, 8, 0.66);
+            border: 1px solid rgba(132, 225, 120, 0.38);
+            clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+        }
+        #hud-left-telemetry .text-\[10px\] { font-size: 13px; }
+        #hud-left-telemetry .text-\[9px\] { font-size: 12px; }
+        #hud-left-telemetry .text-emerald, #hud-right-radar .text-emerald { color: #A3F58A; }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090B;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272A;
+            border-radius: 3px;
+        }
+
+        /* Tactical Alerts & Kill Splash Overlay */
+        .combat-alert-banner {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-24px) scale(0.96);
+            z-index: 52;
+            width: min(740px, calc(100vw - 32px));
+            background: linear-gradient(180deg, rgba(28, 8, 12, 0.95), rgba(12, 5, 8, 0.92));
+            border: 2px solid #E11D48;
+            box-shadow: 0 0 40px rgba(225, 29, 72, 0.45), inset 0 0 20px rgba(225, 29, 72, 0.2);
+            padding: 16px 22px;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+        }
+        .combat-alert-banner.is-visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0) scale(1);
+        }
+        .alert-kicker {
+            font-family: 'Oswald', sans-serif;
+            font-size: 13px;
+            letter-spacing: 0.18em;
+            color: #FCA5A5;
+            text-transform: uppercase;
+        }
+        .alert-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(22px, 3vw, 36px);
+            font-weight: 700;
+            color: #FFF;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            line-height: 1.1;
+            margin: 4px 0;
+            text-shadow: 0 0 16px rgba(225, 29, 72, 0.6);
+        }
+        .alert-story {
+            font-family: 'Newsreader', Georgia, serif;
+            font-size: 15px;
+            line-height: 1.45;
+            color: #FDE68A;
+            margin: 6px 0 8px;
+            font-style: italic;
+        }
+        .alert-obj {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #A3F58A;
+            letter-spacing: 0.05em;
+        }
+
+        .kill-splash {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%) scale(0.85);
+            z-index: 53;
+            width: min(620px, calc(100vw - 32px));
+            background: radial-gradient(circle at center, rgba(32, 22, 6, 0.95), rgba(12, 9, 4, 0.92));
+            border: 2px solid #F59E0B;
+            box-shadow: 0 0 50px rgba(245, 158, 11, 0.55), inset 0 0 25px rgba(245, 158, 11, 0.25);
+            padding: 18px 24px;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+        }
+        .kill-splash.is-visible {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+        .kill-stars {
+            color: #FDE047;
+            font-size: 16px;
+            letter-spacing: 0.3em;
+            margin-bottom: 2px;
+            text-shadow: 0 0 10px rgba(253, 224, 71, 0.8);
+        }
+        .kill-headline {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(24px, 3.5vw, 42px);
+            font-weight: 700;
+            color: #FEF08A;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            line-height: 1.05;
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.7);
+        }
+        .kill-detail {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 14px;
+            color: #FAFAFA;
+            margin-top: 6px;
+        }
+        .kill-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #34D399;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        /* Campaign Chronological Timeline Bar Container & Scroll Area */
+        .timeline-scroll-wrapper {
+            position: relative;
+            margin: 14px 0 6px;
+            padding: 0 0 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(205, 247, 161, 0.3) transparent;
+        }
+        .timeline-scroll-wrapper::-webkit-scrollbar {
+            height: 6px;
+        }
+        .timeline-scroll-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(205, 247, 161, 0.3);
+            border-radius: 3px;
+        }
+
+        .timeline-track {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-width: 100%;
+            width: max-content;
+            position: relative;
+            padding: 0 10px;
+            gap: 6px;
+        }
+        .timeline-track::before {
+            content: '';
+            position: absolute;
+            left: 24px;
+            right: 24px;
+            top: 14px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.15);
+            z-index: 1;
+        }
+        .timeline-node {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            outline: none;
+            flex-shrink: 0;
+            min-width: 44px;
+        }
+        .timeline-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #09090B;
+            border: 2px solid #52525B;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: bold;
+            color: #71717A;
+            transition: all 0.2s ease;
+        }
+        .timeline-node:hover:not(:disabled) .timeline-dot {
+            border-color: #CDF7A1;
+            color: #FFF;
+        }
+        .timeline-node.is-done .timeline-dot {
+            border-color: #F59E0B;
+            background: rgba(245, 158, 11, 0.25);
+            color: #FDE047;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.45);
+        }
+        .timeline-node.is-current .timeline-dot {
+            border-color: #10B981;
+            background: #10B981;
+            color: #09090B;
+            box-shadow: 0 0 16px rgba(16, 185, 129, 0.7);
+            animation: currentPulse 1.4s infinite;
+        }
+        @keyframes currentPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .timeline-date {
+            font-family: 'Oswald', sans-serif;
+            font-size: 12px;
+            color: #A1A1AA;
+            margin-top: 6px;
+            letter-spacing: 0.05em;
+        }
+        .timeline-node.is-current .timeline-date {
+            color: #A3F58A;
+            font-weight: 600;
+        }
+        .timeline-node.is-done .timeline-date {
+            color: #FDE68A;
+        }
+        .timeline-node.is-locked {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Medal & Rank Badges for Debrief */
+        .medal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 4px;
+            color: #FDE047;
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .medal-badge.is-fail {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.35);
+            color: #FCA5A5;
+        }
+
+        .timeline-node.is-epilogue .timeline-dot {
+            border-color: #F59E0B;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.4), rgba(217, 119, 6, 0.7));
+            color: #FEF08A;
+            box-shadow: 0 0 16px rgba(245, 158, 11, 0.75);
+            animation: victoryGlow 1.8s infinite ease-in-out;
+        }
+        @keyframes victoryGlow {
+            0%, 100% { box-shadow: 0 0 12px rgba(245, 158, 11, 0.5); transform: scale(1); }
+            50% { box-shadow: 0 0 22px rgba(245, 158, 11, 0.95); transform: scale(1.1); }
+        }
+        .brief-prologue {
+            background: rgba(18, 14, 8, 0.85);
+            border-left: 3px solid #F59E0B;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        .debrief-fail-box {
+            background: rgba(36, 12, 16, 0.85);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.15);
+        }
+    </style>
+</head>
+<body class="in-menu">
+
+    <!-- 0. MENUS: MAIN · CAMPAIGN · BRIEFING · PAUSE · DEBRIEF · VICTORY · TACTICAL GUIDE · RADIO LOG -->
+    <div id="screen-menu" class="screen is-open">
+        <div class="screen-inner wide flex flex-col lg:flex-row items-start justify-between gap-8 my-auto w-full">
+            
+            <!-- CÁNH TRÁI: Nhận diện & Cụm nút chỉ huy -->
+            <div class="w-full lg:max-w-md flex flex-col text-left">
+                <div class="font-mono text-xs text-amber-400 tracking-widest uppercase mb-1">
+                    18.12 – 29.12.1972 // CHIẾN DỊCH LINEBACKER II
+                </div>
+                
+                <h1 class="screen-title menu-title m-0">
+                    <span class="text-emerald-400">PHÒNG KHÔNG 3D</span><br>
+                    <span class="text-white">HÀ NỘI – 12 NGÀY ĐÊM</span>
+                </h1>
+                
+                <div class="brief-unit text-zinc-400 font-serif italic text-base mt-1 mb-4">
+                    "Điện Biên Phủ trên không"
+                </div>
+
+                <!-- Cụm nút tác chiến chỉ huy -->
+                <div class="menu-buttons w-full max-w-md flex flex-col gap-2">
+                    <!-- Nút Tiếp tục tác chiến (Primary CTA) -->
+                    <button id="btn-continue-campaign" class="menu-btn primary menu-btn-continue hidden" onclick="continueCampaign()">
+                        Tiếp tục chiến dịch →
+                    </button>
+
+                    <!-- Lưới 4 nút chức năng đánh số chuẩn quân sự: 01, 02, 03, 04 -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="menu-btn menu-btn-tactical" id="btn-open-campaign" onclick="openCampaign()">
+                            <span class="font-mono text-emerald-400 mr-1.5">[01]</span>Bản đồ tác chiến
+                        </button>
+                        <button class="menu-btn menu-btn-tactical" onclick="enterHangar()">
+                            <span class="font-mono text-emerald-400 mr-1.5">[02]</span>Khí tài 3D
+                        </button>
+                        <button class="menu-btn menu-btn-tactical" onclick="toggleCampaignArchive(true)">
+                            <span class="font-mono text-emerald-400 mr-1.5">[03]</span>Tư liệu lịch sử
+                        </button>
+                        <button class="menu-btn menu-btn-tactical" onclick="toggleTacticalGuide(true)">
+                            <span class="font-mono text-emerald-400 mr-1.5">[04]</span>Cẩm nang [H]
+                        </button>
+                    </div>
+
+                    <!-- Thanh trạng thái chân trang -->
+                    <div class="flex items-center gap-3 pt-2 text-xs font-mono text-zinc-400">
+                        <button class="hover:text-emerald-400 transition-colors uppercase cursor-pointer" onclick="toggleSoundEngine()" data-sound-label>
+                            Âm thanh: <span class="text-emerald-400 font-bold">[BẬT]</span>
+                        </button>
+                        <span class="text-zinc-600">//</span>
+                        <span class="text-zinc-500 uppercase tracking-wider">Quân chủng PK-KQ</span>
+                    </div>
+                </div>
+
+                <p class="menu-foot text-zinc-500 text-[11px] leading-relaxed mt-4 max-w-md">
+                    Mô phỏng tưởng niệm dựa trên tư liệu lịch sử. Số liệu chiến công theo công bố của phía Việt Nam.
+                </p>
+            </div>
+
+            <!-- CÁNH PHẢI: Bảng tiến độ chiến dịch siêu gọn (Translucent Tactical HUD) -->
+            <div id="menu-campaign-progress" class="hidden w-full lg:max-w-[280px] p-3 rounded border border-emerald-500/30 text-left self-start" style="background: rgba(4, 10, 8, 0.42); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+                <div class="flex items-center justify-between text-[11px] font-mono leading-none mb-2">
+                    <span class="text-emerald-400 font-bold tracking-wider">// CHIẾN DỊCH</span>
+                    <span id="menu-prog-text" class="text-amber-400 font-bold">0/12 ĐÊM</span>
+                </div>
+
+                <div id="menu-pips" class="flex gap-1 my-1.5">
+                    <!-- 12 progress pips for 12 campaign nights -->
+                </div>
+
+                <div class="text-[11px] font-mono text-zinc-300 truncate mt-1.5" id="menu-prog-sub">
+                    Đang ở Màn 1: Đêm 18/12/1972 · Đã hạ 0 B-52
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="screen-campaign" class="screen">
+        <div class="screen-inner wide">
+            <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+                <div class="flex items-center gap-3">
+                    <button class="link-btn" onclick="showScreen('menu')">← Menu chính</button>
+                    <button class="tool-btn btn-toggle-bgm text-emerald-300 border-emerald-500/40 hover:border-emerald-400" onclick="MusicSystem.toggle()">Nhạc: BẬT<kbd>B</kbd></button>
+                </div>
+                <button class="link-btn text-emerald hover:text-emerald-300" onclick="toggleTacticalGuide(true)">Cẩm nang tác chiến [H]</button>
+            </div>
+            <div class="screen-title">Chiến dịch 12 ngày đêm</div>
+            <div class="brief-unit">Biên niên sử 12 ngày đêm khốc liệt đánh bại pháo đài bay B-52, bảo vệ trọn vẹn bầu trời Thủ đô Hà Nội.</div>
+
+            <!-- Chronological Timeline Bar -->
+            <div class="campaign-timeline-box mb-5 p-4 bg-black/75 border border-emerald/30 rounded-lg">
+                <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+                    <span class="font-mono text-xs uppercase tracking-wider text-emerald font-bold">
+                        TRỤC THỜI GIAN CHIẾN DỊCH // 18/12 — 30/12/1972
+                    </span>
+                    <span id="campaign-progress-badge" class="font-mono text-xs text-amber-300 bg-amber-400/10 px-2.5 py-1 rounded border border-amber-400/30">
+                        TIẾN ĐỘ: 0/12 ĐÊM
+                    </span>
+                </div>
+                <div class="timeline-scroll-wrapper">
+                    <div id="timeline-track" class="timeline-track">
+                        <!-- Dynamic timeline nodes -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="mission-list" class="mission-grid"></div>
+        </div>
+    </div>
+
+    <div id="screen-briefing" class="screen">
+        <div class="screen-inner">
+            <div class="brief-date" id="brief-date"></div>
+            <div class="screen-title" id="brief-title"></div>
+            <div class="brief-unit" id="brief-unit"></div>
+            <div id="brief-story-quote" class="brief-prologue mb-4 p-3.5 bg-black/70 border-l-4 border-amber-400 font-serif italic text-amber-200/95 text-sm sm:text-base leading-relaxed rounded-r shadow-lg"></div>
+            <div class="brief-body" id="brief-body"></div>
+            <div class="brief-cols">
+                <div><h3>Nhiệm vụ</h3><ul id="brief-objectives"></ul></div>
+                <div><h3>Điều khiển</h3><ul id="brief-controls"></ul></div>
+            </div>
+            <div class="screen-actions">
+                <button class="menu-btn primary" onclick="beginMission()">Vào trận</button>
+                <button class="menu-btn" onclick="toggleTacticalGuide(true)">Cẩm nang tác chiến [H]</button>
+                <button class="menu-btn subtle" onclick="showScreen('campaign')">← Danh sách màn</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-pause" class="screen">
+        <div class="screen-inner narrow">
+            <div class="screen-title">Tạm dừng</div>
+            <div class="brief-unit" id="pause-objective"></div>
+            <div class="menu-buttons">
+                <button class="menu-btn primary" onclick="resumeMission()">Tiếp tục</button>
+                <button class="menu-btn" onclick="toggleTacticalGuide(true)">Cẩm nang tác chiến [H]</button>
+                <button class="menu-btn" onclick="toggleRadioLog(true)"><span class="font-mono text-emerald-400 mr-1.5">[L]</span>Nhật ký truyền tin</button>
+                <button class="menu-btn" onclick="restartMission()">Chơi lại màn này</button>
+                <button class="menu-btn" onclick="toggleCampaignArchive(true)">Tư liệu lịch sử</button>
+                <button class="menu-btn subtle" onclick="toggleSoundEngine()" data-sound-label>Âm thanh: Bật</button>
+                <button class="menu-btn subtle" onclick="quitToMenu()">Về menu chính</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. TACTICAL DEBRIEF SCREEN -->
+    <div id="screen-debrief" class="screen">
+        <div class="screen-inner wide debrief-modal-card">
+            <!-- Header bar with military command style -->
+            <div class="debrief-header-bar">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-emerald-500/20 pb-2.5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-amber-300 font-bold text-base shadow-[0_0_12px_rgba(245,158,11,0.3)]">
+                            ★
+                        </div>
+                        <div>
+                            <div class="font-mono text-[11px] sm:text-xs uppercase tracking-widest text-amber-400/90 font-semibold">
+                                QUÂN CHỦNG PHÒNG KHÔNG - KHÔNG QUÂN · BỘ TƯ LỆNH TIỀN PHƯƠNG
+                            </div>
+                            <div class="brief-date text-xs text-zinc-400" id="debrief-date"></div>
+                        </div>
+                    </div>
+                    <div class="classified-stamp">
+                        <span>TỐI MẬT · HỒ SƠ TỔNG KẾT TÁC CHIẾN</span>
+                    </div>
+                </div>
+
+                <div class="mt-2.5 flex items-baseline justify-between flex-wrap gap-2">
+                    <div class="screen-title debrief-title" id="debrief-result"></div>
+                </div>
+
+                <div id="debrief-fail-analysis"></div>
+            </div>
+
+            <!-- Two-column main body (scrollable if viewport is small) -->
+            <div class="debrief-body-scroll">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+                    <!-- Left Column: Combat record & KPIs (7 cols on lg) -->
+                    <div class="lg:col-span-7 flex flex-col gap-2.5">
+                        <div class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-semibold flex items-center gap-2">
+                            <span class="font-mono text-amber-400 mr-1">[★]</span> BÁO CÁO THÀNH TÍCH TÁC CHIẾN &amp; HUÂN CHƯƠNG
+                        </div>
+                        <div class="debrief-stats" id="debrief-stats"></div>
+                    </div>
+
+                    <!-- Right Column: Historical dispatch dossier (5 cols on lg) -->
+                    <div class="lg:col-span-5 flex flex-col gap-2.5">
+                        <div class="flex items-center justify-between">
+                            <div class="text-xs uppercase font-mono tracking-widest text-amber-400 font-semibold flex items-center gap-2">
+                                <span class="font-mono text-amber-400 mr-1">//</span> HỒ SƠ LỊCH SỬ &amp; CHIẾN SỰ 1972
+                            </div>
+                            <button class="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800/80 border border-zinc-700 hover:border-emerald-400 text-zinc-300 hover:text-emerald-300 transition-colors flex items-center gap-1.5" onclick="toggleRadioLog(true)" title="Xem lại các bức điện đài vô tuyến trong trận">
+                                <span class="font-mono text-emerald-400 mr-1">[L]</span> Nhật ký đài
+                            </button>
+                        </div>
+                        <div class="debrief-history-card">
+                            <div class="brief-body" id="debrief-history"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fixed Bottom Action Toolbar (Never gets clipped or hidden!) -->
+            <div class="debrief-footer-bar">
+                <div class="screen-actions" id="debrief-actions"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GRAND CAMPAIGN VICTORY EPILOGUE SCREEN (AFTER COMPLETING NIGHT 29/12) -->
+    <div id="screen-victory" class="screen">
+        <div class="screen-inner wide">
+            <div class="text-center space-y-3">
+                <div class="kicker text-amber-400 font-bold tracking-widest text-sm">CHIẾN DỊCH PHÒNG KHÔNG HÀ NỘI 18/12 – 29/12/1972</div>
+                <h1 class="screen-title text-amber-300 text-3xl sm:text-5xl" style="text-shadow: 0 0 25px rgba(251,191,36,0.5);">
+                    KỲ TÍCH ĐIỆN BIÊN PHỦ TRÊN KHÔNG
+                </h1>
+                <div class="text-xl text-emerald-400 font-serif italic">"Bầu trời Hà Nội — Nơi chôn vùi huyền thoại Pháo đài bay B-52"</div>
+            </div>
+
+            <!-- Strategic Prophecy of President Ho Chi Minh -->
+            <div class="my-4 p-4 bg-amber-950/30 border-l-4 border-amber-400 rounded-r text-left shadow-lg">
+                <div class="font-mono text-xs uppercase tracking-widest text-amber-300 font-bold mb-1">
+                    DỰ BÁO CHIẾN LƯỢC THIÊN TÀI CỦA BÁC HỒ (MÙA XUÂN 1968):
+                </div>
+                <div class="font-serif italic text-base sm:text-lg text-amber-100 leading-relaxed">
+                    “Sớm muộn rồi đế quốc Mỹ cũng sẽ đưa B-52 ra đánh Hà Nội, rồi có thua mới chịu thua... Ở Việt Nam, Mỹ nhất định thua, nhưng chỉ chịu thua sau khi thua trên bầu trời Hà Nội!”
+                </div>
+                <div class="text-right font-mono text-xs text-amber-300/80 mt-1">
+                    — Lời Chủ tịch Hồ Chí Minh căn dặn đồng chí Phùng Thế Tài (Tư lệnh PK-KQ)
+                </div>
+            </div>
+
+            <div class="my-5 p-6 bg-black/80 border border-amber-400/40 rounded-xl space-y-4 text-left">
+                <p class="font-serif text-lg leading-relaxed text-alabaster">
+                    Trải qua <b>12 ngày đêm chiến đấu ngoan cường</b> dưới mưa bom bão đạn, quân và dân Thủ đô Hà Nội cùng lực lượng Phòng không – Không quân nhân dân Việt Nam đã làm nên kỳ tích lịch sử vô tiền khoáng hậu: <b>đập tan hoàn toàn cuộc tập kích đường không chiến lược Linebacker II</b> của Không quân Mỹ.
+                </p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center py-2">
+                    <div class="p-3 bg-white/5 border border-white/10 rounded">
+                        <span class="block text-xs text-muted uppercase font-mono">MÁY BAY BỊ BẮN RƠI</span>
+                        <b class="text-2xl text-amber-300 font-mono">81 chiếc</b>
+                    </div>
+                    <div class="p-3 bg-white/5 border border-white/10 rounded">
+                        <span class="block text-xs text-muted uppercase font-mono">PHÁO ĐÀI BAY B-52</span>
+                        <b class="text-2xl text-amber-300 font-mono">34 chiếc</b>
+                    </div>
+                    <div class="p-3 bg-white/5 border border-white/10 rounded">
+                        <span class="block text-xs text-muted uppercase font-mono">F-111 CÁNH CỤP XÒE</span>
+                        <b class="text-2xl text-amber-300 font-mono">5 chiếc</b>
+                    </div>
+                    <div class="p-3 bg-white/5 border border-white/10 rounded">
+                        <span class="block text-xs text-muted uppercase font-mono">PHI CÔNG MỸ BỊ BẮT</span>
+                        <b class="text-2xl text-amber-300 font-mono">43 giặc lái</b>
+                    </div>
+                </div>
+                <p class="font-serif text-base text-muted leading-relaxed">
+                    Đúng <strong class="text-alabaster">7 giờ sáng ngày 30/12/1972</strong>, Tổng thống Mỹ Richard Nixon buộc phải tuyên bố ngừng ném bom từ vĩ tuyến 20 trở ra và chấp nhận ngồi lại đàm phán. Ngày <strong class="text-alabaster">27/1/1973</strong>, Hiệp định Paris về chấm dứt chiến tranh, lập lại hòa bình ở Việt Nam chính thức được ký kết.
+                </p>
+            </div>
+
+            <div class="p-4 bg-emerald/10 border border-emerald/30 rounded-lg flex items-center justify-between flex-wrap gap-3 text-left">
+                <div>
+                    <span class="font-mono text-xs text-emerald font-bold uppercase block">THÀNH TÍCH TOÀN CHIẾN DỊCH CỦA BẠN</span>
+                    <span id="victory-player-stats" class="text-alabaster font-mono text-sm"></span>
+                    <span id="victory-stats" class="hidden"></span>
+                    <span id="victory-stats-detail" class="hidden"></span>
+                </div>
+                <div class="text-amber-300 font-serif font-bold text-base">
+                    ★ DANH HIỆU: ĐƠN VỊ ANH HÙNG LỰC LƯỢNG VŨ TRANG NHÂN DÂN ★
+                </div>
+            </div>
+
+            <div class="screen-actions flex flex-wrap gap-3 justify-center mt-6">
+                <button class="menu-btn primary" onclick="toggleCampaignArchive(true); renderArchiveTab('card4')">Mở Hồ Sơ Tư Liệu Lịch Sử</button>
+                <button class="menu-btn" onclick="openCampaign()">Danh Sách Màn Chơi</button>
+                <button class="menu-btn subtle" onclick="backToMenuAttract()">Về Menu Chính</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TACTICAL QUICK HELP MODAL (KEY H / ? BUTTON) -->
+    <div id="modal-tactical-guide" class="screen">
+        <div class="screen-inner wide">
+            <div class="flex items-center justify-between border-b border-emerald/30 pb-3 mb-4">
+                <div>
+                    <span class="font-mono text-xs text-brass uppercase tracking-widest block">CẨM NANG TÁC CHIẾN // QUÂN CHỦNG PHÒNG KHÔNG - KHÔNG QUÂN</span>
+                    <h2 class="screen-title text-2xl sm:text-3xl" style="margin:0">Nghệ Thuật &amp; Thao Tác Đánh Pháo Đài Bay B‑52</h2>
+                </div>
+                <button class="menu-btn subtle" onclick="toggleTacticalGuide(false)">Đóng [Esc/H]</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-left">
+                <!-- 01: Radar & ECCM -->
+                <div class="p-4 bg-black/75 border border-emerald/30 rounded-lg space-y-2">
+                    <div class="font-mono text-emerald font-bold text-xs">01 // RADAR &amp; NHẢY TẦN (ECCM)</div>
+                    <div class="font-serif text-alabaster font-semibold text-base">Vạch Nhiễu Tìm Thù</div>
+                    <p class="text-muted text-xs leading-relaxed">
+                        Máy gây nhiễu ALQ của B-52 tạo dải nhiễu đỏ trên màn phổ SNR-75. Bấm <b class="text-yellow-300">Q (-45 MHz)</b> hoặc <b class="text-yellow-300">E (+45 MHz)</b> (hoặc kéo thanh tần số) để đưa vạch xanh phát sóng ra xa đỉnh nhiễu đỏ.
+                    </p>
+                    <div class="text-[11px] text-teal-300 border-t border-white/10 pt-2 font-mono">
+                        Mẹo: Khi nhảy tần thoát khỏi nhiễu, tín hiệu B-52 sẽ hiện rõ nét và cánh sóng điều khiển không bị đứt đoạn!
+                    </div>
+                </div>
+                <!-- 02: SAM-2 Missile -->
+                <div class="p-4 bg-black/75 border border-emerald/30 rounded-lg space-y-2">
+                    <div class="font-mono text-emerald font-bold text-xs">02 // TÊN LỬA PHÒNG KHÔNG SAM-2</div>
+                    <div class="font-serif text-alabaster font-semibold text-base">Khóa Mục Tiêu &amp; Lái Đạn</div>
+                    <p class="text-muted text-xs leading-relaxed">
+                        Di chuột để xoay bệ phóng và ăng-ten Fan Song. Giữ vòng ngắm trên B-52 khoảng <b class="text-yellow-300">2 giây</b> để BÁM. Bấm <b class="text-yellow-300">Chuột hoặc Space</b> để phóng.
+                    </p>
+                    <div class="text-[11px] text-teal-300 border-t border-white/10 pt-2 font-mono">
+                        Lái đạn: Lệch chuột khỏi tâm để dẫn đạn. Bấm Space lần nữa khi đạn áp sát mục tiêu (&lt;65m) để kích nổ mảnh phá hủy!
+                    </div>
+                </div>
+                <!-- 03: MiG-21 Interceptor -->
+                <div class="p-4 bg-black/75 border border-emerald/30 rounded-lg space-y-2">
+                    <div class="font-mono text-emerald font-bold text-xs">03 // TIÊM KÍCH MIG-21 (#5121)</div>
+                    <div class="font-serif text-alabaster font-semibold text-base">Đánh Chặn Tầm Nhiệt K-13</div>
+                    <p class="text-muted text-xs leading-relaxed">
+                        Chuột là cần lái. Phím <b class="text-yellow-300">W / S</b> tăng giảm ga (trên 85% bật tăng lực). Tiếp cận góc đuôi B-52 trong góc <b class="text-yellow-300">±35°</b>, cự ly 1–5 km.
+                    </p>
+                    <div class="text-[11px] text-teal-300 border-t border-white/10 pt-2 font-mono">
+                        Phóng: Khi đèn ЗАХВАТ sáng vàng và có tiếng rít gầm đầu dò, bấm Space để phóng K-13 tiêu diệt mục tiêu!
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end gap-3">
+                <button class="menu-btn primary" onclick="toggleTacticalGuide(false)">Đã rõ — Tiếp tục trận đánh</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- COMBAT RADIO LOG MODAL (KEY L / TOOLBAR BUTTON) -->
+    <div id="modal-radio-log" class="screen">
+        <div class="screen-inner wide" style="max-height: 85vh; display: flex; flex-direction: column;">
+            <div class="flex items-center justify-between border-b border-emerald/30 pb-3 mb-3 shrink-0">
+                <div>
+                    <span class="font-mono text-xs text-brass uppercase tracking-widest block">NHẬT KÝ TRUYỀN TIN TÁC CHIẾN // QUÂN CHỦNG PHÒNG KHÔNG - KHÔNG QUÂN</span>
+                    <h2 class="screen-title text-2xl sm:text-3xl" style="margin:0">Mệnh Lệnh &amp; Điện Báo Chiến Đấu</h2>
+                </div>
+                <button class="menu-btn subtle" onclick="toggleRadioLog(false)">Đóng [Esc/L]</button>
+            </div>
+            <div id="radio-log-list" class="overflow-y-auto space-y-2.5 pr-1 flex-1 text-left" style="max-height: calc(85vh - 120px);">
+                <!-- Dynamic radio transmissions rendered here -->
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-xs font-mono text-muted shrink-0">
+                <span>Nhấn <kbd class="px-1.5 py-0.5 bg-black/60 border border-white/20 rounded text-amber-300">L</kbd> hoặc <kbd class="px-1.5 py-0.5 bg-black/60 border border-white/20 rounded text-amber-300">Esc</kbd> để đóng và tiếp tục trận đánh</span>
+                <button class="menu-btn primary py-1 px-4 text-xs" onclick="toggleRadioLog(false)">Tiếp tục</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. FULLSCREEN 3D WEBGL VIEWPORT -->
+    <div id="webgl-viewport"></div>
+
+    <!-- ATMOSPHERIC JAMMING & FLASH OVERLAYS -->
+    <div id="jamming-scanlines"></div>
+    <div id="explosion-flash"></div>
+
+    <!-- DYNAMIC COMBAT ALERT BANNER & KILL SPLASH OVERLAYS -->
+    <div id="combat-alert-banner" class="combat-alert-banner">
+        <div class="alert-kicker">★ BÁO ĐỘNG CHIẾN ĐẤU CẤP 1 // BẦU TRỜI HÀ NỘI 1972 ★</div>
+        <div class="alert-title" id="alert-banner-title">TIỂU ĐOÀN 59 VÀO VỊ TRÍ CHIẾN ĐẤU</div>
+        <div class="alert-story" id="alert-banner-story"></div>
+        <div class="alert-obj" id="alert-banner-obj">MỤC TIÊU: TIÊU DIỆT PHÁO ĐÀI BAY B-52 · BẢO VỆ THỦ ĐÔ</div>
+    </div>
+
+    <div id="kill-splash" class="kill-splash">
+        <div class="kill-stars">★ ★ ★ ★ ★</div>
+        <div class="kill-headline">CHIẾN CÔNG BẮN RƠI B-52!</div>
+        <div class="kill-detail" id="kill-splash-detail">MỤC TIÊU BỐC CHÁY RƠI TẠI CHỖ</div>
+        <div class="kill-count" id="kill-splash-count">TIẾN ĐỘ: 1/1 B-52 ĐÃ HẠ</div>
+    </div>
+
+    <!-- 2. MIG-21BIS NIGHT INTERCEPTOR 3D COCKPIT CANVAS OVERLAY (MATCHES IMAGE 1) -->
+    <canvas id="mig21-cockpit-canvas" class="fixed inset-0 z-10 pointer-events-none hidden w-full h-full"></canvas>
+
+    <!-- 3. 3D TACTICAL COMMAND MAP OVERLAYS & RIGHT SIDEBAR (MATCHES IMAGE 2) -->
+    <div id="tactical-map-labels" class="fixed inset-0 pointer-events-none z-[11] hidden">
+        <!-- SAM-2 Đại đội 45 (West Lake) -->
+        <div id="pin-sam45" class="map-pin-label">
+            <div class="command-panel-cyan rounded-lg px-2.5 py-1 flex items-center gap-2 shadow-xl">
+                <span class="w-5 h-5 rounded-full bg-teal-500/20 border border-teal-400 flex items-center justify-center text-teal-300 font-mono text-[10px]">▲</span>
+                <div class="font-mono text-left leading-tight">
+                    <div class="text-[10px] font-bold text-alabaster">TRẬN ĐỊA SAM-2</div>
+                    <div class="text-[9px] text-teal-300">ĐẠI ĐỘI 45 • SẴN SÀNG</div>
+                </div>
+            </div>
+        </div>
+        <!-- SAM-2 Đại đội 72 (South-East Lock) -->
+        <div id="pin-sam72" class="map-pin-label">
+            <div class="command-panel-cyan rounded-lg px-2.5 py-1 flex items-center gap-2 shadow-xl border-emerald">
+                <span class="w-5 h-5 rounded-full bg-emerald/25 border border-emerald flex items-center justify-center text-emerald font-mono text-[10px]">▲</span>
+                <div class="font-mono text-left leading-tight">
+                    <div class="text-[10px] font-bold text-emerald">SAM-2 • ONLINE</div>
+                    <div class="text-[9px] text-alabaster">ĐẠI ĐỘI 72 • KHOÁ MỤC TIÊU</div>
+                </div>
+            </div>
+        </div>
+        <!-- Radar P-35 Trận địa 291 -->
+        <div id="pin-radar291" class="map-pin-label">
+            <div class="command-panel-cyan rounded-lg px-2.5 py-1 flex items-center gap-2 shadow-xl">
+                <span class="w-5 h-5 rounded-full bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-300 font-mono text-[10px]">◈</span>
+                <div class="font-mono text-left leading-tight">
+                    <div class="text-[10px] font-bold text-alabaster">RADAR P-35</div>
+                    <div class="text-[9px] text-cyan-300">TRẬN ĐỊA 291 • HOẠT ĐỘNG</div>
+                </div>
+            </div>
+        </div>
+        <!-- Pháo Phòng không 37mm Kim Mai -->
+        <div id="pin-aaa37" class="map-pin-label">
+            <div class="command-panel-cyan rounded-lg px-2.5 py-1 flex items-center gap-2 shadow-xl">
+                <span class="w-5 h-5 rounded-full bg-teal-500/20 border border-teal-400 flex items-center justify-center text-teal-300 font-mono text-[10px]">✦</span>
+                <div class="font-mono text-left leading-tight">
+                    <div class="text-[10px] font-bold text-alabaster">PHÁO PHÒNG KHÔNG 37MM</div>
+                    <div class="text-[9px] text-teal-300">TRẬN ĐỊA KIM MAI • SẴN SÀNG</div>
+                </div>
+            </div>
+        </div>
+        <!-- Đài Quan sát Trạm Gia Lâm -->
+        <div id="pin-gialam" class="map-pin-label">
+            <div class="command-panel-cyan rounded-lg px-2.5 py-1 flex items-center gap-2 shadow-xl">
+                <span class="w-5 h-5 rounded-full bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-300 font-mono text-[10px]">◉</span>
+                <div class="font-mono text-left leading-tight">
+                    <div class="text-[10px] font-bold text-alabaster">ĐÀI QUAN SÁT</div>
+                    <div class="text-[9px] text-cyan-300">TRẠM GIA LÂM • THEO DÕI</div>
+                </div>
+            </div>
+        </div>
+        <!-- B-52 Flight Path Header & Waypoints -->
+        <div id="pin-b52path" class="map-pin-label">
+            <div class="px-2.5 py-1 rounded bg-vermilion/90 border border-white/40 font-mono text-left shadow-xl">
+                <div class="text-[10px] font-bold text-alabaster">ĐƯỜNG BAY B-52</div>
+                <div class="text-[9px] text-yellow-200">CELL 3 MÁY • HƯỚNG 210°</div>
+            </div>
+        </div>
+        <div id="pin-wp1" class="map-pin-label">
+            <div class="px-1.5 py-0.5 rounded bg-canvas/90 border border-teal-400/60 font-mono text-[9px] text-teal-300">
+                ◆ WP-01 (22:15)
+            </div>
+        </div>
+        <div id="pin-wp2" class="map-pin-label">
+            <div class="px-1.5 py-0.5 rounded bg-canvas/90 border border-teal-400/60 font-mono text-[9px] text-teal-300">
+                ◆ WP-02 (22:16)
+            </div>
+        </div>
+        <div id="pin-wp3" class="map-pin-label">
+            <div class="px-2 py-0.5 rounded bg-vermilion/85 border border-yellow-300/60 font-mono text-[9px] text-alabaster font-bold">
+                ❖ WP-03 • MỤC TIÊU: KHO VŨ KHÍ YÊN VIÊN
+            </div>
+        </div>
+        <!-- Geographic Labels -->
+        <div id="pin-hotay-lbl" class="map-pin-label">
+            <span class="font-mono text-[10px] font-bold tracking-widest text-sky-200/90 drop-shadow">HỒ TÂY</span>
+        </div>
+        <div id="pin-hoankiem-lbl" class="map-pin-label">
+            <span class="font-mono text-[10px] font-bold tracking-wider text-amber-200 drop-shadow">HỒ HOÀN KIẾM</span>
+        </div>
+        <div id="pin-songhong-lbl" class="map-pin-label">
+            <span class="font-mono text-[10px] font-bold tracking-widest text-sky-300/90 drop-shadow">SÔNG HỒNG</span>
+        </div>
+        <div id="pin-longbien-lbl" class="map-pin-label">
+            <span class="font-mono text-[10px] font-bold tracking-wider text-amber-300 drop-shadow">CẦU LONG BIÊN</span>
+        </div>
+
+    </div>
+
+    <!-- 4. SCREEN-SPACE TARGET LOCK BRACKET -->
+    <div id="hud-target-bracket" class="hud-lock-box hud-el" style="opacity: 0;">
+        <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+            <path id="bracket-path" d="M16 4 H4 V16 M56 4 H68 V16 M16 68 H4 V56 M56 68 H68 V56" stroke="#10B981" stroke-width="1.8"/>
+            <polygon id="bracket-diamond" points="36,8 64,36 36,64 8,36" stroke="#E11D48" stroke-width="1.2" stroke-dasharray="3 2" fill="none"/>
+        </svg>
+        <div class="mt-0.5 text-center font-mono text-[9px] leading-none tracking-tight whitespace-nowrap">
+            <span id="bracket-callsign" class="px-1 py-0.5 bg-canvas/90 text-alabaster border hairline-border">B-52G #01</span>
+            <span id="bracket-dist" class="px-1 py-0.5 bg-emerald text-canvas font-bold">LOCKED</span>
+        </div>
+    </div>
+
+    <!-- 5. VECTOR RETICLE (ADAPTS BETWEEN SAM-2 GREEN & MIG-21 ORANGE ASP-PFD GYRO SIGHT) -->
+    <div id="hud-reticle" class="hud-el fixed z-10 pointer-events-none transform -translate-x-1/2 -translate-y-1/2" style="left: 50%; top: 50%;">
+        <svg id="reticle-svg" width="96" height="96" viewBox="0 0 96 96" fill="none">
+            <circle cx="48" cy="48" r="28" stroke="rgba(16,185,129,0.75)" stroke-width="1.4" stroke-dasharray="5 3"/>
+            <circle cx="48" cy="48" r="12" stroke="rgba(250,250,250,0.45)" stroke-width="1"/>
+            <line x1="48" y1="8" x2="48" y2="32" stroke="#10B981" stroke-width="1.4"/>
+            <line x1="48" y1="64" x2="48" y2="88" stroke="#10B981" stroke-width="1.4"/>
+            <line x1="8" y1="48" x2="32" y2="48" stroke="#10B981" stroke-width="1.4"/>
+            <line x1="64" y1="48" x2="88" y2="48" stroke="#10B981" stroke-width="1.4"/>
+            <circle cx="48" cy="48" r="2.5" fill="#E11D48"/>
+        </svg>
+    </div>
+
+    <!-- 5B. TACTICAL CORNER HUD (MISSION TITLE + CLOCK / OBJECTIVE TRACKER) + TOOLBAR -->
+    <div id="poster-title" class="hud-el fixed top-3 left-3 z-30 pointer-events-none poster-block">
+        <div class="poster-h1 font-mono">// SỞ CHỈ HUY TIỀN PHƯƠNG</div>
+        <div class="poster-h2 text-zinc-300">THỜI GIAN: <span id="poster-clock" class="tabular-nums font-bold text-alabaster">20:00</span> · <span id="poster-date">18.12.1972</span></div>
+        <div class="poster-h2 poster-amber font-mono font-semibold" id="poster-mission"></div>
+    </div>
+    <div id="poster-status" class="hud-el fixed top-3 right-3 z-30 pointer-events-none poster-block text-right">
+        <div class="poster-h2" id="obj-line">NHIỆM VỤ: HẠ 1 B-52</div>
+        <div class="poster-h2 flex items-center justify-end gap-3">
+            <span>ĐÃ HẠ: <span id="obj-kills" class="tabular-nums">0/1</span></span>
+            <span>ĐẠN: <span id="poster-ammo" class="tabular-nums">4</span></span>
+            <svg width="96" height="14" viewBox="0 0 120 16" aria-hidden="true">
+                <path d="M4 8 L18 4 H96 L104 1 H110 L108 6 H114 L118 8 L114 10 H108 L110 15 H104 L96 12 H18 Z" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="0.8"/>
+                <path d="M30 4 L36 0 H42 L40 4 M30 12 L36 16 H42 L40 12" fill="#D1D5DB"/>
+            </svg>
+        </div>
+        <div class="poster-h2 poster-amber">CÒN: <span id="obj-timer" class="tabular-nums">02:30</span> · <span id="poster-state">SẴN SÀNG</span></div>
+        <div id="game-toolbar" class="pointer-events-auto flex justify-end gap-2 mt-2">
+            <button class="tool-btn btn-toggle-bgm text-emerald-300 border-emerald-500/40 hover:border-emerald-400" onclick="MusicSystem.toggle()">Nhạc: BẬT<kbd>B</kbd></button>
+            <button class="tool-btn text-amber-300 border-amber-500/40 hover:border-amber-400" onclick="toggleRadioLog(true)">Nhật ký<kbd>L</kbd></button>
+            <button class="tool-btn text-teal-300 border-teal-500/40 hover:border-teal-400" onclick="toggleTacticalGuide(true)">Cẩm nang<kbd>H</kbd></button>
+            <button class="tool-btn" onclick="pauseMission()">Tạm dừng<kbd>Esc</kbd></button>
+        </div>
+    </div>
+
+    <!-- 7. LEFT & RIGHT TACTICAL HUD PANELS (MATCHING REFERENCE IMAGES 3 & 4) -->
+    <!-- Bottom-Left Tactical Target & Battery Telemetry Box -->
+    <div id="hud-left-telemetry" class="hud-el fixed bottom-4 left-4 z-20 hidden sm:flex flex-col gap-1.5 w-72 tactical-panel rounded-xl p-3 pointer-events-none font-mono">
+        <div class="flex items-center justify-between border-b border-emerald/25 pb-1">
+            <span id="hud-role-label" class="text-[10px] font-bold text-emerald uppercase">BỆ PHÓNG: SAM-2 #03 • ĐÔNG ANH</span>
+            <span id="hud-ammo-badge" class="text-[10px] font-bold text-amber-400">ĐẠN V-750: 1/4 [ĐANG KÍCH HOẠT]</span>
+        </div>
+        <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[10px] tabular-nums">
+            <div class="text-muted">MỤC TIÊU: <span id="hud-tgt-name" class="text-alabaster font-semibold">B-52 STRATOFORTRESS</span></div>
+            <div class="text-muted">CỰ LY: <span id="hud-tgt-range" class="text-emerald font-semibold">11.8 KM</span></div>
+            <div class="text-muted">ĐỘ CAO: <span id="hud-tgt-alt" class="text-alabaster">9.800 M</span></div>
+            <div class="text-muted">TÍN HIỆU: <span id="hud-tgt-q" class="text-alabaster">—</span></div>
+            <div class="text-muted">GÓC PHÓNG: <span id="hud-elevation" class="text-amber-300 font-semibold">48°</span></div>
+            <div class="text-muted">HƯỚNG: <span id="hud-azimuth" class="text-amber-300 font-semibold">032°</span></div>
+        </div>
+        <div class="mt-1 pt-1.5 border-t border-emerald/25 flex items-center justify-between">
+            <span class="text-[9px] text-muted">KHÓA MỤC TIÊU:</span>
+            <span id="hud-lock-status" class="px-2 py-0.5 rounded bg-emerald/20 border border-emerald text-emerald text-[10px] font-bold">
+                LOCKED [SÓNG SẠCH]
+            </span>
+        </div>
+        <div id="launcher-row" class="mt-1 pt-1.5 border-t border-emerald/25 text-[10px]">
+            <div class="flex items-center justify-between"><span class="text-muted">BỆ PHÓNG #03 · #01 · #02:</span><span id="hud-launchers" class="font-bold text-alabaster text-[13px]">● ● ●</span></div>
+            <div class="flex items-center justify-between mt-1"><span class="text-[10px] text-muted">TỰ NẠP ĐẠN</span><span id="hud-reload" class="text-amber-300">—</span></div>
+            <div class="h-1 bg-white/10 rounded mt-0.5"><div id="hud-reload-bar" class="h-1 bg-amber-400 rounded" style="width: 0%"></div></div>
+        </div>
+    </div>
+
+    <!-- Bottom-Right Dual CRT Radar Scopes (SNR-75 Fan Song Sector + P-35 Circular Scope as in Image 3) -->
+    <div id="hud-right-radar" class="hud-el fixed bottom-4 right-4 z-20 hidden sm:flex flex-col gap-2 tactical-panel rounded-xl p-2.5 pointer-events-none font-mono">
+        <div class="flex items-end gap-2">
+        <!-- Secondary Sector Scan Scope (B-52 Elevation/Azimuth Fan Song) -->
+        <div class="flex flex-col items-center">
+            <span class="text-[8px] text-emerald mb-0.5">FAN SONG ±20°</span>
+            <canvas id="sector-scope-canvas" width="92" height="92" class="rounded border border-emerald/40 bg-[#03100A]"></canvas>
+            <span class="text-[8px] text-muted mt-0.5">ĐIỆN NĂNG: 92%</span>
+        </div>
+        <!-- Primary 360° P-35 & SNR-75 Radar Scope -->
+        <div class="flex flex-col items-center">
+            <div class="w-full flex items-center justify-between text-[9px] text-emerald mb-0.5 px-0.5">
+                <span>RADAR: HOẠT ĐỘNG</span>
+                <span id="radar-freq-tag" class="text-alabaster font-bold">76 MHz</span>
+            </div>
+            <canvas id="radar-scope-canvas" width="128" height="128" class="rounded border border-emerald/50 bg-[#03100A]"></canvas>
+            <div class="w-full flex items-center justify-between text-[8px] text-muted mt-0.5 px-0.5">
+                <span>TẦM QUÉT: 45 KM</span>
+                <span id="radar-snr-tag" class="text-emerald font-bold">ECCM: TỐI ƯU</span>
+            </div>
+        </div>
+        </div>
+        <!-- "Vạch nhiễu tìm thù": tune the receiver until the target separates from the jamming -->
+        <div id="eccm-row" class="pointer-events-auto flex flex-col gap-1 text-[11px] border-t border-emerald/25 pt-2" title="Đưa vạch xanh ra khỏi các đỉnh nhiễu đỏ">
+            <div class="flex items-center justify-between"><span class="text-amber-300">TẦN SỐ PHÁT SNR-75</span><span id="eccm-readout" class="text-emerald font-semibold tabular-nums">2960 MHz</span></div>
+            <canvas id="spectrum-canvas" width="236" height="34" class="rounded border border-emerald/30 bg-[#03100A] w-full"></canvas>
+            <input type="range" id="eccm-slider" min="2900" max="3100" step="1" value="2960" oninput="updateECCMFreq(this.value)" class="eccm-slider w-full">
+            <div class="text-[9px] text-muted">Q / E: nhảy tần ±45 MHz · đỉnh đỏ = máy gây nhiễu</div>
+        </div>
+    </div>
+
+    <!-- 8. MODE [3] HANGAR STUDIO FLOATING CONTROLS + .GLB/.GLTF EXTERNAL LOADER -->
+    <div id="hangar-floating-bar" class="fixed bottom-16 inset-x-0 z-[25] hidden justify-center pointer-events-none px-4">
+        <div class="glass-pill rounded-2xl p-3.5 max-w-4xl w-full pointer-events-auto space-y-2.5 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b hairline-border pb-2">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald animate-pulse"></span>
+                    <span id="hangar-model-name" class="font-mono text-xs font-bold uppercase text-alabaster">
+                        TIÊM KÍCH MIG-21BIS (#5121 — 5 NGÔI SAO ĐỎ CHIẾN CÔNG)
+                    </span>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="leaveHangar()" class="px-2.5 py-1 rounded bg-canvas border hairline-border font-mono text-[10px] text-alabaster hover:text-emerald">← MENU</button>
+                    <label class="px-2.5 py-1 rounded bg-emerald/20 border border-emerald text-emerald hover:bg-emerald hover:text-canvas font-mono text-[10px] font-bold cursor-pointer transition">
+                        + NẠP FILE .GLB / .GLTF TỪ MÁY
+                        <input type="file" id="glb-file-input" accept=".glb,.gltf" class="hidden" onchange="handleExternalGLBUpload(event)">
+                    </label>
+                    <button onclick="toggleHangarWireframe()" id="btn-wireframe" class="px-2.5 py-1 rounded bg-canvas border hairline-border font-mono text-[10px] text-muted hover:text-alabaster">
+                        KHUNG DÂY ĐA GIÁC: TẮT
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button onclick="loadHangarShowcaseModel('MIG21')" id="h-model-MIG21" class="p-2 rounded-lg border text-left transition bg-alabaster text-canvas border-alabaster">
+                    <div class="font-mono text-[9px] font-bold uppercase">TRUNG ĐOÀN SAO ĐỎ</div>
+                    <div class="font-serif text-sm font-semibold">Tiêm kích MiG-21bis (#5121)</div>
+                </button>
+                <button onclick="loadHangarShowcaseModel('B52')" id="h-model-B52" class="p-2 rounded-lg border hairline-border bg-canvas text-muted hover:text-alabaster text-left transition">
+                    <div class="font-mono text-[9px] font-bold uppercase text-vermilion">KHÔNG QUÂN CHIẾN LƯỢC MỸ</div>
+                    <div class="font-serif text-sm font-semibold text-alabaster">Pháo đài bay B-52G</div>
+                </button>
+                <button onclick="loadHangarShowcaseModel('SAM2')" id="h-model-SAM2" class="p-2 rounded-lg border hairline-border bg-canvas text-muted hover:text-alabaster text-left transition">
+                    <div class="font-mono text-[9px] font-bold uppercase text-emerald">BỘ ĐỘI TÊN LỬA VIỆT NAM</div>
+                    <div class="font-serif text-sm font-semibold text-alabaster">Tổ hợp Tên lửa SAM-2</div>
+                </button>
+                <button onclick="loadHangarShowcaseModel('RADAR')" id="h-model-RADAR" class="p-2 rounded-lg border hairline-border bg-canvas text-muted hover:text-alabaster text-left transition">
+                    <div class="font-mono text-[9px] font-bold uppercase text-brass">ĐÔI MẮT THẦN TRẬN ĐỊA</div>
+                    <div class="font-serif text-sm font-semibold text-alabaster">Đài Radar SNR-75 Fan Song</div>
+                </button>
+            </div>
+
+            <!-- Structured Museum-grade Specifications Grid -->
+            <div id="hangar-model-specs" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono border-t hairline-border pt-2"></div>
+
+            <p id="hangar-model-desc" class="text-xs text-muted leading-relaxed">
+                Dài 15.5m, sải cánh 7.15m, sơn phủ hợp kim nhôm bạc phản xạ PBR với 5 ngôi sao đỏ chiến công và số hiệu 5121 trên mũi, cánh tam giác 57°, bình dầu phụ dưới bụng, 2 tên lửa tầm nhiệt K-13 Atoll trên giá phóng APU-13 và luồng lửa tăng lực R-25-300 Mach Diamonds.
+            </p>
+        </div>
+    </div>
+
+    <!-- 9. RADIO SUBTITLES + FIRE BUTTON -->
+    <div id="radio-box" class="hud-el"><span id="radio-who"></span><span id="radio-text"></span></div>
+    <div id="jam-prompt" class="hud-el">
+        <div class="jp-title" id="jp-title"></div>
+        <div class="jp-hint" id="jp-hint"></div>
+        <div class="jp-keys">
+            <button class="jp-key" id="jp-q" onclick="hopFrequency(-45)"><b>Q</b>Nhảy xuống 45 MHz</button>
+            <button class="jp-key" id="jp-e" onclick="hopFrequency(45)"><b>E</b>Nhảy lên 45 MHz</button>
+        </div>
+    </div>
+    <div id="action-bar" class="hud-el">
+        <button id="fire-btn" onclick="triggerPrimaryWeaponFire()"><span id="fire-btn-label">Phóng</span><kbd>Space</kbd></button>
+    </div>
+    <div id="missile-hud" class="hud-el" style="display: none"><div class="mh-cross"></div><div id="missile-hud-text"></div></div>
+    <div id="stick-dot" class="hud-el"></div>
+
+    <!-- 10. DEDICATED FULL SCREEN: CAMPAIGN ARCHIVE (TƯ LIỆU BIÊN NIÊN SỬ 12 NGÀY ĐÊM 1972) -->
+    <div id="screen-archive" class="screen">
+        <div class="screen-inner wide" style="max-height: 94vh; height: 920px; display: flex; flex-direction: column; background: rgba(5, 10, 15, 0.98); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.95); overflow: hidden; margin: auto;">
+            <!-- Header bar -->
+            <div class="p-3 sm:p-4 border-b border-emerald-500/30 flex items-center justify-between gap-4 shrink-0 bg-black/60">
+                <div class="flex items-center gap-3">
+                    <button class="link-btn font-mono text-xs uppercase" onclick="showScreen('menu')">← Menu chính</button>
+                    <span class="text-zinc-600">//</span>
+                    <div>
+                        <div class="font-mono text-[11px] uppercase tracking-widest text-amber-400 font-bold">
+                            HỒ SƠ TƯ LIỆU QUÂN SỰ // CHIẾN DỊCH HÀ NỘI 12 NGÀY ĐÊM (1972)
+                        </div>
+                        <h2 class="screen-title text-base sm:text-xl font-serif text-alabaster m-0 tracking-wide">
+                            Biên Niên Sử Tác Chiến &amp; Bản Đồ Di Tích Hôm Nay
+                        </h2>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button onclick="copyCampaignSummary()" class="menu-btn subtle text-xs py-1.5 px-3 flex items-center gap-1.5 hover:border-amber-400" title="Sao chép toàn bộ tóm tắt chiến dịch">
+                        <span class="font-mono text-amber-400 mr-1">[COPY]</span> <span class="hidden sm:inline">Sao chép tóm tắt</span>
+                    </button>
+                    <button onclick="showScreen('menu')" class="menu-btn subtle text-xs py-1.5 px-3">
+                        Đóng [Esc]
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Navigation (5 Tabs) -->
+            <div class="px-3 pt-2 pb-2 bg-black/40 border-b border-white/10 shrink-0">
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                    <button onclick="renderArchiveTab('card1')" id="tab-btn-card1" class="archive-nav-btn text-left p-2 rounded border border-emerald-500/40 bg-emerald-500/15 transition-all">
+                        <div class="font-mono text-[10px] uppercase text-emerald-400 font-bold">[01] BIÊN NIÊN &amp; DI TÍCH</div>
+                        <div class="text-xs font-semibold truncate text-zinc-200">12 Ngày Đêm &amp; Tọa Độ</div>
+                    </button>
+                    <button onclick="renderArchiveTab('card2')" id="tab-btn-card2" class="archive-nav-btn text-left p-2 rounded border border-white/10 bg-black/40 transition-all">
+                        <div class="font-mono text-[10px] uppercase text-zinc-400 font-bold">[02] BỐI CẢNH DỰ BÁO</div>
+                        <div class="text-xs font-semibold truncate text-zinc-200">Paris &amp; Cẩm Nang Đỏ</div>
+                    </button>
+                    <button onclick="renderArchiveTab('card3')" id="tab-btn-card3" class="archive-nav-btn text-left p-2 rounded border border-white/10 bg-black/40 transition-all">
+                        <div class="font-mono text-[10px] uppercase text-zinc-400 font-bold">[03] NGHỆ THUẬT QUÂN SỰ</div>
+                        <div class="text-xs font-semibold truncate text-zinc-200">Vạch Nhiễu Đánh B-52</div>
+                    </button>
+                    <button onclick="renderArchiveTab('card4')" id="tab-btn-card4" class="archive-nav-btn text-left p-2 rounded border border-white/10 bg-black/40 transition-all">
+                        <div class="font-mono text-[10px] uppercase text-zinc-400 font-bold">[04] CHIẾN CÔNG Ý NGHĨA</div>
+                        <div class="text-xs font-semibold truncate text-zinc-200">Hạ 34 B-52 &amp; Hiệp Định</div>
+                    </button>
+                    <button onclick="renderArchiveTab('card5')" id="tab-btn-card5" class="archive-nav-btn text-left p-2 rounded border border-amber-400/30 bg-black/40 transition-all">
+                        <div class="font-mono text-[10px] uppercase text-amber-400 font-bold">[05] SỔ TAY HIỆN VẬT</div>
+                        <div class="text-xs font-semibold truncate text-zinc-200">Bảo Tàng &amp; Dấu Tích</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Scrollable Content Area -->
+            <div id="archive-content-area" class="p-3 sm:p-5 overflow-y-auto flex-1 space-y-4 text-xs sm:text-sm leading-relaxed text-zinc-300">
+                <!-- Injected via renderArchiveTab() -->
+            </div>
+
+            <!-- Footer Bar -->
+            <div class="p-2.5 px-4 border-t border-white/10 bg-black/60 flex items-center justify-between gap-3 text-xs shrink-0">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald animate-pulse"></span>
+                    <span id="copy-toast" class="font-mono text-[11px] text-zinc-400">
+                        Nguồn tư liệu: Viện Lịch sử Quân sự Việt Nam · Bảo tàng Chiến thắng B-52 Hà Nội
+                    </span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="showScreen('menu')" class="menu-btn primary py-1 px-4 text-xs">
+                        Về Menu chính
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Legacy compatibility anchors -->
+    <div id="archive-backdrop" class="hidden"></div>
+    <div id="archive-drawer" class="hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================================
+         CORE 3D ENGINE: HIGH-POLY CAD MODELS, VOLUMETRIC PLUMES, 4 CINEMATIC VIEWS
+         ============================================================================ -->
+    <script>
+<!-- INJECT_SCRIPTS -->
+    </script>
+</body>
+</html>

@@ -10,8 +10,9 @@ print("=== STARTING COMPREHENSIVE VERIFICATION SUITE ===")
 import os
 import hashlib
 
-FILE_PRIMARY = 'index.html'
-FILE_DIST = 'h_n_i_12_ng_y_m_18_12_29_12_1972.html'
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) if os.path.basename(os.path.dirname(os.path.abspath(__file__))) == 'tests' else os.getcwd()
+FILE_PRIMARY = os.path.join(ROOT_DIR, 'index.html')
+FILE_DIST = os.path.join(ROOT_DIR, 'hanoi-12-ngay-dem.html')
 
 print("\n--- SECTION 0: Cryptographic Dual-File Synchronization Check ---")
 if not os.path.exists(FILE_PRIMARY):
@@ -128,11 +129,16 @@ else:
 
 # 3. JavaScript Syntax Verification with Node.js
 print("\n--- Verifying JavaScript Syntax with Node.js ---")
-temp_js = 'temp_game_script.js'
+temp_js = os.path.join(ROOT_DIR, 'temp_game_script.js')
 with open(temp_js, 'w', encoding='utf-8') as f:
     f.write(js_code)
 
 res = subprocess.run(['node', '--check', temp_js], capture_output=True, text=True, encoding='utf-8')
+try:
+    if os.path.exists(temp_js):
+        os.remove(temp_js)
+except OSError:
+    pass
 if res.returncode == 0:
     print("✓ Node.js syntax check passed! No syntax errors in extracted scripts.")
 else:

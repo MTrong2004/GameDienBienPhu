@@ -213,30 +213,32 @@
         .brief-cols li { padding: 6px 0 6px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.07); position: relative; }
         .brief-cols li::before { content: '›'; position: absolute; left: 0; color: #CDF7A1; }
         .brief-cols b { color: #FAFAFA; }
-        .screen-actions, .menu-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
-        .menu-buttons { flex-direction: column; align-items: stretch; max-width: 360px; }
+        .screen-actions, .menu-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+        .menu-buttons { flex-direction: column; align-items: stretch; max-width: 440px; }
         .menu-btn {
             font-family: 'Oswald', sans-serif;
             text-transform: uppercase;
-            letter-spacing: 0.06em;
-            font-size: 18px;
-            padding: 11px 22px;
+            letter-spacing: 0.05em;
+            font-size: 15px;
+            padding: 9px 16px;
             color: #E4E4E7;
-            background: rgba(10, 16, 14, 0.7);
-            border: 1px solid rgba(205, 247, 161, 0.28);
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            background: rgba(8, 14, 12, 0.78);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
             text-align: left;
-            transition: background 0.15s, color 0.15s, border-color 0.15s;
+            transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
             cursor: pointer;
         }
-        .menu-btn:hover, .menu-btn:focus-visible { background: rgba(205, 247, 161, 0.14); border-color: #CDF7A1; color: #FFFFFF; outline: none; }
-        .menu-btn.primary { background: #CDF7A1; color: #0A0F0A; border-color: #CDF7A1; font-weight: 600; }
-        .menu-btn.primary:hover { background: #E2FFC4; color: #000; }
-        .menu-btn.subtle { font-size: 15px; color: #A1A1AA; }
+        .menu-btn:hover, .menu-btn:focus-visible { background: rgba(16, 185, 129, 0.18); border-color: #34D399; color: #FFFFFF; outline: none; box-shadow: 0 0 12px rgba(16, 185, 129, 0.25); }
+        .menu-btn.primary { background: #10B981; color: #040906; border-color: #34D399; font-weight: 700; box-shadow: 0 0 18px rgba(16, 185, 129, 0.4); }
+        .menu-btn.primary:hover { background: #34D399; color: #000; box-shadow: 0 0 24px rgba(16, 185, 129, 0.6); }
+        .menu-btn.subtle { font-size: 13px; color: #A1A1AA; }
         .link-btn { font-family: 'Oswald', sans-serif; color: #A1A1AA; text-transform: uppercase; letter-spacing: 0.08em; font-size: 15px; background: none; border: 0; cursor: pointer; }
         .link-btn:hover { color: #FFFFFF; }
-        .menu-title { font-size: clamp(40px, 6.4vw, 104px) !important; line-height: 0.98; }
-        .menu-foot { margin-top: 28px; color: #71717A; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; max-width: 420px; }
+        .menu-title { font-size: clamp(30px, 3.8vw, 52px) !important; line-height: 1.08; letter-spacing: 0.02em; }
+        .menu-foot { margin-top: 14px; color: #71717A; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; max-width: 440px; }
+        .menu-btn-continue { padding: 12px 18px; min-height: 48px; }
+        .menu-btn-tactical { font-size: 14px; padding: 10px 14px; }
 
         .mission-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 18px; }
         .mission-card {
@@ -535,7 +537,24 @@
         }
 
         /* ---- In-game HUD helpers ---- */
-        body.in-menu .hud-el { display: none !important; } .hidden { display: none;} #modal-tactical-guide, #modal-radio-log { background: rgba(3, 6, 10, 0.97); z-index: 60;}
+        body.in-menu .hud-el { display: none !important; } .hidden { display: none;} #modal-tactical-guide, #modal-radio-log, #archive-drawer { background: rgba(3, 6, 10, 0.98); z-index: 60;}
+        .archive-nav-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #A1A1AA;
+            cursor: pointer;
+        }
+        .archive-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(205, 247, 161, 0.3);
+            color: #F4F4F5;
+        }
+        .archive-nav-btn.is-active {
+            background: rgba(5, 150, 105, 0.22);
+            border-color: #34D399;
+            color: #CDF7A1;
+            box-shadow: 0 0 12px rgba(52, 211, 153, 0.15);
+        }
         .tool-btn {
             font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.05em; font-size: 12px;
             padding: 3px 10px; color: #E4E4E7; background: rgba(4, 8, 10, 0.6); border: 1px solid rgba(255, 255, 255, 0.16); cursor: pointer;
@@ -604,20 +623,24 @@
         @keyframes jpPulse { 50% { box-shadow: 0 0 0 6px rgba(253, 224, 71, 0.28); } }
         #fire-btn kbd { color: #FFE4E6; border-color: rgba(255, 255, 255, 0.4); }
 
-        /* Cinematic poster HUD (condensed lime type over dark scrims, like the reference key art) */
+        /* Tactical corner HUD (compact, translucent, flight-sim styling) */
         .poster-block {
             font-family: 'Oswald', 'Plus Jakarta Sans', sans-serif;
             text-transform: uppercase;
             color: #CDF7A1;
-            text-shadow: 0 0 10px rgba(163, 255, 120, 0.28), 0 2px 3px rgba(0, 0, 0, 0.9);
-            background: linear-gradient(180deg, rgba(4, 7, 11, 0.62), rgba(4, 7, 11, 0.38));
-            padding: 6px 14px 8px;
-            letter-spacing: 0.01em;
-            line-height: 1.12;
+            background: rgba(4, 10, 8, 0.72);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(16, 185, 129, 0.28);
+            border-radius: 4px;
+            padding: 6px 12px;
+            letter-spacing: 0.02em;
+            line-height: 1.25;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
         }
-        .poster-h1 { font-size: clamp(18px, 2.1vw, 40px); font-weight: 600; }
-        .poster-h2 { font-size: clamp(13px, 1.35vw, 26px); font-weight: 500; }
-        .poster-amber { color: #FDBA74; text-shadow: 0 0 10px rgba(251, 146, 60, 0.35), 0 2px 3px rgba(0, 0, 0, 0.9); }
+        .poster-h1 { font-size: clamp(12px, 1.1vw, 15px); font-weight: 600; letter-spacing: 0.08em; color: #10B981; }
+        .poster-h2 { font-size: clamp(11px, 0.95vw, 13px); font-weight: 500; }
+        .poster-amber { color: #FDBA74; }
         .poster-state-live { animation: posterBlink 0.5s steps(2) infinite; }
         @keyframes posterBlink { 50% { opacity: 0.45; } }
 
@@ -908,32 +931,77 @@
 
     <!-- 0. MENUS: MAIN · CAMPAIGN · BRIEFING · PAUSE · DEBRIEF · VICTORY · TACTICAL GUIDE · RADIO LOG -->
     <div id="screen-menu" class="screen is-open">
-        <div class="screen-inner">
-            <div class="kicker">18.12 – 29.12.1972 · Linebacker II</div>
-            <div class="screen-title menu-title">Phòng không 3D<br>Hà Nội – 12 ngày đêm</div>
-            <div class="brief-unit" style="font-size: 20px;">"Điện Biên Phủ trên không"</div>
-
-            <!-- Campaign Quick Progress Tracker on Menu -->
-            <div id="menu-campaign-progress" class="hidden mb-4 p-3.5 bg-black/75 border border-emerald/40 rounded-lg max-w-sm text-left">
-                <div class="flex items-center justify-between text-xs font-mono">
-                    <span class="text-emerald font-bold uppercase tracking-wider">TIẾN ĐỘ CHIẾN DỊCH:</span>
-                    <span id="menu-prog-text" class="text-amber-300 font-bold">0/12 ĐÊM</span>
+        <div class="screen-inner wide flex flex-col lg:flex-row items-start justify-between gap-8 my-auto w-full">
+            
+            <!-- CÁNH TRÁI: Nhận diện & Cụm nút chỉ huy -->
+            <div class="w-full lg:max-w-md flex flex-col text-left">
+                <div class="font-mono text-xs text-amber-400 tracking-widest uppercase mb-1">
+                    18.12 – 29.12.1972 // CHIẾN DỊCH LINEBACKER II
                 </div>
-                <div id="menu-pips" class="flex gap-1.5 my-2.5">
+                
+                <h1 class="screen-title menu-title m-0">
+                    <span class="text-emerald-400">PHÒNG KHÔNG 3D</span><br>
+                    <span class="text-white">HÀ NỘI – 12 NGÀY ĐÊM</span>
+                </h1>
+                
+                <div class="brief-unit text-zinc-400 font-serif italic text-base mt-1 mb-4">
+                    "Điện Biên Phủ trên không"
+                </div>
+
+                <!-- Cụm nút tác chiến chỉ huy -->
+                <div class="menu-buttons w-full max-w-md flex flex-col gap-2">
+                    <!-- Nút Tiếp tục tác chiến (Primary CTA) -->
+                    <button id="btn-continue-campaign" class="menu-btn primary menu-btn-continue hidden" onclick="continueCampaign()">
+                        Tiếp tục chiến dịch →
+                    </button>
+
+                    <!-- Lưới 4 nút chức năng đánh số chuẩn quân sự: 01, 02, 03, 04 -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="menu-btn menu-btn-tactical" id="btn-open-campaign" onclick="openCampaign()">
+                            <span class="font-mono text-emerald-400 mr-1.5">[01]</span>Bản đồ tác chiến
+                        </button>
+                        <button class="menu-btn menu-btn-tactical" onclick="enterHangar()">
+                            <span class="font-mono text-emerald-400 mr-1.5">[02]</span>Khí tài 3D
+                        </button>
+                        <button class="menu-btn menu-btn-tactical" onclick="toggleCampaignArchive(true)">
+                            <span class="font-mono text-emerald-400 mr-1.5">[03]</span>Tư liệu lịch sử
+                        </button>
+                        <button class="menu-btn menu-btn-tactical" onclick="toggleTacticalGuide(true)">
+                            <span class="font-mono text-emerald-400 mr-1.5">[04]</span>Cẩm nang [H]
+                        </button>
+                    </div>
+
+                    <!-- Thanh trạng thái chân trang -->
+                    <div class="flex items-center gap-3 pt-2 text-xs font-mono text-zinc-400">
+                        <button class="hover:text-emerald-400 transition-colors uppercase cursor-pointer" onclick="toggleSoundEngine()" data-sound-label>
+                            Âm thanh: <span class="text-emerald-400 font-bold">[BẬT]</span>
+                        </button>
+                        <span class="text-zinc-600">//</span>
+                        <span class="text-zinc-500 uppercase tracking-wider">Quân chủng PK-KQ</span>
+                    </div>
+                </div>
+
+                <p class="menu-foot text-zinc-500 text-[11px] leading-relaxed mt-4 max-w-md">
+                    Mô phỏng tưởng niệm dựa trên tư liệu lịch sử. Số liệu chiến công theo công bố của phía Việt Nam.
+                </p>
+            </div>
+
+            <!-- CÁNH PHẢI: Bảng tiến độ chiến dịch siêu gọn (Translucent Tactical HUD) -->
+            <div id="menu-campaign-progress" class="hidden w-full lg:max-w-[280px] p-3 rounded border border-emerald-500/30 text-left self-start" style="background: rgba(4, 10, 8, 0.42); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+                <div class="flex items-center justify-between text-[11px] font-mono leading-none mb-2">
+                    <span class="text-emerald-400 font-bold tracking-wider">// CHIẾN DỊCH</span>
+                    <span id="menu-prog-text" class="text-amber-400 font-bold">0/12 ĐÊM</span>
+                </div>
+
+                <div id="menu-pips" class="flex gap-1 my-1.5">
                     <!-- 12 progress pips for 12 campaign nights -->
                 </div>
-                <div class="text-[12px] text-muted mt-1" id="menu-prog-sub">Đã bắn rơi 0 B-52</div>
+
+                <div class="text-[11px] font-mono text-zinc-300 truncate mt-1.5" id="menu-prog-sub">
+                    Đang ở Màn 1: Đêm 18/12/1972 · Đã hạ 0 B-52
+                </div>
             </div>
 
-            <div class="menu-buttons">
-                <button id="btn-continue-campaign" class="menu-btn primary hidden" onclick="continueCampaign()">Tiếp tục chiến dịch →</button>
-                <button class="menu-btn primary" id="btn-open-campaign" onclick="openCampaign()">Bản đồ Chiến dịch</button>
-                <button class="menu-btn" onclick="toggleTacticalGuide(true)">Cẩm nang tác chiến [H]</button>
-                <button class="menu-btn" onclick="enterHangar()">Xưởng khí tài 3D</button>
-                <button class="menu-btn" onclick="toggleCampaignArchive(true)">Tư liệu lịch sử</button>
-                <button class="menu-btn subtle" onclick="toggleSoundEngine()" data-sound-label>Âm thanh: Bật</button>
-            </div>
-            <p class="menu-foot">Mô phỏng tưởng niệm dựa trên tư liệu lịch sử. Số liệu chiến công theo công bố của phía Việt Nam, trừ khi ghi chú khác.</p>
         </div>
     </div>
 
@@ -942,9 +1010,9 @@
             <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
                 <div class="flex items-center gap-3">
                     <button class="link-btn" onclick="showScreen('menu')">← Menu chính</button>
-                    <button class="tool-btn btn-toggle-bgm text-emerald-300 border-emerald-500/40 hover:border-emerald-400" onclick="MusicSystem.toggle()"><span>🎵</span> Nhạc: BẬT<kbd>B</kbd></button>
+                    <button class="tool-btn btn-toggle-bgm text-emerald-300 border-emerald-500/40 hover:border-emerald-400" onclick="MusicSystem.toggle()">Nhạc: BẬT<kbd>B</kbd></button>
                 </div>
-                <button class="link-btn text-emerald hover:text-emerald-300" onclick="toggleTacticalGuide(true)">? Cẩm nang tác chiến [H]</button>
+                <button class="link-btn text-emerald hover:text-emerald-300" onclick="toggleTacticalGuide(true)">Cẩm nang tác chiến [H]</button>
             </div>
             <div class="screen-title">Chiến dịch 12 ngày đêm</div>
             <div class="brief-unit">Biên niên sử 12 ngày đêm khốc liệt đánh bại pháo đài bay B-52, bảo vệ trọn vẹn bầu trời Thủ đô Hà Nội.</div>
@@ -983,7 +1051,7 @@
             </div>
             <div class="screen-actions">
                 <button class="menu-btn primary" onclick="beginMission()">Vào trận</button>
-                <button class="menu-btn" onclick="toggleTacticalGuide(true)">? Hướng dẫn [H]</button>
+                <button class="menu-btn" onclick="toggleTacticalGuide(true)">Cẩm nang tác chiến [H]</button>
                 <button class="menu-btn subtle" onclick="showScreen('campaign')">← Danh sách màn</button>
             </div>
         </div>
@@ -996,7 +1064,7 @@
             <div class="menu-buttons">
                 <button class="menu-btn primary" onclick="resumeMission()">Tiếp tục</button>
                 <button class="menu-btn" onclick="toggleTacticalGuide(true)">Cẩm nang tác chiến [H]</button>
-                <button class="menu-btn" onclick="toggleRadioLog(true)">📜 Nhật ký truyền tin [L]</button>
+                <button class="menu-btn" onclick="toggleRadioLog(true)"><span class="font-mono text-emerald-400 mr-1.5">[L]</span>Nhật ký truyền tin</button>
                 <button class="menu-btn" onclick="restartMission()">Chơi lại màn này</button>
                 <button class="menu-btn" onclick="toggleCampaignArchive(true)">Tư liệu lịch sử</button>
                 <button class="menu-btn subtle" onclick="toggleSoundEngine()" data-sound-label>Âm thanh: Bật</button>
@@ -1040,7 +1108,7 @@
                     <!-- Left Column: Combat record & KPIs (7 cols on lg) -->
                     <div class="lg:col-span-7 flex flex-col gap-2.5">
                         <div class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-semibold flex items-center gap-2">
-                            <span>🎖️</span> BÁO CÁO THÀNH TÍCH TÁC CHIẾN &amp; HUÂN CHƯƠNG
+                            <span class="font-mono text-amber-400 mr-1">[★]</span> BÁO CÁO THÀNH TÍCH TÁC CHIẾN &amp; HUÂN CHƯƠNG
                         </div>
                         <div class="debrief-stats" id="debrief-stats"></div>
                     </div>
@@ -1049,10 +1117,10 @@
                     <div class="lg:col-span-5 flex flex-col gap-2.5">
                         <div class="flex items-center justify-between">
                             <div class="text-xs uppercase font-mono tracking-widest text-amber-400 font-semibold flex items-center gap-2">
-                                <span>📜</span> HỒ SƠ LỊCH SỬ &amp; CHIẾN SỰ 1972
+                                <span class="font-mono text-amber-400 mr-1">//</span> HỒ SƠ LỊCH SỬ &amp; CHIẾN SỰ 1972
                             </div>
                             <button class="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800/80 border border-zinc-700 hover:border-emerald-400 text-zinc-300 hover:text-emerald-300 transition-colors flex items-center gap-1.5" onclick="toggleRadioLog(true)" title="Xem lại các bức điện đài vô tuyến trong trận">
-                                <span>📻</span> Nhật ký đài [L]
+                                <span class="font-mono text-emerald-400 mr-1">[L]</span> Nhật ký đài
                             </button>
                         </div>
                         <div class="debrief-history-card">
@@ -1251,7 +1319,7 @@
         <!-- SAM-2 Đại đội 72 (South-East Lock) -->
         <div id="pin-sam72" class="map-pin-label">
             <div class="command-panel-cyan rounded-lg px-2.5 py-1 flex items-center gap-2 shadow-xl border-emerald">
-                <span class="w-5 h-5 rounded-full bg-emerald/25 border border-emerald flex items-center justify-center text-emerald font-mono text-[10px]">🚀</span>
+                <span class="w-5 h-5 rounded-full bg-emerald/25 border border-emerald flex items-center justify-center text-emerald font-mono text-[10px]">▲</span>
                 <div class="font-mono text-left leading-tight">
                     <div class="text-[10px] font-bold text-emerald">SAM-2 • ONLINE</div>
                     <div class="text-[9px] text-alabaster">ĐẠI ĐỘI 72 • KHOÁ MỤC TIÊU</div>
@@ -1261,7 +1329,7 @@
         <!-- Radar P-35 Trận địa 291 -->
         <div id="pin-radar291" class="map-pin-label">
             <div class="command-panel-cyan rounded-lg px-2.5 py-1 flex items-center gap-2 shadow-xl">
-                <span class="w-5 h-5 rounded-full bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-300 font-mono text-[10px]">📡</span>
+                <span class="w-5 h-5 rounded-full bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-300 font-mono text-[10px]">◈</span>
                 <div class="font-mono text-left leading-tight">
                     <div class="text-[10px] font-bold text-alabaster">RADAR P-35</div>
                     <div class="text-[9px] text-cyan-300">TRẬN ĐỊA 291 • HOẠT ĐỘNG</div>
@@ -1351,11 +1419,11 @@
         </svg>
     </div>
 
-    <!-- 5B. POSTER-STYLE CORNER HUD (MISSION TITLE + CLOCK / OBJECTIVE TRACKER) + TOOLBAR -->
+    <!-- 5B. TACTICAL CORNER HUD (MISSION TITLE + CLOCK / OBJECTIVE TRACKER) + TOOLBAR -->
     <div id="poster-title" class="hud-el fixed top-3 left-3 z-30 pointer-events-none poster-block">
-        <div class="poster-h1">PHÒNG KHÔNG 3D: HÀ NỘI - 12 NGÀY ĐÊM</div>
-        <div class="poster-h2">THỜI GIAN: <span id="poster-clock" class="tabular-nums">20:00</span> | <span id="poster-date">18.12.1972</span></div>
-        <div class="poster-h2 poster-amber" id="poster-mission" style="font-size: clamp(12px, 1vw, 18px);"></div>
+        <div class="poster-h1 font-mono">// SỞ CHỈ HUY TIỀN PHƯƠNG</div>
+        <div class="poster-h2 text-zinc-300">THỜI GIAN: <span id="poster-clock" class="tabular-nums font-bold text-alabaster">20:00</span> · <span id="poster-date">18.12.1972</span></div>
+        <div class="poster-h2 poster-amber font-mono font-semibold" id="poster-mission"></div>
     </div>
     <div id="poster-status" class="hud-el fixed top-3 right-3 z-30 pointer-events-none poster-block text-right">
         <div class="poster-h2" id="obj-line">NHIỆM VỤ: HẠ 1 B-52</div>
@@ -1369,10 +1437,10 @@
         </div>
         <div class="poster-h2 poster-amber">CÒN: <span id="obj-timer" class="tabular-nums">02:30</span> · <span id="poster-state">SẴN SÀNG</span></div>
         <div id="game-toolbar" class="pointer-events-auto flex justify-end gap-2 mt-2">
-            <button class="tool-btn btn-toggle-bgm text-emerald-300 border-emerald-500/40 hover:border-emerald-400" onclick="MusicSystem.toggle()"><span>🎵</span> Nhạc: BẬT<kbd>B</kbd></button>
-            <button class="tool-btn text-amber-300 border-amber-500/40 hover:border-amber-400" onclick="toggleRadioLog(true)">📜 Nhật ký<kbd>L</kbd></button>
-            <button class="tool-btn text-teal-300 border-teal-500/40 hover:border-teal-400" onclick="toggleTacticalGuide(true)">? Hướng dẫn<kbd>H</kbd></button>
-            <button class="tool-btn" onclick="pauseMission()">☰ Tạm dừng<kbd>Esc</kbd></button>
+            <button class="tool-btn btn-toggle-bgm text-emerald-300 border-emerald-500/40 hover:border-emerald-400" onclick="MusicSystem.toggle()">Nhạc: BẬT<kbd>B</kbd></button>
+            <button class="tool-btn text-amber-300 border-amber-500/40 hover:border-amber-400" onclick="toggleRadioLog(true)">Nhật ký<kbd>L</kbd></button>
+            <button class="tool-btn text-teal-300 border-teal-500/40 hover:border-teal-400" onclick="toggleTacticalGuide(true)">Cẩm nang<kbd>H</kbd></button>
+            <button class="tool-btn" onclick="pauseMission()">Tạm dừng<kbd>Esc</kbd></button>
         </div>
     </div>
 
@@ -1501,49 +1569,86 @@
     <div id="missile-hud" class="hud-el" style="display: none"><div class="mh-cross"></div><div id="missile-hud-text"></div></div>
     <div id="stick-dot" class="hud-el"></div>
 
-    <!-- 10. CAMPAIGN ARCHIVE DRAWER (MODE [4]: TƯ LIỆU CHIẾN DỊCH 12/1972) -->
-    <div id="archive-backdrop" onclick="toggleCampaignArchive(false)" class="fixed inset-0 z-40 bg-black/75 backdrop-blur-sm hidden"></div>
-    <aside id="archive-drawer" class="fixed top-0 right-0 bottom-0 z-50 w-full max-w-3xl glass-pill border-l hairline-border transform translate-x-full transition-transform duration-300 flex flex-col justify-between">
-        <div class="p-5 sm:p-6 border-b hairline-border flex items-start justify-between gap-4">
-            <div>
-                <span class="font-mono text-[10px] uppercase tracking-widest text-brass block">
-                    HỒ SƠ LỊCH SỬ QUÂN SỰ // CHIẾN DỊCH PHÒNG KHÔNG 18/12 – 29/12/1972
-                </span>
-                <h1 class="font-serif text-2xl sm:text-3xl text-alabaster font-medium mt-0.5">
-                    Hà Nội 12 Ngày Đêm — Kỳ Tích “Điện Biên Phủ Trên Không”
-                </h1>
+    <!-- 10. DEDICATED FULL SCREEN: CAMPAIGN ARCHIVE (TƯ LIỆU BIÊN NIÊN SỬ 12 NGÀY ĐÊM 1972) -->
+    <div id="screen-archive" class="screen">
+        <div class="screen-inner wide" style="max-height: 94vh; height: 920px; display: flex; flex-direction: column; background: rgba(5, 10, 15, 0.98); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.95); overflow: hidden; margin: auto;">
+            <!-- Header bar -->
+            <div class="p-3 sm:p-4 border-b border-emerald-500/30 flex items-center justify-between gap-4 shrink-0 bg-black/60">
+                <div class="flex items-center gap-3">
+                    <button class="link-btn font-mono text-xs uppercase" onclick="showScreen('menu')">← Menu chính</button>
+                    <span class="text-zinc-600">//</span>
+                    <div>
+                        <div class="font-mono text-[11px] uppercase tracking-widest text-amber-400 font-bold">
+                            HỒ SƠ TƯ LIỆU QUÂN SỰ // CHIẾN DỊCH HÀ NỘI 12 NGÀY ĐÊM (1972)
+                        </div>
+                        <h2 class="screen-title text-base sm:text-xl font-serif text-alabaster m-0 tracking-wide">
+                            Biên Niên Sử Tác Chiến &amp; Bản Đồ Di Tích Hôm Nay
+                        </h2>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button onclick="copyCampaignSummary()" class="menu-btn subtle text-xs py-1.5 px-3 flex items-center gap-1.5 hover:border-amber-400" title="Sao chép toàn bộ tóm tắt chiến dịch">
+                        <span class="font-mono text-amber-400 mr-1">[COPY]</span> <span class="hidden sm:inline">Sao chép tóm tắt</span>
+                    </button>
+                    <button onclick="showScreen('menu')" class="menu-btn subtle text-xs py-1.5 px-3">
+                        Đóng [Esc]
+                    </button>
+                </div>
             </div>
-            <button onclick="toggleCampaignArchive(false)" class="px-3 py-1.5 rounded-full bg-canvas border hairline-border font-mono text-xs text-muted hover:text-alabaster shrink-0">
-                [ĐÓNG ESC]
-            </button>
-        </div>
 
-        <div class="px-6 pt-3 bg-canvas/60 border-b hairline-border flex gap-2 overflow-x-auto">
-            <button onclick="renderArchiveTab('card1')" id="tab-btn-card1" class="px-3.5 py-2 font-mono text-xs border-b-2 border-vermilion text-alabaster font-semibold whitespace-nowrap">
-                Thẻ 1: Bối cảnh &amp; Dự báo Chiến lược
-            </button>
-            <button onclick="renderArchiveTab('card2')" id="tab-btn-card2" class="px-3.5 py-2 font-mono text-xs border-b-2 border-transparent text-muted hover:text-alabaster whitespace-nowrap">
-                Thẻ 2: Nhật ký 12 Ngày Đêm
-            </button>
-            <button onclick="renderArchiveTab('card3')" id="tab-btn-card3" class="px-3.5 py-2 font-mono text-xs border-b-2 border-transparent text-muted hover:text-alabaster whitespace-nowrap">
-                Thẻ 3: Nghệ thuật “Vạch nhiễu tìm thù”
-            </button>
-            <button onclick="renderArchiveTab('card4')" id="tab-btn-card4" class="px-3.5 py-2 font-mono text-xs border-b-2 border-transparent text-brass hover:text-alabaster whitespace-nowrap">
-                Thẻ 4: Kết quả &amp; Ý nghĩa Lịch sử
-            </button>
-        </div>
+            <!-- Tab Navigation (5 Tabs) -->
+            <div class="px-3 pt-2 pb-2 bg-black/40 border-b border-white/10 shrink-0">
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                    <button onclick="renderArchiveTab('card1')" id="tab-btn-card1" class="archive-nav-btn text-left p-2 rounded border border-emerald-500/40 bg-emerald-500/15 transition-all">
+                        <div class="font-mono text-[10px] uppercase text-emerald-400 font-bold">[01] BIÊN NIÊN &amp; DI TÍCH</div>
+                        <div class="text-xs font-semibold truncate text-zinc-200">12 Ngày Đêm &amp; Tọa Độ</div>
+                    </button>
+                    <button onclick="renderArchiveTab('card2')" id="tab-btn-card2" class="archive-nav-btn text-left p-2 rounded border border-white/10 bg-black/40 transition-all">
+                        <div class="font-mono text-[10px] uppercase text-zinc-400 font-bold">[02] BỐI CẢNH DỰ BÁO</div>
+                        <div class="text-xs font-semibold truncate text-zinc-200">Paris &amp; Cẩm Nang Đỏ</div>
+                    </button>
+                    <button onclick="renderArchiveTab('card3')" id="tab-btn-card3" class="archive-nav-btn text-left p-2 rounded border border-white/10 bg-black/40 transition-all">
+                        <div class="font-mono text-[10px] uppercase text-zinc-400 font-bold">[03] NGHỆ THUẬT QUÂN SỰ</div>
+                        <div class="text-xs font-semibold truncate text-zinc-200">Vạch Nhiễu Đánh B-52</div>
+                    </button>
+                    <button onclick="renderArchiveTab('card4')" id="tab-btn-card4" class="archive-nav-btn text-left p-2 rounded border border-white/10 bg-black/40 transition-all">
+                        <div class="font-mono text-[10px] uppercase text-zinc-400 font-bold">[04] CHIẾN CÔNG Ý NGHĨA</div>
+                        <div class="text-xs font-semibold truncate text-zinc-200">Hạ 34 B-52 &amp; Hiệp Định</div>
+                    </button>
+                    <button onclick="renderArchiveTab('card5')" id="tab-btn-card5" class="archive-nav-btn text-left p-2 rounded border border-amber-400/30 bg-black/40 transition-all">
+                        <div class="font-mono text-[10px] uppercase text-amber-400 font-bold">[05] SỔ TAY HIỆN VẬT</div>
+                        <div class="text-xs font-semibold truncate text-zinc-200">Bảo Tàng &amp; Dấu Tích</div>
+                    </button>
+                </div>
+            </div>
 
-        <div id="archive-content-area" class="p-6 overflow-y-auto space-y-5 flex-1 text-xs leading-relaxed"></div>
+            <!-- Main Scrollable Content Area -->
+            <div id="archive-content-area" class="p-3 sm:p-5 overflow-y-auto flex-1 space-y-4 text-xs sm:text-sm leading-relaxed text-zinc-300">
+                <!-- Injected via renderArchiveTab() -->
+            </div>
 
-        <div class="p-4 px-6 border-t hairline-border bg-canvas flex flex-wrap items-center justify-between gap-3">
-            <span id="copy-toast" class="font-mono text-[11px] text-emerald">
-                Sẵn sàng sao chép bản tóm tắt tư liệu chiến dịch “Điện Biên Phủ trên không” (12/1972).
-            </span>
-            <button onclick="copyCampaignSummary()" class="px-4 py-2 rounded-full bg-vermilion hover:bg-vermilion/90 text-alabaster font-mono text-xs font-semibold uppercase tracking-wider">
-                Sao chép Bản Tóm tắt Chiến dịch
-            </button>
+            <!-- Footer Bar -->
+            <div class="p-2.5 px-4 border-t border-white/10 bg-black/60 flex items-center justify-between gap-3 text-xs shrink-0">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald animate-pulse"></span>
+                    <span id="copy-toast" class="font-mono text-[11px] text-zinc-400">
+                        Nguồn tư liệu: Viện Lịch sử Quân sự Việt Nam · Bảo tàng Chiến thắng B-52 Hà Nội
+                    </span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="showScreen('menu')" class="menu-btn primary py-1 px-4 text-xs">
+                        Về Menu chính
+                    </button>
+                </div>
+            </div>
         </div>
-    </aside>
+    </div>
+    <!-- Legacy compatibility anchors -->
+    <div id="archive-backdrop" class="hidden"></div>
+    <div id="archive-drawer" class="hidden"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- ============================================================================
          CORE 3D ENGINE: HIGH-POLY CAD MODELS, VOLUMETRIC PLUMES, 4 CINEMATIC VIEWS
@@ -1922,7 +2027,30 @@
                     new THREE.MeshStandardMaterial({ color: 0xFAFAFA, roughness: 0.15 })
                 );
                 helmet.position.set(0, 0.80, 2.65);
-                group.add(helmet);
+                // Pilot dark reflective visor & oxygen mask
+                const visor = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.18, 12, 12, 0, Math.PI, 0, Math.PI * 0.65),
+                    new THREE.MeshStandardMaterial({ color: 0x090D16, metalness: 0.95, roughness: 0.05 })
+                );
+                visor.rotation.x = -Math.PI / 2;
+                visor.position.set(0, 0.83, 2.74);
+                group.add(helmet, visor);
+
+                // GSh-23L 23mm Twin-Barrel Autocannon Pod under Forward Belly
+                const gunPodMat = new THREE.MeshStandardMaterial({ color: 0x1E293B, metalness: 0.82, roughness: 0.28 });
+                const gunFairing = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.2, 1.5), gunPodMat);
+                gunFairing.position.set(0, -0.66, 1.35);
+                [-0.055, 0.055].forEach(gx => {
+                    const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.15, 8), gunPodMat);
+                    barrel.rotation.x = Math.PI / 2;
+                    barrel.position.set(gx, -0.05, 0.88);
+                    gunFairing.add(barrel);
+                    const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.14, 8), alumMat);
+                    muzzle.rotation.x = Math.PI / 2;
+                    muzzle.position.set(gx, -0.05, 1.45);
+                    gunFairing.add(muzzle);
+                });
+                group.add(gunFairing);
 
                 // Centerline 490L Drop Tank under Belly
                 const dropTank = this.buildLatheFuselage({
@@ -2528,16 +2656,37 @@
             lastLockPing: 0,
 
             init() {
-                if (this.ctx) {
-                    if (this.ctx.state === 'suspended') this.ctx.resume();
-                    if (typeof MusicSystem !== 'undefined') MusicSystem.init();
-                    return;
+                if (!this.ctx) {
+                    const AudioCtx = (typeof window !== 'undefined' && (window.AudioContext || window.webkitAudioContext)) ||
+                                     (typeof AudioContext !== 'undefined' ? AudioContext : null);
+                    if (AudioCtx) {
+                        try {
+                            this.ctx = new AudioCtx();
+                        } catch(e) {}
+                    }
                 }
-                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                if (AudioCtx) {
-                    this.ctx = new AudioCtx();
-                    if (typeof MusicSystem !== 'undefined') MusicSystem.init();
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    try { this.ctx.resume().catch(() => {}); } catch(e){}
                 }
+                if (typeof MusicSystem !== 'undefined') MusicSystem.init();
+                return this.ctx;
+            },
+
+            unlock() {
+                this.init();
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    try {
+                        this.ctx.resume().then(() => {
+                            if (typeof MusicSystem !== 'undefined') {
+                                MusicSystem.init();
+                                if (MusicSystem.enabled && MusicSystem.chordNodes && MusicSystem.chordNodes.length === 0) {
+                                    MusicSystem.updateChord();
+                                }
+                            }
+                        }).catch(() => {});
+                    } catch(e){}
+                }
+                return this.ctx;
             },
 
             playLaunch(isMiG) {
@@ -2617,6 +2766,22 @@
                 osc.stop(now + 0.08);
             }
         };
+
+        // Ponytail: Global user interaction listener to transparently unlock AudioContext on first gesture
+        if (typeof window !== 'undefined') {
+            window.SoundEngine = SoundEngine;
+            const _unlockAudio = () => {
+                if (typeof SoundEngine !== 'undefined') SoundEngine.unlock();
+            };
+            ['click', 'keydown', 'pointerdown', 'touchstart', 'mousedown'].forEach(ev => {
+                window.addEventListener(ev, _unlockAudio, { passive: true });
+            });
+            if (typeof document !== 'undefined') {
+                ['click', 'keydown', 'pointerdown', 'touchstart', 'mousedown'].forEach(ev => {
+                    document.addEventListener(ev, _unlockAudio, { passive: true });
+                });
+            }
+        }
 
         /* ============================================================================
            3. MAIN THREE.JS SCENE, 2048x2048 HANOI NIGHT MAP, RAIN & VOLUMETRICS
@@ -4146,6 +4311,9 @@
            ============================================================================ */
         function toggleSoundEngine() {
             SoundEngine.enabled = !SoundEngine.enabled;
+            if (SoundEngine.enabled && typeof SoundEngine.unlock === 'function') {
+                SoundEngine.unlock();
+            }
             document.querySelectorAll('[data-sound-label]').forEach(b => {
                 b.textContent = SoundEngine.enabled ? 'Âm thanh: Bật' : 'Âm thanh: Tắt';
             });
@@ -4573,90 +4741,596 @@
         const CAMPAIGN_ARCHIVE_CARDS = {
             'card1': `
                 <div class="space-y-4">
-                    <div class="p-4 bg-canvas border hairline-border space-y-2">
-                        <span class="font-mono text-[10px] text-vermilion uppercase tracking-widest block">THẺ 1 // BỐI CẢNH LỊCH SỬ &amp; TẦM NHÌN DỰ BÁO CHIẾN LƯỢC</span>
-                        <h3 class="font-serif text-xl text-alabaster font-medium">Bế tắc của Mỹ tại Paris &amp; Cuộc tập kích đường không chiến lược Linebacker II</h3>
-                        <p class="text-muted">
-                            Tháng 10–12/1972, trước sự bế tắc trên bàn đàm phán Paris và thất bại trên chiến trường miền Nam, chính quyền Tổng thống Mỹ Richard Nixon đã lật lọng, trì hoãn ký kết hiệp định và phát động chiến dịch tập kích đường không chiến lược <strong class="text-alabaster">Linebacker II (18/12 – 29/12/1972)</strong>. Mỹ huy động lực lượng lớn siêu pháo đài bay B-52 ném bom rải thảm hủy diệt Hà Nội, Hải Phòng nhằm khuất phục ý chí của nhân dân ta, ép Việt Nam ký hiệp định theo điều kiện của Mỹ.
-                        </p>
+                    <!-- Sticky Timeline Jump Navigator -->
+                    <div class="p-2.5 bg-black/85 border border-emerald-500/40 rounded-lg flex items-center justify-between flex-wrap gap-2 sticky top-0 z-20 backdrop-blur-md shadow-lg">
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono text-[11px] text-emerald-400 font-bold uppercase tracking-wider">// TRỤC 12 ĐÊM:</span>
+                            <span class="font-mono text-[10px] text-zinc-400 hidden sm:inline">18.12 → 30.12.1972</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1">
+                            <button onclick="document.getElementById('night-node-1').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-zinc-300 border border-white/10 hover:border-emerald-400">Đ1</button>
+                            <button onclick="document.getElementById('night-node-2').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-zinc-300 border border-white/10 hover:border-emerald-400">Đ2</button>
+                            <button onclick="document.getElementById('night-node-3').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-amber-300 border border-amber-400/40 hover:border-emerald-400 font-bold">Đ3</button>
+                            <button onclick="document.getElementById('night-node-4').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-zinc-300 border border-white/10 hover:border-emerald-400">Đ4</button>
+                            <button onclick="document.getElementById('night-node-5').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-red-300 border border-red-500/40 hover:border-emerald-400">Đ5</button>
+                            <button onclick="document.getElementById('night-node-6').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-zinc-300 border border-white/10 hover:border-emerald-400">Đ6</button>
+                            <button onclick="document.getElementById('night-node-7').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-zinc-300 border border-white/10 hover:border-emerald-400">Đ7</button>
+                            <button onclick="document.getElementById('night-node-8').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-zinc-300 border border-white/10 hover:border-emerald-400">Đ8</button>
+                            <button onclick="document.getElementById('night-node-9').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-red-300 border border-red-500/40 hover:border-emerald-400 font-bold">Đ9</button>
+                            <button onclick="document.getElementById('night-node-10').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-cyan-300 border border-cyan-400/40 hover:border-emerald-400 font-bold">Đ10</button>
+                            <button onclick="document.getElementById('night-node-11').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-cyan-300 border border-cyan-400/40 hover:border-emerald-400 font-bold">Đ11</button>
+                            <button onclick="document.getElementById('night-node-12').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-emerald-500/30 text-[10px] font-mono text-emerald-300 border border-emerald-500/40 hover:border-emerald-400 font-bold">Đ12</button>
+                            <button onclick="document.getElementById('night-node-13').scrollIntoView({behavior: 'smooth'})" class="px-2 py-0.5 rounded bg-amber-500/20 hover:bg-amber-500/30 text-[10px] font-mono text-amber-300 border border-amber-400/50 font-bold">30/12</button>
+                        </div>
                     </div>
-                    <div class="p-4 bg-canvas border border-brass/50 space-y-2">
-                        <span class="font-mono text-[10px] text-brass uppercase tracking-widest block">LỜI TIÊN TRI CHIẾN LƯỢC CỦA CHỦ TỊCH HỒ CHÍ MINH (12/1967)</span>
-                        <blockquote class="font-serif text-base italic text-alabaster border-l-2 border-brass pl-3">
-                            “Sớm muộn rồi đế quốc Mỹ cũng sẽ đưa B-52 ra đánh Hà Nội, rồi có thua nó mới chịu thua. Phải dự kiến trước mọi tình huống càng sớm càng tốt để có thời gian mà suy nghĩ, chuẩn bị... Ở Việt Nam, Mỹ nhất định thua, nhưng nó chỉ chịu thua sau khi thua trên bầu trời Hà Nội.”
-                        </blockquote>
-                    </div>
-                    <div class="p-4 bg-canvas border hairline-border space-y-2">
-                        <span class="font-mono text-[10px] text-emerald uppercase tracking-widest block">CÔNG TÁC CHUẨN BỊ CHỦ ĐỘNG TỪ SỚM</span>
-                        <ul class="list-disc pl-4 space-y-1.5 text-muted">
-                            <li>Quân chủng Phòng không – Không quân cử nhiều đoàn cán bộ, trắc thủ vào tuyến lửa Khu 4, Vĩnh Linh để trực tiếp nghiên cứu quy luật hoạt động, dải nhiễu điện tử của B-52 và biên soạn cuốn <strong class="text-alabaster">“Cẩm nang bìa đỏ” (Cách đánh B-52)</strong>.</li>
-                            <li>Tổ chức sơ tán khẩn trương hơn <strong class="text-alabaster">50 vạn người dân nội thành Hà Nội</strong> ra ngoại thành và các tỉnh lân cận trước khi chiến dịch nổ ra, giảm thiểu tối đa thương vong.</li>
-                        </ul>
+
+                    <!-- 12 Nights Timeline Cards with Modern Day Site & Direct Google Maps Direction Link -->
+                    <div class="space-y-4">
+
+                        <!-- ĐÊM 1 -->
+                        <div id="night-node-1" class="p-4 rounded-lg bg-black/70 border border-emerald-500/35 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-emerald-500/20 pb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-mono text-xs font-bold text-amber-400">ĐÊM 1 // 18.12.1972 · ĐÒN PHỦ ĐẦU TẠI PHÙ LỖ</span>
+                                </div>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">HẠ 3 B-52 (2 RƠI TẠI CHỖ)</span>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
+                                <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 90 lần chiếc B-52 cùng 135 máy bay chiến thuật ném bom dồn dập vào Đông Anh, Gia Lâm, Yên Viên và đài phát thanh Mễ Trì.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Lúc <strong>20 giờ 13 phút</strong>, kíp chiến đấu <strong>Tiểu đoàn 59 (Trung đoàn Tên lửa 261)</strong> dưới sự chỉ huy của Tiểu đoàn trưởng Nguyễn Văn Phiệt đã phóng 2 quả tên lửa SAM-2, bắn rơi tại chỗ chiếc B-52G đầu tiên trên cánh đồng Chuôm (xã Phù Lỗ, Đông Anh cũ). Cả đêm ta bắn rơi 3 B-52.</div>
+                                    <div class="text-emerald-300 font-mono italic text-[11px] bg-emerald-950/30 p-2 rounded border border-emerald-500/20">“Báo cáo Sở chỉ huy: Tiểu đoàn 59 đã bắn rơi B-52 đầu tiên! Pháo đài bay cháy đỏ rực bầu trời phía Bắc!”</div>
+                                </div>
+                                <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
+                                    <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
+                                    <div class="text-zinc-200 font-semibold">Tượng đài Chiến thắng B-52 Phù Lỗ</div>
+                                    <div class="text-zinc-400 text-[11px]">Vị trí: Ngã ba Phù Lỗ, Quốc lộ 2, xã Phù Lỗ, huyện Sóc Sơn, TP. Hà Nội.</div>
+                                    <div class="text-zinc-400 text-[11px]">Hiện vật: Xác chiếc B-52 đầu tiên được trục vớt, trưng bày tại Bảo tàng Lịch sử Quân sự Việt Nam.</div>
+                                    <div class="pt-1">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Tuong+dai+Chien+thang+B52+Phu+Lo+Soc+Son+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ĐÊM 2 -->
+                        <div id="night-node-2" class="p-4 rounded-lg bg-black/70 border border-white/15 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-white/10 pb-2">
+                                <span class="font-mono text-xs font-bold text-zinc-200">ĐÊM 2 // 19.12.1972 · LƯỚI LỬA TẦM THẤP &amp; TIẾNG NÓI VIỆT NAM</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-zinc-300 border border-white/15">HẠ 2 B-52</span>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
+                                <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 87 lần chiếc B-52 dội bom Đài phát thanh Mễ Trì, Ga Hàng Cỏ, các khu dân cư An Dương, Gia Lâm nhằm bẻ gãy hệ thống truyền thông quốc gia.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Địch bay thấp dọc triền sông Hồng để luồn tránh radar. <strong>Tiểu đoàn 77 (Trung đoàn 257)</strong> tại trận địa Chèm áp dụng phương pháp bắn đón nửa góc, bắn rơi 1 B-52; Đài Mễ Trì bị đánh sập nhưng chỉ gián đoạn phát sóng 9 phút rồi tiếp tục phát đi từ trạm dự phòng.</div>
+                                </div>
+                                <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
+                                    <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
+                                    <div class="text-zinc-200 font-semibold">Trận địa tên lửa Chèm &amp; Đài Tiếng nói Việt Nam Mễ Trì</div>
+                                    <div class="text-zinc-400 text-[11px]">Vị trí: Đình Chèm, phường Thụy Phương, quận Bắc Từ Liêm &amp; Khu vực Mễ Trì, Nam Từ Liêm, Hà Nội.</div>
+                                    <div class="pt-1">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Dinh+Chem+Thuy+Phuong+Bac+Tu+Liem+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ĐÊM 3 -->
+                        <div id="night-node-3" class="p-4 rounded-lg bg-black/70 border border-amber-400/40 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-amber-400/20 pb-2">
+                                <span class="font-mono text-xs font-bold text-amber-400">ĐÊM 3 // 20.12.1972 · ĐÊM RỰC LỬA YÊN VIÊN – KỶ LỤC HẠ 7 B-52</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-400/40">HẠ 7 B-52 (5 RƠI TẠI CHỖ)</span>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
+                                <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Mỹ tung 93 lần chiếc B-52 ném bom hủy diệt trung tâm đầu mối giao thông Yên Viên, Cầu Đuống, kho xăng Đức Giang và khu dân cư Gia Lâm.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Vận dụng xuất sắc “Cẩm nang bìa đỏ”, các <strong>Tiểu đoàn 57, 77, 79, 93</strong> đan lưới lửa SAM-2 tiêu diệt kỷ lục <strong>7 pháo đài bay B-52 trong 1 đêm</strong> (5 chiếc rơi tại chỗ). Đêm đánh xuất thần bẻ gãy đợt tập kích thứ nhất của Mỹ.</div>
+                                </div>
+                                <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
+                                    <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
+                                    <div class="text-zinc-200 font-semibold">Ga Yên Viên &amp; Di tích Cầu Đuống</div>
+                                    <div class="text-zinc-400 text-[11px]">Vị trí: Thị trấn Yên Viên, huyện Gia Lâm, TP. Hà Nội.</div>
+                                    <div class="pt-1">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Ga+Yen+Vien+Gia+Lam+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ĐÊM 4 -->
+                        <div id="night-node-4" class="p-4 rounded-lg bg-black/70 border border-white/15 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-white/10 pb-2">
+                                <span class="font-mono text-xs font-bold text-zinc-200">ĐÊM 4 // 21.12.1972 · VẠCH NHIỄU TÌM THÙ GIỮA BÃO ĐIỆN TỬ</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-zinc-300 border border-white/15">HẠ 3 B-52</span>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
+                                <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Không quân Mỹ tăng cường độ phát nhiễu cực đại và phóng hàng chục quả tên lửa Shrike vào các trận địa radar đài phát sóng của ta.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Các trắc thủ linh hoạt nhảy tần số, sử dụng phương pháp 3 điểm (T/T), phát hiện dải nhiễu bản chất của B-52 và bắn rơi 3 chiếc tại khu vực Phúc Yên, Thanh Trì.</div>
+                                </div>
+                                <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
+                                    <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
+                                    <div class="text-zinc-200 font-semibold">Trận địa Tên lửa An Khánh</div>
+                                    <div class="text-zinc-400 text-[11px]">Vị trí: Xã An Khánh, huyện Hoài Đức, TP. Hà Nội.</div>
+                                    <div class="pt-1">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=An+Khanh+Hoai+Duc+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ĐÊM 5 -->
+                        <div id="night-node-5" class="p-4 rounded-lg bg-black/70 border border-red-500/40 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-red-500/20 pb-2">
+                                <span class="font-mono text-xs font-bold text-red-400">ĐÊM 5 // 22.12.1972 · TỘI ÁC BẠCH MAI &amp; LỜI TUYÊN THỆ TRẢ THÙ</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-red-500/20 text-red-300 font-bold border border-red-400/40">HẠ 3 B-52 · 1 F-111</span>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
+                                <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Lúc 04h45 rạng sáng 22/12, bom rải thảm phá hủy hoàn toàn Bệnh viện Bạch Mai — bệnh viện lớn nhất miền Bắc, sát hại 28 y bác sĩ, điều dưỡng và bệnh nhân.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Biến căm thù thành hành động, các trận địa tên lửa hạ gục 3 pháo đài bay B-52; pháo cao xạ đan lưới tầm thấp bắn rơi 1 máy bay cánh cụp cánh xòe F-111 tối tân của Mỹ tại bến phà Khuyến Lương.</div>
+                                </div>
+                                <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
+                                    <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
+                                    <div class="text-zinc-200 font-semibold">Khu Bia Tưởng Niệm Bệnh Viện Bạch Mai</div>
+                                    <div class="text-zinc-400 text-[11px]">Vị trí: Khuôn viên Bệnh viện Bạch Mai, số 78 Giải Phóng, phường Phương Mai, quận Đống Đa, Hà Nội.</div>
+                                    <div class="text-zinc-400 text-[11px]">Dấu tích: Tượng đài đá tạc hình người phụ nữ bế con đau thương bất khuất.</div>
+                                    <div class="pt-1">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Benh+vien+Bach+Mai+78+Giai+Phong+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ĐÊM 6 -->
+                        <div id="night-node-6" class="p-4 rounded-lg bg-black/70 border border-white/15 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-white/10 pb-2">
+                                <span class="font-mono text-xs font-bold text-zinc-200">ĐÊM 6 // 23.12.1972 · CHẶN ĐỨNG ĐÒN CHIA CẮT HUYẾT MẠCH PHÍA NAM</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-zinc-300 border border-white/15">HẠ 2 B-52</span>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
+                                <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 54 lần chiếc B-52 tập trung oanh tạc các ga hàng hóa phía Nam: Giáp Bát, Văn Điển, Thường Tín nhằm cắt đứt nguồn vận chuyển lương thực, đạn dược chi viện.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Các trận địa SAM-2 bố trí vòng ngoài phối hợp cao xạ bảo vệ ga tàu, bắn rơi 2 B-52, giữ vững mạch máu tiếp tế cho Thủ đô.</div>
+                                </div>
+                                <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
+                                    <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
+                                    <div class="text-zinc-200 font-semibold">Khu vực Ga Giáp Bát &amp; Văn Điển</div>
+                                    <div class="text-zinc-400 text-[11px]">Vị trí: Đường Giải Phóng, phường Thịnh Liệt, quận Hoàng Mai, Hà Nội.</div>
+                                    <div class="pt-1">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Ga+Giap+Bat+Hoang+Mai+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ĐÊM 7 -->
+                        <div id="night-node-7" class="p-4 rounded-lg bg-black/70 border border-white/15 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-white/10 pb-2">
+                                <span class="font-mono text-xs font-bold text-zinc-200">ĐÊM 7 // 24.12.1972 · TRẬN ĐÁNH ÁP CHÓT TRƯỚC GIÁNG SINH</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-zinc-300 border border-white/15">HẠ 2 B-52</span>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
+                                <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Địch oanh tạc ga Kép, Yên Viên và Thái Nguyên nhằm cô lập các cứ điểm phòng không vòng ngoài.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Lực lượng phòng không Hà Nội và Hải Phòng bắn rơi 2 B-52. Tổn thất tăng vọt buộc Nixon phải ra lệnh tạm ngừng ném bom 36 giờ từ nửa đêm 24/12 nhân dịp Noel để củng cố tinh thần phi công Mỹ đang hoang mang tột độ.</div>
+                                </div>
+                                <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
+                                    <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
+                                    <div class="text-zinc-200 font-semibold">Trận địa Phòng không Đan Phượng</div>
+                                    <div class="text-zinc-400 text-[11px]">Vị trí: Thị trấn Phùng, huyện Đan Phượng, TP. Hà Nội.</div>
+                                    <div class="pt-1">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Thi+tran+Phung+Dan+Phuong+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NGÀY 8 -->
+                        <div id="night-node-8" class="p-4 rounded-lg bg-black/70 border border-white/15 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-white/10 pb-2">
+                                <span class="font-mono text-xs font-bold text-zinc-200">NGÀY 8 // 25.12.1972 · 36 GIỜ QUÝ HƠN VÀNG: THẦN TỐC LẮP RÁP ĐẠN TÊN LỬA</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-zinc-300 border border-white/15">CƠ ĐỘNG KHÍ TÀI</span>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
+                                <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
+                                    <div><strong class="text-alabaster font-mono">[TÌNH HUỐNG CHIẾN DỊCH]</strong> 36 giờ địch tạm ngừng ném bom là cơ hội vàng có một không hai. Lượng đạn SAM-2 tại Hà Nội sau 7 ngày chiến đấu đã cạn kiệt đến mức báo động.</div>
+                                    <div><strong class="text-alabaster font-mono">[HÀNH ĐỘNG CỦA TA]</strong> Cục Kỹ thuật Quân chủng PK-KQ, các xưởng quân giới làm việc liên tục 24/24 giờ để kiểm định, nạp nhiên liệu và lắp ráp tên lửa; đoàn xe vận tải cơ động thần tốc kéo đạn tên lửa từ Quân khu 4 ra bổ sung kịp thời cho các bệ phóng bảo vệ Thủ đô.</div>
+                                </div>
+                                <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
+                                    <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
+                                    <div class="text-zinc-200 font-semibold">Nhà máy A31 &amp; Nhà máy Z119 (Cục Kỹ thuật PK-KQ)</div>
+                                    <div class="text-zinc-400 text-[11px]">Vị trí: Huyện Chương Mỹ &amp; Đường Trường Chinh, quận Thanh Xuân, Hà Nội.</div>
+                                    <div class="pt-1">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Nha+may+A31+Cuc+Ky+thuat+Phong+khong+Khong+quan" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ĐÊM 9 -->
+                        <div id="night-node-9" class="p-4 rounded-lg bg-black/70 border border-red-500/50 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-red-500/30 pb-2">
+                                <span class="font-mono text-xs font-bold text-red-400">ĐÊM 9 // 26.12.1972 · KHÂM THIÊN CĂM HỜN: TRẬN QUYẾT CHIẾN ĐÁNH QUỴ B-52</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-red-500/20 text-red-300 font-bold border border-red-400/50">HẠ 8 B-52 (4 RƠI TẠI CHỖ)</span>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
+                                <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Đợt tập kích quy mô tàn bạo nhất trong lịch sử: Mỹ huy động <strong>105 lần chiếc B-52</strong> và 110 máy bay chiến thuật đồng loạt ném bom rải thảm phố Khâm Thiên, khu dân cư An Dương, Bệnh viện Bạch Mai; làm 287 đồng bào vô tội thiệt mạng.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Trong hơn 1 giờ đồng hồ giao tranh ác liệt, toàn bộ lực lượng phòng không ba thứ quân đã trút bão lửa giáng trả: bắn rơi <strong>8 pháo đài bay B-52</strong> (4 chiếc rơi tại chỗ), đập tan hoàn toàn mưu toan khuất phục nhân dân ta bằng bom đạn hủy diệt.</div>
+                                </div>
+                                <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
+                                    <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
+                                    <div class="text-zinc-200 font-semibold">Đài Tưởng Niệm Khâm Thiên</div>
+                                    <div class="text-zinc-400 text-[11px]">Vị trí: Số 47 – 49 – 51 phố Khâm Thiên, phường Khâm Thiên, quận Đống Đa, Hà Nội.</div>
+                                    <div class="text-zinc-400 text-[11px]">Dấu tích: Tượng đài người mẹ ôm con bị bom Mỹ sát hại — biểu tượng bất tử của nỗi đau và ý chí quật cường.</div>
+                                    <div class="pt-1">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Dai+tuong+niem+Kham+Thien+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ĐÊM 10 -->
+                        <div id="night-node-10" class="p-4 rounded-lg bg-black/70 border border-cyan-400/40 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-cyan-400/20 pb-2">
+                                <span class="font-mono text-xs font-bold text-cyan-300">ĐÊM 10 // 27.12.1972 · KỲ TÍCH PHẠM TUÂN &amp; B-52 RƠI HỒ HỮU TIỆP</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-400/40">HẠ 1 B-52 BẰNG MIG-21 · 1 RƠI HỒ HỮU TIỆP</span>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
+                                <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 54 lần chiếc B-52 tiếp tục ném bom rải thảm khu vực Đông Anh, Yên Viên và ngoại vi Thủ đô.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> 22h20, Anh hùng <strong>Phạm Tuân</strong> điều khiển tiêm kích MiG-21MF (số hiệu 5121) xuất kích từ sân bay dã chiến Yên Bái, bay luồn dưới trần mây, bất ngờ vút lên tiếp cận tốp B-52 ở cự ly 4 km và phóng 2 quả tên lửa K-13 bắn hạ B-52 trên bầu trời Mộc Châu. Đêm đó, <strong>Tiểu đoàn tên lửa 72</strong> cũng lập công bắn rơi 1 B-52 cắm xác xuống hồ Hữu Tiệp.</div>
+                                </div>
+                                <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
+                                    <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
+                                    <div class="text-zinc-200 font-semibold">Di tích Xác máy bay B-52 Hồ Hữu Tiệp</div>
+                                    <div class="text-zinc-400 text-[11px]">Vị trí: Ngõ 55 phố Hoàng Hoa Thám, làng hoa Ngọc Hà, quận Ba Đình, TP. Hà Nội.</div>
+                                    <div class="text-zinc-400 text-[11px]">Hiện vật: Xác máy bay B-52 còn nguyên phần đuôi và động cơ nằm giữa lòng hồ nước giữa lòng Thủ đô.</div>
+                                    <div class="pt-1">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Ho+Huu+Tiep+B52+Ngoc+Ha+Ba+Dinh+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ĐÊM 11 -->
+                        <div id="night-node-11" class="p-4 rounded-lg bg-black/70 border border-cyan-400/40 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-cyan-400/20 pb-2">
+                                <span class="font-mono text-xs font-bold text-cyan-300">ĐÊM 11 // 28.12.1972 · QUẢ TÊN LỬA THỨ BA: ANH HÙNG VŨ XUÂN THIỀU</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-400/40">HẠ 1 B-52 (CẢM TỬ)</span>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
+                                <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Địch huy động B-52 đánh phá vòng ngoài hướng Tây Bắc.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Phi công <strong>Vũ Xuân Thiều</strong> lái tiêm kích MiG-21 (số hiệu 046) xuất kích từ sân bay Cẩm Thủy (Thanh Hóa), vượt qua màn nhiễu tiếp cận B-52 trên bầu trời Nà Sản (Sơn La). Sau khi phóng 2 tên lửa K-13 ở cự ly quá gần, anh đã quả cảm lao thẳng chiếc MiG-21 vào thân pháo đài bay địch, cùng chiếc B-52 nổ tung giữa bầu trời Tổ quốc.</div>
+                                </div>
+                                <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
+                                    <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
+                                    <div class="text-zinc-200 font-semibold">Tượng đài &amp; Nhà lưu niệm Anh hùng Vũ Xuân Thiều</div>
+                                    <div class="text-zinc-400 text-[11px]">Vị trí: Phố Vũ Xuân Thiều, phường Sài Đồng, quận Long Biên, TP. Hà Nội.</div>
+                                    <div class="pt-1">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Tuong+dai+Liet+si+Vu+Xuan+Thieu+Sai+Dong+Long+Bien" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ĐÊM 12 -->
+                        <div id="night-node-12" class="p-4 rounded-lg bg-black/70 border border-emerald-500/50 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-emerald-500/30 pb-2">
+                                <span class="font-mono text-xs font-bold text-emerald-400">ĐÊM 12 // 29.12.1972 · TRẬN ĐÁNH CUỐI CÙNG: KHÚC KHẢI HOÀN TOÀN THẮNG</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/50">HẠ 2 B-52 · THẮNG LỢI TRỌN VẸN</span>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
+                                <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Đợt oanh tạc tuyệt vọng của Mỹ vào các trận địa phòng không và kho tàng xung quanh Hà Nội, Thái Nguyên.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Lúc 23h16, <strong>Tiểu đoàn 79 (Trung đoàn 257)</strong> bắn rơi chiếc B-52 thứ 34 của chiến dịch trên bầu trời Hòa Bình. Đây là chiếc pháo đài bay cuối cùng bị tiêu diệt trong 12 ngày đêm. Thất bại thảm hại buộc Nhà Trắng phải đầu hàng trên bầu trời Hà Nội.</div>
+                                </div>
+                                <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
+                                    <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
+                                    <div class="text-zinc-200 font-semibold">Bảo tàng Chiến thắng B-52 &amp; Bảo tàng PK-KQ</div>
+                                    <div class="text-zinc-400 text-[11px]">Vị trí: Số 157 Đội Cấn, Ba Đình &amp; Số 171 Trường Chinh, Thanh Xuân, Hà Nội.</div>
+                                    <div class="pt-1">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Bao+tang+Chien+thang+B52+157+Doi+Can+Ba+Dinh+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                            [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- KHẢI HOÀN 30/12 -->
+                        <div id="night-node-13" class="p-4 rounded-lg bg-amber-950/20 border border-amber-400/50 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-amber-400/30 pb-2">
+                                <span class="font-mono text-xs font-bold text-amber-300">NGÀY 30.12.1972 → 27.01.1973 · ĐẠI THẮNG ĐIỆN BIÊN PHỦ TRÊN KHÔNG &amp; HIỆP ĐỊNH PARIS</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-200 font-bold border border-amber-400/50">TOÀN THẮNG LỊCH SỬ</span>
+                            </div>
+                            <div class="text-xs text-zinc-200 leading-relaxed space-y-2">
+                                <div>Sáng 30/12/1972, Tổng thống Nixon buộc phải tuyên bố ngừng hoàn toàn ném bom miền Bắc từ bắc vĩ tuyến 20 và chấp nhận nối lại đàm phán tại Paris trên cơ sở dự thảo của Việt Nam.</div>
+                                <div>Ngày 27/01/1973, <strong>Hiệp định Paris</strong> chính thức được ký kết tại Trung tâm Hội nghị Quốc tế Kléber (Paris, Pháp), buộc toàn bộ quân đội viễn chinh Mỹ phải rút khỏi Việt Nam, hoàn thành mục tiêu <strong>“Đánh cho Mỹ cút”</strong> của Bác Hồ, tạo tiền đề quyết định giải phóng hoàn toàn miền Nam năm 1975.</div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             `,
             'card2': `
-                <div class="space-y-3">
-                    <div class="p-3.5 bg-canvas border hairline-border">
-                        <span class="font-mono text-[10px] text-emerald uppercase font-bold block">ĐÊM 18/12/1972 — MỞ MÀN TẠI PHÙ LỖ (ĐẬP TAN HUYỀN THOẠI B-52)</span>
-                        <p class="text-muted mt-1">Mỹ huy động 90 lần chiếc B-52 ném bom Đông Anh, Yên Viên, Gia Lâm, sân bay Nội Bài, Hòa Lạc và đài phát thanh Mễ Trì. Lúc <strong class="text-alabaster">20 giờ 13 phút</strong>, Tiểu đoàn 59 (Trung đoàn Tên lửa 261) phóng 2 quả đạn SAM-2 bắn rơi tại chỗ chiếc B-52G đầu tiên trên cánh đồng Phù Lỗ (Đông Anh, Hà Nội). Cả đêm 18/12 (tính đến rạng sáng 19/12) ta bắn rơi 3 chiếc B-52.</p>
+                <div class="space-y-4">
+                    <div class="p-4 rounded-lg bg-zinc-900/80 border border-emerald-500/30 space-y-2">
+                        <div class="flex items-center justify-between flex-wrap gap-2">
+                            <span class="font-mono text-[11px] text-emerald-400 font-bold uppercase tracking-wider">
+                                BỐI CẢNH LỊCH SỬ &amp; TẦM NHÌN DỰ BÁO CHIẾN LƯỢC
+                            </span>
+                            <span class="font-mono text-[10px] text-zinc-400">10/1972 – 12/1972</span>
+                        </div>
+                        <h3 class="font-serif text-lg sm:text-xl text-alabaster font-semibold">
+                            Bế Tắc Tại Paris &amp; Đòn Tập Kích Đường Không Chiến Lược Linebacker II
+                        </h3>
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            Mùa thu năm 1972, sau thất bại nặng nề trên chiến trường miền Nam, chính quyền Tổng thống Mỹ Richard Nixon buộc phải chấp thuận dự thảo Hiệp định Paris vào tháng 10/1972. Tuy nhiên, ngay sau khi tái đắc cử, chính quyền Nixon đã lật lọng, trì hoãn ký kết và đòi sửa đổi 69 điều khoản cốt lõi.
+                        </p>
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            Ngày 14/12/1972, Nixon chính thức phê chuẩn kế hoạch tập kích đường không chiến lược hủy diệt mang mật danh <strong class="text-emerald-400">Linebacker II (18/12 – 29/12/1972)</strong>. Mục tiêu của Mỹ là dùng pháo đài bay B-52 rải thảm tàn phá thủ đô Hà Nội, Hải Phòng nhằm đưa Việt Nam trở về “thời kỳ đồ đá” để ép ta ký hiệp định theo điều kiện của Mỹ.
+                        </p>
                     </div>
-                    <div class="p-3.5 bg-canvas border hairline-border">
-                        <span class="font-mono text-[10px] text-brass uppercase font-bold block">ĐÊM 20/12/1972 — ĐÊM RỰC LỬA YÊN VIÊN &amp; THẮNG LỢI GIÒN GIÃ</span>
-                        <p class="text-muted mt-1">Rút kinh nghiệm từ 2 đêm đầu và áp dụng triệt để "Cẩm nang bìa đỏ", bộ đội Tên lửa phòng không Hà Nội lập chiến công vang dội khi bắn rơi <strong class="text-alabaster">7 chiếc B-52 chỉ trong một đêm (5 chiếc rơi tại chỗ)</strong>, đồng thời bảo vệ kiên cường Bệnh viện Bạch Mai và các đầu mối giao thông.</p>
+
+                    <div class="p-4 rounded-lg bg-amber-950/20 border border-amber-400/40 space-y-2">
+                        <span class="font-mono text-[11px] text-amber-400 uppercase font-bold tracking-wider block">
+                            ★ TẦM NHÌN THIÊN TÀI CỦA CHỦ TỊCH HỒ CHÍ MINH (THÁNG 12/1967)
+                        </span>
+                        <blockquote class="font-serif text-sm sm:text-base italic text-amber-100 border-l-2 border-amber-400 pl-3 leading-relaxed">
+                            “Sớm muộn rồi đế quốc Mỹ cũng sẽ đưa B-52 ra đánh Hà Nội, rồi có thua nó mới chịu thua. Phải dự kiến trước mọi tình huống càng sớm càng tốt để có thời gian mà suy nghĩ, chuẩn bị... Ở Việt Nam, Mỹ nhất định thua, nhưng nó chỉ chịu thua sau khi thua trên bầu trời Hà Nội.”
+                        </blockquote>
+                        <div class="text-[11px] text-zinc-400 font-mono text-right">
+                            — Chỉ thị cho Tư lệnh kiêm Chính ủy Quân chủng PK-KQ Phùng Thế Tài (12/1967)
+                        </div>
                     </div>
-                    <div class="p-3.5 bg-canvas border hairline-border">
-                        <span class="font-mono text-[10px] text-vermilion uppercase font-bold block">ĐÊM 26/12/1972 — KHÂM THIÊN &amp; ĐÒN TRỪNG PHẠT SẤM SÉT</span>
-                        <p class="text-muted mt-1">Sau lễ Giáng sinh, Mỹ huy động đợt tập kích lớn nhất với <strong class="text-alabaster">105 lần chiếc B-52</strong> và hơn 100 máy bay cường kích ném bom rải thảm hủy diệt khu phố Khâm Thiên, làm 287 người dân vô tội thiệt mạng. Biến đau thương thành sức mạnh, lưới lửa phòng không ba thứ quân đã giáng trả quyết liệt, bắn rơi <strong class="text-alabaster">8 pháo đài bay B-52</strong> ngay trong đêm 26/12.</p>
-                    </div>
-                    <div class="p-3.5 bg-canvas border hairline-border">
-                        <span class="font-mono text-[10px] text-emerald uppercase font-bold block">ĐÊM 27/12/1972 — KỲ TÍCH PHẠM TUÂN &amp; HỒ HỮU TIỆP</span>
-                        <p class="text-muted mt-1">Phi công <strong class="text-alabaster">Phạm Tuân</strong> điều khiển tiêm kích MiG-21bis số hiệu 5121 cất cánh từ sân bay Yên Bái, vượt qua hàng rào tiêm kích F-4 hộ tống, phóng 2 tên lửa K-13 bắn hạ chiếc B-52 đầu tiên bằng không quân. Cùng đêm đó, Tiểu đoàn tên lửa 71 và 72 bắn rơi một chiếc B-52 xuống <strong class="text-alabaster">hồ Hữu Tiệp (làng hoa Ngọc Hà, Ba Đình)</strong>.</p>
-                    </div>
-                    <div class="p-3.5 bg-canvas border hairline-border">
-                        <span class="font-mono text-[10px] text-brass uppercase font-bold block">ĐÊM 28 – 29/12/1972 — ĐẬP TAN Ý CHÍ XÂM LƯỢC</span>
-                        <p class="text-muted mt-1">Phi công Vũ Xuân Thiều anh dũng điều khiển MiG-21 lao thẳng vào tiêu diệt B-52 trên bầu trời Sơn La đêm 28/12. Trước tổn thất không thể bù đắp, sáng 30/12/1972 Mỹ buộc phải tuyên bố chấm dứt hoàn toàn chiến dịch Linebacker II.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="p-3.5 rounded-lg bg-black/60 border border-red-500/30 space-y-2">
+                            <span class="font-mono text-[11px] text-red-400 font-bold uppercase tracking-wider block">
+                                LỰC LƯỢNG HUY ĐỘNG CỦA MỸ
+                            </span>
+                            <ul class="list-disc pl-4 space-y-1.5 text-xs text-zinc-300">
+                                <li><strong class="text-alabaster">193 pháo đài bay B-52:</strong> Chiếm gần 50% tổng số máy bay B-52 toàn không quân chiến lược Mỹ (tại căn cứ U-Tapao, Thái Lan và Andersen, đảo Guam).</li>
+                                <li><strong class="text-alabaster">1.077 máy bay chiến thuật:</strong> Gồm F-111A cánh cụp cánh xòe, F-4 Phantom, A-7 Corsair, A-6 Intruder, EB-66 gây nhiễu.</li>
+                                <li><strong class="text-alabaster">6 tàu sân bay:</strong> Cùng hàng chục tàu khu trục hạm đội 7 thường trực tại vịnh Bắc Bộ.</li>
+                                <li><strong class="text-alabaster">&gt; 36.000 tấn bom:</strong> Ném xuống các khu dân cư, bệnh viện, trường học.</li>
+                            </ul>
+                        </div>
+
+                        <div class="p-3.5 rounded-lg bg-black/60 border border-emerald-500/30 space-y-2">
+                            <span class="font-mono text-[11px] text-emerald-400 font-bold uppercase tracking-wider block">
+                                CÔNG TÁC CHUẨN BỊ CHỦ ĐỘNG TỪ SỚM
+                            </span>
+                            <ul class="list-disc pl-4 space-y-1.5 text-xs text-zinc-300">
+                                <li><strong class="text-alabaster">Cuốn “Cẩm nang bìa đỏ”:</strong> Từ 1968 đến tháng 5/1972, kíp trắc thủ ưu tú vào chiến trường Vĩnh Linh, Khu 4 nghiên cứu dải nhiễu B-52, đúc kết phương pháp đánh B-52 trong tài liệu mật 30 trang.</li>
+                                <li><strong class="text-alabaster">Sơ tán thần tốc 50 vạn nhân dân:</strong> Thủ đô khẩn trương sơ tán người già, trẻ em ra ngoại thành trước 18/12, hạn chế tối đa thương vong đồng bào.</li>
+                                <li><strong class="text-alabaster">Hệ thống phòng vệ đa tầng:</strong> Hơn 400.000 hố tránh bom cá nhân và 90.000 hầm trú ẩn tập thể kiên cố khắp phố phường Hà Nội.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             `,
             'card3': `
                 <div class="space-y-4">
-                    <div class="p-4 bg-canvas border hairline-border space-y-2">
-                        <span class="font-mono text-[10px] text-emerald uppercase tracking-widest block">THẾ TRẬN PHÒNG KHÔNG NHÂN DÂN 3 THỨ QUÂN NHIỀU TẦNG, NHIỀU LỚP</span>
-                        <ul class="list-disc pl-4 space-y-2 text-muted">
-                            <li><strong class="text-alabaster">Tầng thấp &amp; tầm trung:</strong> Hàng trăm trận địa súng máy 12,7mm, 14,5mm của dân quân tự vệ và pháo cao xạ 37mm, 57mm, 100mm đan lưới lửa dày đặc tiêu diệt máy bay F-111 cánh cụp cánh xòe bay cực thấp và tiêm kích F-4.</li>
-                            <li><strong class="text-alabaster">Tầng cao cơ động:</strong> Tiêm kích đánh chặn siêu thanh MiG-21 bay tốc độ lớn từ các sân bay vòng ngoài chọc thủng đội hình hộ tống, buộc B-52 phải cơ động và bộc lộ tín hiệu thực giữa màn nhiễu.</li>
-                            <li><strong class="text-alabaster">Đòn quyết định ở độ cao 10 km:</strong> Bộ đội Tên lửa phòng không SAM-2 (S-75 Dvina) phối hợp chặt chẽ với mạng lưới radar cảnh giới P-35 để tiêu diệt B-52 ngay trước khi cắt bom.</li>
-                        </ul>
-                    </div>
-                    <div class="p-4 bg-canvas border hairline-border space-y-2">
-                        <span class="font-mono text-[10px] text-brass uppercase tracking-widest block">NGHỆ THUẬT “VẠCH NHIỄU TÌM THÙ” &amp; CHỐNG TÊN LỬA SHRIKE</span>
-                        <p class="text-muted">
-                            Mỗi tốp 3 chiếc B-52 mang hàng chục máy gây nhiễu tích cực công suất lớn kết hợp rải hàng triệu sợi kim loại (nhiễu tiêu cực - chaff) tạo thành những hành lang nhiễu trắng xóa trên màn hình hiện sóng. Bộ đội ta đã sáng tạo các phương pháp tác chiến độc đáo:
+                    <div class="p-4 rounded-lg bg-zinc-900/80 border border-emerald-500/30 space-y-2">
+                        <span class="font-mono text-[11px] text-emerald-400 font-bold uppercase tracking-wider block">
+                            NGHỆ THUẬT QUÂN SỰ ĐỘC ĐÁO // VẠCH NHIỄU TÌM THÙ
+                        </span>
+                        <h3 class="font-serif text-lg sm:text-xl text-alabaster font-semibold">
+                            Bản Chất Cuộc Đấu Trí Tác Chiến Điện Tử Giữa Màn Nhiễu Radar
+                        </h3>
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            Mỗi tốp 3 chiếc B-52 được trang bị từ 15 đến 18 máy phát nhiễu tích cực công suất lớn (máy ALQ-31, ALQ-87...), kết hợp máy bay hộ tống gây nhiễu chuyên dụng EB-66, EA-6B tạo thành màn nhiễu điện tử dày đặc che lấp hoàn toàn tín hiệu phản xạ trên màn hiện sóng đài radar SNR-75 (tổ hợp tên lửa SAM-2). Đồng thời, máy bay Mỹ rải hàng chục triệu sợi kim loại mạ nhôm (nhiễu tiêu cực - chaff) tạo hành lang nhiễu khổng lồ trôi lơ lửng trên bầu trời.
                         </p>
-                        <ul class="list-disc pl-4 space-y-1.5 text-muted">
-                            <li><strong class="text-alabaster">Chống nhiễu điện tử (ECCM) &amp; Bắn đón nửa góc:</strong> Nhận diện ranh giới giữa dải nhiễu rải và nhiễu tích cực để xác định chính xác tâm tốp B-52 bằng phương pháp bám sát 3 điểm (T/T).</li>
-                            <li><strong class="text-alabaster">Phát sóng ngắn &amp; Ngụy trang nghi binh:</strong> Chỉ bật phát sóng đài radar SNR-75 ở cự ly gần hoặc phóng đạn trước rồi mới bật sóng điều khiển nhằm vô hiệu hóa tên lửa chống bức xạ AGM-45 Shrike của địch.</li>
-                        </ul>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="p-3.5 rounded-lg bg-black/60 border border-amber-400/40 space-y-2">
+                            <span class="font-mono text-[11px] text-amber-400 font-bold uppercase tracking-wider block">
+                                SÁNG TẠO CỦA TRẮC THỦ VIỆT NAM
+                            </span>
+                            <ul class="list-disc pl-4 space-y-2 text-xs text-zinc-300">
+                                <li><strong class="text-alabaster">Phân biệt dải nhiễu bản chất:</strong> Trắc thủ góc tà, cự ly và phương vị đài SNR-75 nhận diện: nhiễu rải chaff thì mịn, tản mát và trôi theo gió; trong khi nhiễu tích cực của B-52 có độ sáng nhấp nháy, chuyển động có vận tốc và đường bay nhất quán.</li>
+                                <li><strong class="text-alabaster">Phương pháp bám sát 3 điểm (T/T):</strong> Khi màn nhiễu quá dày, kíp chỉ huy chọn phương pháp dẫn đạn 3 điểm (Trắc thủ – Tên lửa – Tâm dải nhiễu), giữ tên lửa luôn ngắm thẳng vào giữa bụng pháo đài bay.</li>
+                                <li><strong class="text-alabaster">Bắn đón nửa góc:</strong> Đón đầu đường bay của tốp B-52 để đầu đạn nổ mảnh (8.000 mảnh văng) bao trùm diện tích cánh và động cơ máy bay.</li>
+                            </ul>
+                        </div>
+
+                        <div class="p-3.5 rounded-lg bg-black/60 border border-cyan-400/40 space-y-2">
+                            <span class="font-mono text-[11px] text-cyan-300 font-bold uppercase tracking-wider block">
+                                VÔ HIỆU HÓA TÊN LỬA SHRIKE (AGM-45)
+                            </span>
+                            <ul class="list-disc pl-4 space-y-2 text-xs text-zinc-300">
+                                <li><strong class="text-alabaster">Hiểm họa Shrike:</strong> Tên lửa AGM-45 Shrike tự dẫn theo cánh sóng radar của ta để đánh thẳng vào cabin điều khiển.</li>
+                                <li><strong class="text-alabaster">Phát sóng ngắn tức thời:</strong> Kíp trắc thủ chỉ bật phát sóng đài radar dưới 10 giây để ngắm bám sơ bộ rồi tắt sóng ngay, khiến tên lửa Shrike mất tín hiệu và cắm xuống ruộng hoang.</li>
+                                <li><strong class="text-alabaster">Phóng đạn giả &amp; Ngụy trang sóng:</strong> Bật các đài phát sóng nghi binh ở cự ly khác để thu hút Shrike, bảo toàn tuyệt đối trận địa tên lửa chủ lực.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             `,
             'card4': `
                 <div class="space-y-4">
-                    <div class="p-4 bg-canvas border border-emerald/40 space-y-2">
-                        <span class="font-mono text-[10px] text-emerald uppercase tracking-widest block">TỔNG KẾT CHIẾN CÔNG 12 NGÀY ĐÊM (18/12 – 29/12/1972)</span>
-                        <h3 class="font-serif text-xl text-alabaster font-medium">Bắn rơi 81 Máy bay Mỹ — Hạ gục 34 Siêu pháo đài bay B-52</h3>
-                        <p class="text-muted">
-                            Trong 12 ngày đêm chiến đấu kiên cường, quân và dân miền Bắc đã bắn rơi <strong class="text-alabaster">81 máy bay hiện đại các loại của Mỹ</strong>, trong đó có <strong class="text-alabaster">34 siêu pháo đài bay chiến lược B-52</strong> (16 chiếc rơi tại chỗ), <strong class="text-alabaster">5 máy bay cánh cụp cánh xòe F-111</strong>, 21 chiếc F-4 Phantom, 12 chiếc A-7, 1 chiếc F-105, 4 chiếc A-6, 2 chiếc RA-5C, 1 trực thăng HH-53 và 1 máy bay trinh sát không người lái; tiêu diệt và bắt sống hàng chục giặc lái Mỹ đưa về trại giam Hỏa Lò.
-                        </p>
+                    <!-- 4 KPI Metric Cards -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                        <div class="p-3 rounded-lg bg-emerald-500/15 border border-emerald-500/40 text-center">
+                            <div class="font-serif text-2xl sm:text-3xl font-bold text-emerald-400">81</div>
+                            <div class="font-mono text-[10px] text-zinc-300 uppercase tracking-wider mt-0.5">Máy bay Mỹ bị hạ</div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-amber-500/15 border border-amber-400/40 text-center">
+                            <div class="font-serif text-2xl sm:text-3xl font-bold text-amber-300">34</div>
+                            <div class="font-mono text-[10px] text-zinc-300 uppercase tracking-wider mt-0.5">Pháo đài bay B-52</div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-cyan-500/15 border border-cyan-400/40 text-center">
+                            <div class="font-serif text-2xl sm:text-3xl font-bold text-cyan-300">5</div>
+                            <div class="font-mono text-[10px] text-zinc-300 uppercase tracking-wider mt-0.5">F-111 cụp xòe</div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-red-500/15 border border-red-400/40 text-center">
+                            <div class="font-serif text-2xl sm:text-3xl font-bold text-red-400">17,6%</div>
+                            <div class="font-mono text-[10px] text-zinc-300 uppercase tracking-wider mt-0.5">Tỷ lệ tổn thất B-52</div>
+                        </div>
                     </div>
-                    <div class="p-4 bg-canvas border hairline-border space-y-2">
-                        <span class="font-mono text-[10px] text-brass uppercase tracking-widest block">Ý NGHĨA LỊCH SỬ BƯỚC NGOẶT</span>
-                        <ul class="list-disc pl-4 space-y-2 text-muted">
-                            <li>Làm phá sản hoàn toàn cố gắng quân sự cao nhất của đế quốc Mỹ trong chiến tranh xâm lược Việt Nam; lần đầu tiên trong lịch sử thế giới, lực lượng không quân chiến lược B-52 của Mỹ chịu tổn thất nặng nề nhất.</li>
-                            <li>Buộc chính quyền Mỹ phải tuyên bố chấm dứt ném bom miền Bắc từ bắc vĩ tuyến 20 và quay lại bàn đàm phán ký <strong class="text-alabaster">Hiệp định Paris về chấm dứt chiến tranh, lập lại hòa bình ở Việt Nam (27/01/1973)</strong>.</li>
-                            <li>Hoàn thành mục tiêu chiến lược <strong class="text-alabaster">“Đánh cho Mỹ cút”</strong>, buộc toàn bộ quân viễn chinh Mỹ phải rút khỏi miền Nam, tạo cục diện so sánh lực lượng hoàn toàn có lợi để quân và dân ta tiến lên giành thắng lợi trọn vẹn mùa Xuân 1975.</li>
+
+                    <div class="p-4 rounded-lg bg-zinc-900/80 border border-emerald-500/30 space-y-2">
+                        <span class="font-mono text-[11px] text-emerald-400 font-bold uppercase tracking-wider block">
+                            TỔNG KẾT CHIẾN CÔNG 12 NGÀY ĐÊM // QUÂN CHỦNG PHÒNG KHÔNG - KHÔNG QUÂN
+                        </span>
+                        <h3 class="font-serif text-lg sm:text-xl text-alabaster font-semibold">
+                            Đập Tan Huyền Thoại B-52 — Thất Bại Lớn Nhất Của Không Lực Hoa Kỳ
+                        </h3>
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            Trong suốt 12 ngày đêm chiến đấu ngoan cường, quân và dân miền Bắc (nòng cốt là Quân chủng Phòng không – Không quân và nhân dân Hà Nội, Hải Phòng) đã bắn rơi <strong class="text-emerald-400">81 máy bay hiện đại các loại của Mỹ</strong>:
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-300 pt-1">
+                            <div class="space-y-1">
+                                <div>• <strong class="text-amber-300">34 siêu pháo đài bay B-52</strong> (16 chiếc rơi tại chỗ)</div>
+                                <div>• <strong class="text-alabaster">5 máy bay cánh cụp cánh xòe F-111A</strong></div>
+                                <div>• <strong class="text-zinc-200">21 tiêm kích F-4 Phantom</strong></div>
+                                <div>• <strong class="text-zinc-200">12 cường kích A-7 Corsair</strong></div>
+                            </div>
+                            <div class="space-y-1">
+                                <div>• <strong class="text-zinc-200">1 tiêm kích F-105 Thunderchief</strong></div>
+                                <div>• <strong class="text-zinc-200">4 cường kích A-6 Intruder</strong></div>
+                                <div>• <strong class="text-zinc-200">2 máy bay trinh sát RA-5C</strong></div>
+                                <div>• <strong class="text-zinc-200">1 trực thăng HH-53 &amp; 1 trinh sát không người lái</strong></div>
+                            </div>
+                        </div>
+                        <div class="p-2.5 rounded bg-black/50 border border-white/10 text-xs text-zinc-300 mt-2">
+                            Bắt sống <strong class="text-amber-300">hàng chục phi công giặc lái Mỹ</strong> (trong đó có nhiều chỉ huy, hoa tiêu kỳ cựu B-52), giam giữ nhân đạo tại trại giam Hỏa Lò (“Hà Nội Hilton”).
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-lg bg-black/60 border border-amber-400/40 space-y-2">
+                        <span class="font-mono text-[11px] text-amber-400 font-bold uppercase tracking-wider block">
+                            Ý NGHĨA LỊCH SỬ BƯỚC NGOẶT
+                        </span>
+                        <ul class="list-disc pl-4 space-y-2 text-xs text-zinc-300">
+                            <li><strong class="text-amber-200">Buộc Mỹ ký kết Hiệp định Paris (27/01/1973):</strong> Thất bại thảm hại của chiến dịch Linebacker II đè bẹp ý chí xâm lược của chính quyền Nixon, buộc Mỹ phải chấp nhận toàn bộ các điều khoản cốt lõi mà ta đề ra.</li>
+                            <li><strong class="text-amber-200">Hoàn thành mục tiêu “Đánh cho Mỹ cút”:</strong> Thực hiện trọn vẹn lời căn dặn thiêng liêng của Bác Hồ, chấm dứt hoàn toàn sự hiện diện quân sự của Mỹ trên đất nước ta.</li>
+                            <li><strong class="text-amber-200">Mở đường cho đại thắng mùa Xuân 1975:</strong> Tạo so sánh tương quan lực lượng hoàn toàn có lợi để quân dân ta tiến lên thực hiện mục tiêu <strong class="text-emerald-400">“Đánh cho Ngụy nhào”</strong>, giải phóng hoàn toàn miền Nam, thống nhất non sông.</li>
                         </ul>
+                    </div>
+                </div>
+            `,
+            'card5': `
+                <div class="space-y-4">
+                    <div class="p-3 bg-zinc-900/90 border border-amber-400/30 rounded-lg flex items-center justify-between flex-wrap gap-2">
+                        <span class="font-mono text-xs text-amber-300 font-bold uppercase">
+                            // SỔ TAY 5 ĐỊA CHỈ BẢO TÀNG &amp; DI TÍCH CHIẾN TÍCH B-52 THỰC TẾ TẠI HÀ NỘI
+                        </span>
+                        <span class="font-mono text-[11px] text-zinc-400">Tham Quan Thực Tế Ngoài Đời</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <!-- Địa điểm 1 -->
+                        <div class="p-3.5 rounded-lg bg-black/70 border border-emerald-500/30 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-mono text-[11px] text-emerald-400 font-bold uppercase">[01] BẢO TÀNG CHIẾN THẮNG B-52</span>
+                                <span class="text-[10px] font-mono text-zinc-400">BA ĐÌNH · HÀ NỘI</span>
+                            </div>
+                            <div class="text-xs text-zinc-300 leading-relaxed">
+                                Nơi trưng bày xác máy bay B-52 khổng lồ bị bắn rơi và hệ thống sa bàn điện tử tái hiện sống động toàn cảnh 12 ngày đêm lịch sử.
+                            </div>
+                            <div class="text-[11px] font-mono text-zinc-400">Địa chỉ: Số 157 phố Đội Cấn, phường Đội Cấn, quận Ba Đình, Hà Nội.</div>
+                            <div class="pt-1">
+                                <a href="https://www.google.com/maps/search/?api=1&query=Bao+tang+Chien+thang+B52+157+Doi+Can+Ba+Dinh+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold uppercase">
+                                    [CHỈ ĐƯỜNG GOOGLE MAPS ↗]
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Địa điểm 2 -->
+                        <div id="relic-huu-tiep" class="p-3.5 rounded-lg bg-black/70 border border-cyan-400/30 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-mono text-[11px] text-cyan-300 font-bold uppercase">[02] XÁC MÁY BAY B-52 HỒ HỮU TIỆP</span>
+                                <span class="text-[10px] font-mono text-zinc-400">LÀNG HOA NGỌC HÀ</span>
+                            </div>
+                            <div class="text-xs text-zinc-300 leading-relaxed">
+                                Dấu tích sống động duy nhất trên thế giới: Xác pháo đài bay B-52 bị bắn hạ đêm 27/12/1972 vẫn nằm nguyên vẹn giữa lòng hồ nước trong khu dân cư.
+                            </div>
+                            <div class="text-[11px] font-mono text-zinc-400">Địa chỉ: Ngõ 55 phố Hoàng Hoa Thám, phường Ngọc Hà, quận Ba Đình, Hà Nội.</div>
+                            <div class="pt-1">
+                                <a href="https://www.google.com/maps/search/?api=1&query=Ho+Huu+Tiep+B52+Ngoc+Ha+Ba+Dinh+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-400/40 text-[11px] font-mono font-bold uppercase">
+                                    [CHỈ ĐƯỜNG GOOGLE MAPS ↗]
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Địa điểm 3 -->
+                        <div class="p-3.5 rounded-lg bg-black/70 border border-amber-400/30 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-mono text-[11px] text-amber-300 font-bold uppercase">[03] BẢO TÀNG PHÒNG KHÔNG – KHÔNG QUÂN</span>
+                                <span class="text-[10px] font-mono text-zinc-400">THANH XUÂN · HÀ NỘI</span>
+                            </div>
+                            <div class="text-xs text-zinc-300 leading-relaxed">
+                                Trưng bày khí tài anh hùng: Bệ phóng tên lửa SAM-2, đài radar P-35, pháo cao xạ 100mm và bộ sưu tập máy bay tiêm kích MiG-21, MiG-17.
+                            </div>
+                            <div class="text-[11px] font-mono text-zinc-400">Địa chỉ: Số 171 đường Trường Chinh, phường Khương Mai, quận Thanh Xuân, Hà Nội.</div>
+                            <div class="pt-1">
+                                <a href="https://www.google.com/maps/search/?api=1&query=Bao+tang+Phong+khong+Khong+quan+171+Truong+Chinh+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold uppercase">
+                                    [CHỈ ĐƯỜNG GOOGLE MAPS ↗]
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Địa điểm 4 -->
+                        <div class="p-3.5 rounded-lg bg-black/70 border border-red-500/30 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-mono text-[11px] text-red-400 font-bold uppercase">[04] ĐÀI TƯỞNG NIỆM KHÂM THIÊN</span>
+                                <span class="text-[10px] font-mono text-zinc-400">ĐỐNG ĐA · HÀ NỘI</span>
+                            </div>
+                            <div class="text-xs text-zinc-300 leading-relaxed">
+                                Khu tưởng niệm 287 đồng bào bị bom B-52 tàn sát đêm 26/12/1972, lưu giữ hố bom và tượng đài người mẹ bế con bất khuất.
+                            </div>
+                            <div class="text-[11px] font-mono text-zinc-400">Địa chỉ: Số 47 – 49 – 51 phố Khâm Thiên, phường Khâm Thiên, quận Đống Đa, Hà Nội.</div>
+                            <div class="pt-1">
+                                <a href="https://www.google.com/maps/search/?api=1&query=Dai+tuong+niem+Kham+Thien+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 text-[11px] font-mono font-bold uppercase">
+                                    [CHỈ ĐƯỜNG GOOGLE MAPS ↗]
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Địa điểm 5 -->
+                        <div class="p-3.5 rounded-lg bg-black/70 border border-white/15 space-y-2 md:col-span-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-mono text-[11px] text-zinc-200 font-bold uppercase">[05] BẢO TÀNG LỊCH SỬ QUÂN SỰ VIỆT NAM (MỚI)</span>
+                                <span class="text-[10px] font-mono text-zinc-400">ĐẠI LỘ THĂNG LONG</span>
+                            </div>
+                            <div class="text-xs text-zinc-300 leading-relaxed">
+                                Lưu giữ 2 Bảo vật Quốc gia vô giá: Tiêm kích MiG-21bis số hiệu 5121 của Anh hùng Phạm Tuân và mảnh xác pháo đài bay B-52 đầu tiên rơi tại Phù Lỗ.
+                            </div>
+                            <div class="text-[11px] font-mono text-zinc-400">Địa chỉ: Đại lộ Thăng Long, phường Tây Mỗ, quận Nam Từ Liêm, TP. Hà Nội.</div>
+                            <div class="pt-1">
+                                <a href="https://www.google.com/maps/search/?api=1&query=Bao+tang+Lich+su+Quan+su+Viet+Nam+Dai+lo+Thang+Long" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/20 text-[11px] font-mono font-bold uppercase">
+                                    [CHỈ ĐƯỜNG GOOGLE MAPS ↗]
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `
@@ -4664,48 +5338,69 @@
 
         let archivePausedGame = false;
         function toggleCampaignArchive(open) {
-            const drawer = document.getElementById('archive-drawer');
-            const backdrop = document.getElementById('archive-backdrop');
-            if (open) {
-                drawer.classList.remove('translate-x-full');
-                backdrop.classList.remove('hidden');
-                if (gameState === 'PLAYING' && !gamePaused) {
+            const screen = document.getElementById('screen-archive');
+            const isOpen = screen && screen.classList.contains('is-open');
+            const target = open !== undefined ? open : !isOpen;
+            if (target) {
+                if (typeof gameState !== 'undefined' && gameState === 'PLAYING' && !gamePaused) {
                     gamePaused = true;
                     archivePausedGame = true;
                 }
+                showScreen('archive');
             } else {
-                drawer.classList.add('translate-x-full');
-                backdrop.classList.add('hidden');
                 if (archivePausedGame) {
                     gamePaused = false;
                     archivePausedGame = false;
+                    showScreen(null);
+                } else {
+                    showScreen('menu');
                 }
             }
         }
 
         function renderArchiveTab(tabKey) {
-            ['card1', 'card2', 'card3', 'card4'].forEach(k => {
+            ['card1', 'card2', 'card3', 'card4', 'card5'].forEach(k => {
                 const btn = document.getElementById(`tab-btn-${k}`);
-                btn.className = (k === tabKey)
-                    ? 'px-3.5 py-2 font-mono text-xs border-b-2 border-vermilion text-alabaster font-semibold whitespace-nowrap'
-                    : 'px-3.5 py-2 font-mono text-xs border-b-2 border-transparent text-muted hover:text-alabaster whitespace-nowrap';
+                if (btn) {
+                    const isActive = (k === tabKey);
+                    btn.classList.toggle('border-emerald-500/60', isActive);
+                    btn.classList.toggle('bg-emerald-500/20', isActive);
+                    btn.classList.toggle('text-emerald-300', isActive);
+                    btn.classList.toggle('border-white/10', !isActive);
+                    btn.classList.toggle('bg-black/40', !isActive);
+                    btn.classList.toggle('text-zinc-400', !isActive);
+                }
             });
-            document.getElementById('archive-content-area').innerHTML = CAMPAIGN_ARCHIVE_CARDS[tabKey];
+            const contentArea = document.getElementById('archive-content-area');
+            if (contentArea && CAMPAIGN_ARCHIVE_CARDS[tabKey]) {
+                contentArea.innerHTML = CAMPAIGN_ARCHIVE_CARDS[tabKey];
+                contentArea.scrollTop = 0;
+            }
         }
 
         function copyCampaignSummary() {
             const text = `TÓM TẮT CHIẾN DỊCH: HÀ NỘI 12 NGÀY ĐÊM (18/12 – 29/12/1972) — KỲ TÍCH ĐIỆN BIÊN PHỦ TRÊN KHÔNG
-1. Bối cảnh & Tầm nhìn dự báo chiến lược:
-- Trước sự bế tắc trên bàn đàm phán Paris tháng 10–12/1972, Mỹ phát động chiến dịch tập kích đường không chiến lược Linebacker II bằng B-52 vào Hà Nội, Hải Phòng nhằm ép ta ký hiệp định theo điều kiện của Mỹ.
-- Thực hiện lời tiên tri chiến lược của Chủ tịch Hồ Chí Minh từ tháng 12/1967 ("Ở Việt Nam, Mỹ nhất định thua, nhưng nó chỉ chịu thua sau khi thua trên bầu trời Hà Nội"), quân dân ta đã chuẩn bị từ sớm cuốn "Cẩm nang bìa đỏ" (Cách đánh B-52) và sơ tán hơn 50 vạn người dân nội thành Hà Nội.
-2. Diễn biến tiêu biểu 12 ngày đêm:
-- Đêm 18/12/1972: Lúc 20h13, Tiểu đoàn 59 (Trung đoàn Tên lửa 261) bắn rơi tại chỗ chiếc B-52G đầu tiên tại cánh đồng Phù Lỗ (Đông Anh).
-- Đêm 20/12/1972: Bộ đội Tên lửa Hà Nội bắn rơi 7 chiếc B-52 chỉ trong một đêm (5 chiếc rơi tại chỗ).
-- Đêm 26/12/1972: Mỹ huy động 105 lần chiếc B-52 ném bom hủy diệt phố Khâm Thiên; lưới lửa phòng không ba thứ quân bắn rơi 8 chiếc B-52.
-- Đêm 27/12/1972: Phi công Phạm Tuân lái MiG-21bis (#5121) bắn hạ B-52; Tiểu đoàn 71 và 72 bắn rơi một chiếc B-52 xuống hồ Hữu Tiệp (Ngọc Hà, Ba Đình).
-3. Kết quả & Ý nghĩa lịch sử:
-- Quân dân miền Bắc bắn rơi 81 máy bay Mỹ các loại (gồm 34 siêu pháo đài bay B-52 và 5 chiếc F-111), bắt sống hàng chục giặc lái tại Hỏa Lò.
-- Buộc Mỹ chấm dứt ném bom miền Bắc và ký Hiệp định Paris (27/01/1973), rút toàn bộ quân viễn chinh về nước ("Đánh cho Mỹ cút"), mở đường cho đại thắng mùa Xuân 1975.`;
+1. BỐI CẢNH LỊCH SỬ & TẦM NHÌN DỰ BÁO CHIẾN LƯỢC:
+- Sau bế tắc trên bàn đàm phán Paris cuối năm 1972, Mỹ phát động chiến dịch tập kích đường không chiến lược hủy diệt Linebacker II bằng pháo đài bay B-52 nhằm hủy diệt Hà Nội, Hải Phòng để ép ta ký hiệp định theo điều kiện của Mỹ.
+- Lời tiên tri thiên tài của Bác Hồ (12/1967): "Ở Việt Nam, Mỹ nhất định thua, nhưng nó chỉ chịu thua sau khi thua trên bầu trời Hà Nội". Quân dân ta đã sớm chuẩn bị cuốn "Cẩm nang bìa đỏ" và sơ tán hơn 50 vạn đồng bào.
+
+2. BIÊN NIÊN CHIẾN CÔNG 12 NGÀY ĐÊM:
+- Đêm 18/12: Tiểu đoàn 59 bắn rơi tại chỗ chiếc B-52 đầu tiên tại Phù Lỗ (Đông Anh); hạ 3 B-52 trong đêm đầu.
+- Đêm 19/12: Bảo vệ Đài phát thanh Mễ Trì; bắn rơi 2 B-52.
+- Đêm 20/12: Kỷ lục tiêu diệt 7 pháo đài bay B-52 chỉ trong một đêm (5 chiếc rơi tại chỗ).
+- Đêm 21/12: Vạch nhiễu tìm thù trên màn hiện sóng, bắn rơi 3 B-52.
+- Đêm 22/12: Mỹ ném bom Bệnh viện Bạch Mai; ta bắn rơi 3 B-52 và 1 máy bay cánh cụp cánh xòe F-111.
+- Đêm 23/12: Bắn rơi 2 B-52, bảo vệ huyết mạch giao thông phía Nam.
+- Đêm 24/12: Hạ 2 B-52; buộc Mỹ phải tuyên bố tạm ngừng ném bom 36 giờ dịp Giáng sinh.
+- Ngày 25-26/12: 36 giờ quý hơn vàng cơ động trận địa, thần tốc lắp ráp đạn tên lửa SAM-2.
+- Đêm 26/12: Đợt tập kích lớn nhất (105 B-52) hủy diệt phố Khâm Thiên; lưới lửa ba thứ quân bắn rơi 8 chiếc B-52 trong hơn 1 giờ.
+- Đêm 27/12: Anh hùng Phạm Tuân lái MiG-21 bắn rơi B-52 tại Mộc Châu; Tiểu đoàn 72 bắn rơi B-52 xuống hồ Hữu Tiệp (Ngọc Hà).
+- Đêm 28/12: Anh hùng Vũ Xuân Thiều lái MiG-21 quả cảm cảm tử lao thẳng vào B-52 tiêu diệt địch tại Sơn La.
+- Đêm 29/12: Tiểu đoàn 79 bắn rơi chiếc B-52 thứ 34; buộc Mỹ tuyên bố ngừng ném bom hoàn toàn.
+
+3. TỔNG KẾT CHIẾN CÔNG & Ý NGHĨA THỜI ĐẠI:
+- Bắn rơi 81 máy bay Mỹ các loại (gồm 34 siêu pháo đài bay B-52 và 5 chiếc F-111).
+- Buộc Mỹ phải ký Hiệp định Paris (27/01/1973), rút toàn bộ quân viễn chinh về nước ("Đánh cho Mỹ cút"), tạo tiền đề quyết định giải phóng hoàn toàn miền Nam mùa Xuân 1975 ("Đánh cho Ngụy nhào").`;
 
             const ta = document.createElement('textarea');
             ta.value = text;
@@ -4715,7 +5410,14 @@
             ta.select();
             try {
                 document.execCommand('copy');
-                document.getElementById('copy-toast').textContent = 'Đã sao chép bản tóm tắt chiến dịch 12 ngày đêm vào bộ nhớ tạm!';
+                const toast = document.getElementById('copy-toast');
+                if (toast) {
+                    toast.textContent = '✓ Đã sao chép toàn bộ bản tóm tắt chiến dịch vào bộ nhớ tạm!';
+                    toast.classList.add('text-emerald');
+                    setTimeout(() => {
+                        toast.textContent = 'Nguồn tư liệu: Viện Lịch sử Quân sự Việt Nam · Bảo tàng Chiến thắng B-52 Hà Nội';
+                    }, 3500);
+                }
             } catch (e) {}
             document.body.removeChild(ta);
         }
@@ -5523,13 +6225,16 @@
             missionAmmo--;
             missionShots++;
             SoundEngine.playLaunch(true);
-            cameraShake = 0.3;
+            cameraShake = 0.45;
             const mesh = HighPolyFactory.createK13Missile();
             mesh.scale.setScalar(2.2);
             const flame = attachBoosterFlame(mesh, -1.15, -1, 0.22);
             const right = _tmpR.crossVectors(mig.fwd, WORLD_UP).normalize();
             mesh.position.copy(playerMiG21.position).addScaledVector(right, missionAmmo % 2 ? 2.4 : -2.4).add(new THREE.Vector3(0, -0.6, 0));
             worldCombatGroup.add(mesh);
+            // APU-13 launch rail smoke puff & rocket ignition flash
+            spawnSmokePuff(mesh.position.clone(), 3.2, mig.fwd.clone().multiplyScalar(-5), 0.7, 'smoke');
+            spawnSmokePuff(mesh.position.clone(), 2.2, mig.fwd.clone().multiplyScalar(-2), 0.25, 'fire');
             activeMissiles.push({
                 kind: 'K13', mesh, dir: mig.fwd.clone(), speed: mig.speed + 6, speed0: mig.speed,
                 t: 0, life: 7, target: mig.target, guided: false, smokeTick: 0, prevNear: Infinity, flame
@@ -5633,13 +6338,20 @@
                 const ax = deadzone(smoothAimX, 0.06), ay = deadzone(smoothAimY, 0.06);
                 const ctl = 1.15 * energy * (0.3 + 0.7 * Math.min(1, m.q / 0.6));   // mushy in noise or when slow
                 m.dir.addScaledVector(right, ax * ctl * dt).addScaledVector(up, ay * ctl * dt);
-                // terminal phase: inside ~2.75 km and a 30° cone the missile recognises the nearest B-52 and homes on it
+                // terminal phase: stick strictly to designated target if active; fallback to nearest B-52 only if lost/destroyed
                 m.seek = null;
-                let bestD = 110;
-                activeBombers.forEach(b => {
-                    const d = b.mesh.position.distanceTo(m.mesh.position);
-                    if (d < bestD && m.dir.angleTo(_tmpV2.copy(b.mesh.position).sub(m.mesh.position)) < 0.52) { bestD = d; m.seek = b; }
-                });
+                if (tgt && activeBombers.includes(tgt)) {
+                    const d = tgt.mesh.position.distanceTo(m.mesh.position);
+                    if (d < 110 && m.dir.angleTo(_tmpV2.copy(tgt.mesh.position).sub(m.mesh.position)) < 0.65) {
+                        m.seek = tgt;
+                    }
+                } else {
+                    let bestD = 110;
+                    activeBombers.forEach(b => {
+                        const d = b.mesh.position.distanceTo(m.mesh.position);
+                        if (d < bestD && m.dir.angleTo(_tmpV2.copy(b.mesh.position).sub(m.mesh.position)) < 0.52) { bestD = d; m.seek = b; }
+                    });
+                }
                 if (m.seek) {
                     m.dir.lerp(leadDirection(m, m.seek, inChaff(m.seek.mesh.position)), Math.min(1, dt * 2.4 * energy * (0.55 + 0.45 * m.q)));
                 } else if (tgt && m.q >= 0.5) {
@@ -5737,8 +6449,8 @@
                 if (d < (big ? 7 : 6)) { killBomber(b); killed++; }
                 else if (big && d < 14) { if (damageBomber(b)) killed++; else hurt++; }
             });
-            if (m === guidedMissile) {
-                guidedMissile = null;
+            if (m === guidedMissile || (currentMode === 'MIG21' && m.kind === 'K13')) {
+                if (m === guidedMissile) guidedMissile = null;
                 // a kill gets a falling-wreck cam: long when it ends the mission, short when there's more to shoot
                 missileCamHold = !killed ? 2.2 : gameState === 'ENDING' ? 10 : 4;
                 missileCamHoldPos.copy(pos);
@@ -5751,8 +6463,8 @@
             }
         }
 
-        // Chase cam: eases out of the launch view over ~1.3 s, then trails the
-        // missile on a smoothed heading so booster pitch-over doesn't jerk it.
+        // Chase cam: smoothly catches up behind the missile immediately on launch (0.4s)
+        // and frames the missile in lower-third tracking toward target B-52
         function followMissileCamera(dt, shakeVec) {
             const m = guidedMissile, p = m.mesh.position;
             if (!m.cam) {
@@ -5764,12 +6476,21 @@
             c.t += dt;
             if (!c.up) c.up = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
             const prevDir = _tmpL.copy(c.dir);
+
+            // Booster separation visual feedback at T+2.4s
+            if (!m.staged && m.t >= 2.4) {
+                m.staged = true;
+                cameraShake = Math.max(cameraShake, 0.32);
+                spawnSmokePuff(p.clone().addScaledVector(m.dir, -4.5), 5.5, new THREE.Vector3(0, -1.2, 0), 1.2, 'smoke');
+                spawnSparks(p.clone().addScaledVector(m.dir, -4.5), 24, 18, 0.22);
+            }
+
             // once out of the boost, sight along missile → target so the locked bomber stays in frame ahead
             // of the missile (the missile itself sits just below centre); without a target follow the heading
             const tgt = m.seek || (m.target && activeBombers.includes(m.target) ? m.target : null);
             const want = _tmpV.copy(m.dir);
             if (tgt && !m.lost) {
-                const w = Math.min(1, Math.max(0, (c.t - 0.5) / 1.5));
+                const w = Math.min(1, Math.max(0, (c.t - 0.4) / 1.4));
                 want.lerp(_tmpV2.copy(tgt.mesh.position).sub(p).normalize(), w * w * (3 - 2 * w)).normalize();
             }
             c.dir.lerp(want, 1 - Math.exp(-dt * 3.5)).normalize();
@@ -5781,8 +6502,8 @@
             c.up.addScaledVector(c.dir, -c.up.dot(c.dir)).normalize();
             const up = _tmpU.copy(c.up);
             const ease = x => { x = Math.min(1, Math.max(0, x)); return x * x * (3 - 2 * x); };
-            const e = ease(c.t / 1.3), settle = ease(c.t / 2.8);
-            const back = 18 - 3 * settle, lift = 3.4 + 0.3 * settle;
+            const e = ease(c.t / 0.42), settle = ease(c.t / 2.5);
+            const back = 15 - 2.5 * settle, lift = 2.8 + 0.4 * settle;
             // offsets are relative to the missile, so its acceleration adds no lag; looking far down the axis
             // (rather than at a point near the missile) keeps the missile in the lower frame and the bomber clear above it
             const offWant = _tmpV.copy(c.dir).multiplyScalar(-back).addScaledVector(up, lift);
@@ -5831,19 +6552,34 @@
             playerMiG21.lookAt(_tmpV.copy(p).add(mig.fwd));
             playerMiG21.rotateZ(mig.bank);
             const plume = playerMiG21.getObjectByName('afterburnerPlume');
-            if (plume) plume.scale.set(1, 1, (mig.throttle > 0.85 ? 1.3 : 0.5 + mig.throttle * 0.5) * (0.92 + Math.random() * 0.12));
+            if (plume) plume.scale.set(1, 1, (mig.throttle > 0.85 ? 1.35 : 0.5 + mig.throttle * 0.5) * (0.92 + Math.random() * 0.12));
             if (migCloudDeck) {
                 const period = 12000 / 18;
                 migCloudDeck.position.x = Math.round(p.x / period) * period;
                 migCloudDeck.position.z = Math.round(p.z / period) * period;
+            }
+            // Wingtip aerodynamic condensation vortices in high-G maneuvers
+            if ((Math.abs(mig.bank) > 0.35 || Math.abs(smoothAimY) > 0.28) && Math.random() < 0.45) {
+                [-4.8, 4.8].forEach(wx => {
+                    const tipPos = p.clone().add(new THREE.Vector3(wx, -0.1, -1.8).applyEuler(playerMiG21.rotation));
+                    spawnSmokePuff(tipPos, 0.9 + Math.random() * 0.4, mig.fwd.clone().multiplyScalar(-1.5), 0.4, 'trail');
+                });
             }
             updateMiGWeapons(dt);
         }
 
         function updateMiGWeapons(dt) {
             const p = playerMiG21.position;
-            let best = null, bestD = Infinity;
-            activeBombers.forEach(b => { const d = b.mesh.position.distanceTo(p); if (d < bestD) { bestD = d; best = b; } });
+            let best = null, bestScore = Infinity;
+            activeBombers.forEach(b => {
+                const toB = _tmpV2.copy(b.mesh.position).sub(p);
+                const d = toB.length();
+                const angle = mig.fwd.angleTo(toB);
+                // Weight distance heavily by angle off MiG-21 nose; give existing locked target 35% stickiness bonus
+                let score = d * (1.0 + angle * 2.2);
+                if (b === mig.target) score *= 0.65;
+                if (score < bestScore) { bestScore = score; best = b; }
+            });
             mig.target = best;
             mig.underFire = Math.max(0, mig.underFire - dt);
             if (!best) { mig.irLock = 0; mig.envelope = ''; return; }
@@ -6461,7 +7197,7 @@
             const phase = m.lost ? '<span style="color:#F87171">MẤT DẪN — ĐẠN LẠC</span>'
                 : m.detonateNow ? '<span style="color:#FDE047;font-weight:bold;">LỆNH NỔ ĐÃ PHÁT — CHỜ NỔ</span>'
                 : closeIn ? `<span style="color:#34D399;font-weight:bold;background:rgba(16,185,129,0.25);padding:2px 8px;border-radius:3px;border:1px solid #10B981;">ĐÃ ÁP SÁT ${(distU * KM_PER_UNIT).toFixed(2)} KM — BẤM [SPACE] LỆNH NỔ NGAY!</span>`
-                : m.blind > 0.15 ? `<span style="color:#F87171">⚠ MẤT TÍN HIỆU ${Math.max(0, BLIND_LIMIT - m.blind).toFixed(1)}s — ${jamAt(playerFreq) > 0.15 ? 'NHẢY TẦN Q / E' : 'TẦN SỐ SẠCH, ĐỪNG NHẢY'}</span>`
+                : m.blind > 0.15 ? `<span style="color:#F87171">[MẤT TÍN HIỆU] ${Math.max(0, BLIND_LIMIT - m.blind).toFixed(1)}s — ${jamAt(playerFreq) > 0.15 ? 'NHẢY TẦN Q / E' : 'TẦN SỐ SẠCH, ĐỪNG NHẢY'}</span>`
                 : m.seek ? `<span style="color:#34D399">ĐẠN ĐÃ NHẬN DIỆN ${m.seek.callsign} — TỰ BÁM</span>`
                 : m.t < 2.4 ? 'TẦNG ĐẨY — CHƯA VÀO LỆNH DẪN'
                 : m.t > 26 ? '<span style="color:#FBBF24">HẾT NHIÊN LIỆU — ĐẠN ĐANG MẤT TỐC</span> · LÁI NHẸ TAY'
@@ -6481,6 +7217,60 @@
            ============================================================================ */
         const SoundFX = {
             ready: false, L: {}, prevLightning: 0,
+            masterGain: null, sfxGain: null, sirenNodes: [],
+
+            init() {
+                const ctx = SoundEngine.init();
+                if (ctx && !this.ready) this.setup(ctx);
+                return ctx;
+            },
+            resumeAudio() {
+                SoundEngine.unlock();
+                return SoundEngine.ctx;
+            },
+            toggleMute() {
+                if (!this.masterGain) {
+                    this.masterGain = { gain: { value: 0.8 } };
+                    this.master = this.masterGain;
+                }
+                const target = this.masterGain;
+                if (this.muted) {
+                    target.gain.value = (this.prevVolume !== undefined) ? this.prevVolume : 0.8;
+                    this.muted = false;
+                } else {
+                    this.prevVolume = target.gain.value;
+                    target.gain.value = 0;
+                    this.muted = true;
+                }
+                return this.muted;
+            },
+            setMasterVolume(val) {
+                const v = Math.max(0, Math.min(1, Number(val) !== undefined && !isNaN(val) ? Number(val) : 0.8));
+                if (!this.masterGain) {
+                    this.masterGain = { gain: { value: v } };
+                    this.master = this.masterGain;
+                } else {
+                    if (this.master) this.master.gain.value = v;
+                    if (this.masterGain) this.masterGain.gain.value = v;
+                }
+                return v;
+            },
+            setSFXVolume(val) { return this.setSfxVolume(val); },
+            setSfxVolume(val) {
+                const v = Math.max(0, Math.min(1, Number(val) !== undefined && !isNaN(val) ? Number(val) : 0.8));
+                if (!this.sfxGain) {
+                    this.sfxGain = { gain: { value: v } };
+                    this.bus = this.sfxGain;
+                } else {
+                    if (this.bus) this.bus.gain.value = v;
+                    if (this.sfxGain) this.sfxGain.gain.value = v;
+                }
+                return v;
+            },
+            setVoiceVolume(val) {
+                const v = Math.max(0, Math.min(1, Number(val) !== undefined && !isNaN(val) ? Number(val) : 0.8));
+                return v;
+            },
 
             ensure() {
                 const ctx = SoundEngine.ctx;
@@ -6497,9 +7287,11 @@
                 comp.release.value = 0.3;
                 this.master = ctx.createGain();
                 this.master.gain.value = 0.9;
+                this.masterGain = this.master;
                 this.master.connect(comp);
                 comp.connect(ctx.destination);
                 this.bus = ctx.createGain();
+                this.sfxGain = this.bus;
                 this.bus.connect(this.master);
                 this.reverb = ctx.createConvolver();
                 this.reverb.buffer = this.makeImpulse(ctx, 3.4, 2.4);
@@ -6683,54 +7475,81 @@
                 if (!this.ensure()) return;
                 const t = SoundEngine.ctx.currentTime;
                 if (isMiG) {
-                    this.burst({ type: 'lowpass', freq: 5000, freqEnd: 900, peak: 0.45, a: 0.01, hold: 0.25, rel: 0.9, wet: 0.2 });
-                    this.burst({ type: 'highpass', freq: 2500, peak: 0.15, a: 0.005, hold: 0.1, rel: 0.4 });
+                    this.tone({ t0: t, freq: 240, freqEnd: 75, peak: 0.5, a: 0.003, dur: 0.4 });
+                    this.burst({ type: 'lowpass', freq: 5200, freqEnd: 1100, peak: 0.5, a: 0.01, hold: 0.35, rel: 1.1, wet: 0.25 });
+                    this.burst({ type: 'highpass', freq: 2800, peak: 0.25, a: 0.005, hold: 0.15, rel: 0.5 });
                     return;
                 }
                 // V-750 booster: blast, roar that fades as it climbs away, crackle, sub thump
-                this.tone({ freq: 70, freqEnd: 28, peak: 0.8, a: 0.005, dur: 1.2 });
-                this.burst({ type: 'lowpass', freq: 2600, freqEnd: 380, peak: 0.85, a: 0.03, hold: 1.6, rel: 2.6, wet: 0.5 });
-                this.burst({ type: 'highpass', freq: 3200, peak: 0.22, a: 0.01, hold: 1.2, rel: 1.0, wet: 0.3 });
-                this.burst({ t0: t + 0.05, brown: true, type: 'lowpass', freq: 300, peak: 0.5, a: 0.02, hold: 0.6, rel: 2.0, wet: 0.6 });
+                this.tone({ freq: 85, freqEnd: 24, peak: 0.95, a: 0.003, dur: 1.5, wet: 0.4 });
+                this.burst({ type: 'lowpass', freq: 2800, freqEnd: 320, peak: 0.9, a: 0.02, hold: 1.8, rel: 2.8, wet: 0.55 });
+                this.burst({ type: 'highpass', freq: 3000, peak: 0.28, a: 0.01, hold: 1.4, rel: 1.2, wet: 0.35 });
+                this.burst({ t0: t + 0.04, brown: true, type: 'lowpass', freq: 320, peak: 0.65, a: 0.01, hold: 0.8, rel: 2.4, wet: 0.65 });
             },
 
             boom(pos, big) {
                 if (!this.ensure()) return;
-                const d = pos ? pos.distanceTo(camera.position) : 300;
+                const d = pos && typeof pos.distanceTo === 'function' ? pos.distanceTo(camera.position) : 300;
                 const t0 = SoundEngine.ctx.currentTime + Math.min(2.2, d * 0.0025);   // sound arrives after the flash
-                const vol = (big ? 1 : 0.6) / (1 + d / 500);
+                const vol = (big ? 1.05 : 0.65) / (1 + d / 500);
                 const cutoff = Math.max(260, 9000 / (1 + d / 120));                   // air absorbs the highs
-                this.tone({ t0, freq: 85, freqEnd: 26, peak: vol * 0.9, a: 0.005, dur: big ? 1.8 : 1.1, wet: 0.4 });
-                this.burst({ t0, type: 'lowpass', freq: cutoff, freqEnd: cutoff * 0.15, peak: vol, a: 0.005, hold: 0.12, rel: big ? 2.8 : 1.5, wet: 0.8 });
+                this.tone({ t0, freq: big ? 90 : 80, freqEnd: 22, peak: vol * 0.95, a: 0.004, dur: big ? 2.2 : 1.2, wet: 0.5 });
+                this.burst({ t0, type: 'lowpass', freq: cutoff, freqEnd: cutoff * 0.12, peak: vol, a: 0.004, hold: 0.15, rel: big ? 3.2 : 1.6, wet: 0.85 });
                 if (big) {
                     for (let k = 0; k < 10; k++) {
-                        this.burst({ t0: t0 + 0.2 + Math.random() * 1.6, type: 'bandpass', freq: 600 + Math.random() * 1800, Q: 2, peak: vol * 0.2, a: 0.003, hold: 0.02, rel: 0.25, wet: 0.5 });
+                        this.burst({ t0: t0 + 0.18 + Math.random() * 1.8, type: 'bandpass', freq: 550 + Math.random() * 1900, Q: 2, peak: vol * 0.25, a: 0.003, hold: 0.02, rel: 0.3, wet: 0.6 });
                     }
+                    this.burst({ t0: t0 + 0.3, brown: true, type: 'lowpass', freq: 180, peak: vol * 0.5, a: 0.1, hold: 1.0, rel: 2.8, wet: 0.7 });
                 }
             },
 
-            carpet() {
+            carpet(onImpactCallback) {
                 // a cell's bombs walking across a distant target
                 if (!this.ensure()) return;
                 const t = SoundEngine.ctx.currentTime;
                 for (let k = 0; k < 18; k++) {
-                    const t0 = t + 0.8 + k * 0.17 + Math.random() * 0.1;
-                    this.burst({ t0, brown: true, type: 'lowpass', freq: 240, peak: 0.25 + Math.random() * 0.2, a: 0.01, hold: 0.05, rel: 1.0, wet: 0.8 });
-                    this.tone({ t0, freq: 50, freqEnd: 30, peak: 0.25, a: 0.005, dur: 0.6 });
+                    const delay = 0.8 + k * 0.17 + Math.random() * 0.1;
+                    const t0 = t + delay;
+                    this.burst({ t0, brown: true, type: 'lowpass', freq: 240, peak: 0.28 + Math.random() * 0.2, a: 0.01, hold: 0.05, rel: 1.0, wet: 0.8 });
+                    this.tone({ t0, freq: 52, freqEnd: 28, peak: 0.28, a: 0.005, dur: 0.6 });
+                    if (typeof onImpactCallback === 'function') {
+                        setTimeout(() => {
+                            try { onImpactCallback(k); } catch(e) {}
+                        }, Math.max(0, delay * 1000));
+                    }
+                }
+                if (typeof onImpactCallback === 'function') {
+                    try { onImpactCallback(0); } catch(e) {}
                 }
             },
 
-            siren() {
+            siren(active = true) {
+                if (active === false) {
+                    if (this.sirenNodes && this.sirenNodes.length) {
+                        const ctx = SoundEngine.ctx;
+                        const t = ctx ? ctx.currentTime : 0;
+                        this.sirenNodes.forEach(n => {
+                            try {
+                                if (n.g && n.g.gain) n.g.gain.setTargetAtTime(0, t, 0.5);
+                                if (n.o && n.o.frequency) n.o.frequency.setTargetAtTime(80, t, 0.6);
+                                setTimeout(() => { try { n.o.stop(); n.o.disconnect(); } catch(e){} }, 700);
+                            } catch(e) {}
+                        });
+                        this.sirenNodes = [];
+                    }
+                    return;
+                }
                 // air-raid siren over the city, two units slightly out of tune
                 if (!this.ensure()) return;
                 const ctx = SoundEngine.ctx, t = ctx.currentTime;
                 const g = ctx.createGain(), lp = this.filter('lowpass', 1500);
                 g.gain.setValueAtTime(0.0001, t);
-                g.gain.exponentialRampToValueAtTime(0.06, t + 1.2);
-                g.gain.setValueAtTime(0.06, t + 8);
+                g.gain.exponentialRampToValueAtTime(0.08, t + 1.2);
+                g.gain.setValueAtTime(0.08, t + 8);
                 g.gain.exponentialRampToValueAtTime(0.0001, t + 10.5);
                 lp.connect(g);
                 this.out(g, 0.9);
+                this.sirenNodes = [];
                 [1, 1.012].forEach(k => {
                     const o = ctx.createOscillator();
                     o.type = 'sawtooth';
@@ -6744,14 +7563,21 @@
                     o.connect(lp);
                     o.start(t);
                     o.stop(t + 10.6);
+                    this.sirenNodes.push({ o, g });
                 });
             },
 
-            radio() {
+            radio(isEnd = false) {
                 // press-to-talk squelch + click
                 if (!this.ensure()) return;
-                this.burst({ type: 'bandpass', freq: 1900, Q: 1.4, peak: 0.07, a: 0.003, hold: 0.06, rel: 0.07 });
-                this.tone({ type: 'square', freq: 1150, peak: 0.03, a: 0.002, dur: 0.035 });
+                const t = SoundEngine.ctx.currentTime;
+                if (isEnd) {
+                    this.burst({ t0: t, type: 'bandpass', freq: 1600, Q: 1.6, peak: 0.08, a: 0.002, hold: 0.05, rel: 0.06 });
+                    this.tone({ t0: t + 0.04, type: 'square', freq: 440, peak: 0.02, a: 0.002, dur: 0.02 });
+                } else {
+                    this.tone({ t0: t, type: 'sine', freq: 1480, freqEnd: 1850, peak: 0.04, a: 0.002, dur: 0.035 });
+                    this.burst({ t0: t + 0.03, type: 'bandpass', freq: 2100, Q: 1.4, peak: 0.07, a: 0.003, hold: 0.04, rel: 0.05 });
+                }
             },
 
             metal(t0, freq, peak) {
@@ -6815,11 +7641,39 @@
                 SoundEngine.init();
                 if (!this.ensure()) return;
                 const ctx = SoundEngine.ctx, t = ctx.currentTime;
-                const notes = [261.63, 329.63, 392.00, 523.25];
-                notes.forEach((freq, idx) => {
-                    const t0 = t + idx * 0.12;
-                    this.tone({ t0, type: 'sawtooth', freq, peak: 0.16, a: 0.02, dur: idx === 3 ? 0.9 : 0.25, wet: 0.4 });
+                // Heroic military brass fanfare celebrating B-52 kill!
+                const notes = [
+                    { f: 293.66, d: 0.22, v: 0.25 }, // D4
+                    { f: 369.99, d: 0.22, v: 0.25 }, // F#4
+                    { f: 440.00, d: 0.25, v: 0.28 }, // A4
+                    { f: 587.33, d: 1.1,  v: 0.35 }  // D5 (High triumphant ring!)
+                ];
+                notes.forEach((n, idx) => {
+                    const t0 = t + idx * 0.14;
+                    const osc1 = ctx.createOscillator();
+                    const osc2 = ctx.createOscillator();
+                    const f = this.filter('lowpass', 2400, 2.5);
+                    const g = ctx.createGain();
+                    osc1.type = 'sawtooth';
+                    osc2.type = 'sawtooth';
+                    osc1.frequency.setValueAtTime(n.f, t0);
+                    osc2.frequency.setValueAtTime(n.f * 1.005, t0);
+                    f.frequency.setValueAtTime(600, t0);
+                    f.frequency.exponentialRampToValueAtTime(3200, t0 + 0.04);
+                    f.frequency.exponentialRampToValueAtTime(1400, t0 + n.d);
+                    g.gain.setValueAtTime(0.001, t0);
+                    g.gain.exponentialRampToValueAtTime(n.v, t0 + 0.03);
+                    g.gain.exponentialRampToValueAtTime(0.0001, t0 + n.d);
+                    osc1.connect(f);
+                    osc2.connect(f);
+                    f.connect(g);
+                    this.out(g, 0.45);
+                    osc1.start(t0);
+                    osc2.start(t0);
+                    osc1.stop(t0 + n.d + 0.05);
+                    osc2.stop(t0 + n.d + 0.05);
                 });
+                this.tone({ t0: t + 0.42, freq: 74, freqEnd: 28, peak: 0.4, a: 0.005, dur: 0.9, wet: 0.4 });
             },
 
             alertChime() {
@@ -6841,16 +7695,22 @@
            ============================================================================ */
         const MusicSystem = {
             enabled: true,
-            volume: 0.32,
+            volume: 0.35,
             ctx: null,
             masterGain: null,
             timer: null,
             step: 0,
+            phrase: 0,
             theme: 'MENU', // 'MENU' | 'PLAYING' | 'VICTORY'
             chordNodes: [],
 
             init() {
-                if (this.masterGain) return;
+                if (this.masterGain && this.ctx) {
+                    if (this.ctx.state === 'suspended') {
+                        try { this.ctx.resume().catch(() => {}); } catch(e){}
+                    }
+                    return;
+                }
                 const ctx = SoundEngine.ctx;
                 if (!ctx) return;
                 this.ctx = ctx;
@@ -6868,14 +7728,17 @@
             setTheme(newTheme) {
                 if (this.theme === newTheme) return;
                 this.theme = newTheme;
+                this.step = 0;
+                this.phrase = 0;
                 this.updateChord();
             },
 
             toggle() {
+                SoundEngine.unlock();
                 this.enabled = !this.enabled;
                 if (this.masterGain && this.ctx) {
                     const t = this.ctx.currentTime;
-                    this.masterGain.gain.setTargetAtTime(this.enabled ? this.volume : 0, t, 0.1);
+                    this.masterGain.gain.setTargetAtTime(this.enabled ? this.volume : 0, t, 0.05);
                 }
                 this.updateUI();
                 try { localStorage.setItem('game_bgm_enabled', this.enabled ? '1' : '0'); } catch(e){}
@@ -6883,6 +7746,7 @@
             },
 
             updateUI() {
+                if (typeof document === 'undefined') return;
                 const btns = document.querySelectorAll('.btn-toggle-bgm');
                 btns.forEach(btn => {
                     btn.innerHTML = `<span>🎵</span> Nhạc: ${this.enabled ? 'BẬT' : 'TẮT'}<kbd>B</kbd>`;
@@ -6896,11 +7760,12 @@
                 const setInt = typeof setInterval !== 'undefined' ? setInterval : (typeof window !== 'undefined' && window.setInterval ? window.setInterval : null);
                 if (this.timer && clrInt) clrInt(this.timer);
                 this.step = 0;
+                this.phrase = 0;
                 if (setInt) {
                     this.timer = setInt(() => {
                         if (!this.enabled || !this.ctx || this.ctx.state !== 'running') return;
                         this.tick();
-                    }, 135);
+                    }, 125);
                 }
                 this.updateChord();
             },
@@ -6927,7 +7792,7 @@
                     // D minor hành khúc chiến đấu khẩn trương: D2 (trầm), D3, F3, A3
                     freqs = [73.42, 146.83, 174.61, 220.00];
                 } else {
-                    // MENU / BRIEFING: D minor trầm hùng, bí ẩn: D2, A2, D3, F3
+                    // MENU / BRIEFING: D minor trầm hùng, bi tráng: D2, A2, D3, F3
                     freqs = [73.42, 110.00, 146.83, 174.61];
                 }
 
@@ -6940,7 +7805,7 @@
                     osc.frequency.setValueAtTime(freq + (Math.random() - 0.5) * 0.6, t);
 
                     filter.type = 'lowpass';
-                    filter.frequency.setValueAtTime(this.theme === 'PLAYING' ? 380 : 250, t);
+                    filter.frequency.setValueAtTime(this.theme === 'PLAYING' ? 420 : 280, t);
                     filter.Q.value = 1.6;
 
                     const targetGain = (idx === 0 ? 0.32 : 0.1) * (this.theme === 'PLAYING' ? 1.15 : 0.85);
@@ -6956,66 +7821,234 @@
                 });
             },
 
-            tick() {
-                const step = this.step;
-                this.step = (this.step + 1) % 32;
-                const t = this.ctx.currentTime;
+            // Dàn kèn đồng quân đội hào sảng (French Horn / Trumpet military fanfares)
+            playBrass(t, freq, dur = 0.35, vol = 0.28) {
+                if (!this.ctx || !this.masterGain) return;
+                const osc1 = this.ctx.createOscillator();
+                const osc2 = this.ctx.createOscillator();
+                const filter = this.ctx.createBiquadFilter();
+                const gain = this.ctx.createGain();
 
-                if (this.theme === 'PLAYING') {
-                    if (step === 0 || step === 16) {
-                        this.playTimpani(t, 65, 0.45);
-                    } else if (step === 8 || step === 24) {
-                        this.playTimpani(t, 55, 0.3);
-                    } else if (step === 12 || step === 28) {
-                        this.playSnareBrush(t, 0.16);
-                    }
-                } else if (this.theme === 'MENU') {
-                    if (step === 0) {
-                        this.playTimpani(t, 52, 0.25);
-                    } else if (step === 16) {
-                        this.playTimpani(t, 46, 0.18);
-                    }
-                } else if (this.theme === 'VICTORY') {
-                    if (step % 8 === 0) {
-                        this.playTimpani(t, 73.4, 0.38);
-                    }
-                }
+                osc1.type = 'sawtooth';
+                osc2.type = 'sawtooth';
+                osc1.frequency.setValueAtTime(freq, t);
+                osc2.frequency.setValueAtTime(freq * 1.006, t); // rich detuned brass unison
+
+                filter.type = 'lowpass';
+                filter.Q.value = 2.8;
+                // Brass attack envelope: crisp brass bite opening up to 2800Hz then settling to warm body
+                filter.frequency.setValueAtTime(380, t);
+                filter.frequency.exponentialRampToValueAtTime(Math.min(3200, freq * 7), t + 0.035);
+                filter.frequency.exponentialRampToValueAtTime(Math.min(1800, freq * 4), t + dur * 0.5);
+                filter.frequency.exponentialRampToValueAtTime(280, t + dur + 0.08);
+
+                gain.gain.setValueAtTime(0.001, t);
+                gain.gain.exponentialRampToValueAtTime(vol * 0.38, t + 0.02);
+                gain.gain.setValueAtTime(vol * 0.34, t + dur * 0.6);
+                gain.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.08);
+
+                osc1.connect(filter);
+                osc2.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.masterGain);
+
+                osc1.start(t);
+                osc2.start(t);
+                osc1.stop(t + dur + 0.1);
+                osc2.stop(t + dur + 0.1);
             },
 
-            playTimpani(t, freq, vol) {
+            // Dàn dây vĩ cầm dồn dập (Cinematic staccato string ostinato)
+            playStrings(t, freq, dur = 0.12, vol = 0.16) {
+                if (!this.ctx || !this.masterGain) return;
+                const osc = this.ctx.createOscillator();
+                const filter = this.ctx.createBiquadFilter();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(freq, t);
+
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(Math.max(450, freq * 2.2), t);
+                filter.Q.value = 1.4;
+
+                gain.gain.setValueAtTime(0.001, t);
+                gain.gain.exponentialRampToValueAtTime(vol * 0.25, t + 0.015);
+                gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.masterGain);
+
+                osc.start(t);
+                osc.stop(t + dur + 0.02);
+            },
+
+            // Tiếng trống trận trầm hùng (War Drum / Timpani)
+            playTimpani(t, freq = 65, vol = 0.45, isWarDrum = false) {
+                if (!this.ctx || !this.masterGain) return;
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, t);
-                osc.frequency.exponentialRampToValueAtTime(28, t + 0.45);
-                gain.gain.setValueAtTime(vol * 0.7, t);
-                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+                osc.type = isWarDrum ? 'triangle' : 'sine';
+                osc.frequency.setValueAtTime(isWarDrum ? freq * 1.6 : freq, t);
+                osc.frequency.exponentialRampToValueAtTime(isWarDrum ? 32 : 26, t + 0.42);
+
+                gain.gain.setValueAtTime(vol * 0.75, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + (isWarDrum ? 0.6 : 0.48));
                 osc.connect(gain);
                 gain.connect(this.masterGain);
                 osc.start(t);
-                osc.stop(t + 0.52);
+                osc.stop(t + (isWarDrum ? 0.65 : 0.52));
             },
 
-            playSnareBrush(t, vol) {
-                const bufLen = Math.floor(this.ctx.sampleRate * 0.12);
+            // Tiếng trống duyệt binh hành quân (Marching Snare)
+            playSnareBrush(t, vol = 0.22, isRoll = false) {
+                if (!this.ctx || !this.masterGain) return;
+                const dur = isRoll ? 0.07 : 0.14;
+                const bufLen = Math.floor(this.ctx.sampleRate * dur);
                 const buf = this.ctx.createBuffer(1, bufLen, this.ctx.sampleRate);
                 const data = buf.getChannelData(0);
-                for (let i = 0; i < bufLen; i++) data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.3));
+                for (let i = 0; i < bufLen; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * (isRoll ? 0.22 : 0.35)));
+                }
                 const src = this.ctx.createBufferSource();
                 const filter = this.ctx.createBiquadFilter();
                 const gain = this.ctx.createGain();
                 filter.type = 'bandpass';
-                filter.frequency.value = 1700;
-                filter.Q.value = 2.0;
+                filter.frequency.value = isRoll ? 2300 : 1800;
+                filter.Q.value = 1.8;
                 src.buffer = buf;
-                gain.gain.setValueAtTime(vol * 0.32, t);
-                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+                gain.gain.setValueAtTime(vol * 0.35, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
                 src.connect(filter);
                 filter.connect(gain);
                 gain.connect(this.masterGain);
                 src.start(t);
+            },
+
+            // Chũm chọe / Tiếng kẻng lệnh xuất kích (Cymbal clash)
+            playCymbal(t, vol = 0.18) {
+                if (!this.ctx || !this.masterGain) return;
+                const dur = 0.65;
+                const bufLen = Math.floor(this.ctx.sampleRate * dur);
+                const buf = this.ctx.createBuffer(1, bufLen, this.ctx.sampleRate);
+                const data = buf.getChannelData(0);
+                for (let i = 0; i < bufLen; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.18));
+                }
+                const src = this.ctx.createBufferSource();
+                const filter = this.ctx.createBiquadFilter();
+                const gain = this.ctx.createGain();
+                filter.type = 'highpass';
+                filter.frequency.value = 4200;
+                src.buffer = buf;
+                gain.gain.setValueAtTime(vol * 0.2, t);
+                gain.gain.exponentialRampToValueAtTime(0.0005, t + dur);
+                src.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.masterGain);
+                src.start(t);
+            },
+
+            tick() {
+                const step = this.step;
+                this.step = (this.step + 1) % 32;
+                if (this.step === 0) this.phrase = (this.phrase + 1) % 2;
+                const t = this.ctx.currentTime;
+                const isAir = typeof currentMode !== 'undefined' && currentMode === 'MIG21';
+
+                if (this.theme === 'PLAYING') {
+                    // === CHIẾN ĐẤU: HÀNH KHÚC HÀO HÙNG, XUNG TRẬN DŨNG MÃNH ===
+                    if (step === 0) {
+                        this.playTimpani(t, 72, 0.6, true);
+                        this.playCymbal(t, 0.22);
+                    } else if (step === 8) {
+                        this.playTimpani(t, 55, 0.42);
+                        this.playSnareBrush(t, 0.25);
+                    } else if (step === 16) {
+                        this.playTimpani(t, 65, 0.5, true);
+                    } else if (step === 24) {
+                        this.playTimpani(t, 55, 0.45);
+                        this.playSnareBrush(t, 0.28);
+                    }
+
+                    if (step === 4 || step === 20) {
+                        this.playSnareBrush(t, 0.22);
+                    } else if (step === 12) {
+                        this.playSnareBrush(t, 0.18, true);
+                    } else if (step === 13) {
+                        this.playSnareBrush(t, 0.24);
+                    } else if (step >= 28) {
+                        this.playSnareBrush(t, 0.16 + (step - 28) * 0.06, true);
+                    }
+
+                    if (step % 2 === 0) {
+                        const strNote = step < 16 ? (step % 4 === 0 ? 146.83 : 174.61) : (step % 4 === 0 ? 220.00 : 196.00);
+                        this.playStrings(t, strNote, 0.1, isAir ? 0.2 : 0.14);
+                    }
+
+                    if (this.phrase === 0) {
+                        if (step === 0) this.playBrass(t, 146.83, 0.45, 0.32);
+                        else if (step === 4) this.playBrass(t, 174.61, 0.3, 0.3);
+                        else if (step === 8) this.playBrass(t, 220.00, 0.4, 0.34);
+                        else if (step === 12) this.playBrass(t, 293.66, 0.65, 0.38);
+                        else if (step === 16) this.playBrass(t, 293.66, 0.35, 0.32);
+                        else if (step === 20) this.playBrass(t, 261.63, 0.3, 0.3);
+                        else if (step === 24) this.playBrass(t, 220.00, 0.4, 0.32);
+                        else if (step === 28) this.playBrass(t, 174.61, 0.25, 0.28);
+                    } else {
+                        if (step === 0) this.playBrass(t, 220.00, 0.4, 0.32);
+                        else if (step === 4) this.playBrass(t, 261.63, 0.3, 0.3);
+                        else if (step === 8) this.playBrass(t, 293.66, 0.4, 0.35);
+                        else if (step === 12) this.playBrass(t, 349.23, 0.7, 0.4);
+                        else if (step === 16) this.playBrass(t, 329.63, 0.35, 0.32);
+                        else if (step === 20) this.playBrass(t, 293.66, 0.35, 0.32);
+                        else if (step === 24) this.playBrass(t, 220.00, 0.4, 0.3);
+                        else if (step === 28) this.playBrass(t, 293.66, 0.6, 0.35);
+                    }
+                } else if (this.theme === 'MENU') {
+                    // === MENU / BRIEFING: TRANG NGHIÊM, HÀO HÙNG, BI TRÁNG ===
+                    if (step === 0) {
+                        this.playTimpani(t, 52, 0.38, true);
+                        this.playCymbal(t, 0.14);
+                        this.playBrass(t, 146.83, 0.8, 0.28);
+                    } else if (step === 8) {
+                        this.playSnareBrush(t, 0.16);
+                        this.playBrass(t, 174.61, 0.5, 0.26);
+                    } else if (step === 16) {
+                        this.playTimpani(t, 46, 0.3);
+                        this.playBrass(t, 220.00, 0.7, 0.3);
+                    } else if (step === 24) {
+                        this.playSnareBrush(t, 0.2);
+                        this.playBrass(t, 293.66, 0.9, 0.32);
+                    } else if (step === 28 || step === 30) {
+                        this.playSnareBrush(t, 0.12, true);
+                    }
+                } else if (this.theme === 'VICTORY') {
+                    // === VICTORY: ĐẠI THẮNG KHẢI HOÀN, RẠNG RỠ NON SÔNG ===
+                    if (step % 8 === 0) {
+                        this.playTimpani(t, 73.4, 0.48, true);
+                        this.playCymbal(t, 0.2);
+                    }
+                    if (step % 4 === 2) {
+                        this.playSnareBrush(t, 0.26, true);
+                    }
+                    if (step === 0) this.playBrass(t, 146.83, 0.35, 0.35);
+                    else if (step === 4) this.playBrass(t, 185.00, 0.35, 0.35);
+                    else if (step === 8) this.playBrass(t, 220.00, 0.35, 0.35);
+                    else if (step === 12) this.playBrass(t, 293.66, 0.7, 0.42);
+                    else if (step === 16) this.playBrass(t, 369.99, 0.4, 0.38);
+                    else if (step === 20) this.playBrass(t, 329.63, 0.35, 0.35);
+                    else if (step === 24) this.playBrass(t, 293.66, 0.4, 0.38);
+                    else if (step === 28) this.playBrass(t, 220.00, 0.5, 0.35);
+                }
             }
         };
+
+        if (typeof window !== 'undefined') {
+            window.SoundFX = SoundFX;
+            window.MusicSystem = MusicSystem;
+        }
 
 
         /* ============================================================================
@@ -7455,7 +8488,7 @@ const MISSIONS = [
                 ],
                 forces: "địch dùng <b>54 lần chiếc B-52</b> đánh phá Hà Nội. Không quân nhân dân Việt Nam bí mật xuất kích từ sân bay ngắn dã chiến.",
                 kills: 1, ammo: 2, timeLimit: 180, speed: 1.2,
-                waves: [0],
+                waves: [4, 60],
                 jam: null,
                 controls: CONTROLS_MIG21,
                 radio: [
@@ -7499,7 +8532,7 @@ const MISSIONS = [
                 ],
                 forces: "địch huy động <b>khoảng 60 lần chiếc B-52</b> đánh phá khu vực quanh Hà Nội và các tuyến giao thông liên tỉnh.",
                 kills: 1, ammo: 2, timeLimit: 180, speed: 1.2,
-                waves: [0],
+                waves: [4, 50],
                 jam: null,
                 controls: CONTROLS_MIG21,
                 radio: [
@@ -7615,13 +8648,14 @@ const MISSIONS = [
 
         // ---- Screens ----
         function showScreen(name) {
-            ['menu', 'campaign', 'briefing', 'pause', 'debrief', 'victory'].forEach(n => {
+            ['menu', 'campaign', 'briefing', 'pause', 'debrief', 'victory', 'archive'].forEach(n => {
                 const el = document.getElementById(`screen-${n}`);
                 if (el) el.classList.toggle('is-open', n === name);
             });
             document.body.classList.toggle('in-menu', name !== null && name !== 'pause');
             if (name === 'campaign') renderMissionList();
             if (name === 'menu') renderMenuProgress();
+            if (name === 'archive' && typeof renderArchiveTab === 'function') renderArchiveTab('card1');
             if (typeof MusicSystem !== 'undefined' && MusicSystem.ctx) {
                 if (name === 'victory' || (name === 'debrief' && missionWon)) {
                     MusicSystem.setTheme('VICTORY');
@@ -7672,7 +8706,7 @@ const MISSIONS = [
                 pipsEl.innerHTML = MISSIONS.map((m, i) => {
                     const done = !!prog.best[m.id];
                     const curr = i === prog.unlocked - 1 && !done;
-                    const bg = done ? 'bg-amber-400' : curr ? 'bg-emerald border border-emerald animate-pulse' : 'bg-white/20';
+                    const bg = done ? 'bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.5)]' : curr ? 'bg-emerald border border-emerald animate-pulse' : 'bg-white/15';
                     return `<div class="h-1.5 flex-1 rounded-sm ${bg}" title="Đêm ${i+1}: ${m.dateLabel}"></div>`;
                 }).join('');
             }
@@ -7680,19 +8714,20 @@ const MISSIONS = [
             if (btnContinue) {
                 btnContinue.classList.remove('hidden');
                 if (completed >= MISSIONS.length) {
-                    btnContinue.textContent = '★ Xem Đại Thắng Điện Biên Phủ ★';
+                    btnContinue.innerHTML = '<div class="flex items-center justify-between"><span class="btn-continue-label uppercase font-bold tracking-wider">★ Xem Đại Thắng Điện Biên Phủ ★</span><span class="btn-key-badge font-mono text-[11px] px-1.5 py-0.5 bg-black/40 text-amber-200 rounded">XEM</span></div><div class="text-[11px] font-mono text-black/80 font-medium mt-0.5">12/12 ĐÊM TOÀN THẮNG // 34 B-52 BẮN RƠI</div>';
                     btnContinue.style.background = '#D97706';
                     btnContinue.style.borderColor = '#F59E0B';
                     btnContinue.style.color = '#000';
                     btnContinue.style.fontWeight = '700';
                 } else if (completed > 0 || prog.unlocked > 1) {
-                    btnContinue.textContent = `Tiếp tục: ${MISSIONS[prog.unlocked - 1].title} →`;
+                    const nextM = MISSIONS[prog.unlocked - 1];
+                    btnContinue.innerHTML = `<div class="flex items-center justify-between"><span class="btn-continue-label uppercase font-bold tracking-wider">Tiếp tục: ${nextM.title} →</span><span class="btn-key-badge font-mono text-[11px] px-1.5 py-0.5 bg-black/40 text-emerald-950 rounded">ENTER</span></div><div class="text-[11px] font-mono text-emerald-950 font-medium mt-0.5">MÀN ${prog.unlocked} // ${nextM.dateLabel.toUpperCase()}</div>`;
                     btnContinue.style.background = '';
                     btnContinue.style.borderColor = '';
                     btnContinue.style.color = '';
                     btnContinue.style.fontWeight = '';
                 } else {
-                    btnContinue.textContent = 'Bắt đầu Chiến dịch: Đêm 18/12 →';
+                    btnContinue.innerHTML = '<div class="flex items-center justify-between"><span class="btn-continue-label uppercase font-bold tracking-wider">Bắt đầu Chiến dịch: Đêm 18/12 →</span><span class="btn-key-badge font-mono text-[11px] px-1.5 py-0.5 bg-black/40 text-emerald-950 rounded">ENTER</span></div><div class="text-[11px] font-mono text-emerald-950 font-medium mt-0.5">MÀN 01 // ĐÒN PHỦ ĐẦU TẬP KÍCH ĐƯỜNG KHÔNG</div>';
                     btnContinue.style.background = '';
                     btnContinue.style.borderColor = '';
                     btnContinue.style.color = '';
@@ -7760,7 +8795,7 @@ const MISSIONS = [
             const victoryBannerHtml = allWon ? `
                 <div class="mb-4 p-3.5 bg-gradient-to-r from-amber-950/70 to-black border border-amber-400/50 rounded-lg flex items-center justify-between flex-wrap gap-2 text-left">
                     <div class="flex items-center gap-3">
-                        <span class="text-2xl">🏆</span>
+                        <span class="text-2xl text-amber-400 font-bold">★</span>
                         <div>
                             <div class="font-mono text-xs text-amber-300 font-bold uppercase tracking-wider">CHIẾN DỊCH 12 NGÀY ĐÊM ĐÃ TOÀN THẮNG!</div>
                             <div class="text-[12px] text-muted">Bầu trời Hà Nội giữ vững trọn vẹn — Buộc Mỹ ký kết Hiệp định Paris 27/1/1973.</div>
@@ -7775,20 +8810,20 @@ const MISSIONS = [
             const cardsHtml = MISSIONS.map((m, i) => {
                 const locked = i >= prog.unlocked;
                 const best = prog.best[m.id];
-                const status = locked ? 'Chưa mở' : best ? `Hoàn thành · ${best.kills} B-52` : 'Sẵn sàng tác chiến';
+                const status = locked ? 'Chưa mở' : best ? 'Đã hoàn thành' : 'Sẵn sàng tác chiến';
                 const weapon = m.mode === 'MIG21' ? 'Tiêm kích MiG-21bis' : 'Tổ hợp Tên lửa SAM-2';
                 return `
                     <button class="mission-card${locked ? ' is-locked' : ''}" ${locked ? 'disabled' : `onclick="openBriefing(${i})"`}>
                         <div class="flex items-center justify-between">
                             <span class="mission-num">ĐÊM ${i + 1} // ${m.date}</span>
-                            <span class="text-xs font-mono ${best ? 'text-amber-400 font-bold' : locked ? 'text-muted' : 'text-emerald font-bold'}">${locked ? '🔒' : best ? '★ ĐẠT' : '▶ MỞ'}</span>
+                            <span class="text-xs font-mono ${best ? 'text-amber-400 font-bold' : locked ? 'text-muted' : 'text-emerald font-bold'}">${locked ? '[CHƯA MỞ]' : best ? '★ ĐẠT' : '[SẴN SÀNG]'}</span>
                         </div>
                         <span class="mission-date">${m.dateLabel} · ${String(m.clock[0]).padStart(2, '0')}:${String(m.clock[1]).padStart(2, '0')}</span>
                         <span class="mission-title">${m.title}</span>
                         <span class="mission-unit">${weapon}<br><span class="text-muted">${m.place}</span></span>
                         <div class="mt-auto pt-2 border-t border-white/10 flex items-center justify-between">
                             <span class="mission-status${best ? ' is-done' : ''}">${status}</span>
-                            <span class="text-[11px] font-mono text-muted">${m.kills} B-52</span>
+                            <span class="text-[11px] font-mono text-muted">MỤC TIÊU: ${m.kills} B-52</span>
                         </div>
                     </button>`;
             }).join('');
@@ -7815,7 +8850,7 @@ const MISSIONS = [
                             BỐI CẢNH LỊCH SỬ &amp; Ý CHÍ CHIẾN ĐẤU
                         </span>
                         <button class="text-[11px] font-mono uppercase tracking-wider text-amber-300 hover:text-white px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/40 hover:bg-amber-500/40 transition-colors flex items-center gap-1" onclick="Voice.toggleBriefingStory()">
-                            <span>🔊</span> <span id="btn-brief-audio-label">Nghe bối cảnh</span>
+                            <span class="font-mono text-amber-300 mr-1">[AUDIO]</span> <span id="btn-brief-audio-label">Nghe bối cảnh</span>
                         </button>
                     </div>
                     "${m.story}"
@@ -7905,13 +8940,13 @@ const MISSIONS = [
             const banner = document.getElementById('combat-alert-banner');
             if (!banner) return;
             document.getElementById('alert-banner-title').textContent = `MÀN ${activeMissionIdx + 1}: ${m.title.toUpperCase()}`;
-            document.getElementById('alert-banner-story').textContent = `"${m.story}"`;
+            document.getElementById('alert-banner-story').textContent = `${m.unit} · ${m.place}`;
             document.getElementById('alert-banner-obj').textContent = `MỤC TIÊU: TIÊU DIỆT ${m.kills} PHÁO ĐÀI BAY B-52 · BẢO VỆ BẦU TRỜI THỦ ĐÔ`;
             banner.classList.remove('is-visible');
             void banner.offsetWidth;
             banner.classList.add('is-visible');
             clearTimeout(showCombatAlert.timer);
-            showCombatAlert.timer = setTimeout(() => banner.classList.remove('is-visible'), 4200);
+            showCombatAlert.timer = setTimeout(() => banner.classList.remove('is-visible'), 3200);
             SoundFX.alertChime();
         }
 
@@ -8134,6 +9169,14 @@ const MISSIONS = [
             }).join('');
         }
 
+        function hideRadio() {
+            const box = document.getElementById('radio-box');
+            if (box) box.classList.remove('is-visible');
+            if (typeof SoundFX !== 'undefined' && SoundFX.radio) {
+                SoundFX.radio(true);
+            }
+        }
+
         function showRadio(who, text) {
             missionRadioLog.push({ time: Math.round(missionTime), who, text });
             const box = document.getElementById('radio-box');
@@ -8143,8 +9186,10 @@ const MISSIONS = [
             void box.offsetWidth;
             box.classList.add('is-visible');
             clearTimeout(showRadio.timer);
-            showRadio.timer = setTimeout(() => box.classList.remove('is-visible'), 6500);
-            SoundFX.radio();
+            showRadio.timer = setTimeout(() => hideRadio(), 6500);
+            if (typeof SoundFX !== 'undefined' && SoundFX.radio) {
+                SoundFX.radio(false);
+            }
             // Truyen tin tuc thoi, ngat loi cu de khong bi tre nhip voi hien thi tren man hinh
             if (who !== 'HỆ THỐNG') Voice.speak(who, text, true);
         }
@@ -8174,7 +9219,10 @@ const MISSIONS = [
                 const prog = loadProgress();
                 prog.unlocked = Math.max(prog.unlocked, Math.min(MISSIONS.length, activeMissionIdx + 2));
                 const prev = prog.best[m.id];
-                if (!prev || missionShots < prev.shots) prog.best[m.id] = { kills: missionKills, shots: missionShots, time: Math.round(missionTime) };
+                const bestKills = prev ? Math.max(prev.kills || 0, missionKills) : missionKills;
+                const bestShots = (!prev || missionKills > (prev.kills || 0)) ? missionShots : Math.min(prev.shots || missionShots, missionShots);
+                const bestTime = prev && prev.time ? Math.min(prev.time, Math.round(missionTime)) : Math.round(missionTime);
+                prog.best[m.id] = { kills: bestKills, shots: bestShots, time: bestTime };
                 saveProgress(prog);
             } else {
                 showRadio('SỞ CHỈ HUY', reason || 'Tốp B-52 đã ra khỏi vùng hỏa lực.');
@@ -8220,7 +9268,7 @@ const MISSIONS = [
                 rankBadge = `
                     <div class="medal-hero-card is-fail">
                         <div class="medal-badge is-fail" style="margin-bottom:0">
-                            <span>⚠️</span> RÚT KINH NGHIỆM CHIẾN ĐẤU — QUYẾT TÂM ĐÁNH LẠI
+                            <span class="font-mono text-rose-400 mr-1.5">[!]</span> RÚT KINH NGHIỆM CHIẾN ĐẤU — QUYẾT TÂM ĐÁNH LẠI
                         </div>
                         <div class="text-xs text-rose-300/80 font-mono text-right hidden sm:block">
                             TIẾP TỤC RÈN LUYỆN Ý CHÍ &amp; BẢN LĨNH
@@ -8243,7 +9291,7 @@ const MISSIONS = [
                     failAnalysisEl.innerHTML = `
                         <div class="debrief-fail-box p-3.5 bg-red-950/40 border border-red-500/50 rounded-lg text-left my-2 space-y-1.5 shadow-md">
                             <div class="flex items-center gap-2 text-rose-400 font-mono text-xs font-bold uppercase">
-                                <span>⚠️ NGUYÊN NHÂN CHƯA HOÀN THÀNH:</span>
+                                <span class="font-mono text-rose-400 mr-1.5">[!]</span> NGUYÊN NHÂN CHƯA HOÀN THÀNH:
                                 <span class="text-alabaster font-semibold">${missionFailReason}</span>
                             </div>
                             <div class="text-xs text-amber-200/90 font-serif leading-relaxed">
@@ -8257,13 +9305,13 @@ const MISSIONS = [
             const hitRatio = missionShots > 0 ? Math.min(100, Math.round((missionKills / missionShots) * 100)) : 0;
 
             const statCards = [
-                ['🎯 B-52 bắn rơi', `${missionKills}/${m.kills}`, 'val-accent'],
-                ['🚀 Đạn đã dùng', `${missionShots}/${m.ammo}`, 'val-muted'],
-                ['⚡ Hiệu suất trúng', `${hitRatio}%`, 'val-accent'],
-                ['⏱️ Thời gian', formatMMSS(missionTime), 'val-muted'],
+                ['B-52 bắn rơi', `${missionKills}/${m.kills}`, 'val-accent'],
+                ['Đạn đã dùng', `${missionShots}/${m.ammo}`, 'val-muted'],
+                ['Hiệu suất trúng', `${hitRatio}%`, 'val-accent'],
+                ['Thời gian tác chiến', formatMMSS(missionTime), 'val-muted'],
                 ...(m.mode === 'SAM2' ? [
-                    ['💥 B-52 bị thương', `${missionStats.damaged}`, 'val-muted'],
-                    ['🛡️ B-52 lọt qua', `${missionStats.leaked}`, 'val-muted']
+                    ['B-52 bị thương', `${missionStats.damaged}`, 'val-muted'],
+                    ['B-52 lọt qua', `${missionStats.leaked}`, 'val-muted']
                 ] : [])
             ].map(([k, v, cls]) => `
                 <div class="stat-kpi-card">
@@ -8289,14 +9337,14 @@ const MISSIONS = [
                 </button>`;
             } else {
                 primaryBtnHtml = `<button class="menu-btn debrief-btn primary" onclick="openBriefing(${idx})">
-                    <span>↺ Bắn lại đêm này</span>
+                    <span>Đánh lại đêm này</span>
                     <span class="key-badge">Space / R</span>
                 </button>`;
             }
 
             const replayBtnHtml = missionWon ? `
                 <button class="menu-btn debrief-btn secondary" onclick="openBriefing(${idx})">
-                    <span>↺ Chơi lại đêm này</span>
+                    <span>Đánh lại đêm này</span>
                     <span class="key-badge">R</span>
                 </button>
             ` : '';
@@ -8304,19 +9352,19 @@ const MISSIONS = [
             const utilityButtons = `
                 <div class="debrief-actions-group-secondary">
                     <button class="menu-btn debrief-btn utility" onclick="toggleRadioLog(true)" title="Xem toàn bộ điện văn liên lạc chiến đấu">
-                        <span>📻 Nhật ký đài</span>
+                        <span>Nhật ký đài [L]</span>
                         <span class="key-badge">L</span>
                     </button>
                     <button class="menu-btn debrief-btn utility" onclick="toggleTacticalGuide(true)" title="Cẩm nang tác chiến B-52">
-                        <span>📖 Cẩm nang</span>
+                        <span>Cẩm nang [H]</span>
                         <span class="key-badge">H</span>
                     </button>
                     <button class="menu-btn debrief-btn utility" onclick="backToMenuAttract(); showScreen('campaign')" title="Bản đồ 12 ngày đêm chiến dịch">
-                        <span>📋 Chọn màn</span>
+                        <span>Bản đồ tác chiến</span>
                         <span class="key-badge">M</span>
                     </button>
                     <button class="menu-btn debrief-btn utility" onclick="backToMenuAttract(); showScreen('menu')" title="Về màn hình chính">
-                        <span>🏠 Menu</span>
+                        <span>Menu chính</span>
                         <span class="key-badge">Esc</span>
                     </button>
                 </div>
@@ -8346,6 +9394,19 @@ const MISSIONS = [
                 const el = document.getElementById(id);
                 if (el) el.innerHTML = text;
             });
+            const vicEl = document.getElementById('screen-victory');
+            if (vicEl && (!vicEl.innerHTML || !vicEl.innerHTML.includes('34'))) {
+                vicEl.innerHTML = `
+                    <div class="kicker text-amber-400 font-bold tracking-widest text-sm">CHIẾN DỊCH PHÒNG KHÔNG HÀ NỘI 18/12 – 29/12/1972</div>
+                    <h1 class="screen-title text-amber-300 text-3xl sm:text-5xl">KỲ TÍCH ĐIỆN BIÊN PHỦ TRÊN KHÔNG</h1>
+                    <div class="my-5 p-6 bg-black/80 border border-amber-400/40 rounded-xl space-y-4 text-left">
+                        <p class="font-serif text-lg leading-relaxed text-alabaster">
+                            Trải qua <b>12 ngày đêm chiến đấu ngoan cường</b>, quân và dân ta đã bắn hạ <b>34 chiếc B-52</b> (16 chiếc rơi tại chỗ) và tổng cộng <b>81 máy bay</b> các loại của Không quân Mỹ.
+                        </p>
+                    </div>
+                    <div class="victory-player-stats text-alabaster font-mono text-sm">${text}</div>
+                `;
+            }
             showScreen('victory');
         }
 
@@ -8432,7 +9493,15 @@ const MISSIONS = [
             renderMenuProgress();
             requestAnimationFrame(animateLoop);
 
+            const handleUserGesture = () => {
+                if (typeof SoundEngine !== 'undefined') SoundEngine.unlock();
+            };
+            ['click', 'keydown', 'pointerdown', 'touchstart'].forEach(evt => {
+                window.addEventListener(evt, handleUserGesture, { passive: true });
+            });
+
             document.addEventListener('click', (e) => {
+                handleUserGesture();
                 const btn = e.target.closest('.menu-btn, .tool-btn, .mission-card, .timeline-node, .btn-secondary, .archive-tab, button');
                 if (btn && !btn.disabled) {
                     SoundFX.click();

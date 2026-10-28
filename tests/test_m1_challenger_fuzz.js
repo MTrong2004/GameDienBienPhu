@@ -20,7 +20,7 @@ console.log(' Milestone 1: Campaign Data & UI Expansion');
 console.log('======================================================================\n');
 
 // 1. Target files check and hash synchronization
-const files = ['index.html', 'h_n_i_12_ng_y_m_18_12_29_12_1972.html'];
+const files = ['index.html', 'hanoi-12-ngay-dem.html'];
 const hashes = {};
 for (const f of files) {
     if (!fs.existsSync(f)) {
@@ -32,8 +32,8 @@ for (const f of files) {
 }
 
 console.log(`[SYNC AUDIT] index.html SHA256:                         ${hashes['index.html']}`);
-console.log(`[SYNC AUDIT] h_n_i_12_ng_y_m_18_12_29_12_1972.html SHA256: ${hashes['h_n_i_12_ng_y_m_18_12_29_12_1972.html']}`);
-const syncMatch = hashes['index.html'] === hashes['h_n_i_12_ng_y_m_18_12_29_12_1972.html'];
+console.log(`[SYNC AUDIT] hanoi-12-ngay-dem.html SHA256: ${hashes['hanoi-12-ngay-dem.html']}`);
+const syncMatch = hashes['index.html'] === hashes['hanoi-12-ngay-dem.html'];
 console.log(`[SYNC AUDIT] Byte-for-byte identical: ${syncMatch ? 'YES (PASS)' : 'NO (FAIL)'}\n`);
 
 const htmlContent = fs.readFileSync('index.html', 'utf8');
@@ -249,11 +249,11 @@ function assert(cond, name, details = '') {
 // ============================================================================
 console.log('━━━ SUITE 1: DOM INVARIANT & DATA BINDING INVARIANTS ━━━');
 
-// 0. SHA256 Sync Invariant between index.html and h_n_i_12_ng_y_m_18_12_29_12_1972.html
+// 0. SHA256 Sync Invariant between index.html and hanoi-12-ngay-dem.html
 assert(
     syncMatch,
-    'Distribution synchronization: index.html and h_n_i_12_ng_y_m_18_12_29_12_1972.html have identical SHA256',
-    `Hashes differ! index.html=${hashes['index.html']} vs h_n_i_12_ng_y_m_18_12_29_12_1972.html=${hashes['h_n_i_12_ng_y_m_18_12_29_12_1972.html']}`
+    'Distribution synchronization: index.html and hanoi-12-ngay-dem.html have identical SHA256',
+    `Hashes differ! index.html=${hashes['index.html']} vs hanoi-12-ngay-dem.html=${hashes['hanoi-12-ngay-dem.html']}`
 );
 
 const { context: defaultCtx, elements: domEls, evalInCtx: defaultEval } = createDOMContext();

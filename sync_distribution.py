@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 sync_distribution.py — Robust byte-for-byte synchronization utility
-Ensures index.html and h_n_i_12_ng_y_m_18_12_29_12_1972.html possess
+Ensures index.html and hanoi-12-ngay-dem.html possess
 100% identical content and matching cryptographic SHA256 checksums.
 """
 
@@ -11,7 +11,7 @@ import shutil
 import hashlib
 
 PRIMARY = 'index.html'
-DISTRIBUTION = 'h_n_i_12_ng_y_m_18_12_29_12_1972.html'
+DISTRIBUTION = 'hanoi-12-ngay-dem.html'
 
 def sha256_of(filepath):
     if not os.path.exists(filepath):

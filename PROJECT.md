@@ -1,7 +1,7 @@
 # Project: Hà Nội 12 Ngày Đêm (18/12 - 29/12/1972)
 
 ## Architecture
-- Single-file web application (`index.html` / `h_n_i_12_ng_y_m_18_12_29_12_1972.html`) built with Three.js, procedural 3D meshes, 2D Radar canvas, procedural Web Audio API, and DOM UI overlays.
+- Single-file web application (`index.html` / `hanoi-12-ngay-dem.html`) built with Three.js, procedural 3D meshes, 2D Radar canvas, procedural Web Audio API, and DOM UI overlays.
 - Pure client-side execution with zero external asset dependencies.
 - Modular subsystems:
   - Data Layer: `MISSIONS` configuration array (12 historical missions).
@@ -30,7 +30,7 @@
 | 9 | Carpet Bombing Audio-Visual Sync | Screen shake and horizon flashes synchronized with each delayed bomb explosion in the carpet | M3 | Survey E3 |
 | 10| Radio Squelch & PTT Roger Beep | Realistic high-frequency chirp and white-noise squelch tail on radio transmissions | M3 | Survey E3 |
 | 11| Volume Bus & Gesture Audio Unlock | Master/SFX/Voice volume sliders, mute toggle, and resilient global user-gesture AudioContext resume | M3 | Survey E3 |
-| 12| Single-File Distribution & Zero Regressions | Seamless packaging in both index.html and h_n_i_12_ng_y_m_18_12_29_12_1972.html with 100% test pass | M4 | Survey E1, E2, E3 |
+| 12| Single-File Distribution & Zero Regressions | Seamless packaging in both index.html and hanoi-12-ngay-dem.html with 100% test pass | M4 | Survey E1, E2, E3 |
 
 ## Milestones
 | # | Name | Scope | Dependencies | Status |

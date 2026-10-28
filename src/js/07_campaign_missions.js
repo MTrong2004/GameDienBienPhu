@@ -1,5 +1,8 @@
-
-const CONTROLS_SAM2 = [
+        /* ============================================================================
+           14. CAMPAIGN: 12 MISSIONS FOLLOWING THE REAL TIMELINE OF 18/12 – 29/12/1972
+           Figures are the Vietnamese official record unless stated otherwise.
+           ============================================================================ */
+        const CONTROLS_SAM2 = [
             'Di chuột: quay ăng-ten Fan Song và bệ phóng. Giữ vòng ngắm trên một B-52 khoảng <b>2 giây</b> để BÁM',
             'Thanh TẦN SỐ / phím <b>Q · E</b>: nhảy tần tránh đỉnh nhiễu đỏ trên phổ. Máy gây nhiễu sẽ dò theo tần số của bạn',
             'Click / <b>Space</b>: phóng. Camera bay theo đạn: lệch chuột khỏi tâm để lái, bấm Space lần nữa để lệnh nổ',
@@ -432,7 +435,7 @@ const MISSIONS = [
                 ],
                 forces: "địch dùng <b>54 lần chiếc B-52</b> đánh phá Hà Nội. Không quân nhân dân Việt Nam bí mật xuất kích từ sân bay ngắn dã chiến.",
                 kills: 1, ammo: 2, timeLimit: 180, speed: 1.2,
-                waves: [0],
+                waves: [4, 60],
                 jam: null,
                 controls: CONTROLS_MIG21,
                 radio: [
@@ -476,7 +479,7 @@ const MISSIONS = [
                 ],
                 forces: "địch huy động <b>khoảng 60 lần chiếc B-52</b> đánh phá khu vực quanh Hà Nội và các tuyến giao thông liên tỉnh.",
                 kills: 1, ammo: 2, timeLimit: 180, speed: 1.2,
-                waves: [0],
+                waves: [4, 50],
                 jam: null,
                 controls: CONTROLS_MIG21,
                 radio: [
@@ -547,22 +550,12 @@ const MISSIONS = [
             }
         ];
 
-console.log('✓ Successfully evaluated MISSIONS array. Total missions: ' + MISSIONS.length);
-let totalRadio = 0;
-MISSIONS.forEach((m, idx) => {
-    console.log(`  [Mission ${idx+1}] ID: ${m.id} | Mode: ${m.mode} | Title: ${m.title}`);
-    console.log(`    Date: ${m.dateLabel} | Target Kills: ${m.kills} | Ammo: ${m.ammo} | TimeLimit: ${m.timeLimit}s`);
-    const rCount = m.radio ? m.radio.length : 0;
-    totalRadio += rCount;
-    console.log(`    Radio transmissions: ${rCount}`);
-    if (m.radio) {
-        m.radio.forEach(rc => {
-            if (typeof rc.at !== 'number' || !rc.who || !rc.text) {
-                console.error(`    ✗ Malformed radio item in mission ${idx+1}:`, rc);
-            }
-        });
-        const lastAt = m.radio[m.radio.length - 1].at;
-        console.log(`    Radio timeline span: ${m.radio[0].at}s -> ${lastAt}s (Time limit: ${m.timeLimit}s)`);
-    }
-});
-console.log(`✓ Total radio transmissions across campaign: ${totalRadio}`);
+        // ---- Campaign state ----
+        let gameState = 'MENU';           // MENU | BRIEFING | PLAYING | ENDING | DEBRIEF | HANGAR
+        let gamePaused = false;
+        let activeMission = null, activeMissionIdx = 0;
+        let missionKills = 0, missionAmmo = 0, missionShots = 0, missionTime = 0;
+        let missionJamFreq = 76, missionJamTimer = 0, missionCleanAnnounced = false;
+        let missionRadioIdx = 0, missionEndTimer = 0, missionWon = false;
+        let lastFireTime = 0;
+

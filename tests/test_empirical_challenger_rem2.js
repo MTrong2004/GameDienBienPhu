@@ -44,7 +44,7 @@ function check(cond, desc, details = '') {
 console.log('━━━ SUITE 1: DUAL-FILE CRYPTOGRAPHIC & STRUCTURAL INVARIANTS ━━━');
 
 const fileA = 'index.html';
-const fileB = 'h_n_i_12_ng_y_m_18_12_29_12_1972.html';
+const fileB = 'hanoi-12-ngay-dem.html';
 
 check(fs.existsSync(fileA), `Primary distribution exists: ${fileA}`);
 check(fs.existsSync(fileB), `Standalone distribution exists: ${fileB}`);

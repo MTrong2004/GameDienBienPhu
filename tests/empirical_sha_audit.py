@@ -13,7 +13,7 @@ print("EMPIRICAL SHA256 INTEGRITY & SYNC AUDIT")
 print("=" * 70)
 
 file1 = 'index.html'
-file2 = 'h_n_i_12_ng_y_m_18_12_29_12_1972.html'
+file2 = 'hanoi-12-ngay-dem.html'
 
 hash1 = get_sha256(file1)
 hash2 = get_sha256(file2)

@@ -3,7 +3,7 @@ const vm = require('vm');
 
 console.log("=== RUNNING ADVANCED UI & STORY BEHAVIORAL TESTS ===");
 
-const htmlFile = fs.existsSync('index.html') ? 'index.html' : 'h_n_i_12_ng_y_m_18_12_29_12_1972.html';
+const htmlFile = fs.existsSync('index.html') ? 'index.html' : 'hanoi-12-ngay-dem.html';
 const html = fs.readFileSync(htmlFile, 'utf-8');
 
 // Extract JS

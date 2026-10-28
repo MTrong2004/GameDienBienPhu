@@ -45,8 +45,11 @@ const isVerbose = args.includes('--verbose') || args.includes('-v');
 const crypto = require('crypto');
 
 // --- Dual File Synchronization & Parity Gate ---
-const filePrimary = 'index.html';
-const fileDist = 'h_n_i_12_ng_y_m_18_12_29_12_1972.html';
+const ROOT_DIR = fs.existsSync('index.html') ? '.' : path.join(__dirname, '..');
+const filePrimary = path.join(ROOT_DIR, 'index.html');
+const distCandidates = ['hanoi-12-ngay-dem.html'];
+const distName = distCandidates.find(f => fs.existsSync(path.join(ROOT_DIR, f))) || distCandidates[0];
+const fileDist = path.join(ROOT_DIR, distName);
 
 if (!fs.existsSync(filePrimary)) {
     console.error(`${c.red}FATAL: Primary file '${filePrimary}' is missing.${c.reset}`);
@@ -70,7 +73,7 @@ console.log(`  ${fileDist} (${bufDist.length} bytes): ${c.cyan}${hashDist}${c.re
 
 if (hashPrimary !== hashDist) {
     console.error(`\n${c.bgRed}${c.white} CRITICAL INTEGRITY ERROR: Dual distribution files out of sync! ${c.reset}`);
-    console.error(`${c.red}index.html and h_n_i_12_ng_y_m_18_12_29_12_1972.html have differing SHA256 checksums.${c.reset}`);
+    console.error(`${c.red}index.html and hanoi-12-ngay-dem.html have differing SHA256 checksums.${c.reset}`);
     console.error(`${c.yellow}Run 'python sync_distribution.py' to synchronize.${c.reset}\n`);
     process.exit(1);
 } else {
@@ -483,11 +486,11 @@ runner.tier('Tier 1: Feature Coverage');
 runner.suite('F1: 12-Mission Dataset Validation');
 
 runner.test('T1.0', 'Dual distribution files exist and possess identical SHA256 checksums', 'M1', () => {
-    assert(fs.existsSync('index.html'), 'index.html must exist');
-    assert(fs.existsSync('h_n_i_12_ng_y_m_18_12_29_12_1972.html'), 'h_n_i_12_ng_y_m_18_12_29_12_1972.html must exist');
-    const h1 = crypto.createHash('sha256').update(fs.readFileSync('index.html')).digest('hex');
-    const h2 = crypto.createHash('sha256').update(fs.readFileSync('h_n_i_12_ng_y_m_18_12_29_12_1972.html')).digest('hex');
-    assertEqual(h1, h2, 'index.html and h_n_i_12_ng_y_m_18_12_29_12_1972.html must have identical SHA256 hashes');
+    assert(fs.existsSync(filePrimary), 'Primary file must exist');
+    assert(fs.existsSync(fileDist), 'Distribution file must exist');
+    const h1 = crypto.createHash('sha256').update(fs.readFileSync(filePrimary)).digest('hex');
+    const h2 = crypto.createHash('sha256').update(fs.readFileSync(fileDist)).digest('hex');
+    assertEqual(h1, h2, 'Primary and distribution files must have identical SHA256 hashes');
 });
 
 runner.test('T1.1', 'MISSIONS array contains exactly 12 missions', 'M1', () => {

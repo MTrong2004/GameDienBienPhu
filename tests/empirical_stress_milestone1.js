@@ -5,7 +5,7 @@ const assert = require('assert');
 
 console.log('='.repeat(75));
 console.log('EMPIRICAL STRESS & ADVERSARIAL CHALLENGE HARNESS — MILESTONE 1');
-console.log('Targeting: index.html & h_n_i_12_ng_y_m_18_12_29_12_1972.html');
+console.log('Targeting: index.html & hanoi-12-ngay-dem.html');
 console.log('='.repeat(75));
 
 // Helper to construct a robust mock DOM & WebGL environment
@@ -270,7 +270,7 @@ console.log('\n[TEST SUITE 1] Missions Schema, Serialization & Access Verificati
 
 const filesToTest = [
     { name: 'index.html', path: 'index.html' },
-    { name: 'h_n_i_12_ng_y_m_18_12_29_12_1972.html', path: 'h_n_i_12_ng_y_m_18_12_29_12_1972.html' }
+    { name: 'hanoi-12-ngay-dem.html', path: 'hanoi-12-ngay-dem.html' }
 ];
 
 const requiredSchemaFields = [

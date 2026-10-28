@@ -3,7 +3,7 @@
  * Empirical Challenger Adversarial Stress Test Harness for Milestone 1 Remediation
  *
  * Verifies:
- * 1. Cryptographic SHA256 byte-for-byte equality between index.html and h_n_i_12_ng_y_m_18_12_29_12_1972.html
+ * 1. Cryptographic SHA256 byte-for-byte equality between index.html and hanoi-12-ngay-dem.html
  * 2. Strict isolation and dynamic correctness of hero pilot callsigns:
  *    - Mission 10 (Hero Phạm Tuân): '5121' in getPilotCallsign, HUD canvas, speech cue, radio chatter
  *    - Mission 11 (Hero Vũ Xuân Thiều): '046' in getPilotCallsign, HUD canvas, speech cue, radio chatter
@@ -44,7 +44,7 @@ console.log('===================================================================
 console.log('━━━ SECTION 1: CRYPTOGRAPHIC HASH & DISTRIBUTION PARITY ━━━');
 
 const primaryPath = 'index.html';
-const distPath = 'h_n_i_12_ng_y_m_18_12_29_12_1972.html';
+const distPath = 'hanoi-12-ngay-dem.html';
 
 assert(fs.existsSync(primaryPath), `Primary file exists: ${primaryPath}`);
 assert(fs.existsSync(distPath), `Distribution file exists: ${distPath}`);
