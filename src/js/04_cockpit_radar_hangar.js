@@ -942,7 +942,7 @@
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
-                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 87 lần chiếc B-52 dội bom Đài phát thanh Mễ Trì, Ga Hàng Cỏ, các khu dân cư An Dương, Gia Lâm nhằm bẻ gãy hệ thống truyền thông quốc gia.</div>
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 93 lần chiếc B-52 (theo phía Mỹ) dội bom Đài phát thanh Mễ Trì, Ga Hàng Cỏ, các khu dân cư An Dương, Gia Lâm nhằm bẻ gãy hệ thống truyền thông quốc gia.</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Địch bay thấp dọc triền sông Hồng để luồn tránh radar. <strong>Tiểu đoàn 77 (Trung đoàn 257)</strong> tại trận địa Chèm áp dụng phương pháp bắn đón nửa góc, bắn rơi 1 B-52; Đài Mễ Trì bị đánh sập nhưng chỉ gián đoạn phát sóng 9 phút rồi tiếp tục phát đi từ trạm dự phòng.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
@@ -966,7 +966,7 @@
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
-                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Mỹ tung 93 lần chiếc B-52 ném bom hủy diệt trung tâm đầu mối giao thông Yên Viên, Cầu Đuống, kho xăng Đức Giang và khu dân cư Gia Lâm.</div>
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Mỹ tung 99 lần chiếc B-52 (theo phía Mỹ) ném bom hủy diệt trung tâm đầu mối giao thông Yên Viên, Cầu Đuống, kho xăng Đức Giang và khu dân cư Gia Lâm.</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Vận dụng xuất sắc “Cẩm nang bìa đỏ”, các <strong>Tiểu đoàn 57, 77, 79, 93</strong> đan lưới lửa SAM-2 tiêu diệt kỷ lục <strong>7 pháo đài bay B-52 trong 1 đêm</strong> (5 chiếc rơi tại chỗ). Đêm đánh xuất thần bẻ gãy đợt tập kích thứ nhất của Mỹ.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
@@ -1014,7 +1014,7 @@
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
-                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Lúc 04h45 rạng sáng 22/12, bom rải thảm phá hủy hoàn toàn Bệnh viện Bạch Mai — bệnh viện lớn nhất miền Bắc, sát hại 28 y bác sĩ, điều dưỡng và bệnh nhân.</div>
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Lúc 04h45 rạng sáng 22/12, bom rải thảm phá hủy gần như toàn bộ Bệnh viện Bạch Mai — bệnh viện lớn nhất miền Bắc, sát hại 28 y bác sĩ, điều dưỡng và bệnh nhân.</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Biến căm thù thành hành động, các trận địa tên lửa hạ gục 3 pháo đài bay B-52; pháo cao xạ đan lưới tầm thấp bắn rơi 1 máy bay cánh cụp cánh xòe F-111 tối tân của Mỹ tại bến phà Khuyến Lương.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
@@ -1039,7 +1039,7 @@
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
-                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 54 lần chiếc B-52 tập trung oanh tạc các ga hàng hóa phía Nam: Giáp Bát, Văn Điển, Thường Tín nhằm cắt đứt nguồn vận chuyển lương thực, đạn dược chi viện.</div>
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 30 lần chiếc B-52 (theo phía Mỹ) tập trung oanh tạc các ga hàng hóa phía Nam: Giáp Bát, Văn Điển, Thường Tín nhằm cắt đứt nguồn vận chuyển lương thực, đạn dược chi viện.</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Các trận địa SAM-2 bố trí vòng ngoài phối hợp cao xạ bảo vệ ga tàu, bắn rơi 2 B-52, giữ vững mạch máu tiếp tế cho Thủ đô.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
@@ -1111,7 +1111,7 @@
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
-                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Đợt tập kích quy mô tàn bạo nhất trong lịch sử: Mỹ huy động <strong>105 lần chiếc B-52</strong> (phía Mỹ ghi 120 lần chiếc) và 110 máy bay chiến thuật đồng loạt ném bom rải thảm phố Khâm Thiên, khu dân cư An Dương, Bệnh viện Bạch Mai; làm 287 đồng bào vô tội thiệt mạng (bảng thống kê chi tiết ghi 278 người chết, 290 người bị thương, 178 trẻ mồ côi).</div>
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Đợt tập kích quy mô tàn bạo nhất trong lịch sử: Mỹ huy động <strong>105 lần chiếc B-52</strong> theo một số tài liệu phía Việt Nam (phía Mỹ ghi 120 lần chiếc B-52 và 113 lần chiếc cường kích yểm hộ) đồng loạt ném bom rải thảm phố Khâm Thiên, khu dân cư An Dương, Bệnh viện Bạch Mai; làm 287 đồng bào vô tội thiệt mạng (bảng thống kê chi tiết ghi 278 người chết, 290 người bị thương, 178 trẻ mồ côi).</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Trong hơn 1 giờ đồng hồ giao tranh ác liệt, toàn bộ lực lượng phòng không ba thứ quân đã trút bão lửa giáng trả: bắn rơi <strong>8 pháo đài bay B-52</strong> (4 chiếc rơi tại chỗ), đập tan hoàn toàn mưu toan khuất phục nhân dân ta bằng bom đạn hủy diệt.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
@@ -1146,12 +1146,14 @@
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
-                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 54 lần chiếc B-52 tiếp tục ném bom rải thảm khu vực Đông Anh, Yên Viên và ngoại vi Thủ đô.</div>
+                                    <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 60 lần chiếc B-52 (theo phía Mỹ) tiếp tục ném bom rải thảm khu vực Đông Anh, Yên Viên và ngoại vi Thủ đô.</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> 22h20, Anh hùng <strong>Phạm Tuân</strong> điều khiển tiêm kích MiG-21MF (số hiệu 5121) xuất kích từ sân bay dã chiến Yên Bái, bay luồn dưới trần mây, bất ngờ vút lên tiếp cận tốp B-52 ở cự ly 4 km và phóng 2 quả tên lửa K-13 bắn hạ B-52 trên bầu trời Mộc Châu. Đêm đó, <strong>Tiểu đoàn tên lửa 72</strong> cũng lập công bắn rơi 1 B-52 cắm xác xuống hồ Hữu Tiệp.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
                                     <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
                                     <div class="text-zinc-200 font-semibold">Di tích Xác máy bay B-52 Hồ Hữu Tiệp</div>
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/B52_wreckage%2C_H%E1%BB%AFu_Ti%E1%BB%87p_Lake%2C_Hanoi.jpg/500px-B52_wreckage%2C_H%E1%BB%AFu_Ti%E1%BB%87p_Lake%2C_Hanoi.jpg?_=20230712062215" alt="Xác máy bay B-52 trong hồ Hữu Tiệp" loading="lazy" onerror="this.style.display='none'" class="w-full h-36 object-cover rounded border border-white/10">
+                                    <div class="text-zinc-400 text-[11px]">Ảnh: Xác B-52 trong hồ Hữu Tiệp. Nguồn: Wikimedia Commons.</div>
                                     <div class="text-zinc-400 text-[11px]">Vị trí: Ngõ 55 phố Hoàng Hoa Thám, làng hoa Ngọc Hà, quận Ba Đình, TP. Hà Nội.</div>
                                     <div class="text-zinc-400 text-[11px]">Hiện vật: Xác máy bay B-52 còn nguyên phần đuôi và động cơ nằm giữa lòng hồ nước giữa lòng Thủ đô.</div>
                                     <div class="pt-1">
@@ -1182,7 +1184,7 @@
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
                                     <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Địch huy động B-52 đánh phá vòng ngoài hướng Tây Bắc.</div>
-                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Phi công <strong>Vũ Xuân Thiều</strong> lái tiêm kích MiG-21 (số hiệu 046) xuất kích từ sân bay Cẩm Thủy (Thanh Hóa), vượt qua màn nhiễu tiếp cận B-52 trên bầu trời Nà Sản (Sơn La). Sau khi phóng 2 tên lửa K-13 ở cự ly quá gần, anh đã quả cảm lao thẳng chiếc MiG-21 vào thân pháo đài bay địch, cùng chiếc B-52 nổ tung giữa bầu trời Tổ quốc.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Phi công <strong>Vũ Xuân Thiều</strong> lái tiêm kích MiG-21 (số hiệu 046) xuất kích từ sân bay Cẩm Thủy (Thanh Hóa), vượt qua màn nhiễu tiếp cận B-52 trên bầu trời Yên Châu (Sơn La). Sau khi phóng 2 tên lửa K-13 ở cự ly quá gần, anh đã quả cảm lao thẳng chiếc MiG-21 vào thân pháo đài bay địch, cùng chiếc B-52 nổ tung giữa bầu trời Tổ quốc.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
                                     <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
@@ -1194,11 +1196,11 @@
                                         </a>
                                     </div>
                                     <div class="pt-2 mt-1 border-t border-white/10 space-y-2">
-                                        <div class="text-zinc-200 font-semibold">Vùng trời Phù Yên – Nà Sản, Sơn La</div>
-                                        <div class="text-zinc-400 text-[11px]">Vị trí: Huyện Phù Yên, tỉnh Sơn La.</div>
-                                        <div class="text-zinc-400 text-[11px]">Nơi Vũ Xuân Thiều hy sinh sau khi bắn cháy B-52 đêm 28/12; ban đầu an táng tại Sơn La, sau đưa về nghĩa trang Văn Điển, Hà Nội.</div>
+                                        <div class="text-zinc-200 font-semibold">Vùng trời Yên Châu, Sơn La</div>
+                                        <div class="text-zinc-400 text-[11px]">Vị trí: Huyện Yên Châu, tỉnh Sơn La.</div>
+                                        <div class="text-zinc-400 text-[11px]">Nơi Vũ Xuân Thiều hy sinh sau khi bắn cháy B-52 đêm 28/12 (xác B-52 và MiG-21 rơi tại xã Tạ Khoa); ban đầu an táng tại Sơn La, sau đưa về nghĩa trang Văn Điển, Hà Nội.</div>
                                         <div class="pt-1 flex flex-wrap gap-1.5">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Na+San+Son+La" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Yen+Chau+Son+La" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                         </div>
@@ -1216,7 +1218,7 @@
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
                                     <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> Đợt oanh tạc tuyệt vọng của Mỹ vào các trận địa phòng không và kho tàng xung quanh Hà Nội, Thái Nguyên.</div>
-                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Lúc 23h16, <strong>Tiểu đoàn 79 (Trung đoàn 257)</strong> bắn rơi chiếc B-52 thứ 34 của chiến dịch trên bầu trời Hòa Bình. Đây là chiếc pháo đài bay cuối cùng bị tiêu diệt trong 12 ngày đêm. Thất bại thảm hại buộc Nhà Trắng phải đầu hàng trên bầu trời Hà Nội.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Lúc 23h29, <strong>Tiểu đoàn 79 (Trung đoàn 257)</strong> tại trận địa Đa Phúc phóng 2 quả đạn, bắn rơi tại chỗ chiếc B-52 thứ 34 của chiến dịch, rơi tại Phúc Yên. Đây là chiếc pháo đài bay cuối cùng bị tiêu diệt trong 12 ngày đêm. Thất bại thảm hại buộc Nhà Trắng phải đầu hàng trên bầu trời Hà Nội.</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
                                     <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
@@ -1230,7 +1232,7 @@
                                     <div class="pt-2 mt-1 border-t border-white/10 space-y-2">
                                         <div class="text-zinc-200 font-semibold">Các khu vực bị đánh đêm 29/12</div>
                                         <div class="text-zinc-400 text-[11px]">Vị trí: Gang thép Thái Nguyên – Trại Cau (Đồng Hỷ, Thái Nguyên); Đồng Mỏ (Chi Lăng, Lạng Sơn); Kim Anh (Vĩnh Phúc).</div>
-                                        <div class="text-zinc-400 text-[11px]">Đợt 60 lần chiếc B-52 lúc 23h16 chia 3 hướng: 30 đánh Thái Nguyên–Trại Cau, 18 đánh Đồng Mỏ, 12 đánh Kim Anh.</div>
+                                        <div class="text-zinc-400 text-[11px]">Đợt 60 lần chiếc B-52 lúc 23h16 chia 3 hướng: 30 đánh Thái Nguyên–Trại Cau, 18 đánh Đồng Mỏ, 12 đánh Kim Anh (Wikipedia tiếng Việt ghi 54 lần chiếc chia 24/9/21).</div>
                                         <div class="pt-1 flex flex-wrap gap-1.5">
                                         <a href="https://www.google.com/maps/search/?api=1&query=Trai+Cau+Dong+Hy+Thai+Nguyen" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [TRẠI CAU ↗ ↗]
@@ -1393,7 +1395,7 @@
                         </p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-300 pt-1">
                             <div class="space-y-1">
-                                <div>• <strong class="text-amber-300">34 siêu pháo đài bay B-52</strong> (16 chiếc rơi tại chỗ)</div>
+                                <div>• <strong class="text-amber-300">34 siêu pháo đài bay B-52</strong> (Quân chủng PK-KQ bắn rơi 32 chiếc, 16 chiếc rơi tại chỗ; 2 chiếc còn lại do MiG-21 của Không quân hạ)</div>
                                 <div>• <strong class="text-alabaster">5 máy bay cánh cụp cánh xòe F-111A</strong></div>
                                 <div>• <strong class="text-zinc-200">21 tiêm kích F-4 Phantom</strong></div>
                                 <div>• <strong class="text-zinc-200">12 cường kích A-7 Corsair</strong></div>
@@ -1404,6 +1406,9 @@
                                 <div>• <strong class="text-zinc-200">2 máy bay trinh sát RA-5C</strong></div>
                                 <div>• <strong class="text-zinc-200">1 trực thăng HH-53 &amp; 1 trinh sát không người lái</strong></div>
                             </div>
+                        </div>
+                        <div class="p-2.5 rounded bg-black/50 border border-white/10 text-xs text-zinc-400 mt-2">
+                            *Tỷ lệ 17,6%: 34 chiếc B-52 theo phía Việt Nam so với tổng số B-52 Mỹ ở Đông Nam Á — Bảo tàng Lịch sử Quốc gia ghi “gần 18%”.
                         </div>
                         <div class="p-2.5 rounded bg-black/50 border border-white/10 text-xs text-zinc-300 mt-2">
                             Bắt sống <strong class="text-amber-300">hàng chục phi công giặc lái Mỹ</strong> (trong đó có nhiều chỉ huy, hoa tiêu kỳ cựu B-52), giam giữ nhân đạo tại trại giam Hỏa Lò (“Hà Nội Hilton”).
@@ -1527,12 +1532,50 @@
                         <ul class="text-xs sm:text-sm text-zinc-300 space-y-2 list-disc pl-5">
                             <li>Đề cương tuyên truyền kỷ niệm 50 năm chiến thắng “Hà Nội – Điện Biên Phủ trên không” (Hội Cựu chiến binh tỉnh Khánh Hòa, trang .gov.vn) — tổng kết 81 máy bay: 34 B-52, 5 F-111A, 21 F-4CE, 4 A-6A, 12 A-7, 1 F-105D, 2 RA-5C, 1 HH-53, 1 UAV 147-SC; 663 lần chiếc B-52, 3.920 lần chiếc chiến thuật; riêng Hà Nội 441 lần chiếc B-52, 5.480 nhà sập, 2.368 dân chết, 1.355 bị thương; 7 giờ sáng 30/12/1972 Mỹ tuyên bố ngừng ném bom từ vĩ tuyến 20 trở ra. <a class="text-amber-300 underline" href="https://cuuchienbinh.khanhhoa.gov.vn/article/thong-bao/de-cuong-tuyen-truyen-ky-niem-50-nam-chien-thang-ha-noi-dien-bien-phu-tren-khong-121972-122022.html" target="_blank" rel="noopener">cuuchienbinh.khanhhoa.gov.vn</a></li>
                             <li>Tạp chí Quốc phòng toàn dân (Bộ Quốc phòng) — lời tiên đoán của Chủ tịch Hồ Chí Minh năm 1967 (“Sớm muộn rồi đế quốc Mỹ cũng sẽ đưa B-52 ra đánh Hà Nội, rồi có thua nó mới chịu thua”); Hà Nội 2.380 người chết, 1.355 bị thương; 81 máy bay, 34 B-52. <a class="text-amber-300 underline" href="https://tapchiqptd.vn/vi/an-pham-tap-chi-in/tu-chien-thang-dien-bien-phu-tren-khong-suy-nghi-ve-cong-tac-phong-khong-nhan-dan-bao-ve-t/3295.html" target="_blank" rel="noopener">tapchiqptd.vn</a></li>
-                            <li>Bảo tàng Lịch sử Quốc gia — Phạm Tuân 22h20 Yên Bái (đêm 27/12); Vũ Xuân Thiều 21h40 Cẩm Thủy (đêm 28/12); đêm 26/12: 8 B-52; tổng kết 81/34. <a class="text-amber-300 underline" href="https://baotanglichsu.vn/vi/Articles/2001/68211/dje-dji-djen-tran-thang-b52-thang-12-nam-1972-cua-bo-djoi-ten-lua-viet-nam-phan-2-va-het.html" target="_blank" rel="noopener">baotanglichsu.vn</a></li>
+                            <li>Bảo tàng Lịch sử Quốc gia — Phạm Tuân cất cánh 22h20 từ Yên Bái (đêm 27/12); Vũ Xuân Thiều cất cánh 21h40 từ Cẩm Thủy (đêm 28/12); đêm 26/12: 8 B-52; tổng kết 81/34. <a class="text-amber-300 underline" href="https://baotanglichsu.vn/vi/Articles/2001/68211/dje-dji-djen-tran-thang-b52-thang-12-nam-1972-cua-bo-djoi-ten-lua-viet-nam-phan-2-va-het.html" target="_blank" rel="noopener">baotanglichsu.vn</a></li>
                         </ul>
-                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed"><b class="text-amber-300">Ghi chú các số liệu vênh nhau:</b> (1) Khâm Thiên: game ghi 287 theo bia tưởng niệm tại 51 Khâm Thiên; bảng thống kê chi tiết ghi 278 chết, 290 bị thương, 178 trẻ mồ côi. (2) B-52: phía Việt Nam 34; phía Mỹ ghi 15 bị bắn rơi, một số tổng kết ghi 16; tính cả hỏng nặng: 22–27. (3) 43 phi công: con số game dùng theo nguồn phía Việt Nam; phía Mỹ ghi 43 chết, 49 bị bắt — đừng nhầm hai con số 43. (4) Đêm 29/12: bản game ghi Tiểu đoàn 79 bắn rơi B-52 thứ 34 trên bầu trời Hòa Bình lúc 23h16; bản tường thuật khác của phía Việt Nam ghi các tiểu đoàn 72, 78, 79 ở vòng ngoài bắn rơi 1 B-52 + 1 F-4 trong đợt 60 lần chiếc chia 30 Thái Nguyên–Trại Cau / 18 Đồng Mỏ / 12 Kim Anh; phía Mỹ không ghi nhận tổn thất đêm đó. (5) Đêm 28/12: phía Việt Nam ghi Vũ Xuân Thiều bắn rơi B-52 và hy sinh; phía Mỹ không ghi nhận B-52 mất đêm đó. (6) Các nhãn mô hình 3D và khí tài trong game vẫn ghi MiG-21bis theo thiết kế; về lịch sử, chiếc 5121 của Phạm Tuân là MiG-21MF. (7) Số B-52 rơi tại Hà Nội còn vênh nhau giữa các nguồn — game hiện không nêu con số này nên không sửa gì thêm. (8) Trước khi xuất bản chính thức nên đối chiếu thêm với sách của NXB Quân đội nhân dân và qdnd.vn.</p>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed"><b class="text-amber-300">Ghi chú các số liệu vênh nhau:</b> (1) Khâm Thiên: game ghi 287 theo bia tưởng niệm tại 51 Khâm Thiên; bảng thống kê chi tiết ghi 278 chết, 290 bị thương, 178 trẻ mồ côi. (2) B-52: phía Việt Nam 34; phía Mỹ ghi 15 bị bắn rơi, một số tổng kết ghi 16; tính cả hỏng nặng: 22–27. (3) 43 giặc lái là số quân dân Hà Nội bắt sống theo TTXVN (trưng bày 50 năm), không phải tổng toàn miền Bắc; phía Mỹ ghi 49 người bị bắt trong toàn chiến dịch. (4) Đêm 29/12: bản game ghi Tiểu đoàn 79 (Đa Phúc) bắn rơi B-52 thứ 34 lúc 23h29, rơi tại Phúc Yên; một bản tường thuật khác của phía Việt Nam ghi các tiểu đoàn 72, 78, 79 ở vòng ngoài bắn rơi 1 B-52 + 1 F-4 trong đợt 60 lần chiếc chia 30 Thái Nguyên–Trại Cau / 18 Đồng Mỏ / 12 Kim Anh; Wikipedia tiếng Việt ghi 54 lần chiếc chia 24/9/21; phía Mỹ không ghi nhận tổn thất đêm đó. (5) Đêm 28/12: phía Việt Nam ghi Vũ Xuân Thiều bắn rơi B-52 và hy sinh; phía Mỹ không ghi nhận B-52 mất đêm đó. (6) Các nhãn mô hình 3D và khí tài trong game vẫn ghi MiG-21bis theo thiết kế; về lịch sử, chiếc 5121 của Phạm Tuân là MiG-21MF. (7) Số B-52 rơi tại Hà Nội còn vênh nhau giữa các nguồn — game hiện không nêu con số này nên không sửa gì thêm. (8) Trước khi xuất bản chính thức nên đối chiếu thêm với sách của NXB Quân đội nhân dân và qdnd.vn. (9) Đêm 27/12: phía Việt Nam ghi Phạm Tuân (MiG-21MF 5121) bắn rơi B-52; phía Mỹ khẳng định không có B-52 nào bị MiG bắn rơi trong chiến tranh Việt Nam và quy cả 2 chiếc mất đêm đó cho SAM (phân tích sau chiến tranh cho rằng chiếc rơi tại chỗ trúng SAM của Tiểu đoàn 72).</p>
                     </div>
                 </div>
-            `
+            `            ,
+            'card7': `
+                <div class="space-y-4">
+                    <div class="p-4 rounded-lg bg-black/70 border border-amber-400/40 space-y-3">
+                        <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// TƯỞNG NIỆM — NHỮNG NGƯỜI ĐÃ NGÃ XUỐNG</div>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">12 ngày đêm không chỉ là những con số chiến công. Đằng sau mỗi trận địa là những mái nhà, bệnh viện, trường học bị bom san phẳng và những người dân vô tội. Trang này dành cho họ.</p>
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-3">
+                        <figure class="rounded-lg overflow-hidden border border-white/10 bg-black/50">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/B52_wreckage%2C_H%E1%BB%AFu_Ti%E1%BB%87p_Lake%2C_Hanoi.jpg/500px-B52_wreckage%2C_H%E1%BB%AFu_Ti%E1%BB%87p_Lake%2C_Hanoi.jpg?_=20230712062215" alt="Xác máy bay B-52 nằm giữa hồ Hữu Tiệp, Hà Nội" loading="lazy" onerror="this.style.display='none'" class="w-full h-44 object-cover">
+                            <figcaption class="px-2 py-1.5 text-[11px] text-zinc-400 leading-relaxed">Xác B-52 trong hồ Hữu Tiệp (Ngọc Hà) — chiếc B-52 do Tiểu đoàn 72 bắn rơi đêm 27/12. Ảnh: Wikimedia Commons.</figcaption>
+                        </figure>
+                        <figure class="rounded-lg overflow-hidden border border-white/10 bg-black/50">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Wreckage_of_B52_bomber%2C_downtown_Hanoi%2C_Vietnam.jpg" alt="Xác một chiếc B-52 tại Hà Nội sau 12 ngày đêm" loading="lazy" onerror="this.style.display='none'" class="w-full h-44 object-cover">
+                            <figcaption class="px-2 py-1.5 text-[11px] text-zinc-400 leading-relaxed">Xác một chiếc B-52 tại Hà Nội sau 12 ngày đêm. Ảnh: Wikimedia Commons.</figcaption>
+                        </figure>
+                    </div>
+                    <div class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
+                        <div class="font-mono text-[11px] text-amber-300 uppercase font-bold">PHỐ KHÂM THIÊN — ĐÊM 26/12/1972</div>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">Đợt rải thảm tàn bạo nhất: bia tưởng niệm tại số nhà 51 Khâm Thiên ghi <b class="text-amber-300">287 đồng bào thiệt mạng</b>; bảng thống kê chi tiết ghi 278 người chết, 290 người bị thương, <b class="text-amber-300">178 trẻ mồ côi</b>. Ngôi nhà 51 Khâm Thiên — nơi 7 người trong một gia đình tử nạn — nay là đài tưởng niệm.</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Dai+tuong+niem+Kham+Thien+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">[BẢN ĐỒ GOOGLE MAPS ↗]</a>
+                    </div>
+                    <div class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
+                        <div class="font-mono text-[11px] text-amber-300 uppercase font-bold">BỆNH VIỆN BẠCH MAI — ĐÊM 22/12/1972</div>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">Bom B-52 đánh trúng bệnh viện tuyến cuối đang cứu chữa thương bệnh binh và dân thường: <b class="text-amber-300">28 cán bộ y tế hy sinh</b> trong ca trực (theo Liên hiệp các tổ chức hữu nghị Việt Nam). Tấm bia tưởng niệm trong khuôn viên bệnh viện vẫn ghi tên họ.</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Benh+vien+Bach+Mai+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">[BẢN ĐỒ GOOGLE MAPS ↗]</a>
+                    </div>
+                    <div class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
+                        <div class="font-mono text-[11px] text-amber-300 uppercase font-bold">KHU LAO ĐỘNG AN DƯƠNG — ĐÊM 26/12/1972</div>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">Cùng đêm với Khâm Thiên và Bạch Mai, khu lao động nghèo An Dương (nay thuộc quận Tây Hồ) cũng bị bom rải thảm. Thẻ đêm 26/12 có chỉ đường tới phố An Dương hôm nay.</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=An+Duong+Tay+Ho+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">[BẢN ĐỒ GOOGLE MAPS ↗]</a>
+                    </div>
+                    <div class="p-4 rounded-lg bg-black/70 border border-amber-400/40 space-y-2">
+                        <div class="font-mono text-[11px] text-amber-300 uppercase font-bold">CON SỐ CHUNG CỦA HÀ NỘI</div>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">Cả chiến dịch: Hà Nội có <b class="text-amber-300">2.368 người chết, 1.355 người bị thương</b> (Đề cương tuyên truyền 50 năm, trang .gov.vn); Tạp chí Quốc phòng toàn dân ghi 2.380 người chết. Hơn 50 vạn đồng bào đã sơ tán khỏi thành phố trước và trong chiến dịch.</p>
+                        <p class="text-xs sm:text-sm text-zinc-400 italic leading-relaxed">Chiến thắng này được gọi là “Điện Biên Phủ trên không” — không phải bằng bom đạn, mà bằng ý chí không chịu khuất phục của cả một thành phố.</p>
+                    </div>
+                </div>
+            `            ,
         };
 
         let archivePausedGame = false;
@@ -1558,17 +1601,9 @@
         }
 
         function renderArchiveTab(tabKey) {
-            ['card1', 'card2', 'card3', 'card4', 'card5', 'card6'].forEach(k => {
+            ['card1', 'card2', 'card3', 'card4', 'card5', 'card6', 'card7'].forEach(k => {
                 const btn = document.getElementById(`tab-btn-${k}`);
-                if (btn) {
-                    const isActive = (k === tabKey);
-                    btn.classList.toggle('border-emerald-500/60', isActive);
-                    btn.classList.toggle('bg-emerald-500/20', isActive);
-                    btn.classList.toggle('text-emerald-300', isActive);
-                    btn.classList.toggle('border-white/10', !isActive);
-                    btn.classList.toggle('bg-black/40', !isActive);
-                    btn.classList.toggle('text-zinc-400', !isActive);
-                }
+                if (btn) btn.classList.toggle('is-active', k === tabKey);
             });
             const contentArea = document.getElementById('archive-content-area');
             if (contentArea && CAMPAIGN_ARCHIVE_CARDS[tabKey]) {
@@ -1668,6 +1703,7 @@
             const t = (total === undefined) ? cards.length : total;
             el.textContent = s + '/' + t + ' đêm';
         }
+
         window.filterArchive = filterArchive;
         window.setAllNights = setAllNights;
         window.expandNight = expandNight;
