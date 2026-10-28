@@ -555,23 +555,37 @@
 
         /* ---- In-game HUD helpers ---- */
         body.in-menu .hud-el { display: none !important; } .hidden { display: none;} #modal-tactical-guide, #modal-radio-log, #archive-drawer { background: rgba(3, 6, 10, 0.98); z-index: 60;}
+        /* ---- Tư liệu: sidebar mục lục + chữ lớn, thoáng ---- */
         .archive-nav-btn {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #A1A1AA;
-            cursor: pointer;
+            display: block; width: 100%; text-align: left;
+            background: transparent;
+            border: 1px solid transparent; border-left: 3px solid transparent;
+            color: #A1A1AA; cursor: pointer; border-radius: 8px; transition: all .15s;
         }
-        .archive-nav-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(205, 247, 161, 0.3);
-            color: #F4F4F5;
-        }
+        .archive-nav-btn:hover { background: rgba(255, 255, 255, 0.06); color: #F4F4F5; }
         .archive-nav-btn.is-active {
-            background: rgba(5, 150, 105, 0.22);
-            border-color: #34D399;
-            color: #CDF7A1;
-            box-shadow: 0 0 12px rgba(52, 211, 153, 0.15);
+            background: rgba(5, 150, 105, 0.18);
+            border-left-color: #34D399; color: #CDF7A1;
         }
+        /* Chữ trong tư liệu: to và thoáng hơn hẳn bản cũ */
+        #screen-archive #archive-content-area { font-size: 15px; line-height: 1.8; }
+        #screen-archive #archive-content-area .text-xs { font-size: 14px; }
+        #screen-archive #archive-content-area .text-\[11px\] { font-size: 13px; }
+        #screen-archive #archive-content-area .text-\[10px\] { font-size: 12px; }
+        /* Hộp nội dung các tab + thẻ đêm: padding rộng, góc bo lớn */
+        #screen-archive #archive-content-area .space-y-4 > div { padding: 20px; }
+        #screen-archive #archive-content-area [id^="night-node-"] { border-radius: 12px; }
+        /* Tiêu đề thẻ đêm: to, rõ; huy hiệu hạ B-52: bấm dễ thấy */
+        #screen-archive #archive-content-area [id^="night-node-"] > div:first-child { padding-bottom: 12px; }
+        #screen-archive #archive-content-area [id^="night-node-"] > div:first-child > div > span { font-size: 17px; }
+        #screen-archive #archive-content-area [id^="night-node-"] > div:first-child > span { font-size: 12px; padding: 4px 10px; }
+        /* Thân thẻ đêm: xếp chồng (chuyện kể trước, địa danh sau) thay vì 2 cột chật */
+        #screen-archive #archive-content-area .night-body > div { display: block; }
+        #screen-archive #archive-content-area .night-body > div > div:last-child { margin-top: 16px; padding: 16px; border-radius: 10px; }
+        /* Nút nhảy đêm: dạng viên thuốc, to hơn */
+        #screen-archive #archive-content-area button[onclick*="night-node-"] { padding: 7px 13px; border-radius: 999px; }
+        /* Ảnh tưởng niệm: trưng bày lớn hơn */
+        #screen-archive #archive-content-area figure img { height: 230px; }
         .tool-btn {
             font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.05em; font-size: 12px;
             padding: 3px 10px; color: #E4E4E7; background: rgba(4, 8, 10, 0.6); border: 1px solid rgba(255, 255, 255, 0.16); cursor: pointer;
@@ -1699,66 +1713,68 @@
                 </div>
             </div>
 
-            <!-- Tab Navigation (8 Tabs) -->
-            <div class="px-3 pt-2 pb-2 bg-black/40 border-b border-white/10 shrink-0">
-                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
-                    <button onclick="renderArchiveTab('card1')" id="tab-btn-card1" class="archive-nav-btn text-left p-2 rounded border border-emerald-500/40 bg-emerald-500/15 transition-all">
-                        <div class="font-mono text-[10px] uppercase text-emerald-400 font-bold">[01] BIÊN NIÊN &amp; DI TÍCH</div>
-                        <div class="text-xs font-semibold truncate text-zinc-200">12 Ngày Đêm &amp; Tọa Độ</div>
+            <!-- Layout mới: sidebar mục lục + cột nội dung -->
+            <div class="flex-1 flex min-h-0">
+                <aside class="w-[248px] shrink-0 bg-black/50 border-r border-white/10 p-3 space-y-2 overflow-y-auto">
+                    <div class="font-mono text-[11px] tracking-widest text-zinc-500 px-2 pt-1 pb-2">MỤC LỤC TƯ LIỆU</div>
+                    <button onclick="renderArchiveTab('card1')" id="tab-btn-card1" class="archive-nav-btn px-3 py-2.5 is-active">
+                        <div class="font-mono text-[11px] uppercase text-emerald-400 font-bold">[01] Biên niên &amp; di tích</div>
+                        <div class="text-sm font-semibold text-zinc-100 mt-0.5">12 ngày đêm &amp; tọa độ hôm nay</div>
                     </button>
-                    <button onclick="renderArchiveTab('card2')" id="tab-btn-card2" class="archive-nav-btn text-left p-2 rounded border border-white/10 bg-black/40 transition-all">
-                        <div class="font-mono text-[10px] uppercase text-zinc-400 font-bold">[02] BỐI CẢNH DỰ BÁO</div>
-                        <div class="text-xs font-semibold truncate text-zinc-200">Paris &amp; Cẩm Nang Đỏ</div>
+                    <button onclick="renderArchiveTab('card2')" id="tab-btn-card2" class="archive-nav-btn px-3 py-2.5">
+                        <div class="font-mono text-[11px] uppercase text-zinc-400 font-bold">[02] Bối cảnh dự báo</div>
+                        <div class="text-sm font-semibold text-zinc-100 mt-0.5">Paris &amp; Cẩm nang đỏ</div>
                     </button>
-                    <button onclick="renderArchiveTab('card3')" id="tab-btn-card3" class="archive-nav-btn text-left p-2 rounded border border-white/10 bg-black/40 transition-all">
-                        <div class="font-mono text-[10px] uppercase text-zinc-400 font-bold">[03] NGHỆ THUẬT QUÂN SỰ</div>
-                        <div class="text-xs font-semibold truncate text-zinc-200">Vạch Nhiễu Đánh B-52</div>
+                    <button onclick="renderArchiveTab('card3')" id="tab-btn-card3" class="archive-nav-btn px-3 py-2.5">
+                        <div class="font-mono text-[11px] uppercase text-zinc-400 font-bold">[03] Nghệ thuật quân sự</div>
+                        <div class="text-sm font-semibold text-zinc-100 mt-0.5">Vạch nhiễu đánh B-52</div>
                     </button>
-                    <button onclick="renderArchiveTab('card4')" id="tab-btn-card4" class="archive-nav-btn text-left p-2 rounded border border-white/10 bg-black/40 transition-all">
-                        <div class="font-mono text-[10px] uppercase text-zinc-400 font-bold">[04] CHIẾN CÔNG Ý NGHĨA</div>
-                        <div class="text-xs font-semibold truncate text-zinc-200">Hạ 34 B-52 &amp; Hiệp Định</div>
+                    <button onclick="renderArchiveTab('card4')" id="tab-btn-card4" class="archive-nav-btn px-3 py-2.5">
+                        <div class="font-mono text-[11px] uppercase text-zinc-400 font-bold">[04] Chiến công &amp; ý nghĩa</div>
+                        <div class="text-sm font-semibold text-zinc-100 mt-0.5">Hạ 34 B-52 &amp; Hiệp định Paris</div>
                     </button>
-                    <button onclick="renderArchiveTab('card5')" id="tab-btn-card5" class="archive-nav-btn text-left p-2 rounded border border-amber-400/30 bg-black/40 transition-all">
-                        <div class="font-mono text-[10px] uppercase text-amber-400 font-bold">[05] SỔ TAY HIỆN VẬT</div>
-                        <div class="text-xs font-semibold truncate text-zinc-200">Bảo Tàng &amp; Dấu Tích</div>
+                    <button onclick="renderArchiveTab('card5')" id="tab-btn-card5" class="archive-nav-btn px-3 py-2.5">
+                        <div class="font-mono text-[11px] uppercase text-amber-400 font-bold">[05] Sổ tay hiện vật</div>
+                        <div class="text-sm font-semibold text-zinc-100 mt-0.5">Bảo tàng &amp; dấu tích</div>
                     </button>
-                    <button onclick="renderArchiveTab('card6')" id="tab-btn-card6" class="archive-nav-btn text-left p-2 rounded border border-amber-400/30 bg-black/40 transition-all">
-                        <div class="font-mono text-[10px] uppercase text-amber-400 font-bold">[06] NGUỒN &amp; GHI CHÚ</div>
-                        <div class="text-xs font-semibold truncate text-zinc-200">3 nguồn uy tín &amp; số liệu vênh</div>
+                    <button onclick="renderArchiveTab('card6')" id="tab-btn-card6" class="archive-nav-btn px-3 py-2.5">
+                        <div class="font-mono text-[11px] uppercase text-amber-400 font-bold">[06] Nguồn &amp; ghi chú</div>
+                        <div class="text-sm font-semibold text-zinc-100 mt-0.5">3 nguồn uy tín &amp; số liệu vênh</div>
                     </button>
-                    <button onclick="renderArchiveTab('card7')" id="tab-btn-card7" class="archive-nav-btn text-left p-2 rounded border border-amber-400/30 bg-black/40 transition-all">
-                        <div class="font-mono text-[10px] uppercase text-amber-400 font-bold">[07] TƯỞNG NIỆM</div>
-                        <div class="text-xs font-semibold truncate text-zinc-200">Khâm Thiên &amp; Bạch Mai</div>
+                    <button onclick="renderArchiveTab('card7')" id="tab-btn-card7" class="archive-nav-btn px-3 py-2.5">
+                        <div class="font-mono text-[11px] uppercase text-amber-400 font-bold">[07] Tưởng niệm</div>
+                        <div class="text-sm font-semibold text-zinc-100 mt-0.5">Khâm Thiên &amp; Bạch Mai</div>
                     </button>
-                </div>
-            </div>
+                </aside>
+                <div class="flex-1 flex flex-col min-w-0">
+                    <!-- Archive toolbar: search / expand-collapse / back-to-top -->
+                    <div class="px-4 pt-3 pb-3 bg-black/40 border-b border-white/10 shrink-0 flex flex-wrap items-center gap-2">
+                        <input id="archive-search" type="text" placeholder="Tìm trong tư liệu: Tiểu đoàn 79, Phạm Tuân, Khâm Thiên…" oninput="filterArchive(this.value)" class="flex-1 min-w-[220px] bg-zinc-900 border border-white/15 rounded px-3 py-2.5 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:border-emerald-400">
+                        <button onclick="setAllNights(true)" class="px-3 py-2 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/15 text-xs font-mono">Mở tất cả</button>
+                        <button onclick="setAllNights(false)" class="px-3 py-2 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/15 text-xs font-mono">Thu tất cả</button>
+                        <button onclick="document.getElementById('archive-content-area').scrollTo({top:0,behavior:'smooth'})" class="px-3 py-2 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/15 text-xs font-mono">↑ Đầu trang</button>
+                        <span id="archive-search-count" class="font-mono text-xs text-zinc-400"></span>
+                    </div>
 
-            <!-- Archive toolbar: search / expand-collapse / back-to-top -->
-            <div class="px-3 pt-2 pb-2 bg-black/40 border-b border-white/10 shrink-0 flex flex-wrap items-center gap-2">
-                <input id="archive-search" type="text" placeholder="Tìm trong tư liệu: Tiểu đoàn 79, Phạm Tuân, Khâm Thiên…" oninput="filterArchive(this.value)" class="flex-1 min-w-[220px] bg-zinc-900 border border-white/15 rounded px-3 py-1.5 text-xs text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:border-emerald-400">
-                <button onclick="setAllNights(true)" class="px-2.5 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/15 text-[11px] font-mono">Mở tất cả</button>
-                <button onclick="setAllNights(false)" class="px-2.5 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/15 text-[11px] font-mono">Thu tất cả</button>
-                <button onclick="document.getElementById('archive-content-area').scrollTo({top:0,behavior:'smooth'})" class="px-2.5 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/15 text-[11px] font-mono">↑ Đầu trang</button>
-                <span id="archive-search-count" class="font-mono text-[11px] text-zinc-400"></span>
-            </div>
+                    <!-- Main Scrollable Content Area -->
+                    <div id="archive-content-area" class="p-5 overflow-y-auto flex-1 space-y-5 text-zinc-300">
+                        <!-- Injected via renderArchiveTab() -->
+                    </div>
 
-            <!-- Main Scrollable Content Area -->
-            <div id="archive-content-area" class="p-3 sm:p-5 overflow-y-auto flex-1 space-y-4 text-xs sm:text-sm leading-relaxed text-zinc-300">
-                <!-- Injected via renderArchiveTab() -->
-            </div>
-
-            <!-- Footer Bar -->
-            <div class="p-2.5 px-4 border-t border-white/10 bg-black/60 flex items-center justify-between gap-3 text-xs shrink-0">
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald animate-pulse"></span>
-                    <span id="copy-toast" class="font-mono text-[11px] text-zinc-400">
-                        Nguồn: Đề cương .gov.vn · Tạp chí Quốc phòng toàn dân · Bảo tàng Lịch sử Quốc gia
-                    </span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="showScreen('menu')" class="menu-btn primary py-1 px-4 text-xs">
-                        Về Menu chính
-                    </button>
+                    <!-- Footer Bar -->
+                    <div class="p-2.5 px-4 border-t border-white/10 bg-black/60 flex items-center justify-between gap-3 text-xs shrink-0">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald animate-pulse"></span>
+                            <span id="copy-toast" class="font-mono text-[11px] text-zinc-400">
+                                Nguồn: Đề cương .gov.vn · Tạp chí Quốc phòng toàn dân · Bảo tàng Lịch sử Quốc gia
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="showScreen('menu')" class="menu-btn primary py-1 px-4 text-xs">
+                                Về Menu chính
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
