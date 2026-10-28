@@ -59,6 +59,7 @@
             },
             setVoiceVolume(val) {
                 const v = Math.max(0, Math.min(1, Number(val) !== undefined && !isNaN(val) ? Number(val) : 0.8));
+                this.voiceVolume = v;
                 return v;
             },
 
@@ -108,6 +109,7 @@
                 const tr = this.osc('sine', 900);
                 L.track = this.layer(tr, []);
                 L.track.osc = tr;
+                L.wind = this.layer(this.loop(this.white), [this.filter('bandpass', 850, 1.4)], 0.15);
                 this.ready = true;
             },
 
@@ -242,6 +244,24 @@
                 if (air) L.turbine.osc.frequency.setTargetAtTime(650 + mig.throttle * 650, t, 0.3);
                 set(L.burner, air ? (mig.throttle > 0.85 ? 0.32 : 0.1 + mig.throttle * 0.08) : 0);
 
+                // Canopy aerodynamic wind buffeting & G-load
+                const migG = (air && typeof mig !== 'undefined') ? (Math.abs(mig.bank || 0) * 0.5 + Math.abs(mig.pitch || 0) * 0.5) : 0;
+                const migSpd = (air && typeof mig !== 'undefined' && mig.speed) ? mig.speed / 18 : 0;
+                set(L.wind, air ? (0.03 + migSpd * 0.16 + migG * 0.12) : 0, 0.08);
+                if (air && L.wind && L.wind.f && L.wind.f.frequency) {
+                    L.wind.f.frequency.setTargetAtTime(450 + migSpd * 1100 + migG * 700, t, 0.1);
+                }
+
+                // MiG supersonic shockwave
+                if (air && typeof mig !== 'undefined') {
+                    if (mig.speed > 16.5 && !mig._sonicBoomed) {
+                        mig._sonicBoomed = true;
+                        this.sonicBoom();
+                    } else if (mig.speed < 14.5) {
+                        mig._sonicBoomed = false;
+                    }
+                }
+
                 // missile rush in the follow camera
                 set(L.rush, missileView ? 0.12 + Math.min(0.12, guidedMissile.speed / 600) : 0, 0.1);
                 if (missileView) L.rush.f.frequency.setTargetAtTime(400 + guidedMissile.speed * 9, t, 0.2);
@@ -275,6 +295,7 @@
                 }
                 // V-750 booster: blast, roar that fades as it climbs away, crackle, sub thump
                 this.tone({ freq: 85, freqEnd: 24, peak: 0.95, a: 0.003, dur: 1.5, wet: 0.4 });
+                this.tone({ t0: t, type: 'sine', freq: 48, freqEnd: 18, peak: 0.9, a: 0.002, dur: 1.6, wet: 0.55 });
                 this.burst({ type: 'lowpass', freq: 2800, freqEnd: 320, peak: 0.9, a: 0.02, hold: 1.8, rel: 2.8, wet: 0.55 });
                 this.burst({ type: 'highpass', freq: 3000, peak: 0.28, a: 0.01, hold: 1.4, rel: 1.2, wet: 0.35 });
                 this.burst({ t0: t + 0.04, brown: true, type: 'lowpass', freq: 320, peak: 0.65, a: 0.01, hold: 0.8, rel: 2.4, wet: 0.65 });
@@ -334,6 +355,7 @@
                 }
                 // air-raid siren over the city, two units slightly out of tune
                 if (!this.ensure()) return;
+                this.loudspeakerChime();
                 const ctx = SoundEngine.ctx, t = ctx.currentTime;
                 const g = ctx.createGain(), lp = this.filter('lowpass', 1500);
                 g.gain.setValueAtTime(0.0001, t);
@@ -539,6 +561,66 @@
                 [440, 554.37, 659.25, 880].forEach((freq, idx) => {
                     this.tone({ t0: t + idx * 0.08, type: 'sine', freq, peak: 0.18, a: 0.01, dur: 0.35, wet: 0.3 });
                 });
+            },
+
+            // Âm hiệu loa truyền thanh phòng không Hà Nội 1972 (Do - Mi - Sol)
+            loudspeakerChime() {
+                SoundEngine.init();
+                if (!this.ensure()) return;
+                const ctx = SoundEngine.ctx, t = ctx.currentTime;
+                [261.63, 329.63, 392.00].forEach((freq, idx) => {
+                    const t0 = t + idx * 0.18;
+                    this.tone({ t0, type: 'sine', freq, peak: 0.15, a: 0.012, dur: 0.35, wet: 0.45 });
+                    this.burst({ t0, type: 'bandpass', freq: freq * 2, Q: 3, peak: 0.025, a: 0.005, hold: 0.02, rel: 0.1 });
+                });
+            },
+
+            // Tiếng nổ siêu thanh (Sonic Boom) khi MiG-21 vượt tường âm thanh Mach 1+
+            sonicBoom(dist) {
+                if (!this.ensure()) return;
+                const ctx = SoundEngine.ctx, t0 = ctx.currentTime;
+                const d = Math.max(0, dist || 0);
+                const atten = 1 / Math.sqrt(1 + d / 200);
+                [0, 0.065].forEach((dt) => {
+                    const t = t0 + dt;
+                    this.tone({ t0: t, type: 'triangle', freq: 110, freqEnd: 22, peak: 0.85 * atten, a: 0.002, dur: 0.22, wet: 0.6 });
+                    this.burst({ t0: t, brown: true, type: 'lowpass', freq: 400, freqEnd: 75, peak: 0.8 * atten, a: 0.003, hold: 0.03, rel: 0.35, wet: 0.7 });
+                });
+            },
+
+            // Tiếng nổ thứ cấp trong thân B-52 bốc cháy khi rơi
+            secondaryBoom(pos) {
+                if (!this.ensure()) return;
+                const d = pos && typeof pos.distanceTo === 'function' ? pos.distanceTo(camera.position) : 300;
+                const t0 = SoundEngine.ctx.currentTime + Math.min(1.8, d * 0.0025);
+                const vol = 0.55 / (1 + d / 400);
+                this.tone({ t0, type: 'sawtooth', freq: 160, freqEnd: 40, peak: vol * 0.7, a: 0.003, dur: 0.4, wet: 0.5 });
+                this.burst({ t0, type: 'bandpass', freq: 1200, Q: 2, peak: vol * 0.6, a: 0.002, hold: 0.02, rel: 0.25, wet: 0.4 });
+                this.burst({ t0: t0 + 0.02, brown: true, type: 'lowpass', freq: 280, peak: vol * 0.75, a: 0.004, hold: 0.04, rel: 0.45, wet: 0.6 });
+            },
+
+            // Tiếng máy điện báo quân sự mở đầu dẫn truyện
+            teletype() {
+                SoundEngine.init();
+                if (!this.ensure()) return;
+                const ctx = SoundEngine.ctx, t = ctx.currentTime;
+                for (let i = 0; i < 4; i++) {
+                    const t0 = t + i * 0.045;
+                    this.burst({ t0, type: 'highpass', freq: 2400, peak: 0.04, a: 0.001, hold: 0.008, rel: 0.02 });
+                    this.tone({ t0, type: 'square', freq: 1100 + (i % 2) * 280, peak: 0.02, a: 0.001, dur: 0.015 });
+                }
+            },
+
+            // Loạt pháo cao xạ bắn mừng chiến thắng
+            salvo() {
+                SoundEngine.init();
+                if (!this.ensure()) return;
+                const ctx = SoundEngine.ctx, t = ctx.currentTime;
+                for (let k = 0; k < 6; k++) {
+                    const t0 = t + 0.1 + k * 0.16 + Math.random() * 0.04;
+                    this.tone({ t0, type: 'triangle', freq: 190, freqEnd: 45, peak: 0.35, a: 0.002, dur: 0.25, wet: 0.5 });
+                    this.burst({ t0, type: 'bandpass', freq: 1750, Q: 1.5, peak: 0.38, a: 0.001, hold: 0.02, rel: 0.14, wet: 0.4 });
+                }
             }
         };
 

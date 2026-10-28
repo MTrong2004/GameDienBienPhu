@@ -244,7 +244,10 @@
                 m.jam ? `Máy gây nhiễu dò lại tần số của bạn sau khoảng <b>${m.jam.lookThrough} giây</b>${m.jam.chaff ? '; có hành lang nhiễu tiêu cực (chaff)' : ''}` : null,
                 `Thời gian tối đa: <b>${formatMMSS(m.timeLimit)}</b>`
             ].filter(Boolean).map(t => `<li>${t}</li>`).join('');
-            document.getElementById('brief-controls').innerHTML = m.controls.map(t => `<li>${t}</li>`).join('');
+            const briefControlsEl = document.getElementById('brief-controls');
+            if (briefControlsEl) {
+                briefControlsEl.innerHTML = (m.controls || []).map(t => `<li>${t}</li>`).join('');
+            }
             if (!locked) {
                 showScreen('briefing');
             }
@@ -419,8 +422,9 @@
 
         // Spoken story narration and radio calls. Uses a Vietnamese voice when the system has one
         // (Windows "Microsoft An", or Edge's online HoaiMy / NamMinh voices).
+        // ponytail: Audio file playback (vi-VN-HoaiMyNeural & vi-VN-NamMinhNeural) with seamless Web Speech fallback; upgrade to streaming Web Audio buffers if network CDN dynamic synthesis is needed.
         const Voice = {
-            voice: null, checked: false, warned: false, pending: 0,
+            voice: null, checked: false, warned: false, pending: 0, currentAudio: null,
             PROFILES: {
                 'DẪN TRUYỆN': { pitch: 0.95, rate: 1.08 }, 'SỞ CHỈ HUY': { pitch: 0.85, rate: 1.18 },
                 'TRẮC THỦ': { pitch: 1.1, rate: 1.22 }, 'SĨ QUAN ĐIỀU KHIỂN': { pitch: 0.92, rate: 1.18 },
@@ -429,13 +433,15 @@
                 'ĐÀI QUAN SÁT GIA LÂM': { pitch: 1.0, rate: 1.15 }, 'HƯỚNG DẪN': { pitch: 1.0, rate: 1.18 }
             },
             init() {
-                if (this.checked || !('speechSynthesis' in window)) return;
+                if (!('speechSynthesis' in window)) return;
                 const synth = window.speechSynthesis;
                 const pick = () => {
-                    const vs = synth.getVoices();
+                    const vs = (synth.getVoices && synth.getVoices()) || [];
                     if (!vs.length) return;
+                    this.voice = vs.find(v => /^vi/i.test(v.lang) && /natural|online/i.test(v.name)) ||
+                                 vs.find(v => /^vi/i.test(v.lang)) ||
+                                 vs.find(v => /vietnam/i.test(v.name)) || null;
                     this.checked = true;
-                    this.voice = vs.find(v => /^vi/i.test(v.lang) && /natural|online/i.test(v.name)) || vs.find(v => /^vi/i.test(v.lang)) || null;
                 };
                 pick();
                 if (synth.addEventListener) synth.addEventListener('voiceschanged', pick);
@@ -447,52 +453,164 @@
                     .replace(/F-4/g, 'Ép 4').replace(/F-111/g, 'Ép 111').replace(/SAM-2/g, 'Sam 2')
                     .replace(/V-750/g, 'Vê 750').replace(/K-13/g, 'Ca 13');
             },
-            speak(who, text, interrupt) {
-                if (!SoundEngine.enabled || !('speechSynthesis' in window)) return;
-                const synth = window.speechSynthesis;
-                this.init();
-                if (!this.voice) {
-                    if (this.checked && !this.warned) {
-                        this.warned = true;
-                        setTimeout(() => showRadio('HỆ THỐNG', 'Máy chưa có giọng đọc tiếng Việt. Mở game bằng Microsoft Edge, hoặc cài giọng Tiếng Việt trong Windows: Cài đặt → Thời gian & ngôn ngữ → Giọng nói.'), 7000);
-                    }
-                    return;
-                }
-                if (interrupt) { synth.cancel(); this.pending = 0; }
-                else if (this.pending > 1) return;   // never let radio chatter pile up
-                const UtteranceClass = window.SpeechSynthesisUtterance || (typeof SpeechSynthesisUtterance !== 'undefined' ? SpeechSynthesisUtterance : null);
-                if (!UtteranceClass) return;
-                const u = new UtteranceClass(this.clean(text));
-                const p = this.PROFILES[who] || { pitch: 1, rate: 1.05 };
-                u.voice = this.voice;
-                u.lang = this.voice.lang;
-                u.pitch = p.pitch;
-                u.rate = p.rate;
-                u.volume = 0.95;
-                this.pending++;
-                u.onend = u.onerror = () => { this.pending = Math.max(0, this.pending - 1); };
-                synth.speak(u);
-            },
             stop() {
+                if (this.currentAudio) {
+                    try { this.currentAudio.pause(); this.currentAudio.currentTime = 0; } catch(e) {}
+                    this.currentAudio = null;
+                }
                 if ('speechSynthesis' in window) window.speechSynthesis.cancel();
                 this.pending = 0;
+                Voice._currU = null;
+                if (Voice._resumeTimer) { clearInterval(Voice._resumeTimer); Voice._resumeTimer = null; }
                 const label = document.getElementById('btn-brief-audio-label');
                 if (label) label.textContent = 'Nghe bối cảnh';
             },
-            toggleBriefingStory() {
+            playAudioFile(src, onEndCallback) {
+                this.stop();
+                try {
+                    const audio = new Audio(src);
+                    audio.volume = (typeof SoundFX !== 'undefined' && SoundFX.voiceVolume !== undefined) ? SoundFX.voiceVolume : 0.95;
+                    this.currentAudio = audio;
+                    audio.onended = () => {
+                        this.currentAudio = null;
+                        const label = document.getElementById('btn-brief-audio-label');
+                        if (label) label.textContent = 'Nghe bối cảnh';
+                        if (typeof onEndCallback === 'function') onEndCallback();
+                    };
+                    audio.onerror = (err) => {
+                        this.currentAudio = null;
+                        if (typeof onEndCallback === 'function') onEndCallback(err || new Error('Audio load error'));
+                    };
+                    const p = audio.play();
+                    if (p && typeof p.catch === 'function') {
+                        p.catch(err => {
+                            this.currentAudio = null;
+                            if (typeof onEndCallback === 'function') onEndCallback(err);
+                        });
+                    }
+                    return true;
+                } catch(e) {
+                    return false;
+                }
+            },
+            speak(who, text, interrupt) {
+                if (!SoundEngine.enabled) return;
+
+                // Khẩu lệnh xuất kích của Sở chỉ huy: ưu tiên file audio chất lượng cao NamMinh
+                if (who === 'SỞ CHỈ HUY' && typeof activeMission !== 'undefined' && activeMission) {
+                    const cueFile = activeMission.mode === 'MIG21'
+                        ? (activeMission.pilot === '046' ? 'assets/audio/cue_mig21_046.mp3' : 'assets/audio/cue_mig21_5121.mp3')
+                        : 'assets/audio/cue_sam2.mp3';
+                    if (typeof Audio !== 'undefined') {
+                        const played = this.playAudioFile(cueFile);
+                        if (played) return;
+                    }
+                }
+
                 if (!('speechSynthesis' in window)) return;
                 const synth = window.speechSynthesis;
-                if (synth.speaking) {
+                this.init();
+                const vs = (synth.getVoices && synth.getVoices()) || [];
+                const v = this.voice || (vs.length ? (vs.find(v => /^vi/i.test(v.lang) && /natural|online/i.test(v.name)) ||
+                                                      vs.find(v => /^vi/i.test(v.lang)) ||
+                                                      vs.find(v => /vietnam/i.test(v.name))) : null);
+
+                // Không bao giờ dùng giọng tiếng Anh (như David) để đọc tiếng Việt gây lỗi phát âm
+                if (!v) {
+                    if (typeof SoundFX !== 'undefined') {
+                        if (who === 'LOA PHÒNG KHÔNG' && SoundFX.loudspeakerChime) SoundFX.loudspeakerChime();
+                        else if (SoundFX.radio) SoundFX.radio(false);
+                    }
+                    return;
+                }
+
+                if (interrupt) {
+                    synth.cancel();
+                    this.pending = 0;
+                    if (Voice._resumeTimer) { clearInterval(Voice._resumeTimer); Voice._resumeTimer = null; }
+                } else if (this.pending > 1) return;
+
+                const UtteranceClass = window.SpeechSynthesisUtterance || SpeechSynthesisUtterance;
+                if (!UtteranceClass) return;
+
+                const u = new UtteranceClass(this.clean(text));
+                const p = this.PROFILES[who] || { pitch: 1, rate: 1.05 };
+                u.voice = v;
+                u.lang = v.lang || 'vi-VN';
+                u.pitch = p.pitch;
+                u.rate = p.rate;
+                const vol = (typeof SoundFX !== 'undefined' && SoundFX.voiceVolume !== undefined) ? SoundFX.voiceVolume : 0.95;
+                u.volume = vol;
+                this.pending++;
+
+                // Sound feedback cues
+                if (typeof SoundFX !== 'undefined') {
+                    if (who === 'DẪN TRUYỆN' && SoundFX.teletype) SoundFX.teletype();
+                    else if (who === 'LOA PHÒNG KHÔNG' && SoundFX.loudspeakerChime) SoundFX.loudspeakerChime();
+                }
+
+                Voice._currU = u;
+                if (!Voice._resumeTimer) {
+                    Voice._resumeTimer = setInterval(() => {
+                        if (window.speechSynthesis && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+                            window.speechSynthesis.pause();
+                            window.speechSynthesis.resume();
+                        }
+                    }, 4000);
+                }
+
+                u.onend = u.onerror = () => {
+                    this.pending = Math.max(0, this.pending - 1);
+                    Voice._currU = null;
+                    if (Voice._resumeTimer) { clearInterval(Voice._resumeTimer); Voice._resumeTimer = null; }
+                    const label = document.getElementById('btn-brief-audio-label');
+                    if (label) label.textContent = 'Nghe bối cảnh';
+                };
+
+                setTimeout(() => {
+                    try {
+                        if (synth.paused) synth.resume();
+                        synth.speak(u);
+                    } catch(e) {}
+                }, 15);
+            },
+            toggleBriefingStory() {
+                if (this.currentAudio) {
                     this.stop();
                     return;
                 }
-                if (activeMission && activeMission.story) {
+                if (typeof window !== 'undefined' && window.speechSynthesis && window.speechSynthesis.speaking) {
+                    this.stop();
+                    return;
+                }
+                const m = (typeof activeMission !== 'undefined' && activeMission) || (typeof MISSIONS !== 'undefined' && MISSIONS[activeMissionIdx]) || null;
+                if (m && m.story) {
                     const label = document.getElementById('btn-brief-audio-label');
                     if (label) label.textContent = 'Dừng đọc';
-                    this.speak('DẪN TRUYỆN', activeMission.story, true);
+
+                    // Ưu tiên phát file giọng đọc AI Hoài My chuẩn như deploy trên web
+                    const audioSrc = `assets/audio/story_${m.id}.mp3`;
+                    let played = false;
+                    if (typeof Audio !== 'undefined') {
+                        played = this.playAudioFile(audioSrc, (err) => {
+                            if (err) {
+                                // Fallback sang SpeechSynthesis nếu không load được file
+                                this.speak('DẪN TRUYỆN', m.story, true);
+                            } else {
+                                if (label) label.textContent = 'Nghe bối cảnh';
+                            }
+                        });
+                    }
+                    if (!played) {
+                        this.speak('DẪN TRUYỆN', m.story, true);
+                    }
                 }
             }
         };
+
+        if (typeof window !== 'undefined') {
+            window.Voice = Voice;
+        }
 
         let missionRadioLog = [];
         let radioLogPausedGame = false;
@@ -759,6 +877,7 @@
 
         function showVictoryEpilogue() {
             SoundFX.fanfare();
+            if (typeof SoundFX.salvo === 'function') SoundFX.salvo();
             const prog = loadProgress();
             let totalKills = 0, totalShots = 0;
             Object.values(prog.best || {}).forEach(b => {
