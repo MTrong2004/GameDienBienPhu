@@ -919,7 +919,10 @@
     <div id="screen-campaign" class="screen">
         <div class="screen-inner wide">
             <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-                <button class="link-btn" onclick="showScreen('menu')">← Menu chính</button>
+                <div class="flex items-center gap-3">
+                    <button class="link-btn" onclick="showScreen('menu')">← Menu chính</button>
+                    <button class="tool-btn btn-toggle-bgm text-emerald-300 border-emerald-500/40 hover:border-emerald-400" onclick="MusicSystem.toggle()"><span>🎵</span> Nhạc: BẬT<kbd>B</kbd></button>
+                </div>
                 <button class="link-btn text-emerald hover:text-emerald-300" onclick="toggleTacticalGuide(true)">? Cẩm nang tác chiến [H]</button>
             </div>
             <div class="screen-title">Chiến dịch 12 ngày đêm</div>
@@ -1341,6 +1344,7 @@
         </div>
         <div class="poster-h2 poster-amber">CÒN: <span id="obj-timer" class="tabular-nums">02:30</span> · <span id="poster-state">SẴN SÀNG</span></div>
         <div id="game-toolbar" class="pointer-events-auto flex justify-end gap-2 mt-2">
+            <button class="tool-btn btn-toggle-bgm text-emerald-300 border-emerald-500/40 hover:border-emerald-400" onclick="MusicSystem.toggle()"><span>🎵</span> Nhạc: BẬT<kbd>B</kbd></button>
             <button class="tool-btn text-amber-300 border-amber-500/40 hover:border-amber-400" onclick="toggleRadioLog(true)">📜 Nhật ký<kbd>L</kbd></button>
             <button class="tool-btn text-teal-300 border-teal-500/40 hover:border-teal-400" onclick="toggleTacticalGuide(true)">? Hướng dẫn<kbd>H</kbd></button>
             <button class="tool-btn" onclick="pauseMission()">☰ Tạm dừng<kbd>Esc</kbd></button>
@@ -2501,10 +2505,14 @@
             init() {
                 if (this.ctx) {
                     if (this.ctx.state === 'suspended') this.ctx.resume();
+                    if (typeof MusicSystem !== 'undefined') MusicSystem.init();
                     return;
                 }
                 const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                if (AudioCtx) this.ctx = new AudioCtx();
+                if (AudioCtx) {
+                    this.ctx = new AudioCtx();
+                    if (typeof MusicSystem !== 'undefined') MusicSystem.init();
+                }
             },
 
             playLaunch(isMiG) {
@@ -4490,6 +4498,8 @@
                     else if (guideOpen) toggleTacticalGuide(false);
                     else if (radioLogOpen) toggleRadioLog(false);
                     else if (gameState === 'PLAYING') gamePaused ? resumeMission() : pauseMission();
+                } else if (e.code === 'KeyB') {
+                    if (typeof MusicSystem !== 'undefined') MusicSystem.toggle();
                 } else if (e.code === 'KeyH') {
                     toggleTacticalGuide();
                 } else if (e.code === 'KeyL') {
@@ -6739,6 +6749,189 @@
         SoundEngine.playExplosion = function (pos, big) { this.init(); SoundFX.boom(pos, big); };
 
         /* ============================================================================
+           CINEMATIC MILITARY BGM ENGINE (PROCEDURAL WEB AUDIO ORCHESTRA)
+           Nhạc nền hành khúc / hào hùng tự tổng hợp bằng sóng âm, 100% offline, mượt mà
+           ============================================================================ */
+        const MusicSystem = {
+            enabled: true,
+            volume: 0.32,
+            ctx: null,
+            masterGain: null,
+            timer: null,
+            step: 0,
+            theme: 'MENU', // 'MENU' | 'PLAYING' | 'VICTORY'
+            chordNodes: [],
+
+            init() {
+                if (this.masterGain) return;
+                const ctx = SoundEngine.ctx;
+                if (!ctx) return;
+                this.ctx = ctx;
+                this.masterGain = ctx.createGain();
+                try {
+                    const saved = localStorage.getItem('game_bgm_enabled');
+                    if (saved !== null) this.enabled = saved === '1';
+                } catch(e){}
+                this.masterGain.gain.setValueAtTime(this.enabled ? this.volume : 0, ctx.currentTime);
+                this.masterGain.connect(ctx.destination);
+                this.startLoop();
+                this.updateUI();
+            },
+
+            setTheme(newTheme) {
+                if (this.theme === newTheme) return;
+                this.theme = newTheme;
+                this.updateChord();
+            },
+
+            toggle() {
+                this.enabled = !this.enabled;
+                if (this.masterGain && this.ctx) {
+                    const t = this.ctx.currentTime;
+                    this.masterGain.gain.setTargetAtTime(this.enabled ? this.volume : 0, t, 0.1);
+                }
+                this.updateUI();
+                try { localStorage.setItem('game_bgm_enabled', this.enabled ? '1' : '0'); } catch(e){}
+                if (this.enabled && this.chordNodes.length === 0) this.updateChord();
+            },
+
+            updateUI() {
+                const btns = document.querySelectorAll('.btn-toggle-bgm');
+                btns.forEach(btn => {
+                    btn.innerHTML = `<span>🎵</span> Nhạc: ${this.enabled ? 'BẬT' : 'TẮT'}<kbd>B</kbd>`;
+                    btn.classList.toggle('text-emerald-300', this.enabled);
+                    btn.classList.toggle('text-zinc-500', !this.enabled);
+                });
+            },
+
+            startLoop() {
+                const clrInt = typeof clearInterval !== 'undefined' ? clearInterval : (typeof window !== 'undefined' && window.clearInterval ? window.clearInterval : null);
+                const setInt = typeof setInterval !== 'undefined' ? setInterval : (typeof window !== 'undefined' && window.setInterval ? window.setInterval : null);
+                if (this.timer && clrInt) clrInt(this.timer);
+                this.step = 0;
+                if (setInt) {
+                    this.timer = setInt(() => {
+                        if (!this.enabled || !this.ctx || this.ctx.state !== 'running') return;
+                        this.tick();
+                    }, 135);
+                }
+                this.updateChord();
+            },
+
+            updateChord() {
+                if (!this.ctx || !this.masterGain) return;
+                const t = this.ctx.currentTime;
+
+                this.chordNodes.forEach(n => {
+                    try {
+                        n.gain.gain.setTargetAtTime(0, t, 0.4);
+                        setTimeout(() => { try { n.osc.stop(); n.osc.disconnect(); }catch(e){} }, 500);
+                    } catch(e){}
+                });
+                this.chordNodes = [];
+
+                if (!this.enabled) return;
+
+                let freqs = [];
+                if (this.theme === 'VICTORY') {
+                    // D major tráng lệ khải hoàn: D3, F#3, A3, D4
+                    freqs = [146.83, 185.00, 220.00, 293.66];
+                } else if (this.theme === 'PLAYING') {
+                    // D minor hành khúc chiến đấu khẩn trương: D2 (trầm), D3, F3, A3
+                    freqs = [73.42, 146.83, 174.61, 220.00];
+                } else {
+                    // MENU / BRIEFING: D minor trầm hùng, bí ẩn: D2, A2, D3, F3
+                    freqs = [73.42, 110.00, 146.83, 174.61];
+                }
+
+                freqs.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const filter = this.ctx.createBiquadFilter();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = idx === 0 ? 'sine' : 'sawtooth';
+                    osc.frequency.setValueAtTime(freq + (Math.random() - 0.5) * 0.6, t);
+
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(this.theme === 'PLAYING' ? 380 : 250, t);
+                    filter.Q.value = 1.6;
+
+                    const targetGain = (idx === 0 ? 0.32 : 0.1) * (this.theme === 'PLAYING' ? 1.15 : 0.85);
+                    gain.gain.setValueAtTime(0.001, t);
+                    gain.gain.setTargetAtTime(targetGain, t + 0.1, 0.7);
+
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.masterGain);
+
+                    osc.start(t);
+                    this.chordNodes.push({ osc, gain });
+                });
+            },
+
+            tick() {
+                const step = this.step;
+                this.step = (this.step + 1) % 32;
+                const t = this.ctx.currentTime;
+
+                if (this.theme === 'PLAYING') {
+                    if (step === 0 || step === 16) {
+                        this.playTimpani(t, 65, 0.45);
+                    } else if (step === 8 || step === 24) {
+                        this.playTimpani(t, 55, 0.3);
+                    } else if (step === 12 || step === 28) {
+                        this.playSnareBrush(t, 0.16);
+                    }
+                } else if (this.theme === 'MENU') {
+                    if (step === 0) {
+                        this.playTimpani(t, 52, 0.25);
+                    } else if (step === 16) {
+                        this.playTimpani(t, 46, 0.18);
+                    }
+                } else if (this.theme === 'VICTORY') {
+                    if (step % 8 === 0) {
+                        this.playTimpani(t, 73.4, 0.38);
+                    }
+                }
+            },
+
+            playTimpani(t, freq, vol) {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, t);
+                osc.frequency.exponentialRampToValueAtTime(28, t + 0.45);
+                gain.gain.setValueAtTime(vol * 0.7, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+                osc.connect(gain);
+                gain.connect(this.masterGain);
+                osc.start(t);
+                osc.stop(t + 0.52);
+            },
+
+            playSnareBrush(t, vol) {
+                const bufLen = Math.floor(this.ctx.sampleRate * 0.12);
+                const buf = this.ctx.createBuffer(1, bufLen, this.ctx.sampleRate);
+                const data = buf.getChannelData(0);
+                for (let i = 0; i < bufLen; i++) data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.3));
+                const src = this.ctx.createBufferSource();
+                const filter = this.ctx.createBiquadFilter();
+                const gain = this.ctx.createGain();
+                filter.type = 'bandpass';
+                filter.frequency.value = 1700;
+                filter.Q.value = 2.0;
+                src.buffer = buf;
+                gain.gain.setValueAtTime(vol * 0.32, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+                src.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.masterGain);
+                src.start(t);
+            }
+        };
+
+
+        /* ============================================================================
            14. CAMPAIGN: 5 MISSIONS FOLLOWING THE REAL TIMELINE OF 18/12 – 29/12/1972
            Figures are the Vietnamese official record unless stated otherwise.
            ============================================================================ */
@@ -7015,6 +7208,15 @@
             document.body.classList.toggle('in-menu', name !== null && name !== 'pause');
             if (name === 'campaign') renderMissionList();
             if (name === 'menu') renderMenuProgress();
+            if (typeof MusicSystem !== 'undefined' && MusicSystem.ctx) {
+                if (name === 'victory' || (name === 'debrief' && missionWon)) {
+                    MusicSystem.setTheme('VICTORY');
+                } else if (name === null) {
+                    MusicSystem.setTheme('PLAYING');
+                } else {
+                    MusicSystem.setTheme('MENU');
+                }
+            }
         }
 
         function continueCampaign() {
@@ -7186,9 +7388,14 @@
             const quoteEl = document.getElementById('brief-story-quote');
             if (quoteEl) {
                 quoteEl.innerHTML = `
-                    <span class="text-[11px] uppercase font-mono tracking-widest text-amber-400 font-bold block mb-1">
-                        BỐI CẢNH LỊCH SỬ &amp; Ý CHÍ CHIẾN ĐẤU
-                    </span>
+                    <div class="flex items-center justify-between gap-2 mb-1">
+                        <span class="text-[11px] uppercase font-mono tracking-widest text-amber-400 font-bold">
+                            BỐI CẢNH LỊCH SỬ &amp; Ý CHÍ CHIẾN ĐẤU
+                        </span>
+                        <button class="text-[11px] font-mono uppercase tracking-wider text-amber-300 hover:text-white px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/40 hover:bg-amber-500/40 transition-colors flex items-center gap-1" onclick="Voice.toggleBriefingStory()">
+                            <span>🔊</span> <span id="btn-brief-audio-label">Nghe bối cảnh</span>
+                        </button>
+                    </div>
                     "${m.story}"
                 `;
             }
@@ -7304,7 +7511,12 @@
             activeMission = m;
             SoundEngine.init();
             clearCombatScene();
-            if (m.story) Voice.speak('DẪN TRUYỆN', m.story, true);
+            Voice.stop();
+            // Khau lenh xuat kich ngan gon, dut khoat (2 giay) de khong lam tre cac ban tin radar tiep theo
+            const combatCue = m.mode === 'MIG21'
+                ? 'Tiêm kích 5121 bật tăng lực xuất kích, tiếp cận mục tiêu!'
+                : 'Tiểu đoàn vào cấp một! Tiêu diệt B-52 bảo vệ Hà Nội!';
+            Voice.speak('SỞ CHỈ HUY', combatCue, true);
             showCombatAlert(m);
             autoAIEnabled = false;
             gamePaused = false;
@@ -7373,11 +7585,11 @@
         const Voice = {
             voice: null, checked: false, warned: false, pending: 0,
             PROFILES: {
-                'DẪN TRUYỆN': { pitch: 0.92, rate: 0.92 }, 'SỞ CHỈ HUY': { pitch: 0.78, rate: 1.0 },
-                'TRẮC THỦ': { pitch: 1.12, rate: 1.08 }, 'SĨ QUAN ĐIỀU KHIỂN': { pitch: 0.9, rate: 1.1 },
-                'ĐÀI QUAN SÁT': { pitch: 1.0, rate: 1.0 }, '5121': { pitch: 1.05, rate: 1.1 },
-                'LOA PHÒNG KHÔNG': { pitch: 1.15, rate: 0.95 }, 'ĐÀI RADAR 291': { pitch: 0.88, rate: 1.05 },
-                'ĐÀI QUAN SÁT GIA LÂM': { pitch: 1.0, rate: 1.0 }, 'HƯỚNG DẪN': { pitch: 1.0, rate: 1.05 }
+                'DẪN TRUYỆN': { pitch: 0.95, rate: 1.08 }, 'SỞ CHỈ HUY': { pitch: 0.85, rate: 1.18 },
+                'TRẮC THỦ': { pitch: 1.1, rate: 1.22 }, 'SĨ QUAN ĐIỀU KHIỂN': { pitch: 0.92, rate: 1.18 },
+                'ĐÀI QUAN SÁT': { pitch: 1.0, rate: 1.15 }, '5121': { pitch: 1.05, rate: 1.2 },
+                'LOA PHÒNG KHÔNG': { pitch: 1.12, rate: 1.12 }, 'ĐÀI RADAR 291': { pitch: 0.9, rate: 1.18 },
+                'ĐÀI QUAN SÁT GIA LÂM': { pitch: 1.0, rate: 1.15 }, 'HƯỚNG DẪN': { pitch: 1.0, rate: 1.18 }
             },
             init() {
                 if (this.checked || !('speechSynthesis' in window)) return;
@@ -7424,7 +7636,25 @@
                 u.onend = u.onerror = () => { this.pending = Math.max(0, this.pending - 1); };
                 synth.speak(u);
             },
-            stop() { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); this.pending = 0; }
+            stop() {
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                this.pending = 0;
+                const label = document.getElementById('btn-brief-audio-label');
+                if (label) label.textContent = 'Nghe bối cảnh';
+            },
+            toggleBriefingStory() {
+                if (!('speechSynthesis' in window)) return;
+                const synth = window.speechSynthesis;
+                if (synth.speaking) {
+                    this.stop();
+                    return;
+                }
+                if (activeMission && activeMission.story) {
+                    const label = document.getElementById('btn-brief-audio-label');
+                    if (label) label.textContent = 'Dừng đọc';
+                    this.speak('DẪN TRUYỆN', activeMission.story, true);
+                }
+            }
         };
 
         let missionRadioLog = [];
@@ -7489,7 +7719,8 @@
             clearTimeout(showRadio.timer);
             showRadio.timer = setTimeout(() => box.classList.remove('is-visible'), 6500);
             SoundFX.radio();
-            if (who !== 'HỆ THỐNG') Voice.speak(who, text, false);
+            // Truyen tin tuc thoi, ngat loi cu de khong bi tre nhip voi hien thi tren man hinh
+            if (who !== 'HỆ THỐNG') Voice.speak(who, text, true);
         }
 
         function onBomberDowned() {

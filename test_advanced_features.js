@@ -84,11 +84,13 @@ const windowMock = {
     cancelAnimationFrame: () => {},
     setTimeout: (fn, delay) => 1,
     clearTimeout: () => {},
+    setInterval: (fn, delay) => 1,
+    clearInterval: () => {},
     AudioContext: function() {
         return {
             state: 'running', currentTime: 0, sampleRate: 44100,
             createBuffer: () => ({ getChannelData: () => new Float32Array(100) }),
-            createGain: () => ({ gain: { value: 1, setValueAtTime: () => {}, exponentialRampToValueAtTime: () => {} }, connect: () => {} }),
+            createGain: () => ({ gain: { value: 1, setValueAtTime: () => {}, exponentialRampToValueAtTime: () => {}, setTargetAtTime: () => {}, linearRampToValueAtTime: () => {} }, connect: () => {} }),
             createOscillator: () => ({ frequency: { setValueAtTime: () => {} }, connect: () => {}, start: () => {}, stop: () => {} }),
             createDynamicsCompressor: () => ({ threshold: {}, ratio: {}, attack: {}, release: {}, connect: () => {} }),
             createConvolver: () => ({ connect: () => {} }),

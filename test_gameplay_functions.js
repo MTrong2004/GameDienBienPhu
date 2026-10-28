@@ -93,6 +93,14 @@ const windowMock = {
     clearTimeout: (tid) => {
         delete timers[tid];
     },
+    setInterval: (fn, delay) => {
+        const tid = timerCounter++;
+        timers[tid] = fn;
+        return tid;
+    },
+    clearInterval: (tid) => {
+        delete timers[tid];
+    },
     AudioContext: function () {
         return {
             state: 'running',
@@ -104,7 +112,8 @@ const windowMock = {
                     value: 1,
                     setValueAtTime: () => { },
                     exponentialRampToValueAtTime: () => { },
-                    linearRampToValueAtTime: () => { }
+                    linearRampToValueAtTime: () => { },
+                    setTargetAtTime: () => { }
                 },
                 connect: () => { }
             }),
