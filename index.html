@@ -535,7 +535,7 @@
         }
 
         /* ---- In-game HUD helpers ---- */
-        body.in-menu .hud-el { display: none !important; }
+        body.in-menu .hud-el { display: none !important; } .hidden { display: none;} #modal-tactical-guide, #modal-radio-log { background: rgba(3, 6, 10, 0.97); z-index: 60;}
         .tool-btn {
             font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.05em; font-size: 12px;
             padding: 3px 10px; color: #E4E4E7; background: rgba(4, 8, 10, 0.6); border: 1px solid rgba(255, 255, 255, 0.16); cursor: pointer;
@@ -897,7 +897,7 @@
         }
     </style>
 </head>
-<body>
+<body class="in-menu">
 
     <!-- 0. MENUS: MAIN · CAMPAIGN · BRIEFING · PAUSE · DEBRIEF · VICTORY · TACTICAL GUIDE · RADIO LOG -->
     <div id="screen-menu" class="screen is-open">
@@ -1137,7 +1137,7 @@
             <div class="flex items-center justify-between border-b border-emerald/30 pb-3 mb-4">
                 <div>
                     <span class="font-mono text-xs text-brass uppercase tracking-widest block">CẨM NANG TÁC CHIẾN // QUÂN CHỦNG PHÒNG KHÔNG - KHÔNG QUÂN</span>
-                    <h2 class="screen-title text-2xl sm:text-3xl" style="margin:0">Nghệ Thuật &amp; Thao Tác Đánh Pháo Đài Bay B-52</h2>
+                    <h2 class="screen-title text-2xl sm:text-3xl" style="margin:0">Nghệ Thuật &amp; Thao Tác Đánh Pháo Đài Bay B‑52</h2>
                 </div>
                 <button class="menu-btn subtle" onclick="toggleTacticalGuide(false)">Đóng [Esc/H]</button>
             </div>
@@ -7668,6 +7668,8 @@ const MISSIONS = [
                     btnContinue.style.fontWeight = '';
                 }
             }
+            const btnOpenCampaign = document.getElementById('btn-open-campaign');
+            if (btnOpenCampaign) btnOpenCampaign.classList.remove('primary');
         }
 
         function backToMenuAttract() {
