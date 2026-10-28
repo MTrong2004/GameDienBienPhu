@@ -1,0 +1,9 @@
+# AI & Tooling
+.agents/
+.claude/
+temp_game_script.js
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+.DS_Store
