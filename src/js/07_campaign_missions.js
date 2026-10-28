@@ -383,11 +383,11 @@ const MISSIONS = [
                 mode: "SAM2",
                 camera: "DECK",
                 briefing: [
-                    "Đúng 22h05 đêm 26/12, vừa hết 36 giờ ngừng ném bom, địch đồng loạt tung <b>105 lần chiếc B-52</b> cùng 110 lần máy bay tiêm kích tấn công ồ ạt từ nhiều hướng: Tây Bắc, Tây Nam và Đông Nam.",
+                    "Đúng 22h05 đêm 26/12, vừa hết 36 giờ ngừng ném bom, địch đồng loạt tung <b>105 lần chiếc B-52</b> (phía Mỹ ghi 120 lần chiếc) cùng 110 lần máy bay tiêm kích tấn công ồ ạt từ nhiều hướng: Tây Bắc, Tây Nam và Đông Nam.",
                     "Bom rải thảm dã man tàn phá phố Khâm Thiên, khu Định Công, An Dương, chôn vùi hàng trăm người dân vô tội. Khâm Thiên chìm trong biển lửa.",
                     "Toàn bộ lưới lửa tên lửa phòng không Hà Nội vào trận quyết chiến lịch sử. Hãy giữ vững ý chí, đánh hiệp đồng tập trung hỏa lực bắn rơi tại chỗ pháo đài bay địch."
                 ],
-                forces: "cuộc tập kích lớn nhất lịch sử: <b>105 lần chiếc B-52</b> dội bom cùng hơn 110 lần máy bay tiêm kích yểm hộ từ 3 hướng.",
+                forces: "cuộc tập kích lớn nhất lịch sử: <b>105 lần chiếc B-52</b> (phía Mỹ ghi 120 lần chiếc) dội bom cùng hơn 110 lần máy bay tiêm kích yểm hộ từ 3 hướng.",
                 kills: 7, ammo: 18, timeLimit: 320, speed: 1.15,
                 waves: [3, 12, 24, 40, 58, 76, 95, 115],
                 jam: {"power": 8.0, "barrage": 0.16, "retune": 25, "lookThrough": 1.6, "chaff": true, "startFreq": 2930},
@@ -455,7 +455,7 @@ const MISSIONS = [
                     win: "5121 đã bắn rơi B-52 — kỳ tích Không quân nhân dân Việt Nam!"
                 },
                 history: [
-                    "22 giờ 20 phút đêm 27/12/1972, Thượng úy phi công <b>Phạm Tuân</b> lái chiếc tiêm kích MiG-21bis số hiệu 5121 cất cánh từ sân bay Yên Bái, bắn hạ 1 chiếc B-52 trên vùng trời Mộc Châu – Sơn La, rồi hạ cánh an toàn.",
+                    "22 giờ 20 phút đêm 27/12/1972, Thượng úy phi công <b>Phạm Tuân</b> lái chiếc tiêm kích MiG-21MF số hiệu 5121 cất cánh từ sân bay Yên Bái, bắn hạ 1 chiếc B-52 trên vùng trời Mộc Châu – Sơn La, rồi hạ cánh an toàn.",
                     "Đây là chiến công đầu tiên của Không quân nhân dân Việt Nam bắn rơi tại chỗ siêu pháo đài bay B-52 trên không, đập tan huyền thoại B-52 không thể bị tiêm kích đánh chặn.",
                     "Cũng trong đêm 27/12, Tiểu đoàn 72 (Trung đoàn 285) bắn rơi 1 chiếc B-52 cắm xác xuống <b>hồ Hữu Tiệp</b> (làng hoa Ngọc Hà, Ba Đình), nay trở thành di tích lịch sử trường tồn giữa lòng Thủ đô."
                 ]
