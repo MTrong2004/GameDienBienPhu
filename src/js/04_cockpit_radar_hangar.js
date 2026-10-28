@@ -1124,6 +1124,8 @@
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
                                     <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
                                     <div class="text-zinc-200 font-semibold">Di tích Xác máy bay B-52 Hồ Hữu Tiệp</div>
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/B52_wreckage%2C_H%E1%BB%AFu_Ti%E1%BB%87p_Lake%2C_Hanoi.jpg/500px-B52_wreckage%2C_H%E1%BB%AFu_Ti%E1%BB%87p_Lake%2C_Hanoi.jpg?_=20230712062215" alt="Xác máy bay B-52 trong hồ Hữu Tiệp" loading="lazy" onerror="this.style.display='none'" class="w-full h-36 object-cover rounded border border-white/10">
+                                    <div class="text-zinc-400 text-[11px]">Ảnh: Xác B-52 trong hồ Hữu Tiệp. Nguồn: Wikimedia Commons.</div>
                                     <div class="text-zinc-400 text-[11px]">Vị trí: Ngõ 55 phố Hoàng Hoa Thám, làng hoa Ngọc Hà, quận Ba Đình, TP. Hà Nội.</div>
                                     <div class="text-zinc-400 text-[11px]">Hiện vật: Xác máy bay B-52 còn nguyên phần đuôi và động cơ nằm giữa lòng hồ nước giữa lòng Thủ đô.</div>
                                     <div class="pt-1">
@@ -1514,6 +1516,16 @@
                         <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// TƯỞNG NIỆM — NHỮNG NGƯỜI ĐÃ NGÃ XUỐNG</div>
                         <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">12 ngày đêm không chỉ là những con số chiến công. Đằng sau mỗi trận địa là những mái nhà, bệnh viện, trường học bị bom san phẳng và những người dân vô tội. Trang này dành cho họ.</p>
                     </div>
+                    <div class="grid sm:grid-cols-2 gap-3">
+                        <figure class="rounded-lg overflow-hidden border border-white/10 bg-black/50">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/B52_wreckage%2C_H%E1%BB%AFu_Ti%E1%BB%87p_Lake%2C_Hanoi.jpg/500px-B52_wreckage%2C_H%E1%BB%AFu_Ti%E1%BB%87p_Lake%2C_Hanoi.jpg?_=20230712062215" alt="Xác máy bay B-52 nằm giữa hồ Hữu Tiệp, Hà Nội" loading="lazy" onerror="this.style.display='none'" class="w-full h-44 object-cover">
+                            <figcaption class="px-2 py-1.5 text-[11px] text-zinc-400 leading-relaxed">Xác B-52 trong hồ Hữu Tiệp (Ngọc Hà) — chiếc B-52 do Tiểu đoàn 72 bắn rơi đêm 27/12. Ảnh: Wikimedia Commons.</figcaption>
+                        </figure>
+                        <figure class="rounded-lg overflow-hidden border border-white/10 bg-black/50">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Wreckage_of_B52_bomber%2C_downtown_Hanoi%2C_Vietnam.jpg" alt="Xác một chiếc B-52 tại Hà Nội sau 12 ngày đêm" loading="lazy" onerror="this.style.display='none'" class="w-full h-44 object-cover">
+                            <figcaption class="px-2 py-1.5 text-[11px] text-zinc-400 leading-relaxed">Xác một chiếc B-52 tại Hà Nội sau 12 ngày đêm. Ảnh: Wikimedia Commons.</figcaption>
+                        </figure>
+                    </div>
                     <div class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
                         <div class="font-mono text-[11px] text-amber-300 uppercase font-bold">PHỐ KHÂM THIÊN — ĐÊM 26/12/1972</div>
                         <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">Đợt rải thảm tàn bạo nhất: bia tưởng niệm tại số nhà 51 Khâm Thiên ghi <b class="text-amber-300">287 đồng bào thiệt mạng</b>; bảng thống kê chi tiết ghi 278 người chết, 290 người bị thương, <b class="text-amber-300">178 trẻ mồ côi</b>. Ngôi nhà 51 Khâm Thiên — nơi 7 người trong một gia đình tử nạn — nay là đài tưởng niệm.</p>
@@ -1536,80 +1548,6 @@
                     </div>
                 </div>
             `            ,
-            'card8': `
-                <div class="space-y-4">
-                    <div class="p-4 rounded-lg bg-black/70 border border-cyan-400/40 flex items-center justify-between flex-wrap gap-2">
-                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold tracking-wider">// TRẮC NGHIỆM — 7 CÂU VỀ 12 NGÀY ĐÊM</div>
-                        <div class="flex items-center gap-2">
-                            <span id="quiz-score" class="font-mono text-[11px] text-zinc-300">Điểm: 0/7 · Đã trả lời: 0/7</span>
-                            <button onclick="quizReset()" class="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/15 text-[11px] font-mono">Chơi lại</button>
-                        </div>
-                    </div>
-                    <div data-quiz-q="0" class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
-                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold">CÂU 1</div>
-                        <div class="text-xs sm:text-sm text-zinc-100 font-semibold leading-relaxed">Chiếc B-52 đầu tiên bị bắn rơi lúc mấy giờ, đêm nào?</div>
-                        <button onclick="quizAnswer(0,0,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">20h13, đêm 18/12</button>
-                        <button onclick="quizAnswer(0,1,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">22h20, đêm 27/12</button>
-                        <button onclick="quizAnswer(0,2,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">21h40, đêm 28/12</button>
-                        <button onclick="quizAnswer(0,3,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">23h16, đêm 29/12</button>
-                        <div class="quiz-expl hidden text-xs text-emerald-300 leading-relaxed bg-emerald-950/30 p-2 rounded border border-emerald-500/20">Tiểu đoàn 59 (Trung đoàn Tên lửa 261) phóng 2 quả SAM-2, hạ B-52G đầu tiên tại cánh đồng Chuôm, Phù Lỗ.</div>
-                    </div>
-                    <div data-quiz-q="1" class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
-                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold">CÂU 2</div>
-                        <div class="text-xs sm:text-sm text-zinc-100 font-semibold leading-relaxed">Đêm nào phòng không ta bắn rơi nhiều B-52 nhất?</div>
-                        <button onclick="quizAnswer(1,0,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Đêm 18/12 (3 chiếc)</button>
-                        <button onclick="quizAnswer(1,1,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Đêm 20/12 (7 chiếc)</button>
-                        <button onclick="quizAnswer(1,2,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Đêm 26/12 (8 chiếc)</button>
-                        <button onclick="quizAnswer(1,3,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Đêm 29/12 (1 chiếc)</button>
-                        <div class="quiz-expl hidden text-xs text-emerald-300 leading-relaxed bg-emerald-950/30 p-2 rounded border border-emerald-500/20">Hơn 1 giờ giao tranh đêm 26/12, lưới lửa ba thứ quân bắn rơi 8 B-52, trong đó 4 chiếc rơi tại chỗ.</div>
-                    </div>
-                    <div data-quiz-q="2" class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
-                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold">CÂU 3</div>
-                        <div class="text-xs sm:text-sm text-zinc-100 font-semibold leading-relaxed">Anh hùng Phạm Tuân lái máy bay nào bắn rơi B-52 đêm 27/12?</div>
-                        <button onclick="quizAnswer(2,0,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">MiG-21bis số hiệu 5121</button>
-                        <button onclick="quizAnswer(2,1,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">MiG-21MF số hiệu 5121</button>
-                        <button onclick="quizAnswer(2,2,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">MiG-21MF số hiệu 5046</button>
-                        <button onclick="quizAnswer(2,3,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">F-4</button>
-                        <div class="quiz-expl hidden text-xs text-emerald-300 leading-relaxed bg-emerald-950/30 p-2 rounded border border-emerald-500/20">Cất cánh từ Yên Bái lúc 22h20, bắn rơi B-52 trên vùng trời Mộc Châu (Sơn La). Lưu ý: nhãn mô hình trong game vẫn ghi “bis” theo thiết kế, nhưng chiếc 5121 lịch sử là MiG-21MF.</div>
-                    </div>
-                    <div data-quiz-q="3" class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
-                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold">CÂU 4</div>
-                        <div class="text-xs sm:text-sm text-zinc-100 font-semibold leading-relaxed">Bia tưởng niệm phố Khâm Thiên ghi bao nhiêu đồng bào thiệt mạng đêm 26/12?</div>
-                        <button onclick="quizAnswer(3,0,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">178 người</button>
-                        <button onclick="quizAnswer(3,1,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">290 người</button>
-                        <button onclick="quizAnswer(3,2,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">278 người</button>
-                        <button onclick="quizAnswer(3,3,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">287 người</button>
-                        <div class="quiz-expl hidden text-xs text-emerald-300 leading-relaxed bg-emerald-950/30 p-2 rounded border border-emerald-500/20">287 là số trên bia tại 51 Khâm Thiên; bảng thống kê chi tiết ghi 278 chết, 290 bị thương, 178 trẻ mồ côi.</div>
-                    </div>
-                    <div data-quiz-q="4" class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
-                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold">CÂU 5</div>
-                        <div class="text-xs sm:text-sm text-zinc-100 font-semibold leading-relaxed">36 giờ ngừng ném bom dịp Giáng sinh, ta dùng để làm gì?</div>
-                        <button onclick="quizAnswer(4,0,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Sơ tán dân khỏi Hà Nội</button>
-                        <button onclick="quizAnswer(4,1,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Cơ động trận địa, lắp ráp đạn SAM-2</button>
-                        <button onclick="quizAnswer(4,2,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Đàm phán ở Paris</button>
-                        <button onclick="quizAnswer(4,3,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">Nghỉ ngơi đón lễ</button>
-                        <div class="quiz-expl hidden text-xs text-emerald-300 leading-relaxed bg-emerald-950/30 p-2 rounded border border-emerald-500/20">“36 giờ quý hơn vàng”: thần tốc lắp ráp đạn, cơ động trận địa, sẵn sàng cho đợt đánh lớn đêm 26/12.</div>
-                    </div>
-                    <div data-quiz-q="5" class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
-                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold">CÂU 6</div>
-                        <div class="text-xs sm:text-sm text-zinc-100 font-semibold leading-relaxed">Tổng kết chiến dịch: ta bắn rơi bao nhiêu máy bay, trong đó bao nhiêu B-52?</div>
-                        <button onclick="quizAnswer(5,0,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">81 máy bay, 34 B-52</button>
-                        <button onclick="quizAnswer(5,1,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">81 máy bay, 15 B-52</button>
-                        <button onclick="quizAnswer(5,2,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">34 máy bay, 5 F-111</button>
-                        <button onclick="quizAnswer(5,3,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">129 máy bay, 90 B-52</button>
-                        <div class="quiz-expl hidden text-xs text-emerald-300 leading-relaxed bg-emerald-950/30 p-2 rounded border border-emerald-500/20">Đầy đủ: 34 B-52, 5 F-111A, 21 F-4CE, 4 A-6A, 12 A-7, 1 F-105D, 2 RA-5C, 1 HH-53, 1 UAV 147-SC. (15 là số phía Mỹ thừa nhận.)</div>
-                    </div>
-                    <div data-quiz-q="6" class="p-4 rounded-lg bg-black/70 border border-white/10 space-y-2">
-                        <div class="font-mono text-[11px] text-cyan-300 uppercase font-bold">CÂU 7</div>
-                        <div class="text-xs sm:text-sm text-zinc-100 font-semibold leading-relaxed">Sau chiến dịch, Hiệp định Paris được ký ngày nào?</div>
-                        <button onclick="quizAnswer(6,0,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">30/12/1972</button>
-                        <button onclick="quizAnswer(6,1,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">8/1/1973</button>
-                        <button onclick="quizAnswer(6,2,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">27/1/1973</button>
-                        <button onclick="quizAnswer(6,3,this)" class="quiz-opt block w-full text-left p-2 rounded bg-zinc-900 border border-white/10 hover:border-emerald-400 text-xs text-zinc-200 transition-colors">29/12/1972</button>
-                        <div class="quiz-expl hidden text-xs text-emerald-300 leading-relaxed bg-emerald-950/30 p-2 rounded border border-emerald-500/20">Mỹ ngừng ném bom từ vĩ tuyến 20 trở ra ngày 30/12/1972; đàm phán nối lại 8/1/1973; Hiệp định ký ngày 27/1/1973.</div>
-                    </div>
-                </div>
-            `
         };
 
         let archivePausedGame = false;
@@ -1635,7 +1573,7 @@
         }
 
         function renderArchiveTab(tabKey) {
-            ['card1', 'card2', 'card3', 'card4', 'card5', 'card6', 'card7', 'card8'].forEach(k => {
+            ['card1', 'card2', 'card3', 'card4', 'card5', 'card6', 'card7'].forEach(k => {
                 const btn = document.getElementById(`tab-btn-${k}`);
                 if (btn) {
                     const isActive = (k === tabKey);
@@ -1746,44 +1684,6 @@
             el.textContent = s + '/' + t + ' đêm';
         }
 
-        const QUIZ_ANSWERS = [0, 2, 1, 3, 1, 0, 2];
-        function quizAnswer(q, o, el) {
-            const box = el ? el.closest('[data-quiz-q]') : null;
-            if (!box || box.dataset.done) return;
-            box.dataset.done = '1';
-            const correct = QUIZ_ANSWERS[q];
-            box.dataset.correct = (o === correct) ? '1' : '0';
-            box.querySelectorAll('.quiz-opt').forEach((b, j) => {
-                b.disabled = true;
-                b.classList.remove('hover:border-emerald-400');
-                if (j === correct) b.classList.add('bg-emerald-500/20', 'border-emerald-400', 'text-emerald-200');
-                else if (b === el) b.classList.add('bg-red-500/20', 'border-red-400', 'text-red-200');
-            });
-            const expl = box.querySelector('.quiz-expl');
-            if (expl) expl.classList.remove('hidden');
-            const boxes = document.querySelectorAll('#archive-content-area [data-quiz-q]');
-            let done = 0, score = 0;
-            boxes.forEach(b => { if (b.dataset.done) { done++; if (b.dataset.correct === '1') score++; } });
-            const sc = document.getElementById('quiz-score');
-            if (sc) sc.textContent = 'Điểm: ' + score + '/7 · Đã trả lời: ' + done + '/7';
-        }
-        function quizReset() {
-            document.querySelectorAll('#archive-content-area [data-quiz-q]').forEach(box => {
-                delete box.dataset.done;
-                delete box.dataset.correct;
-                box.querySelectorAll('.quiz-opt').forEach(b => {
-                    b.disabled = false;
-                    b.classList.remove('bg-emerald-500/20', 'border-emerald-400', 'text-emerald-200', 'bg-red-500/20', 'border-red-400', 'text-red-200');
-                    b.classList.add('hover:border-emerald-400');
-                });
-                const expl = box.querySelector('.quiz-expl');
-                if (expl) expl.classList.add('hidden');
-            });
-            const sc = document.getElementById('quiz-score');
-            if (sc) sc.textContent = 'Điểm: 0/7 · Đã trả lời: 0/7';
-        }
-        window.quizAnswer = quizAnswer;
-        window.quizReset = quizReset;
         window.filterArchive = filterArchive;
         window.setAllNights = setAllNights;
         window.expandNight = expandNight;
