@@ -1548,32 +1548,52 @@
 
     <!-- Bottom-Right Dual CRT Radar Scopes (SNR-75 Fan Song Sector + P-35 Circular Scope as in Image 3) -->
     <div id="hud-right-radar" class="hud-el fixed bottom-4 right-4 z-20 hidden sm:flex flex-col gap-2 tactical-panel rounded-xl p-2.5 pointer-events-none font-mono">
-        <div class="flex items-end gap-2">
-        <!-- Secondary Sector Scan Scope (B-52 Elevation/Azimuth Fan Song) -->
-        <div class="flex flex-col items-center">
-            <span class="text-[8px] text-emerald mb-0.5">FAN SONG ±20°</span>
-            <canvas id="sector-scope-canvas" width="92" height="92" class="rounded border border-emerald/40 bg-[#03100A]"></canvas>
-            <span class="text-[8px] text-muted mt-0.5">ĐIỆN NĂNG: 92%</span>
-        </div>
-        <!-- Primary 360° P-35 & SNR-75 Radar Scope -->
-        <div class="flex flex-col items-center">
-            <div class="w-full flex items-center justify-between text-[9px] text-emerald mb-0.5 px-0.5">
-                <span>RADAR: HOẠT ĐỘNG</span>
-                <span id="radar-freq-tag" class="text-alabaster font-bold">76 MHz</span>
+        <div class="flex items-end gap-2.5">
+            <!-- Secondary Sector Scan Scope (B-52 Elevation/Azimuth Fan Song) -->
+            <div class="flex flex-col items-center">
+                <div class="w-full flex items-center justify-between text-[8px] text-emerald mb-0.5 px-0.5">
+                    <span class="flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#10B981]"></span>
+                        SNR-75 ±20°
+                    </span>
+                    <span class="text-zinc-400">GÓC BÁM</span>
+                </div>
+                <div class="relative rounded-lg overflow-hidden border border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.25)]">
+                    <canvas id="sector-scope-canvas" width="104" height="104" class="block bg-[#020b06]"></canvas>
+                    <div class="absolute inset-0 pointer-events-none bg-gradient-to-tr from-transparent via-emerald-400/5 to-white/10 rounded-lg"></div>
+                </div>
+                <span class="text-[8px] text-zinc-400 mt-0.5">ĐÀI PHÁT: 16 HZ</span>
             </div>
-            <canvas id="radar-scope-canvas" width="128" height="128" class="rounded border border-emerald/50 bg-[#03100A]"></canvas>
-            <div class="w-full flex items-center justify-between text-[8px] text-muted mt-0.5 px-0.5">
-                <span>TẦM QUÉT: 45 KM</span>
-                <span id="radar-snr-tag" class="text-emerald font-bold">ECCM: TỐI ƯU</span>
+            <!-- Primary 360° P-35 & SNR-75 Radar Scope -->
+            <div class="flex flex-col items-center">
+                <div class="w-full flex items-center justify-between text-[9px] text-emerald mb-0.5 px-0.5">
+                    <span class="flex items-center gap-1 font-bold">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#10B981]"></span>
+                        P-35 CẢNH GIỚI
+                    </span>
+                    <span id="radar-freq-tag" class="text-amber-300 font-bold">76 MHz</span>
+                </div>
+                <div class="relative rounded-full overflow-hidden border-2 border-emerald-500/60 shadow-[0_0_18px_rgba(16,185,129,0.35)]">
+                    <canvas id="radar-scope-canvas" width="144" height="144" class="block bg-[#020b06]"></canvas>
+                    <div class="absolute inset-0 pointer-events-none bg-gradient-to-tr from-transparent via-emerald-400/5 to-white/15 rounded-full"></div>
+                </div>
+                <div class="w-full flex items-center justify-between text-[8px] text-zinc-400 mt-0.5 px-0.5">
+                    <span>TẦM: 45 KM</span>
+                    <span id="radar-snr-tag" class="text-emerald font-bold">ECCM: TỐI ƯU</span>
+                </div>
             </div>
-        </div>
         </div>
         <!-- "Vạch nhiễu tìm thù": tune the receiver until the target separates from the jamming -->
         <div id="eccm-row" class="pointer-events-auto flex flex-col gap-1 text-[11px] border-t border-emerald/25 pt-2" title="Đưa vạch xanh ra khỏi các đỉnh nhiễu đỏ">
-            <div class="flex items-center justify-between"><span class="text-amber-300">TẦN SỐ PHÁT SNR-75</span><span id="eccm-readout" class="text-emerald font-semibold tabular-nums">2960 MHz</span></div>
-            <canvas id="spectrum-canvas" width="236" height="34" class="rounded border border-emerald/30 bg-[#03100A] w-full"></canvas>
+            <div class="flex items-center justify-between"><span class="text-amber-300 font-bold text-[10px]">TẦN SỐ PHÁT SNR-75 (ECCM)</span><span id="eccm-readout" class="text-emerald font-semibold tabular-nums">2960 MHz</span></div>
+            <div class="relative rounded border border-emerald-500/40 overflow-hidden shadow-[0_0_10px_rgba(16,185,129,0.15)]">
+                <canvas id="spectrum-canvas" width="256" height="38" class="block bg-[#020b06] w-full"></canvas>
+            </div>
             <input type="range" id="eccm-slider" min="2900" max="3100" step="1" value="2960" oninput="updateECCMFreq(this.value)" class="eccm-slider w-full">
-            <div class="text-[9px] text-muted">Q / E: nhảy tần ±45 MHz · đỉnh đỏ = máy gây nhiễu</div>
+            <div class="text-[9px] text-zinc-400 flex items-center justify-between">
+                <span>Phím Q / E: Nhảy tần ±45 MHz</span>
+                <span class="text-rose-400 font-bold">Đỉnh đỏ = Nhiễu ALQ</span>
+            </div>
         </div>
     </div>
 
