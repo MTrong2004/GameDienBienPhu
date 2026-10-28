@@ -7,7 +7,9 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 print("=== STARTING COMPREHENSIVE VERIFICATION SUITE ===")
 
-with open('h_n_i_12_ng_y_m_18_12_29_12_1972.html', 'r', encoding='utf-8') as f:
+import os
+target_file = 'index.html' if os.path.exists('index.html') else 'h_n_i_12_ng_y_m_18_12_29_12_1972.html'
+with open(target_file, 'r', encoding='utf-8') as f:
     content = f.read()
 
 # 1. HTML Syntax & DOM Structure Check

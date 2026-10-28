@@ -2,7 +2,8 @@ const fs = require('fs');
 
 console.log("=== RUNNING BEHAVIORAL AND LOGIC UNIT TESTS ===");
 
-const html = fs.readFileSync('h_n_i_12_ng_y_m_18_12_29_12_1972.html', 'utf-8');
+const htmlFile = fs.existsSync('index.html') ? 'index.html' : 'h_n_i_12_ng_y_m_18_12_29_12_1972.html';
+const html = fs.readFileSync(htmlFile, 'utf-8');
 
 // Extract JS between <script> tags
 const scriptMatches = html.match(/<script(?![^>]*src=)[^>]*>([\s\S]*?)<\/script>/gi);
