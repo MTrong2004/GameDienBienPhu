@@ -1575,15 +1575,7 @@
         function renderArchiveTab(tabKey) {
             ['card1', 'card2', 'card3', 'card4', 'card5', 'card6', 'card7'].forEach(k => {
                 const btn = document.getElementById(`tab-btn-${k}`);
-                if (btn) {
-                    const isActive = (k === tabKey);
-                    btn.classList.toggle('border-emerald-500/60', isActive);
-                    btn.classList.toggle('bg-emerald-500/20', isActive);
-                    btn.classList.toggle('text-emerald-300', isActive);
-                    btn.classList.toggle('border-white/10', !isActive);
-                    btn.classList.toggle('bg-black/40', !isActive);
-                    btn.classList.toggle('text-zinc-400', !isActive);
-                }
+                if (btn) btn.classList.toggle('is-active', k === tabKey);
             });
             const contentArea = document.getElementById('archive-content-area');
             if (contentArea && CAMPAIGN_ARCHIVE_CARDS[tabKey]) {
