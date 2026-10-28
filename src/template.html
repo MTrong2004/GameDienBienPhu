@@ -1701,7 +1701,7 @@
 
             <!-- Tab Navigation (5 Tabs) -->
             <div class="px-3 pt-2 pb-2 bg-black/40 border-b border-white/10 shrink-0">
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
                     <button onclick="renderArchiveTab('card1')" id="tab-btn-card1" class="archive-nav-btn text-left p-2 rounded border border-emerald-500/40 bg-emerald-500/15 transition-all">
                         <div class="font-mono text-[10px] uppercase text-emerald-400 font-bold">[01] BIÊN NIÊN &amp; DI TÍCH</div>
                         <div class="text-xs font-semibold truncate text-zinc-200">12 Ngày Đêm &amp; Tọa Độ</div>
@@ -1722,7 +1722,20 @@
                         <div class="font-mono text-[10px] uppercase text-amber-400 font-bold">[05] SỔ TAY HIỆN VẬT</div>
                         <div class="text-xs font-semibold truncate text-zinc-200">Bảo Tàng &amp; Dấu Tích</div>
                     </button>
+                    <button onclick="renderArchiveTab('card6')" id="tab-btn-card6" class="archive-nav-btn text-left p-2 rounded border border-amber-400/30 bg-black/40 transition-all">
+                        <div class="font-mono text-[10px] uppercase text-amber-400 font-bold">[06] NGUỒN &amp; GHI CHÚ</div>
+                        <div class="text-xs font-semibold truncate text-zinc-200">3 nguồn uy tín &amp; số liệu vênh</div>
+                    </button>
                 </div>
+            </div>
+
+            <!-- Archive toolbar: search / expand-collapse / back-to-top -->
+            <div class="px-3 pt-2 pb-2 bg-black/40 border-b border-white/10 shrink-0 flex flex-wrap items-center gap-2">
+                <input id="archive-search" type="text" placeholder="Tìm trong tư liệu: Tiểu đoàn 79, Phạm Tuân, Khâm Thiên…" oninput="filterArchive(this.value)" class="flex-1 min-w-[220px] bg-zinc-900 border border-white/15 rounded px-3 py-1.5 text-xs text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:border-emerald-400">
+                <button onclick="setAllNights(true)" class="px-2.5 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/15 text-[11px] font-mono">Mở tất cả</button>
+                <button onclick="setAllNights(false)" class="px-2.5 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/15 text-[11px] font-mono">Thu tất cả</button>
+                <button onclick="document.getElementById('archive-content-area').scrollTo({top:0,behavior:'smooth'})" class="px-2.5 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/15 text-[11px] font-mono">↑ Đầu trang</button>
+                <span id="archive-search-count" class="font-mono text-[11px] text-zinc-400"></span>
             </div>
 
             <!-- Main Scrollable Content Area -->
@@ -1735,7 +1748,7 @@
                 <div class="flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-emerald animate-pulse"></span>
                     <span id="copy-toast" class="font-mono text-[11px] text-zinc-400">
-                        Nguồn tư liệu: Viện Lịch sử Quân sự Việt Nam · Bảo tàng Chiến thắng B-52 Hà Nội
+                        Nguồn: Đề cương .gov.vn · Tạp chí Quốc phòng toàn dân · Bảo tàng Lịch sử Quốc gia
                     </span>
                 </div>
                 <div class="flex items-center gap-2">
