@@ -41,7 +41,7 @@
             document.body.classList.toggle('in-menu', name !== null && name !== 'pause');
             if (name === 'campaign') renderMissionList();
             if (name === 'menu') renderMenuProgress();
-            if (name === 'archive' && typeof renderArchiveTab === 'function') renderArchiveTab('card1');
+            if (name === 'archive' && typeof showArchiveNight === 'function') showArchiveNight('night-node-1');
         }
 
         function continueCampaign() {
@@ -983,7 +983,7 @@
         window.onload = async function () {
             await loadOptionalGLBModels();
             init3DEngine();
-            renderArchiveTab('card1');
+            showArchiveNight('night-node-1');
             document.body.classList.add('in-menu');
             backToMenuAttract();
             renderMenuProgress();
