@@ -1375,9 +1375,9 @@
             const nCols = [colNarr, colImg, colPlace].filter(Boolean).length;
             const placeLabel = siteHTML ? 'ĐỊA ĐIỂM & DI TÍCH' : 'TƯỞNG NIỆM';
             let colsHTML = `<div class="${nCols >= 3 ? 'archive-cols-3' : 'archive-cols-2'}">`;
-            colsHTML += `<div><div class="archive-col-label">DIỄN BIẾN</div>${colNarr}</div>`;
-            if (colImg) colsHTML += `<div><div class="archive-col-label">HÌNH ẢNH</div>${colImg}</div>`;
-            if (colPlace) colsHTML += `<div><div class="archive-col-label">${placeLabel}</div>${colPlace}</div>`;
+            colsHTML += `<div class="archive-col-card archive-narrative"><div class="archive-col-header">// DIỄN BIẾN</div>${colNarr}</div>`;
+            if (colImg) colsHTML += `<div class="archive-col-card"><div class="archive-col-header">// HÌNH ẢNH</div>${colImg}</div>`;
+            if (colPlace) colsHTML += `<div class="archive-col-card"><div class="archive-col-header">// ${placeLabel}</div>${colPlace}</div>`;
             colsHTML += '</div>';
             const order = ARCHIVE_NIGHT_ORDER;
             const idx = order.indexOf(id);
