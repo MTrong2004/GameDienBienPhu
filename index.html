@@ -569,8 +569,9 @@
         .archive-detail { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 22px; }
         .archive-detail > div:first-child { padding-bottom: 12px; margin-bottom: 20px; }
         .archive-detail > div:first-child span:first-child { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px; font-weight: 700; }
-        .archive-col-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: #fbbf24; font-weight: bold; margin-bottom: 12px; }
-        .archive-cols-3 > div:first-child > *:last-child, .archive-cols-2 > div:first-child > *:last-child { max-width: 72ch; }
+        .archive-col-card { border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 20px 22px; background: rgba(0,0,0,0.4); }
+        .archive-col-header { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.15em; color: #fbbf24; font-weight: bold; margin-bottom: 16px; text-transform: uppercase; }
+        .archive-narrative { font-family: 'Newsreader', serif; font-size: 18px; line-height: 1.9; color: #e4e4e7; max-width: 72ch; }
         .archive-detail > div:first-child > span { font-size: 12px; padding: 4px 10px; }
         .archive-cols-3 { display: grid; grid-template-columns: 1.5fr 1fr 1.2fr; gap: 20px; align-items: start; }
         .archive-cols-2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; align-items: start; }
@@ -5340,9 +5341,9 @@
             const nCols = [colNarr, colImg, colPlace].filter(Boolean).length;
             const placeLabel = siteHTML ? 'ĐỊA ĐIỂM & DI TÍCH' : 'TƯỞNG NIỆM';
             let colsHTML = `<div class="${nCols >= 3 ? 'archive-cols-3' : 'archive-cols-2'}">`;
-            colsHTML += `<div><div class="archive-col-label">DIỄN BIẾN</div>${colNarr}</div>`;
-            if (colImg) colsHTML += `<div><div class="archive-col-label">HÌNH ẢNH</div>${colImg}</div>`;
-            if (colPlace) colsHTML += `<div><div class="archive-col-label">${placeLabel}</div>${colPlace}</div>`;
+            colsHTML += `<div class="archive-col-card archive-narrative"><div class="archive-col-header">// DIỄN BIẾN</div>${colNarr}</div>`;
+            if (colImg) colsHTML += `<div class="archive-col-card"><div class="archive-col-header">// HÌNH ẢNH</div>${colImg}</div>`;
+            if (colPlace) colsHTML += `<div class="archive-col-card"><div class="archive-col-header">// ${placeLabel}</div>${colPlace}</div>`;
             colsHTML += '</div>';
             const order = ARCHIVE_NIGHT_ORDER;
             const idx = order.indexOf(id);
