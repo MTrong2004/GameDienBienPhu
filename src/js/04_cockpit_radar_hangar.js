@@ -1238,6 +1238,14 @@
 `;
         const ARCHIVE_NIGHT_ORDER = ['night-node-1', 'night-node-2', 'night-node-3', 'night-node-4', 'night-node-5', 'night-node-6', 'night-node-7', 'night-node-8', 'night-node-9', 'night-node-10', 'night-node-11', 'night-node-12', 'night-node-13'];
         const ARCHIVE_MEMORIAL_EXTRA = {
+            'night-node-2': `<figure class="rounded-lg overflow-hidden border border-white/10 bg-black/50">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/23-04-177-40mm-gun.jpg" alt="Pháo phòng không 40mm" loading="lazy" onerror="this.style.display='none'" class="w-full h-56 object-cover">
+                <figcaption class="px-3 py-2 text-[13px] text-zinc-400 leading-relaxed">Minh họa: pháo phòng không 40mm — một mắt lưới trong lưới lửa tầm thấp bảo vệ Hà Nội. Ảnh: Wikimedia Commons.</figcaption>
+            </figure>`,
+            'night-node-3': `<figure class="rounded-lg overflow-hidden border border-white/10 bg-black/50">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/SA-2-Guideline-1-1.jpg" alt="Tên lửa SAM-2 trên bệ phóng" loading="lazy" onerror="this.style.display='none'" class="w-full h-56 object-cover">
+                <figcaption class="px-3 py-2 text-[13px] text-zinc-400 leading-relaxed">Minh họa: tên lửa SAM-2 trên bệ phóng — vũ khí lập kỷ lục hạ 7 B-52 đêm 20/12. Ảnh: Wikimedia Commons.</figcaption>
+            </figure>`, 
             'night-node-1': `<figure class="rounded-lg overflow-hidden border border-white/10 bg-black/50">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/SA-2_Guideline_surface-to-air_missile.JPEG/1280px-SA-2_Guideline_surface-to-air_missile.JPEG" alt="Tổ hợp tên lửa SAM-2" loading="lazy" onerror="this.style.display='none'" class="w-full h-56 object-cover">
                 <figcaption class="px-3 py-2 text-[13px] text-zinc-400 leading-relaxed">Minh họa: tổ hợp tên lửa SAM-2 — vũ khí của Tiểu đoàn 59 khi hạ chiếc B-52 đầu tiên đêm 18/12. Ảnh: Wikimedia Commons.</figcaption>
@@ -1365,10 +1373,11 @@
             const colImg = figs.length ? `<div class="space-y-4">${figs.join('')}</div>` : '';
             const colPlace = (siteHTML || extraBoxes) ? `<div class="space-y-4">${siteHTML}${extraBoxes}</div>` : '';
             const nCols = [colNarr, colImg, colPlace].filter(Boolean).length;
+            const placeLabel = siteHTML ? 'ĐỊA ĐIỂM & DI TÍCH' : 'TƯỞNG NIỆM';
             let colsHTML = `<div class="${nCols >= 3 ? 'archive-cols-3' : 'archive-cols-2'}">`;
-            colsHTML += colNarr;
-            if (colImg) colsHTML += colImg;
-            if (colPlace) colsHTML += colPlace;
+            colsHTML += `<div><div class="archive-col-label">DIỄN BIẾN</div>${colNarr}</div>`;
+            if (colImg) colsHTML += `<div><div class="archive-col-label">HÌNH ẢNH</div>${colImg}</div>`;
+            if (colPlace) colsHTML += `<div><div class="archive-col-label">${placeLabel}</div>${colPlace}</div>`;
             colsHTML += '</div>';
             const order = ARCHIVE_NIGHT_ORDER;
             const idx = order.indexOf(id);
