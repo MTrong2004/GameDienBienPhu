@@ -1294,6 +1294,7 @@
 
         let _archiveNodesDoc = null;
         let _archiveCurrent = 'night-node-1';
+        let _archiveTimelineBuilt = false;
         function archiveNodes() {
             if (_archiveNodesDoc) return _archiveNodesDoc;
             const holder = document.createElement('div');
@@ -1301,12 +1302,74 @@
             _archiveNodesDoc = holder;
             return holder;
         }
+        function buildArchiveTimeline() {
+            if (_archiveTimelineBuilt) return;
+            const nav = document.getElementById('archive-timeline');
+            if (!nav) return;
+            const holder = archiveNodes();
+            let html = '';
+            ARCHIVE_NIGHT_ORDER.forEach(nid => {
+                const node = holder.querySelector('#' + nid);
+                let date = nid.replace('night-node-', ''), title = nid, badge = '';
+                if (node) {
+                    const spans = node.querySelectorAll('span');
+                    const titleText = spans.length ? (spans[0].textContent || '') : '';
+                    const m = titleText.match(/(\d{1,2})\.12/);
+                    if (m) date = m[1] + '/12';
+                    const tp = titleText.split('·');
+                    title = tp.length > 1 ? tp[tp.length - 1].trim() : titleText;
+                    if (spans.length > 1) badge = spans[spans.length - 1].textContent || '';
+                }
+                html += `<button onclick="showArchiveNight('${nid}')" id="tl-ms-${nid}" class="tl-ms"><span class="tl-ms-text"><span class="tl-ms-date">${date}</span><span class="tl-ms-title">${title}</span>${badge ? `<span class="tl-ms-badge">${badge}</span>` : ''}</span></button>`;
+            });
+            nav.innerHTML = html;
+            _archiveTimelineBuilt = true;
+        }
         function showArchiveNight(id) {
             const holder = archiveNodes();
             const node = holder.querySelector('#' + id);
             const area = document.getElementById('archive-content-area');
             if (!node || !area) return;
             _archiveCurrent = id;
+            buildArchiveTimeline();
+            const header = node.children[0];
+            const body = node.children[1];
+            let narrative = null, site = null;
+            if (body) {
+                if (body.classList.contains('space-y-4')) { narrative = body.children[0]; site = body.children[1] || null; }
+                else { narrative = body; }
+            }
+            const figs = [];
+            const extra = ARCHIVE_MEMORIAL_EXTRA[id] || '';
+            const tmp = document.createElement('div');
+            tmp.innerHTML = extra;
+            Array.from(tmp.children).forEach(el => {
+                if (el.tagName === 'FIGURE') figs.push(el.outerHTML);
+            });
+            const extraBoxes = Array.from(tmp.children).filter(el => el.tagName === 'DIV').map(el => el.outerHTML).join('');
+            let siteHTML = '';
+            if (site) {
+                const siteClone = site.cloneNode(true);
+                siteClone.querySelectorAll('img').forEach(img => {
+                    const cap = img.nextElementSibling;
+                    let fig = '<figure class="rounded-lg overflow-hidden border border-white/10 bg-black/50">';
+                    fig += img.outerHTML;
+                    if (cap && cap.tagName === 'DIV' && (cap.textContent || '').trim().startsWith('Ảnh:')) { fig += cap.outerHTML; cap.remove(); }
+                    fig += '</figure>';
+                    figs.push(fig);
+                    img.remove();
+                });
+                siteHTML = siteClone.outerHTML;
+            }
+            const colNarr = narrative ? narrative.outerHTML : '';
+            const colImg = figs.length ? `<div class="space-y-4">${figs.join('')}</div>` : '';
+            const colPlace = (siteHTML || extraBoxes) ? `<div class="space-y-4">${siteHTML}${extraBoxes}</div>` : '';
+            const nCols = [colNarr, colImg, colPlace].filter(Boolean).length;
+            let colsHTML = `<div class="${nCols >= 3 ? 'archive-cols-3' : 'archive-cols-2'}">`;
+            colsHTML += colNarr;
+            if (colImg) colsHTML += colImg;
+            if (colPlace) colsHTML += colPlace;
+            colsHTML += '</div>';
             const order = ARCHIVE_NIGHT_ORDER;
             const idx = order.indexOf(id);
             const prev = idx > 0 ? order[idx - 1] : null;
@@ -1315,38 +1378,15 @@
             nav += prev ? `<button onclick="showArchiveNight('${prev}')" class="px-4 py-2 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-white/15 text-sm font-mono">← Đêm trước</button>` : '<span></span>';
             nav += next ? `<button onclick="showArchiveNight('${next}')" class="px-4 py-2 rounded bg-emerald-600/80 hover:bg-emerald-500/80 text-white border border-emerald-400/50 text-sm font-mono font-bold">Đêm sau →</button>` : '<span></span>';
             nav += '</div>';
-            area.innerHTML = node.outerHTML + (ARCHIVE_MEMORIAL_EXTRA[id] || '') + nav;
+            area.innerHTML = `<div class="archive-detail">${header ? header.outerHTML : ''}${colsHTML}</div>` + nav;
             area.scrollTop = 0;
             order.forEach(nid => {
-                const btn = document.getElementById('tl-btn-' + nid);
+                const btn = document.getElementById('tl-ms-' + nid);
                 if (btn) btn.classList.toggle('is-active', nid === id);
             });
         }
-        function normVi(s) {
-            return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
-        }
-        function archiveSearch(q) {
-            const query = normVi(q).trim();
-            const countEl = document.getElementById('archive-search-count');
-            const holder = archiveNodes();
-            ARCHIVE_NIGHT_ORDER.forEach(nid => {
-                const btn = document.getElementById('tl-btn-' + nid);
-                if (!btn) return;
-                btn.classList.remove('tl-match');
-                if (!query) return;
-                const node = holder.querySelector('#' + nid);
-                if (node && normVi(node.textContent).includes(query)) btn.classList.add('tl-match');
-            });
-            if (!query) { if (countEl) countEl.textContent = ''; return; }
-            const matches = ARCHIVE_NIGHT_ORDER.filter(nid => {
-                const node = holder.querySelector('#' + nid);
-                return node && normVi(node.textContent).includes(query);
-            });
-            if (countEl) countEl.textContent = matches.length ? (matches.length + '/13 đêm khớp') : 'Không tìm thấy';
-            if (matches.length) showArchiveNight(matches[0]);
-        }
         window.showArchiveNight = showArchiveNight;
-        window.archiveSearch = archiveSearch;
+
 
         function copyCampaignSummary() {
             const text = `TÓM TẮT CHIẾN DỊCH: HÀ NỘI 12 NGÀY ĐÊM (18/12 – 29/12/1972) — KỲ TÍCH ĐIỆN BIÊN PHỦ TRÊN KHÔNG
