@@ -880,18 +880,18 @@ function onResize() {
 const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
 
                         <!-- ĐÊM 1 -->
-                        <div id="night-node-1" class="p-4 rounded-lg bg-black/70 border border-emerald-500/35 space-y-3">
-                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-emerald-500/20 pb-2">
+                        <div id="night-node-1" class="p-4 rounded-lg bg-black/70 border border-amber-400/40 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-amber-400/20 pb-2">
                                 <div class="flex items-center gap-2">
                                     <span class="font-mono text-xs font-bold text-amber-400">ĐÊM 1 // 18.12.1972 · ĐÒN PHỦ ĐẦU TẠI PHÙ LỖ</span>
                                 </div>
-                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">HẠ 3 B-52 (2 RƠI TẠI CHỖ)</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-400/40">HẠ 3 B-52 (2 RƠI TẠI CHỖ)</span>
                             </div>
                             <div class="space-y-4">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
                                     <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 90 lần chiếc B-52 (phía Mỹ ghi 129 lần chiếc) cùng 135 máy bay chiến thuật ném bom dồn dập vào Đông Anh, Gia Lâm, Yên Viên và đài phát thanh Mễ Trì.</div>
                                     <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Lúc <strong>20 giờ 13 phút</strong>, kíp chiến đấu <strong>Tiểu đoàn 59 (Trung đoàn Tên lửa 261)</strong> dưới sự chỉ huy của Tiểu đoàn trưởng Nguyễn Thăng đã phóng 2 quả tên lửa SAM-2, bắn rơi tại chỗ chiếc B-52G đầu tiên trên cánh đồng Chuôm (xã Phù Lỗ, Đông Anh cũ). Cả đêm ta bắn rơi 3 B-52.</div>
-                                    <div class="text-emerald-300 font-mono italic text-[11px] bg-emerald-950/30 p-2 rounded border border-emerald-500/20">“Báo cáo Sở chỉ huy: Tiểu đoàn 59 đã bắn rơi B-52 đầu tiên! Pháo đài bay cháy đỏ rực bầu trời phía Bắc!”</div>
+                                    <div class="text-amber-300 font-mono italic text-[11px] bg-amber-950/20 p-2 rounded border border-amber-400/30">“Báo cáo Sở chỉ huy: Tiểu đoàn 59 đã bắn rơi B-52 đầu tiên! Pháo đài bay cháy đỏ rực bầu trời phía Bắc!”</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
                                     <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
@@ -899,7 +899,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                     <div class="text-zinc-400 text-[11px]">Vị trí: Ngã ba Phù Lỗ, Quốc lộ 2, xã Phù Lỗ, huyện Sóc Sơn, TP. Hà Nội.</div>
                                     <div class="text-zinc-400 text-[11px]">Hiện vật: Xác chiếc B-52 đầu tiên được trục vớt, trưng bày tại Bảo tàng Lịch sử Quân sự Việt Nam.</div>
                                     <div class="pt-1">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Tuong+dai+Chien+thang+B52+Phu+Lo+Soc+Son+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Tuong+dai+Chien+thang+B52+Phu+Lo+Soc+Son+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                     </div>
@@ -908,7 +908,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                         <div class="text-zinc-400 text-[11px]">Vị trí: Xã Cổ Loa, huyện Đông Anh &amp; xã Tráng Việt, huyện Mê Linh, TP. Hà Nội.</div>
                                         <div class="text-zinc-400 text-[11px]">Nơi Tiểu đoàn 59 phóng 2 quả đạn hạ chiếc B-52 đầu tiên đêm 18/12; xác máy bay rơi tại cánh đồng Phù Lỗ.</div>
                                         <div class="pt-1 flex flex-wrap gap-1.5">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Co+Loa+Dong+Anh+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Co+Loa+Dong+Anh+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                         </div>
@@ -933,7 +933,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                     <div class="text-zinc-200 font-semibold">Trận địa tên lửa Chèm &amp; Đài Tiếng nói Việt Nam Mễ Trì</div>
                                     <div class="text-zinc-400 text-[11px]">Vị trí: Đình Chèm, phường Thụy Phương, quận Bắc Từ Liêm &amp; Khu vực Mễ Trì, Nam Từ Liêm, Hà Nội.</div>
                                     <div class="pt-1">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Dinh+Chem+Thuy+Phuong+Bac+Tu+Liem+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Dinh+Chem+Thuy+Phuong+Bac+Tu+Liem+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                     </div>
@@ -957,7 +957,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                     <div class="text-zinc-200 font-semibold">Ga Yên Viên &amp; Di tích Cầu Đuống</div>
                                     <div class="text-zinc-400 text-[11px]">Vị trí: Thị trấn Yên Viên, huyện Gia Lâm, TP. Hà Nội.</div>
                                     <div class="pt-1">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Ga+Yen+Vien+Gia+Lam+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Ga+Yen+Vien+Gia+Lam+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                     </div>
@@ -979,9 +979,9 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">
                                     <div class="font-mono text-[11px] text-amber-300 uppercase font-bold tracking-wider">// ĐỊA DANH HÔM NAY &amp; DI TÍCH:</div>
                                     <div class="text-zinc-200 font-semibold">Trận địa Tên lửa Đại Đồng (Tiểu đoàn 57)</div>
-                                    <div class="text-zinc-400 text-[11px]">Vị trí: Xã Đại Đồng, huyện Văn Lâm, Hưng Yên (giáp Gia Lâm, Hà Nội). Nơi Anh hùng Nguyễn Văn Phiệt chỉ huy kíp chiến đấu Tiểu đoàn 57 lập công xuất sắc.</div>
+                                    <div class="text-zinc-400 text-[11px]">Vị trí: Xã Đại Mạch, huyện Đông Anh, TP. Hà Nội. Nơi Anh hùng Nguyễn Văn Phiệt chỉ huy kíp chiến đấu Tiểu đoàn 57 lập công xuất sắc.</div>
                                     <div class="pt-1">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Dai+Dong+Van+Lam+Hung+Yen" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Dai+Mach+Dong+Anh+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                     </div>
@@ -1006,7 +1006,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                     <div class="text-zinc-400 text-[11px]">Vị trí: Khuôn viên Bệnh viện Bạch Mai, số 78 Giải Phóng, phường Phương Mai, quận Đống Đa, Hà Nội.</div>
                                     <div class="text-zinc-400 text-[11px]">Dấu tích: Tượng đài đá tạc hình người phụ nữ bế con đau thương bất khuất.</div>
                                     <div class="pt-1">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Benh+vien+Bach+Mai+78+Giai+Phong+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Benh+vien+Bach+Mai+78+Giai+Phong+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                     </div>
@@ -1030,7 +1030,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                     <div class="text-zinc-200 font-semibold">Khu vực Ga Giáp Bát &amp; Văn Điển</div>
                                     <div class="text-zinc-400 text-[11px]">Vị trí: Đường Giải Phóng, phường Thịnh Liệt, quận Hoàng Mai, Hà Nội.</div>
                                     <div class="pt-1">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Ga+Giap+Bat+Hoang+Mai+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Ga+Giap+Bat+Hoang+Mai+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                     </div>
@@ -1054,7 +1054,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                     <div class="text-zinc-200 font-semibold">Trận địa Phòng không Đan Phượng</div>
                                     <div class="text-zinc-400 text-[11px]">Vị trí: Thị trấn Phùng, huyện Đan Phượng, TP. Hà Nội.</div>
                                     <div class="pt-1">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Thi+tran+Phung+Dan+Phuong+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Thi+tran+Phung+Dan+Phuong+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                     </div>
@@ -1078,7 +1078,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                     <div class="text-zinc-200 font-semibold">Nhà máy A31 &amp; Nhà máy Z119 (Cục Kỹ thuật PK-KQ)</div>
                                     <div class="text-zinc-400 text-[11px]">Vị trí: Huyện Chương Mỹ &amp; Đường Trường Chinh, quận Thanh Xuân, Hà Nội.</div>
                                     <div class="pt-1">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Nha+may+A31+Cuc+Ky+thuat+Phong+khong+Khong+quan" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Nha+may+A31+Cuc+Ky+thuat+Phong+khong+Khong+quan" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                     </div>
@@ -1103,7 +1103,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                     <div class="text-zinc-400 text-[11px]">Vị trí: Số 47 – 49 – 51 phố Khâm Thiên, phường Khâm Thiên, quận Đống Đa, Hà Nội.</div>
                                     <div class="text-zinc-400 text-[11px]">Dấu tích: Tượng đài người mẹ ôm con bị bom Mỹ sát hại — biểu tượng bất tử của nỗi đau và ý chí quật cường.</div>
                                     <div class="pt-1">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Dai+tuong+niem+Kham+Thien+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Dai+tuong+niem+Kham+Thien+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                     </div>
@@ -1112,7 +1112,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                         <div class="text-zinc-400 text-[11px]">Vị trí: Phố An Dương, quận Tây Hồ, TP. Hà Nội.</div>
                                         <div class="text-zinc-400 text-[11px]">Cùng đêm 26/12, khu lao động An Dương cũng bị bom B-52 rải thảm cùng lúc với Khâm Thiên và Bạch Mai.</div>
                                         <div class="pt-1 flex flex-wrap gap-1.5">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=An+Duong+Tay+Ho+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=An+Duong+Tay+Ho+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                         </div>
@@ -1122,10 +1122,10 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                         </div>
 
                         <!-- ĐÊM 10 -->
-                        <div id="night-node-10" class="p-4 rounded-lg bg-black/70 border border-cyan-400/40 space-y-3">
-                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-cyan-400/20 pb-2">
-                                <span class="font-mono text-xs font-bold text-cyan-300">ĐÊM 10 // 27.12.1972 · KỲ TÍCH PHẠM TUÂN &amp; B-52 RƠI HỒ HỮU TIỆP</span>
-                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-400/40">HẠ 1 B-52 BẰNG MIG-21 · 1 RƠI HỒ HỮU TIỆP</span>
+                        <div id="night-node-10" class="p-4 rounded-lg bg-black/70 border border-amber-400/40 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-amber-400/20 pb-2">
+                                <span class="font-mono text-xs font-bold text-amber-300">ĐÊM 10 // 27.12.1972 · KỲ TÍCH PHẠM TUÂN &amp; B-52 RƠI HỒ HỮU TIỆP</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-amber-300 font-bold border border-amber-400/40">HẠ 1 B-52 BẰNG MIG-21 · 1 RƠI HỒ HỮU TIỆP</span>
                             </div>
                             <div class="space-y-4">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
@@ -1140,7 +1140,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                     <div class="text-zinc-400 text-[11px]">Vị trí: Ngõ 55 phố Hoàng Hoa Thám, làng hoa Ngọc Hà, quận Ba Đình, TP. Hà Nội.</div>
                                     <div class="text-zinc-400 text-[11px]">Hiện vật: Xác máy bay B-52 còn nguyên phần đuôi và động cơ nằm giữa lòng hồ nước giữa lòng Thủ đô.</div>
                                     <div class="pt-1">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Ho+Huu+Tiep+B52+Ngoc+Ha+Ba+Dinh+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Ho+Huu+Tiep+B52+Ngoc+Ha+Ba+Dinh+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                     </div>
@@ -1149,7 +1149,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                         <div class="text-zinc-400 text-[11px]">Vị trí: TP. Yên Bái, tỉnh Yên Bái.</div>
                                         <div class="text-zinc-400 text-[11px]">Nơi Phạm Tuân xuất kích đêm 27/12, bắn rơi B-52 rồi hạ cánh an toàn.</div>
                                         <div class="pt-1 flex flex-wrap gap-1.5">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Yen+Bai" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Yen+Bai" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                         </div>
@@ -1159,10 +1159,10 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                         </div>
 
                         <!-- ĐÊM 11 -->
-                        <div id="night-node-11" class="p-4 rounded-lg bg-black/70 border border-cyan-400/40 space-y-3">
-                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-cyan-400/20 pb-2">
-                                <span class="font-mono text-xs font-bold text-cyan-300">ĐÊM 11 // 28.12.1972 · QUẢ TÊN LỬA THỨ BA: ANH HÙNG VŨ XUÂN THIỀU</span>
-                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-400/40">HẠ 1 B-52 (CẢM TỬ)</span>
+                        <div id="night-node-11" class="p-4 rounded-lg bg-black/70 border border-amber-400/40 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-amber-400/20 pb-2">
+                                <span class="font-mono text-xs font-bold text-amber-300">ĐÊM 11 // 28.12.1972 · QUẢ TÊN LỬA THỨ BA: ANH HÙNG VŨ XUÂN THIỀU</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-amber-300 font-bold border border-amber-400/40">HẠ 1 B-52 (CẢM TỬ)</span>
                             </div>
                             <div class="space-y-4">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
@@ -1174,7 +1174,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                     <div class="text-zinc-200 font-semibold">Tượng đài &amp; Nhà lưu niệm Anh hùng Vũ Xuân Thiều</div>
                                     <div class="text-zinc-400 text-[11px]">Vị trí: Phố Vũ Xuân Thiều, phường Sài Đồng, quận Long Biên, TP. Hà Nội.</div>
                                     <div class="pt-1">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Tuong+dai+Liet+si+Vu+Xuan+Thieu+Sai+Dong+Long+Bien" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Tuong+dai+Liet+si+Vu+Xuan+Thieu+Sai+Dong+Long+Bien" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                     </div>
@@ -1183,7 +1183,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                         <div class="text-zinc-400 text-[11px]">Vị trí: Huyện Yên Châu, tỉnh Sơn La.</div>
                                         <div class="text-zinc-400 text-[11px]">Nơi Vũ Xuân Thiều hy sinh sau khi bắn cháy B-52 đêm 28/12 (xác B-52 và MiG-21 rơi tại xã Tạ Khoa); ban đầu an táng tại Sơn La, sau đưa về nghĩa trang Văn Điển, Hà Nội.</div>
                                         <div class="pt-1 flex flex-wrap gap-1.5">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Yen+Chau+Son+La" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Yen+Chau+Son+La" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                         </div>
@@ -1193,10 +1193,10 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                         </div>
 
                         <!-- ĐÊM 12 -->
-                        <div id="night-node-12" class="p-4 rounded-lg bg-black/70 border border-emerald-500/50 space-y-3">
-                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-emerald-500/30 pb-2">
-                                <span class="font-mono text-xs font-bold text-emerald-400">ĐÊM 12 // 29.12.1972 · TRẬN ĐÁNH CUỐI CÙNG: KHÚC KHẢI HOÀN TOÀN THẮNG</span>
-                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/50">HẠ 2 B-52 · THẮNG LỢI TRỌN VẸN</span>
+                        <div id="night-node-12" class="p-4 rounded-lg bg-black/70 border border-amber-400/50 space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-2 border-b border-amber-400/30 pb-2">
+                                <span class="font-mono text-xs font-bold text-amber-400">ĐÊM 12 // 29.12.1972 · TRẬN ĐÁNH CUỐI CÙNG: KHÚC KHẢI HOÀN TOÀN THẮNG</span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-amber-400/50">HẠ 2 B-52 · THẮNG LỢI TRỌN VẸN</span>
                             </div>
                             <div class="space-y-4">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
@@ -1208,7 +1208,7 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                     <div class="text-zinc-200 font-semibold">Bảo tàng Chiến thắng B-52 &amp; Bảo tàng PK-KQ</div>
                                     <div class="text-zinc-400 text-[11px]">Vị trí: Số 157 Đội Cấn, Ba Đình &amp; Số 171 Trường Chinh, Thanh Xuân, Hà Nội.</div>
                                     <div class="pt-1">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Bao+tang+Chien+thang+B52+157+Doi+Can+Ba+Dinh+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Bao+tang+Chien+thang+B52+157+Doi+Can+Ba+Dinh+Ha+Noi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [BẢN ĐỒ VỆ TINH GOOGLE MAPS ↗]
                                         </a>
                                     </div>
@@ -1217,13 +1217,13 @@ const ARCHIVE_NIGHTS_HTML = `<div class="space-y-4">
                                         <div class="text-zinc-400 text-[11px]">Vị trí: Gang thép Thái Nguyên – Trại Cau (Đồng Hỷ, Thái Nguyên); Đồng Mỏ (Chi Lăng, Lạng Sơn); Kim Anh (Vĩnh Phúc).</div>
                                         <div class="text-zinc-400 text-[11px]">Từ 23 giờ 16 phút, địch huy động 60 lần chiếc B-52 chia làm nhiều mũi đánh vào khu gang thép Thái Nguyên – Trại Cau, Đồng Mỏ (Lạng Sơn) và khu vực Kim Anh – Đa Phúc.</div>
                                         <div class="pt-1 flex flex-wrap gap-1.5">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Trai+Cau+Dong+Hy+Thai+Nguyen" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Trai+Cau+Dong+Hy+Thai+Nguyen" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [TRẠI CAU ↗ ↗]
                                         </a>
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Dong+Mo+Chi+Lang+Lang+Son" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Dong+Mo+Chi+Lang+Lang+Son" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [ĐỒNG MỎ ↗ ↗]
                                         </a>
-                                        <a href="https://www.google.com/maps/search/?api=1&query=Kim+Anh+Vinh+Phuc" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Kim+Anh+Vinh+Phuc" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[11px] font-mono font-bold tracking-wider uppercase transition-colors">
                                             [KIM ANH ↗ ↗]
                                         </a>
                                         </div>
@@ -1397,7 +1397,7 @@ function showArchiveNight(id) {
     const next = (idx >= 0 && idx < order.length - 1) ? order[idx + 1] : null;
     let nav = '<div class="flex items-center justify-between gap-3 pt-1">';
     nav += prev ? `<button onclick="showArchiveNight('${prev}')" class="px-4 py-2 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-white/15 text-sm font-mono">← Đêm trước</button>` : '<span></span>';
-    nav += next ? `<button onclick="showArchiveNight('${next}')" class="px-4 py-2 rounded bg-emerald-600/80 hover:bg-emerald-500/80 text-white border border-emerald-400/50 text-sm font-mono font-bold">Đêm sau →</button>` : '<span></span>';
+    nav += next ? `<button onclick="showArchiveNight('${next}')" class="px-4 py-2 rounded bg-amber-500 hover:bg-amber-400 text-black border border-amber-300/60 text-sm font-mono font-bold">Đêm sau →</button>` : '<span></span>';
     nav += '</div>';
     area.innerHTML = `<div class="archive-detail">${header ? header.outerHTML : ''}${colsHTML}</div>` + nav;
     area.scrollTop = 0;

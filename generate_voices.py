@@ -52,10 +52,10 @@ async def generate():
     # History debrief summaries using HoaiMy
     missions_history = {
         'm1': 'Khoảng 20 giờ 13 phút đêm 18 tháng 12 năm 1972, Tiểu đoàn 59 Trung đoàn 261 phóng 2 quả đạn, bắn rơi chiếc B-52 đầu tiên của chiến dịch trên cánh đồng Phù Lỗ, Đông Anh.',
-        'm2': 'Rạng sáng 20 tháng 12, Tiểu đoàn 77 tại trận địa Chèm phóng 2 quả đạn, bắn rơi 1 pháo đài bay B-52 trước khi kịp cắt bom, khẳng định bản lĩnh bộ đội tên lửa làm chủ khí tài, vạch nhiễu đón nửa góc.',
+        'm2': 'Đêm 19 rạng sáng 20 tháng 12, Tiểu đoàn 77 tại trận địa Chèm kiên cường bám trận địa vạch nhiễu, cùng lưới lửa phòng không bắn rơi B-52, bảo vệ Đài phát thanh Mễ Trì và Tiếng nói Việt Nam.',
         'm3': 'Đêm 20 rạng sáng 21 tháng 12, quân dân Thủ đô bắn rơi 7 pháo đài bay B-52, lập kỷ lục tiêu diệt máy bay chiến lược nhiều nhất trong một đêm.',
-        'm4': 'Đêm 21 tháng 12, Tiểu đoàn 57 kiên cường vạch nhiễu tìm thù, hạ gục B-52, bảo vệ vững chắc cửa ngõ phía Đông Thủ đô.',
-        'm5': 'Rạng sáng 22 tháng 12, bom rải thảm B-52 tàn phá Bệnh viện Bạch Mai. Biến đau thương thành hành động chiến đấu, lưới lửa phòng không giáng đòn sấm sét trả thù cho đồng bào.',
+        'm4': 'Đêm 21 tháng 12, Tiểu đoàn 57 kiên cường bám trận địa Đại Đồng, Đông Anh, vạch nhiễu tìm thù, hạ gục B-52 bảo vệ vững chắc cửa ngõ phía Bắc Thủ đô.',
+        'm5': 'Rạng sáng 22 tháng 12, bom rải thảm B-52 tàn phá Bệnh viện Bạch Mai. Biến đau thương thành hành động chiến đấu, bộ đội phòng không Hà Nội đánh trả quyết liệt, bắn rơi máy bay cánh cụp cánh xòe F-111 của địch.',
         'm6': 'Đêm 23 tháng 12, Tiểu đoàn 82 chốt giữ trận địa, bắn rơi B-52 bảo vệ an toàn các kho xăng dầu và huyết mạch tiếp tế Thủ đô.',
         'm7': 'Đêm 24 tháng 12, trước giờ ngừng bắn Noel, quân dân miền Bắc giáng đòn quyết định, bắn rơi thêm nhiều máy bay chiến lược của không quân Mỹ.',
         'm8': 'Ngày 25 tháng 12, ngày lễ Giáng sinh. Bộ đội tên lửa chạy đua với thời gian, nạp đạn, cân chỉnh khí tài, sẵn sàng bước vào trận quyết chiến lịch sử.',

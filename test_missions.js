@@ -67,7 +67,7 @@ const MISSIONS = [
         story: "Đêm 19 rạng sáng 20 tháng 12 năm 1972. Sau thất bại đêm mở màn, địch thay đổi chiến thuật: cho các tốp B-52 chuyển hướng tiếp cận từ phía Tây và Tây Bắc. Trận địa Chèm của Tiểu đoàn 77 đón đầu.",
         date: "19.12.1972",
         dateLabel: "Đêm 19/12/1972",
-        clock: [4, 5],
+        clock: [20, 0],
         title: "Vạch nhiễu vượt nửa góc",
         unit: "Tiểu đoàn 77 · Trung đoàn 257",
         place: "Trận địa Chèm – Thượng Cát",
@@ -100,9 +100,9 @@ const MISSIONS = [
             win: "Tiểu đoàn 77 hoàn thành xuất sắc nhiệm vụ bảo vệ cửa ngõ Tây Bắc!"
         },
         history: [
-            "04 giờ 05 phút rạng sáng 20/12, Tiểu đoàn 77 tại trận địa Chèm phóng 2 quả đạn, bắn rơi 1 pháo đài bay B-52 trước khi nó kịp cắt bom.",
-            "Trong đêm 19 rạng sáng 20/12, quân dân miền Bắc bắn rơi thêm 1 chiếc B-52 nữa, khẳng định bộ đội tên lửa ta hoàn toàn làm chủ khí tài, đánh bại các thủ đoạn thay đổi đường bay và chiến thuật gây nhiễu của địch.",
-            "Chiến thuật phát sóng ngắn và đánh đón lõng của Tiểu đoàn trưởng Đinh Thế Văn trở thành bài học kinh nghiệm quý giá cho toàn Quân chủng."
+            "Đêm 19 rạng sáng 20/12/1972, không quân Mỹ huy động 87 lần chiếc B-52 tập kích Hà Nội và Hải Phòng, ném bom đánh phá Đài phát thanh Mễ Trì hòng dập tắt Tiếng nói Việt Nam.",
+            "Tiểu đoàn 77 (Trung đoàn 257) tại trận địa Chèm kiên cường bám trận địa vạch nhiễu, cùng lưới lửa phòng không bắn rơi máy bay B-52 địch; Đài Mễ Trì bị trúng bom nhưng chỉ gián đoạn 9 phút rồi tiếp tục phát sóng từ trạm dự phòng.",
+            "Chiến thuật phát sóng ngắn và đánh đón nửa góc của Tiểu đoàn trưởng Đinh Thế Văn tiếp tục được hoàn thiện, chuẩn bị cho chiến công bắn rơi tại chỗ B-52 ở Vạn Thắng (Ba Vì) vào đêm 20/12 tiếp theo."
         ]
     },
     {
@@ -147,24 +147,24 @@ const MISSIONS = [
         },
         history: [
             "Đêm 20 rạng sáng 21/12/1972 là <b>\"Đêm rực lửa\"</b> của lưới lửa phòng không Hà Nội: quân dân ta bắn rơi <b>7 chiếc B-52</b> (trong đó có 5 chiếc rơi tại chỗ).",
-            "Đặc biệt, rạng sáng 21/12, Tiểu đoàn 57 (Tiểu đoàn trưởng Nguyễn Văn Phiệt) lập kỳ tích bắn rơi 2 chiếc B-52 chỉ trong 10 phút, mở đầu từ 5h09.",
+            "Đặc biệt, lúc 20 giờ 34 phút ngày 20/12, Tiểu đoàn 77 (Tiểu đoàn trưởng Đinh Thế Văn) bắn rơi tại chỗ 1 chiếc B-52 rơi tại xã Vạn Thắng (Ba Vì). Rạng sáng 21/12, Tiểu đoàn 57 (Tiểu đoàn trưởng Nguyễn Văn Phiệt) lập kỳ tích bắn rơi 2 chiếc B-52 chỉ trong 10 phút, mở đầu từ 5h09.",
             "Trận đánh này bẻ gãy hoàn toàn chiến thuật dùng dải kim loại chaff che chắn của không quân Mỹ, chứng minh tài trí thao lược của bộ đội tên lửa Việt Nam."
         ]
     },
     {
         id: "m4",
-        story: "Đêm 21 rạng sáng 22 tháng 12 năm 1972. Bão nhiễu điện tử của không quân Mỹ tiếp tục giăng kín bầu trời Thủ đô. Sĩ quan chỉ huy Nguyễn Văn Phiệt cùng kíp chiến đấu Tiểu đoàn 57 kiên cường bám trận địa Đại Đồng vạch nhiễu tìm thù, bảo vệ cửa ngõ phía Đông Thủ đô.",
+        story: "Đêm 21 rạng sáng 22 tháng 12 năm 1972. Bão nhiễu điện tử của không quân Mỹ tiếp tục giăng kín bầu trời Thủ đô. Sĩ quan chỉ huy Nguyễn Văn Phiệt cùng kíp chiến đấu Tiểu đoàn 57 kiên cường bám trận địa Đại Đồng (Đại Mạch, Đông Anh) vạch nhiễu tìm thù, bảo vệ cửa ngõ phía Bắc Thủ đô.",
         date: "21.12.1972",
         dateLabel: "Đêm 21/12/1972",
         clock: [21, 30],
         title: "Vạch nhiễu tìm thù",
         unit: "Tiểu đoàn 57 · Trung đoàn 261",
-        place: "Trận địa Đại Đồng – Cửa ngõ phía Đông Thủ đô",
+        place: "Trận địa Đại Đồng (Đại Mạch, Đông Anh)",
         mode: "SAM2",
         camera: "DECK",
         briefing: [
             "Sau ba đêm tổn thất nặng nề, Mỹ dốc toàn lực tăng cường mật độ gây nhiễu tích cực và rải dày đặc dải kim loại chaff. Màn hiện sóng radar phủ kín dải nhiễu râu tôm và nhiễu xung kim đan chéo.",
-            "Tại trận địa Đại Đồng, Tiểu đoàn trưởng Nguyễn Văn Phiệt chỉ đạo trắc thủ góc tà và trắc thủ phương vị hiệp đồng chặt chẽ: đo dải nhiễu quét, xác định đúng tâm tín hiệu B-52 thật.",
+            "Tại trận địa Đại Đồng (xã Đại Mạch, huyện Đông Anh), Tiểu đoàn trưởng Nguyễn Văn Phiệt chỉ đạo trắc thủ góc tà và trắc thủ phương vị hiệp đồng chặt chẽ: đo dải nhiễu quét, xác định đúng tâm tín hiệu B-52 thật.",
             "Hãy tiết kiệm cơ số đạn, kiên quyết bám sát mục tiêu cho đến cự ly phóng tối ưu 25–28 km mới phát lệnh điểm hỏa."
         ],
         forces: "địch huy động <b>30 lần chiếc B-52 (theo phía Mỹ)</b> cùng các tốp F-111 cánh cụp cánh xòe đánh phá ác liệt.",
@@ -173,21 +173,21 @@ const MISSIONS = [
         jam: { "power": 6.5, "barrage": 0.13, "retune": 20, "lookThrough": 1.9, "chaff": true, "startFreq": 2950 },
         controls: CONTROLS_SAM2,
         radio: [
-            { at: 1, who: "SỞ CHỈ HUY", text: "Tiểu đoàn 57 vào cấp 1! Địch mở đợt tập kích từ hướng Đông Nam, bão nhiễu rất nặng!" },
+            { at: 1, who: "SỞ CHỈ HUY", text: "Tiểu đoàn 57 vào cấp 1! Địch mở đợt tập kích từ hướng Tây Bắc và Bắc, bão nhiễu rất nặng!" },
             { at: 10, who: "TRẮC THỦ", text: "Nhiễu râu tôm ngập tràn hai màn hiện sóng phương vị và góc tà! Đang xoay đổi phân cực ăng-ten!" },
             { at: 25, who: "SĨ QUAN ĐIỀU KHIỂN", text: "Bình tĩnh đo dải nhiễu! Tìm khe hở giữa các đỉnh nhiễu của địch!" },
             { at: 55, who: "ĐÀI RADAR 291", text: "Tốp B-52 số hiệu 318 đang tiến vào cự ly 30 km, tốc độ 900 km/h hướng về Đại Đồng!" },
             { at: 90, who: "SỞ CHỈ HUY", text: "Khóa chắc tâm dải nhiễu! Chờ tín hiệu vượt ngưỡng rồi phóng 2 quả liên tiếp!" },
             { at: 135, who: "TRẮC THỦ", text: "Đã bắt được vệt sáng phản xạ B-52! Tín hiệu đè bão nhiễu rất rõ!" },
             { at: 180, who: "SĨ QUAN ĐIỀU KHIỂN", text: "Phóng đạn! Quả 1 vút lên, quả 2 xuất kích theo sau!" },
-            { at: 225, who: "ĐÀI QUAN SÁT", text: "Một đám cháy khổng lồ bùng lên trên bầu trời Văn Lâm! B-52 đã đền tội!" },
+            { at: 225, who: "ĐÀI QUAN SÁT", text: "Một đám cháy khổng lồ bùng lên trên bầu trời Đông Anh! B-52 đã đền tội!" },
             { at: 260, who: "SỞ CHỈ HUY", text: "Tiểu đoàn 57 lập công xuất sắc! Giữ vững trận địa đón đánh đợt tiếp theo!" }
         ],
         lines: {
             clean: "Đã vạch được nhiễu, bắt trúng tâm B-52! Phóng đạn!",
             shift: "Địch cơ động nhảy tần nhiễu! Đổi tần số bám đuổi!",
             kill: "Trúng rồi! Xác B-52 bốc cháy ngùn ngụt rơi tại chỗ!",
-            win: "Tiểu đoàn 57 đã bắn rơi B-52, bảo vệ bình yên trận địa Đại Đồng!"
+            win: "Tiểu đoàn 57 đã bắn rơi B-52, bảo vệ bình yên trận địa Đại Đồng – Đông Anh!"
         },
         history: [
             "Đêm 21 rạng sáng 22/12/1972, kíp chiến đấu Tiểu đoàn 57 dưới sự chỉ huy của Tiểu đoàn trưởng Nguyễn Văn Phiệt đã lập chiến công bắn rơi <b>3 chiếc B-52</b>.",
@@ -236,7 +236,7 @@ const MISSIONS = [
         history: [
             "Vụ ném bom tàn bạo rạng sáng 22/12/1972 đã phá hủy khu bệnh phòng Bệnh viện Bạch Mai, làm 28 bác sĩ, y tá và nhân viên y tế hy sinh, nhiều bệnh nhân bị thương vong.",
             "Tội ác dã man này khiến dư luận toàn thế giới phẫn nộ, làn sóng biểu tình phản đối Tổng thống Nixon bùng nổ dữ dội trên khắp các thủ đô phương Tây.",
-            "Trong ngày và đêm 22/12, quân dân miền Bắc bắn rơi <b>3 chiếc B-52</b> và 4 máy bay chiến thuật, đập tan luận điệu ném bom hủy diệt để khuất phục ý chí dân tộc ta."
+            "Trong đêm 22 rạng sáng 23/12, các lực lượng phòng không Hà Nội đánh trả quyết liệt các tốp cường kích F-111 và F-4, bắn rơi 1 máy bay cánh cụp cánh xòe F-111 tại bến phà Khuyến Lương (3 chiếc B-52 bị tiêu diệt rạng sáng 22/12 đã được tính trong đợt tác chiến đêm 21/12). Lưới lửa tầm thấp và tầm cao tiếp tục siết chặt bảo vệ Thủ đô."
         ]
     },
     {
