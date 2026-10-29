@@ -63,6 +63,7 @@ def run_tests():
     verify_script = os.path.join('tests', 'verify_suite.py')
     e2e_script = os.path.join('tests', 'test_e2e_suite.js')
     mig21_script = os.path.join('tests', 'test_mig21_model.js')
+    mig21_cam_script = os.path.join('tests', 'test_mig21_missile_cam.js')
     launcher_script = os.path.join('tests', 'test_launcher_model.js')
     b52_script = os.path.join('tests', 'test_b52_model.js')
     print("\n--- Running Verification Suite ---")
@@ -71,10 +72,14 @@ def run_tests():
         print(f"[FAIL] {verify_script} failed!")
         return False
 
-    print("\n--- Running MiG-21 3D Model Verification ---")
+    print("\n--- Running MiG-21 3D Model & Missile Cam Verification ---")
     ret_mig = subprocess.run(['node', mig21_script]).returncode
     if ret_mig != 0:
         print(f"[FAIL] {mig21_script} failed!")
+        return False
+    ret_mig_cam = subprocess.run(['node', mig21_cam_script]).returncode
+    if ret_mig_cam != 0:
+        print(f"[FAIL] {mig21_cam_script} failed!")
         return False
 
     print("\n--- Running SM-63 Launcher 3D Model Verification ---")

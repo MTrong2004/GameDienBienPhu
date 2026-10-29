@@ -617,7 +617,7 @@ function animateLoop(now) {
     const boresight = currentMode === 'MIG21' && gameState === 'PLAYING';   // ASP sight is fixed to the nose
     ret.style.left = boresight ? '50%' : `${(smoothAimX * 0.5 + 0.5) * 100}%`;
     ret.style.top = boresight ? '50%' : `${(-smoothAimY * 0.5 + 0.5) * 100}%`;
-    ret.style.visibility = guidedMissile && guidedMissile.t > 0.7 ? 'hidden' : 'visible';
+    ret.style.visibility = guidedMissile && guidedMissile.t > (guidedMissile.kind === 'K13' ? 0.2 : 0.7) ? 'hidden' : 'visible';
 
     document.getElementById('hud-azimuth').textContent = `${String(Math.round(aimAzDeg) % 360).padStart(3, '0')}°`;
     document.getElementById('hud-elevation').textContent = `${Math.round(aimElDeg)}°`;

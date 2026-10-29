@@ -230,7 +230,7 @@
                 this.master.gain.setTargetAtTime(live ? 0.75 : 0, t, 0.05);
                 const world = currentMode !== 'HANGAR' && !archiveOpen;
                 const air = currentMode === 'MIG21' && (gameState === 'PLAYING' || gameState === 'ENDING') && !archiveOpen;
-                const missileView = !archiveOpen && !!guidedMissile && guidedMissile.t > 0.7;
+                const missileView = !archiveOpen && !!guidedMissile && guidedMissile.t > (guidedMissile.kind === 'K13' ? 0.2 : 0.7);
 
                 set(L.rain, 0); // Mute background hiss
                 set(L.rumble, world && !air ? 0.20 : air ? 0.08 : 0);

@@ -69,4 +69,51 @@ let diffYaw = ((desiredYaw - migYaw + Math.PI * 3) % (Math.PI * 2)) - Math.PI; /
 let mouseAimX = Math.max(-1, Math.min(1, -diffYaw * 2.8)); // negative, so roll left
 assert.ok(mouseAimX < 0, 'MiG should roll left when target is to the left');
 
+// Test 6: Threat scoring prioritizes un-leaked bombers over already-leaked bombers
+function scoreThreat(b, isCurrent, trackTimer) {
+    const isLeaked = !!b.leaked;
+    let score = isLeaked ? 2000 : 0;
+    if (!isLeaked) score += Math.max(0, 40 - b.pos.z) * 0.4;
+    const d = Math.abs(b.pos.z) * 0.03;
+    if (d < 10) score += (10 - d) * 35;
+    else if (d > 45) score += (d - 45) * 6;
+    else score += d * 0.5;
+    if (isCurrent && !isLeaked) score -= 40 + trackTimer * 20;
+    return score;
+}
+const leakedBomber = { id: 1, pos: { x: 0, z: 100 }, leaked: true }; // already dropped bombs
+const incomingBomber = { id: 2, pos: { x: 0, z: -500 }, leaked: false }; // approaching Hanoi
+const s1 = scoreThreat(leakedBomber, true, 1.0); // was current target
+const s2 = scoreThreat(incomingBomber, false, 0);
+assert.ok(s2 < s1, 'Incoming bomber must have much better (lower) threat score than leaked bomber');
+
+// Test 7: Smart ECCM band scanning finds minimum jamming channel
+function mockJamAt(f) {
+    // simulated jammers at 2950 MHz and 3050 MHz
+    return Math.exp(-Math.pow((f - 2950) / 22, 2)) + Math.exp(-Math.pow((f - 3050) / 22, 2));
+}
+let playerFreq = 2950; // currently jammed
+let bestF = playerFreq, minJam = mockJamAt(playerFreq);
+for (let f = 2900; f <= 3100; f += 10) {
+    const j = mockJamAt(f);
+    if (j < minJam) { minJam = j; bestF = f; }
+}
+assert.ok(minJam < 0.05, 'Band scan must find clear channel');
+assert.ok(bestF !== 2950 && bestF !== 3050, 'Best channel must avoid jammer frequencies');
+
+// Test 8: Proactive launcher reloading
+const launchers = [{ loaded: false }, { loaded: true }, { loaded: true }];
+const reserve = 4;
+const reloading = false;
+const shouldReload = reserve > 0 && !reloading && launchers.some(l => !l.loaded);
+assert.strictEqual(shouldReload, true, 'Should proactively reload empty launcher');
+
+// Test 9: PD-damped roll control prevents bank overshoot
+const bankAngle = -0.3; // banked left, turning right
+const turnRate = -Math.sin(bankAngle) * 0.6; // positive yaw rate
+const smallDiffYaw = 0.05; // almost aligned with target
+const predYaw = smallDiffYaw - turnRate * 0.85; // predicted error after turn rate
+const dampedAimX = Math.max(-1, Math.min(1, -predYaw * 2.2));
+assert.ok(dampedAimX > 0, 'Damped controller must command opposite roll to level wings before reaching heading');
+
 console.log('All auto-pilot logic assertions passed!');

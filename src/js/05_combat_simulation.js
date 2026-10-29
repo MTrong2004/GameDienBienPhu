@@ -297,17 +297,35 @@
             for (let i = activeBombers.length - 1; i >= 0; i--) {
                 const b = activeBombers[i];
                 b.mesh.position.addScaledVector(b.vel, dt);
-                // SAM break: the targeted bomber weaves once the guided missile is inside ~16 km
+                // Evasion: SAM break at <650m; in MiG-21, bomber S-turns and drops flares under threat
+                const isMiG = currentMode === 'MIG21';
+                const distToMiG = isMiG && playerMiG21 ? b.mesh.position.distanceTo(playerMiG21.position) : Infinity;
                 const gm = guidedMissile;
-                if (gameState === 'PLAYING' && gm && gm.target === b && gm.t > 2.4 && !b.damaged &&
-                    b.mesh.position.distanceTo(gm.mesh.position) < 650) {
+                const k13Incoming = gm && gm.kind === 'K13' && gm.target === b;
+                const samIncoming = gm && gm.kind === 'SAM' && gm.target === b && gm.t > 2.4 && b.mesh.position.distanceTo(gm.mesh.position) < 650;
+                const migThreat = isMiG && (distToMiG < 140 || k13Incoming);
+
+                if (gameState === 'PLAYING' && (samIncoming || migThreat) && !b.damaged) {
                     b.evadeT = (b.evadeT || 0) + dt;
-                    const turn = Math.sin(b.evadeT * 0.9 + b.id) * 0.16;
+                    const turnRate = isMiG ? 0.22 : 0.16;
+                    const turn = Math.sin(b.evadeT * (isMiG ? 1.2 : 0.9) + b.id) * turnRate;
                     b.vel.applyAxisAngle(WORLD_UP, turn * dt);
                     b.vel.y = Math.max(-2, b.vel.y - dt * 0.4);
                     b.mesh.lookAt(_tmpV2.copy(b.mesh.position).add(b.vel));
                     b.mesh.rotateZ(-turn * 3);
                     b.evading = true;
+
+                    // B-52 defensive flares when K-13 is tracking
+                    if (k13Incoming && gm.t > 0.6) {
+                        b.flareTick = (b.flareTick || 0) + dt;
+                        if (b.flareTick >= 0.45) {
+                            b.flareTick = 0;
+                            [-11, 11].forEach(fx => {
+                                const flarePos = b.mesh.position.clone().add(new THREE.Vector3(fx, -1.8, -8).applyEuler(b.mesh.rotation));
+                                spawnSmokePuff(flarePos, 3.2, new THREE.Vector3((Math.random() - 0.5) * 3, -1.5, 4), 0.7, 'fire');
+                            });
+                        }
+                    }
                 } else if (b.evading) {
                     b.evading = false;
                     b.vel.y = 0;
@@ -851,6 +869,11 @@
             }
             if (gameState !== 'PLAYING') return;
             if (currentMode === 'MIG21') {
+                if (guidedMissile) return;
+                if (missileCamHold > 0) {
+                    if (missileCamHold > 1.2) missileCamHold = 1.2;
+                    return;
+                }
                 if (missionAmmo > 0) fireK13();
                 else fireMiGCannon();
                 return;
@@ -917,6 +940,7 @@
 
         function fireK13() {
             const nowS = performance.now() / 1000;
+            if (guidedMissile) return;
             if (missionAmmo <= 0) { showRadio(getPilotCallsign(), 'Hết tên lửa!'); return; }
             if (nowS - lastFireTime < 1.2) return;
             if (!mig.target || mig.irLock < 1.5) { showRadio(getPilotCallsign(), `Chưa khóa được mục tiêu! ${mig.envelope}`); return; }
@@ -936,10 +960,12 @@
             spawnSmokePuff(mesh.position.clone(), 3.2, mig.fwd.clone().multiplyScalar(-5), 0.7, 'smoke');
             spawnSmokePuff(mesh.position.clone(), 2.2, mig.fwd.clone().multiplyScalar(-2), 0.25, 'fire');
             spawnMissileShockRing(mesh.position.clone(), mig.fwd, 0.6);
-            activeMissiles.push({
+            const m = {
                 kind: 'K13', mesh, dir: mig.fwd.clone(), speed: mig.speed + 6, speed0: mig.speed,
-                t: 0, life: 7, target: mig.target, guided: false, smokeTick: 0, prevNear: Infinity, flame
-            });
+                t: 0, life: 7, target: mig.target, guided: true, smokeTick: 0, prevNear: Infinity, flame
+            };
+            activeMissiles.push(m);
+            guidedMissile = m;
             updateObjectiveHud();
             showRadio(getPilotCallsign(), missionAmmo === 1 ? 'Phóng quả thứ nhất!' : 'Phóng quả thứ hai!');
         }
@@ -1083,9 +1109,19 @@
         }
 
         function steerK13(m, tgt, dt) {
-            m.speed = Math.min(m.speed0 + 34, m.speed + 40 * dt);
-            if (tgt && m.dir.angleTo(_tmpV2.copy(tgt.mesh.position).sub(m.mesh.position)) < 0.6) {   // seeker gimbal limit
-                m.dir.lerp(leadDirection(m, tgt), Math.min(1, dt * 2.4)).normalize();
+            m.speed = Math.min(m.speed0 + 38, m.speed + 42 * dt);
+            if (!tgt) return;
+            const toT = _tmpV2.copy(tgt.mesh.position).sub(m.mesh.position);
+            const dist = toT.length();
+            const angle = m.dir.angleTo(toT);
+            // K-13 (R-3S Atoll) seeker gimbal limit ~26 deg (0.45 rad)
+            if (angle > 0.45) {
+                m.lost = true;
+            }
+            if (!m.lost) {
+                // Realistic fin actuator turn rate limit: max ~1.9 rad/s (~4G aerodynamic turn limit)
+                const turnRate = dist < 30 ? 2.6 : 1.9;
+                m.dir.lerp(leadDirection(m, tgt), Math.min(1, dt * turnRate)).normalize();
             }
         }
 
@@ -1167,8 +1203,8 @@
             let killed = 0, hurt = 0;
             activeBombers.slice().forEach(b => {
                 const d = b.mesh.position.distanceTo(pos);
-                if (d < (big ? 7 : 6)) { killBomber(b); killed++; }
-                else if (big && d < 14) { if (damageBomber(b)) killed++; else hurt++; }
+                if (d < (big ? 7 : 5.2)) { killBomber(b); killed++; }
+                else if (d < (big ? 14 : 8.5)) { if (damageBomber(b)) killed++; else hurt++; }
             });
             if (m === guidedMissile || (currentMode === 'MIG21' && m.kind === 'K13')) {
                 if (m === guidedMissile) guidedMissile = null;
@@ -1188,6 +1224,7 @@
         // and frames the missile in lower-third tracking toward target B-52
         function followMissileCamera(dt, shakeVec) {
             const m = guidedMissile, p = m.mesh.position;
+            const isK13 = m.kind === 'K13';
             if (!m.cam) {
                 const fwd = camera.getWorldDirection(new THREE.Vector3());
                 m.cam = { t: 0, dir: m.dir.clone(), off: new THREE.Vector3(), lookOff: new THREE.Vector3(),
@@ -1198,8 +1235,8 @@
             if (!c.up) c.up = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
             const prevDir = _tmpL.copy(c.dir);
 
-            // Booster separation visual feedback at T+2.4s
-            if (!m.staged && m.t >= 2.4) {
+            // Booster separation visual feedback at T+2.4s (SAM only)
+            if (!isK13 && !m.staged && m.t >= 2.4) {
                 m.staged = true;
                 cameraShake = Math.max(cameraShake, 0.35);
                 spawnMissileShockRing(p.clone().addScaledVector(m.dir, -4.5), m.dir, 1.4);
@@ -1212,7 +1249,7 @@
             const tgt = m.seek || (m.target && activeBombers.includes(m.target) ? m.target : null);
             const want = _tmpV.copy(m.dir);
             if (tgt && !m.lost) {
-                const w = Math.min(1, Math.max(0, (c.t - 0.4) / 1.4));
+                const w = Math.min(1, Math.max(0, (c.t - (isK13 ? 0.15 : 0.4)) / (isK13 ? 0.9 : 1.4)));
                 want.lerp(_tmpV2.copy(tgt.mesh.position).sub(p).normalize(), w * w * (3 - 2 * w)).normalize();
             }
             c.dir.lerp(want, 1 - Math.exp(-dt * 3.5)).normalize();
@@ -1224,8 +1261,9 @@
             c.up.addScaledVector(c.dir, -c.up.dot(c.dir)).normalize();
             const up = _tmpU.copy(c.up);
             const ease = x => { x = Math.min(1, Math.max(0, x)); return x * x * (3 - 2 * x); };
-            const e = ease(c.t / 0.42), settle = ease(c.t / 2.5);
-            const back = 15 - 2.5 * settle, lift = 2.8 + 0.4 * settle;
+            const e = ease(c.t / (isK13 ? 0.35 : 0.42)), settle = ease(c.t / (isK13 ? 1.8 : 2.5));
+            const back = isK13 ? (7.5 - 1.5 * settle) : (15 - 2.5 * settle);
+            const lift = isK13 ? (1.5 + 0.3 * settle) : (2.8 + 0.4 * settle);
             // offsets are relative to the missile, so its acceleration adds no lag; looking far down the axis
             // (rather than at a point near the missile) keeps the missile in the lower frame and the bomber clear above it
             const offWant = _tmpV.copy(c.dir).multiplyScalar(-back).addScaledVector(up, lift);
@@ -1260,11 +1298,18 @@
         }
 
         function updateMiGFlight(dt) {
-            const ax = deadzone(smoothAimX, 0.05), ay = deadzone(smoothAimY, 0.05);
-            mig.bank += (ax * 1.05 - mig.bank) * Math.min(1, dt * 3);
+            const inMissileCam = (guidedMissile && guidedMissile.kind === 'K13') || (currentMode === 'MIG21' && missileCamHold > 0);
+            const ax = inMissileCam ? 0 : deadzone(smoothAimX, 0.05);
+            const ay = inMissileCam ? 0 : deadzone(smoothAimY, 0.05);
+            if (inMissileCam) {
+                mig.bank *= Math.exp(-dt * 2.5);
+                mig.pitch *= Math.exp(-dt * 2.0);
+            } else {
+                mig.bank += (ax * 1.05 - mig.bank) * Math.min(1, dt * 3);
+                mig.pitch = Math.max(-0.55, Math.min(0.55, mig.pitch + ay * 0.55 * dt));
+            }
             mig.yaw -= Math.sin(mig.bank) * 0.6 * dt;                    // coordinated turn
-            mig.pitch = Math.max(-0.55, Math.min(0.55, mig.pitch + ay * 0.55 * dt));
-            const thr = (keysDown.KeyW ? 1 : 0) - (keysDown.KeyS ? 1 : 0);
+            const thr = inMissileCam ? 0 : ((keysDown.KeyW ? 1 : 0) - (keysDown.KeyS ? 1 : 0));
             mig.throttle = Math.max(0.2, Math.min(1, mig.throttle + thr * dt * 0.45));
             mig.speed += (8 + mig.throttle * 10 - mig.speed) * Math.min(1, dt * 0.6);
             migForward(mig.fwd);
@@ -1309,30 +1354,31 @@
             const dist = toT.length();
             const offBore = THREE.MathUtils.radToDeg(mig.fwd.angleTo(toT));
             const aspect = THREE.MathUtils.radToDeg(best.vel.clone().negate().angleTo(toT.clone().negate()));
-            // K-13 (R-3S): uncooled IR seeker, sees the engine exhaust only from behind, ~1–5 km
+            // K-13 (R-3S): uncooled IR seeker, requires strict rear hemisphere & steady nose tracking
             let env = '';
-            if (aspect > 35) env = 'VÒNG RA SAU ĐUÔI';
-            else if (dist > 200) env = 'CÒN XA — TĂNG GA';
-            else if (dist < 40) env = 'QUÁ GẦN — GIẢM GA';
-            else if (offBore > 7) env = 'ĐƯA VÀO VÒNG NGẮM';
+            if (aspect > 28) env = 'VÒNG RA SAU ĐUÔI';
+            else if (dist > 130) env = 'CÒN XA — TĂNG GA';
+            else if (dist < 38) env = 'QUÁ GẦN — GIẢM GA';
+            else if (offBore > 5.2) env = 'ĐƯA VÀO VÒNG NGẮM';
+            else if (Math.abs(mig.bank) > 0.45) env = 'CÂN BẰNG CÁNH — GIẢM NGHIÊNG';
             mig.envelope = env;
-            mig.irLock = env ? Math.max(0, mig.irLock - dt * 2) : Math.min(2.5, mig.irLock + dt);
+            mig.irLock = env ? Math.max(0, mig.irLock - dt * 2.8) : Math.min(2.5, mig.irLock + dt * 1.1);
             mig.dist = dist;
             if (mig.irLock > 0) {
                 mig.growlT -= dt;
                 if (mig.growlT <= 0) { mig.growlT = mig.irLock >= 1.5 ? 0.09 : 0.22; SoundEngine.playGrowl(mig.irLock >= 1.5); }
             }
             // tail gunner (4 × 12.7 mm, radar-laid) fires at a MiG sitting in the rear cone
-            if (gameState === 'PLAYING' && aspect < 45 && dist < 120) {
+            if (gameState === 'PLAYING' && aspect < 42 && dist < 130) {
                 mig.gunTimer -= dt;
                 if (mig.gunTimer <= 0) {
-                    mig.gunTimer = 0.55 + Math.random() * 0.5;
+                    mig.gunTimer = 0.42 + Math.random() * 0.4;
                     mig.underFire = 1.2;
                     fireTailGunBurst(best, p);
-                    if (Math.random() < 0.22 * (1 - dist / 120) + 0.03) {
-                        mig.hp -= 20;
-                        cameraShake = 0.6;
-                        if (mig.hp <= 0) endMission(false, 'MiG-21 trúng đạn pháo đuôi B-52.');
+                    if (Math.random() < 0.28 * (1 - dist / 130) + 0.05) {
+                        mig.hp -= 18;
+                        cameraShake = 0.65;
+                        if (mig.hp <= 0) endMission(false, 'MiG-21 bị trúng hỏa lực pháo đuôi B-52 bắn hạ!');
                         else showRadio(getPilotCallsign(), `Trúng đạn pháo đuôi! Thân máy bay còn ${mig.hp}%.`);
                     }
                 }
@@ -2752,10 +2798,18 @@
             let text = 'Phóng', ready = true;
             if (gameState === 'PLAYING') {
                 if (currentMode === 'MIG21') {
-                    ready = (mig.irLock >= 1.5 && missionAmmo > 0) || ((mig.cannonAmmo || 0) > 0);
-                    text = missionAmmo > 0
-                        ? (mig.irLock >= 1.5 ? 'Phóng K-13 [Space]' : 'Chưa khóa nhiệt · [F] Pháo 23mm')
-                        : ((mig.cannonAmmo || 0) > 0 ? `Bắn pháo 23mm (${mig.cannonAmmo}v) [F]` : 'Hết đạn');
+                    if (guidedMissile) {
+                        ready = false;
+                        text = 'Đang bám mục tiêu K-13…';
+                    } else if (missileCamHold > 0) {
+                        ready = true;
+                        text = 'Trở lại buồng lái [Space]';
+                    } else {
+                        ready = (mig.irLock >= 1.5 && missionAmmo > 0) || ((mig.cannonAmmo || 0) > 0);
+                        text = missionAmmo > 0
+                            ? (mig.irLock >= 1.5 ? 'Phóng K-13 [Space]' : 'Chưa khóa nhiệt · [F] Pháo 23mm')
+                            : ((mig.cannonAmmo || 0) > 0 ? `Bắn pháo 23mm (${mig.cannonAmmo}v) [F]` : 'Hết đạn');
+                    }
                 } else if (guidedMissile) {
                     text = 'Lệnh nổ'; ready = guidedMissile.t > 2.4;
                 } else if (!samLaunchers.some(l => l.loaded)) {
@@ -2783,7 +2837,7 @@
 
         function updateMissileHud() {
             const el = document.getElementById('missile-hud');
-            const on = !!guidedMissile && guidedMissile.t > 0.7;
+            const on = !!guidedMissile && guidedMissile.t > (guidedMissile.kind === 'K13' ? 0.2 : 0.7);
             const disp = on ? 'block' : 'none';
             if (el.style.display !== disp) el.style.display = disp;
             const dot = document.getElementById('stick-dot');
@@ -2798,6 +2852,16 @@
             const tgt = m.target && activeBombers.includes(m.target) ? m.target : null;
             const distU = tgt ? m.mesh.position.distanceTo(tgt.mesh.position) : Infinity;
             const rng = tgt ? `${(distU * KM_PER_UNIT).toFixed(2)} km` : '—';
+            if (m.kind === 'K13') {
+                const closeIn = distU < 20;
+                const phase = m.lost ? '<span style="color:#F87171">MẤT TÍN HIỆU NHIỆT — NGOÀI VÙNG DẪN</span>'
+                    : closeIn ? `<span style="color:#34D399;font-weight:bold;background:rgba(16,185,129,0.25);padding:2px 8px;border-radius:3px;border:1px solid #10B981;">ÁP SÁT ${(distU * KM_PER_UNIT).toFixed(2)} KM — ĐẦU NỔ TIẾP CẬN!</span>`
+                    : '<span style="color:#34D399;font-weight:bold;">ĐẦU DÒ HỒNG NGOẠI ĐANG BÁM LUỒNG PHỤT NHIỆT B-52</span>';
+                const html = `K-13 (R-3S) · T+${m.t.toFixed(1)}s · M${(m.speed / 16 * 2.5).toFixed(1)} · CÁCH MỤC TIÊU ${rng}<br>${phase}`;
+                const txt = document.getElementById('missile-hud-text');
+                if (txt.innerHTML !== html) txt.innerHTML = html;
+                return;
+            }
             const closeIn = distU < 36;
             const jammed = tgt && tgt.cell && tgt.cell.onFreq;
             const phase = m.lost ? '<span style="color:#F87171">MẤT DẪN — ĐẠN LẠC</span>'
@@ -2849,35 +2913,40 @@
             }
 
             if (currentMode === 'SAM2') {
+                // Continuous launcher reload: keep all 3 launchers hot whenever spare missiles exist
+                if (missionReserve > 0 && !reloadingLauncher && samLaunchers.some(l => !l.loaded)) {
+                    startReload();
+                }
+
                 // Priority 1: Keep tracking current guided missile target if alive
                 let tgt = (guidedMissile && guidedMissile.target && !guidedMissile.target.downed && activeBombers.includes(guidedMissile.target)) ? guidedMissile.target : null;
 
-                // Priority 2: Persistent autoPilotTarget with strong hysteresis (stickiness) to eliminate target-switching jitter
-                if (!tgt && autoPilotTarget && !autoPilotTarget.downed && activeBombers.includes(autoPilotTarget)) {
-                    const d = distKm(autoPilotTarget);
-                    if (d >= 8 && d <= 56) {
-                        tgt = autoPilotTarget;
-                    }
-                }
-
-                // Priority 3: Currently locked target if valid
-                if (!tgt && selectedTarget && !selectedTarget.downed && activeBombers.includes(selectedTarget)) {
-                    const d = distKm(selectedTarget);
-                    if (d >= 8 && d <= 56) {
-                        tgt = selectedTarget;
-                    }
-                }
-
-                // Priority 4: Score all alive bombers and pick best tactical target (10-52 km)
+                // Priority 2: Intelligent tactical threat scoring (Hà Nội defense doctrine)
+                // ponytail: single-pass threat heuristic; upgrade to full Kalman trajectory predictor if multi-battery network added
                 if (!tgt) {
                     let bestScore = Infinity;
                     aliveBombers.forEach(b => {
                         const d = distKm(b);
                         const q = computeTargetQuality(b);
-                        let score = d;
-                        if (d > 48) score += (d - 48) * 3;
-                        if (d < 10) score += 40;
-                        if (q < 0.2) score += 50;
+                        const isLeaked = !!b.leaked;
+                        // 1. Un-leaked bombers approaching Hanoi (z <= 40) are top priority threats
+                        let score = isLeaked ? 2000 : 0;
+                        // 2. Bombers closest to bomb release line (z = 40) get engaged first
+                        if (!isLeaked) score += Math.max(0, 40 - b.mesh.position.z) * 0.4;
+                        // 3. Optimal SAM-2 firing bracket: 12 to 42 km
+                        if (d < 10) score += (10 - d) * 35;
+                        else if (d > 45) score += (d - 45) * 6;
+                        else score += d * 0.5;
+                        // 4. Trackability factor: downweight heavily jammed targets until cleaned by ECCM
+                        if (q < 0.25) score += (0.25 - q) * 120;
+                        // 5. Azimuth alignment with current Fan Song radar facing
+                        const tYaw = Math.atan2(-(b.mesh.position.x - RADAR_POS.x), -(b.mesh.position.z - RADAR_POS.z));
+                        const yawDiff = Math.abs(((tYaw - viewYaw + Math.PI * 3) % (Math.PI * 2)) - Math.PI);
+                        score += yawDiff * 15;
+                        // 6. Hysteresis stickiness: retain existing target while acquiring lock to eliminate jitter
+                        if (b === autoPilotTarget && !isLeaked) {
+                            score -= 40 + trackTimer * 20;
+                        }
                         if (score < bestScore) {
                             bestScore = score;
                             tgt = b;
@@ -2901,8 +2970,8 @@
                     const onScreen = p.z > 0 && p.z < 1 && Math.abs(p.x) < 0.96 && Math.abs(p.y) < 0.88;
 
                     // Smooth proportional slewing of Fan Song radar station
-                    const slewSpeedYaw = onScreen ? 2.8 : 4.8;
-                    const slewSpeedPitch = onScreen ? 2.2 : 3.8;
+                    const slewSpeedYaw = onScreen ? 3.5 : 5.5;
+                    const slewSpeedPitch = onScreen ? 2.5 : 4.2;
                     viewYaw += diffYaw * Math.min(1, dt * slewSpeedYaw);
                     viewPitch = Math.max(0.04, Math.min(VIEW_PITCH_MAX, viewPitch + diffPitch * Math.min(1, dt * slewSpeedPitch)));
 
@@ -2910,24 +2979,35 @@
                         // Instant precision lock onto target coordinates: eliminate smoothing lag so selectedScreenDist stays < 0.07
                         mouseAimX = Math.max(-0.95, Math.min(0.95, p.x));
                         mouseAimY = Math.max(-0.85, Math.min(0.85, p.y));
-                        smoothAimX = mouseAimX;
-                        smoothAimY = mouseAimY;
                     } else {
                         mouseAimX += (0 - mouseAimX) * Math.min(1, dt * 10);
                         mouseAimY += (0 - mouseAimY) * Math.min(1, dt * 10);
-                        smoothAimX = mouseAimX;
-                        smoothAimY = mouseAimY;
                     }
+                    smoothAimX = mouseAimX;
+                    smoothAimY = mouseAimY;
                 }
 
-                // Anti-jamming (ECCM Frequency Hopping)
-                if (autoHopCooldown <= 0) {
-                    if (jamPromptState && jamPromptState.show && !jamPromptState.info && jamPromptState.best !== 0) {
-                        hopFrequency(jamPromptState.best < 0 ? -45 : 45);
-                        autoHopCooldown = 1.4; // allow time on clean channel to acquire lock
+                // Anti-jamming (Smart ECCM Frequency Hopping & Band Scanning)
+                if (activeMission && activeMission.jam) {
+                    const curJam = jamAt(playerFreq);
+                    const jamPromptHop = jamPromptState && jamPromptState.show && !jamPromptState.info && jamPromptState.best !== 0;
+                    const needHop = (guidedMissile && guidedMissile.blind > 0.12) || (curJam > 0.22 && targetQuality < 0.45) || curJam > 0.4 || jamPromptHop;
+                    if (needHop && autoHopCooldown <= 0) {
+                        let bestF = playerFreq, minJam = curJam;
+                        for (let f = BAND_MIN; f <= BAND_MAX; f += 10) {
+                            const j = jamAt(f);
+                            if (j < minJam) { minJam = j; bestF = f; }
+                        }
+                        if (bestF !== playerFreq) {
+                            setEccmSlider(bestF);
+                            autoHopCooldown = 0.55;
+                        } else if (jamPromptHop) {
+                            hopFrequency(jamPromptState.best < 0 ? -45 : 45);
+                            autoHopCooldown = 0.55;
+                        }
+                    } else if (autoHopCooldown > 0) {
+                        autoHopCooldown -= dt;
                     }
-                } else {
-                    autoHopCooldown -= dt;
                 }
 
                 // Fire & Guidance & Reloading
@@ -2938,8 +3018,6 @@
                     const canFire = launcher && trackTimer >= TRACK_TIME && inRange && targetQuality >= 0.25;
                     if (canFire) {
                         triggerPrimaryWeaponFire();
-                    } else if (!launcher && missionReserve > 0 && !reloadingLauncher) {
-                        startReload();
                     }
                 } else if (guidedMissile && guidedMissile.target) {
                     const m = guidedMissile;
@@ -2949,7 +3027,7 @@
 
                     // Crosshair alignment for visual feedback on chase camera
                     const tgo = d / Math.max(25, m.speed);
-                    const leadPoint = _tmpV2.copy(tgtPos).addScaledVector(m.target.vel, tgo * 0.8);
+                    const leadPoint = _tmpV2.copy(tgtPos).addScaledVector(m.target.vel, tgo * 0.85);
                     const pLead = _tmpV.copy(leadPoint).project(camera);
                     if (pLead.z > 0 && pLead.z < 1) {
                         mouseAimX = Math.max(-0.85, Math.min(0.85, pLead.x));
@@ -2959,7 +3037,7 @@
                     }
 
                     // Emergency command detonation inside lethal zone if drawing away
-                    if (m.t > 2.4 && d <= 8.5 && m._prevDist && d > m._prevDist) {
+                    if (m.t > 2.4 && d <= 7.5 && m._prevDist && d > m._prevDist) {
                         triggerPrimaryWeaponFire();
                     }
                     m._prevDist = d;
@@ -2984,15 +3062,15 @@
                 const aspect = THREE.MathUtils.radToDeg(tgt.vel.clone().negate().angleTo(toTgt.clone().negate()));
 
                 // Tactical navigation:
-                // K-13 (R-3S) requires rear hemisphere engagement (aspect <= 35 deg, dist 40-200).
-                // If aspect > 35, navigate toward a rendezvous waypoint ~70 units behind B-52's tail.
+                // K-13 (R-3S) requires rear hemisphere engagement (aspect <= 28 deg, dist 38-130).
+                // Maintain rendezvous point behind B-52 tail
                 let aimPoint;
-                if (aspect > 35 && dist > 55) {
-                    const tailOffset = _tmpL.copy(tgt.vel).normalize().multiplyScalar(-70);
+                if (aspect > 28 || dist > 140) {
+                    const tailOffset = _tmpL.copy(tgt.vel).normalize().multiplyScalar(-90);
                     aimPoint = _tmpV.copy(tgt.mesh.position).add(tailOffset);
                 } else {
-                    const leadSec = Math.min(1.2, dist / 45);
-                    aimPoint = _tmpV.copy(tgt.mesh.position).addScaledVector(tgt.vel, leadSec * 0.4);
+                    const leadSec = Math.min(1.0, dist / 50);
+                    aimPoint = _tmpV.copy(tgt.mesh.position).addScaledVector(tgt.vel, leadSec * 0.35);
                 }
 
                 const steerVec = _tmpV2.copy(aimPoint).sub(pMig);
@@ -3002,26 +3080,33 @@
                 const desiredPitch = Math.atan2(steerVec.y, horizD);
                 let diffPitch = desiredPitch - mig.pitch;
 
-                // Responsive flight control without lag
-                mouseAimX = Math.max(-1, Math.min(1, -diffYaw * 2.8));
-                mouseAimY = Math.max(-0.85, Math.min(0.85, diffPitch * 3.0));
+                // PD-damped roll/yaw control: eliminate oscillatory bank wobbling
+                const currentTurnRate = -Math.sin(mig.bank) * 0.6;
+                const predYawErr = diffYaw - currentTurnRate * 0.85;
+                mouseAimX = Math.max(-1, Math.min(1, -predYawErr * 2.2));
+                mouseAimY = Math.max(-0.85, Math.min(0.85, diffPitch * 2.6));
                 smoothAimX = mouseAimX;
                 smoothAimY = mouseAimY;
 
-                // Smart Throttle Control
-                if (dist > 180 || (aspect > 45 && dist > 75)) {
-                    mig.throttle = Math.min(1.0, mig.throttle + dt * 0.8); // Afterburner to close in / get behind
-                } else if (dist < 55) {
-                    mig.throttle = Math.max(0.35, mig.throttle - dt * 0.8); // Airbrake / idle to avoid overshoot
+                // Smart radar-locked throttle matching: lock into 80-110 unit sweet spot
+                if (dist > 140 || aspect > 40) {
+                    mig.throttle = Math.min(1.0, mig.throttle + dt * 0.9); // Afterburner pursuit
+                } else if (dist < 70) {
+                    mig.throttle = Math.max(0.35, mig.throttle - dt * 0.9); // Airbrake to avoid tail-gunner & overshoot
                 } else {
-                    mig.throttle += (0.68 - mig.throttle) * Math.min(1, dt * 1.5); // Cruise speed match
+                    // Cruise speed match with proportional distance hold around 92 units
+                    const cruiseThrottle = 0.70 + (dist - 92) * 0.012;
+                    mig.throttle += (Math.max(0.4, Math.min(0.95, cruiseThrottle)) - mig.throttle) * Math.min(1, dt * 1.8);
                 }
 
-                // Weapon firing
+                // Smart weapon engagement
                 if (mig.irLock >= 1.5 && missionAmmo > 0) {
-                    fireK13();
-                } else if (dist < 130 && (mig.cannonAmmo || 0) > 0) {
-                    if (offBore < 12) {
+                    const closingMissile = activeMissiles.find(m => m.kind === 'K13' && m.target === tgt && m.mesh.position.distanceTo(tgt.mesh.position) < 45);
+                    if (!closingMissile) {
+                        fireK13();
+                    }
+                } else if (dist < 135 && (mig.cannonAmmo || 0) > 0 && offBore < 12) {
+                    if (missionAmmo <= 0 || dist < 85) {
                         fireMiGCannon();
                     }
                 }
