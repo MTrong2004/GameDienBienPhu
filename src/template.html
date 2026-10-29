@@ -186,6 +186,7 @@
         }
 
         /* ---- Full-screen menus over the live 3D scene ---- */
+        #screen-archive.screen { padding: 0; overflow: hidden; }
         .screen {
             position: fixed;
             inset: 0;
@@ -555,36 +556,30 @@
 
         /* ---- In-game HUD helpers ---- */
         body.in-menu .hud-el { display: none !important; } .hidden { display: none;} #modal-tactical-guide, #modal-radio-log, #archive-drawer { background: rgba(3, 6, 10, 0.98); z-index: 60;}
-        /* ---- Tư liệu: sidebar mục lục + chữ lớn, thoáng ---- */
-        .archive-nav-btn {
-            display: block; width: 100%; text-align: left;
-            background: transparent;
-            border: 1px solid transparent; border-left: 3px solid transparent;
-            color: #A1A1AA; cursor: pointer; border-radius: 8px; transition: all .15s;
-        }
-        .archive-nav-btn:hover { background: rgba(255, 255, 255, 0.06); color: #F4F4F5; }
-        .archive-nav-btn.is-active {
-            background: rgba(5, 150, 105, 0.18);
-            border-left-color: #34D399; color: #CDF7A1;
-        }
-        /* Chữ trong tư liệu: to và thoáng hơn hẳn bản cũ */
-        #screen-archive #archive-content-area { font-size: 15px; line-height: 1.8; }
+        /* ---- Tư liệu toàn màn hình: cột mốc timeline dọc + chi tiết nhiều cột ---- */
+        .tl-ms { position: relative; display: flex; gap: 12px; width: 100%; text-align: left; background: transparent; border: none; border-left: 2px solid rgba(255,255,255,0.15); padding: 10px 12px 10px 20px; cursor: pointer; }
+        .tl-ms::before { content: ""; position: absolute; left: -5px; top: 18px; width: 8px; height: 8px; border-radius: 999px; background: #52525b; border: 2px solid #0a0f0d; }
+        .tl-ms:hover { background: rgba(255,255,255,0.05); }
+        .tl-ms.is-active { border-left-color: #34d399; background: rgba(5,150,105,0.15); }
+        .tl-ms.is-active::before { background: #34d399; width: 10px; height: 10px; left: -6px; top: 17px; }
+        .tl-ms.is-active .tl-ms-title { color: #cdf7a1; }
+        .tl-ms-date { display: block; font-family: monospace; font-size: 13px; color: #fbbf24; font-weight: bold; }
+        .tl-ms-title { display: block; font-size: 14px; font-weight: 600; color: #e4e4e7; line-height: 1.4; margin-top: 2px; }
+        .tl-ms-badge { display: block; font-family: monospace; font-size: 11px; color: #a1a1aa; margin-top: 3px; }
+        .archive-detail { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 22px; }
+        .archive-detail > div:first-child { padding-bottom: 12px; margin-bottom: 20px; }
+        .archive-detail > div:first-child span:first-child { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px; font-weight: 700; }
+        .archive-col-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: #fbbf24; font-weight: bold; margin-bottom: 12px; }
+        .archive-cols-3 > div:first-child > *:last-child, .archive-cols-2 > div:first-child > *:last-child { max-width: 72ch; }
+        .archive-detail > div:first-child > span { font-size: 12px; padding: 4px 10px; }
+        .archive-cols-3 { display: grid; grid-template-columns: 1.5fr 1fr 1.2fr; gap: 20px; align-items: start; }
+        .archive-cols-2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; align-items: start; }
+        @media (max-width: 900px) { .archive-cols-3, .archive-cols-2 { grid-template-columns: 1fr; } }
+        #screen-archive #archive-content-area { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 17px; line-height: 1.9; color: #f4f4f5; }
+        #screen-archive #archive-content-area .text-zinc-300 { color: #f4f4f5; }
         #screen-archive #archive-content-area .text-xs { font-size: 14px; }
         #screen-archive #archive-content-area .text-\[11px\] { font-size: 13px; }
         #screen-archive #archive-content-area .text-\[10px\] { font-size: 12px; }
-        /* Hộp nội dung các tab + thẻ đêm: padding rộng, góc bo lớn */
-        #screen-archive #archive-content-area .space-y-4 > div { padding: 20px; }
-        #screen-archive #archive-content-area [id^="night-node-"] { border-radius: 12px; }
-        /* Tiêu đề thẻ đêm: to, rõ; huy hiệu hạ B-52: bấm dễ thấy */
-        #screen-archive #archive-content-area [id^="night-node-"] > div:first-child { padding-bottom: 12px; }
-        #screen-archive #archive-content-area [id^="night-node-"] > div:first-child > div > span { font-size: 17px; }
-        #screen-archive #archive-content-area [id^="night-node-"] > div:first-child > span { font-size: 12px; padding: 4px 10px; }
-        /* Thân thẻ đêm: xếp chồng (chuyện kể trước, địa danh sau) thay vì 2 cột chật */
-        #screen-archive #archive-content-area .night-body > div { display: block; }
-        #screen-archive #archive-content-area .night-body > div > div:last-child { margin-top: 16px; padding: 16px; border-radius: 10px; }
-        /* Nút nhảy đêm: dạng viên thuốc, to hơn */
-        #screen-archive #archive-content-area button[onclick*="night-node-"] { padding: 7px 13px; border-radius: 999px; }
-        /* Ảnh tưởng niệm: trưng bày lớn hơn */
         #screen-archive #archive-content-area figure img { height: 230px; }
         .tool-btn {
             font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.05em; font-size: 12px;
@@ -1301,7 +1296,7 @@
             </div>
 
             <div class="screen-actions flex flex-wrap gap-3 justify-center mt-6">
-                <button class="menu-btn primary" onclick="toggleCampaignArchive(true); renderArchiveTab('card4')">Mở Hồ Sơ Tư Liệu Lịch Sử</button>
+                <button class="menu-btn primary" onclick="toggleCampaignArchive(true); showArchiveNight('night-node-1')">Mở Hồ Sơ Tư Liệu Lịch Sử</button>
                 <button class="menu-btn" onclick="openCampaign()">Danh Sách Màn Chơi</button>
                 <button class="menu-btn subtle" onclick="backToMenuAttract()">Về Menu Chính</button>
             </div>
@@ -1716,7 +1711,7 @@
 
     <!-- 10. DEDICATED FULL SCREEN: CAMPAIGN ARCHIVE (TƯ LIỆU BIÊN NIÊN SỬ 12 NGÀY ĐÊM 1972) -->
     <div id="screen-archive" class="screen">
-        <div class="screen-inner wide" style="max-height: 94vh; height: 920px; display: flex; flex-direction: column; background: rgba(5, 10, 15, 0.98); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.95); overflow: hidden; margin: auto;">
+        <div class="screen-inner wide" style="width: 100vw; height: 100vh; max-width: none; max-height: none; margin: 0; border: none; border-radius: 0; box-shadow: none; display: flex; flex-direction: column; background: rgba(5, 10, 15, 0.98); overflow: hidden;">
             <!-- Header bar -->
             <div class="p-3 sm:p-4 border-b border-emerald-500/30 flex items-center justify-between gap-4 shrink-0 bg-black/60">
                 <div class="flex items-center gap-3">
@@ -1727,66 +1722,29 @@
                             HỒ SƠ TƯ LIỆU QUÂN SỰ // CHIẾN DỊCH HÀ NỘI 12 NGÀY ĐÊM (1972)
                         </div>
                         <h2 class="screen-title text-base sm:text-xl font-serif text-alabaster m-0 tracking-wide">
-                            Biên Niên Sử Tác Chiến &amp; Bản Đồ Di Tích Hôm Nay
+                            Dòng Thời Gian 12 Ngày Đêm
                         </h2>
+                        <div class="text-xs text-zinc-400 mt-0.5">18 – 29/12/1972 · Bấm vào một mốc thời gian để xem diễn biến, hình ảnh và địa điểm của ngày đó</div>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                    <button onclick="copyCampaignSummary()" class="menu-btn subtle text-xs py-1.5 px-3 flex items-center gap-1.5 hover:border-amber-400" title="Sao chép toàn bộ tóm tắt chiến dịch">
-                        <span class="font-mono text-amber-400 mr-1">[COPY]</span> <span class="hidden sm:inline">Sao chép tóm tắt</span>
-                    </button>
+
                     <button onclick="showScreen('menu')" class="menu-btn subtle text-xs py-1.5 px-3">
                         Đóng [Esc]
                     </button>
                 </div>
             </div>
 
-            <!-- Layout mới: sidebar mục lục + cột nội dung -->
             <div class="flex-1 flex min-h-0">
-                <aside class="w-[248px] shrink-0 bg-black/50 border-r border-white/10 p-3 space-y-2 overflow-y-auto">
-                    <div class="font-mono text-[11px] tracking-widest text-zinc-500 px-2 pt-1 pb-2">MỤC LỤC TƯ LIỆU</div>
-                    <button onclick="renderArchiveTab('card1')" id="tab-btn-card1" class="archive-nav-btn px-3 py-2.5 is-active">
-                        <div class="font-mono text-[11px] uppercase text-emerald-400 font-bold">[01] Biên niên &amp; di tích</div>
-                        <div class="text-sm font-semibold text-zinc-100 mt-0.5">12 ngày đêm &amp; tọa độ hôm nay</div>
-                    </button>
-                    <button onclick="renderArchiveTab('card2')" id="tab-btn-card2" class="archive-nav-btn px-3 py-2.5">
-                        <div class="font-mono text-[11px] uppercase text-zinc-400 font-bold">[02] Bối cảnh dự báo</div>
-                        <div class="text-sm font-semibold text-zinc-100 mt-0.5">Paris &amp; Cẩm nang đỏ</div>
-                    </button>
-                    <button onclick="renderArchiveTab('card3')" id="tab-btn-card3" class="archive-nav-btn px-3 py-2.5">
-                        <div class="font-mono text-[11px] uppercase text-zinc-400 font-bold">[03] Nghệ thuật quân sự</div>
-                        <div class="text-sm font-semibold text-zinc-100 mt-0.5">Vạch nhiễu đánh B-52</div>
-                    </button>
-                    <button onclick="renderArchiveTab('card4')" id="tab-btn-card4" class="archive-nav-btn px-3 py-2.5">
-                        <div class="font-mono text-[11px] uppercase text-zinc-400 font-bold">[04] Chiến công &amp; ý nghĩa</div>
-                        <div class="text-sm font-semibold text-zinc-100 mt-0.5">Hạ 34 B-52 &amp; Hiệp định Paris</div>
-                    </button>
-                    <button onclick="renderArchiveTab('card5')" id="tab-btn-card5" class="archive-nav-btn px-3 py-2.5">
-                        <div class="font-mono text-[11px] uppercase text-amber-400 font-bold">[05] Sổ tay hiện vật</div>
-                        <div class="text-sm font-semibold text-zinc-100 mt-0.5">Bảo tàng &amp; dấu tích</div>
-                    </button>
-                    <button onclick="renderArchiveTab('card6')" id="tab-btn-card6" class="archive-nav-btn px-3 py-2.5">
-                        <div class="font-mono text-[11px] uppercase text-amber-400 font-bold">[06] Nguồn &amp; ghi chú</div>
-                        <div class="text-sm font-semibold text-zinc-100 mt-0.5">3 nguồn uy tín &amp; số liệu vênh</div>
-                    </button>
-                    <button onclick="renderArchiveTab('card7')" id="tab-btn-card7" class="archive-nav-btn px-3 py-2.5">
-                        <div class="font-mono text-[11px] uppercase text-amber-400 font-bold">[07] Tưởng niệm</div>
-                        <div class="text-sm font-semibold text-zinc-100 mt-0.5">Khâm Thiên &amp; Bạch Mai</div>
-                    </button>
-                </aside>
-                <div class="flex-1 flex flex-col min-w-0">
-                    <!-- Archive toolbar: search / expand-collapse / back-to-top -->
-                    <div class="px-4 pt-3 pb-3 bg-black/40 border-b border-white/10 shrink-0 flex flex-wrap items-center gap-2">
-                        <input id="archive-search" type="text" placeholder="Tìm trong tư liệu: Tiểu đoàn 79, Phạm Tuân, Khâm Thiên…" oninput="filterArchive(this.value)" class="flex-1 min-w-[220px] bg-zinc-900 border border-white/15 rounded px-3 py-2.5 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:border-emerald-400">
-                        <button onclick="setAllNights(true)" class="px-3 py-2 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/15 text-xs font-mono">Mở tất cả</button>
-                        <button onclick="setAllNights(false)" class="px-3 py-2 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/15 text-xs font-mono">Thu tất cả</button>
-                        <button onclick="document.getElementById('archive-content-area').scrollTo({top:0,behavior:'smooth'})" class="px-3 py-2 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-white/15 text-xs font-mono">↑ Đầu trang</button>
-                        <span id="archive-search-count" class="font-mono text-xs text-zinc-400"></span>
+                <nav class="w-[300px] shrink-0 bg-black/50 border-r border-white/10 flex flex-col min-h-0">
+                    <div class="px-4 pt-4 pb-2 font-mono text-[11px] tracking-widest text-zinc-500">MỐC THỜI GIAN</div>
+                    <div id="archive-timeline" class="flex-1 overflow-y-auto px-2 pb-4 space-y-1">
+                        <!-- Built by buildArchiveTimeline() -->
                     </div>
-
-                    <!-- Main Scrollable Content Area -->
-                    <div id="archive-content-area" class="p-5 overflow-y-auto flex-1 space-y-5 text-zinc-300">
-                        <!-- Injected via renderArchiveTab() -->
+                </nav>
+                <div class="flex-1 flex flex-col min-w-0">
+                    <div id="archive-content-area" class="p-5 sm:p-7 overflow-y-auto flex-1 space-y-5 text-zinc-300">
+                        <!-- Injected via showArchiveNight() -->
                     </div>
 
                     <!-- Footer Bar -->
