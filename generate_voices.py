@@ -59,7 +59,7 @@ cues = {
     'cue_mig21_046': ('Tiêm kích 5046 bật tăng lực xuất kích, tiếp cận mục tiêu!', 'vi-VN-NamMinhNeural'),
     'cue_mig21_5046': ('Tiêm kích 5046 bật tăng lực xuất kích, tiếp cận mục tiêu!', 'vi-VN-NamMinhNeural'),
     'cue_air_raid': ('Đồng bào chú ý! Đồng bào chú ý! Máy bay địch cách Hà Nội 50 kilômét. Nhân dân khẩn trương xuống hầm trú ẩn!', 'vi-VN-HoaiMyNeural'),
-    'cue_kill': ('Mục tiêu bốc cháy! B 52 rơi tại chỗ!', 'vi-VN-NamMinhNeural'),
+    'cue_kill': ('Trúng rồi! B 52 bốc cháy dữ dội!', 'vi-VN-NamMinhNeural'),
     'cue_win': ('Báo cáo Sở chỉ huy: Toàn tiểu đoàn hoàn thành xuất sắc nhiệm vụ!', 'vi-VN-NamMinhNeural'),
     'cue_lock': ('Đã bám chắc mục tiêu! Phóng đạn!', 'vi-VN-NamMinhNeural'),
     'cue_jam': ('Nhiễu nặng!', 'vi-VN-NamMinhNeural')

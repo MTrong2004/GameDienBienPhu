@@ -197,7 +197,7 @@ Voice.speak('LOA PHÒNG KHÔNG', 'Đồng bào chú ý! Máy bay địch cách H
 assert.strictEqual(playedAudioSrc, 'assets/audio/cue_air_raid.mp3', 'Air raid alert plays cue_air_raid.mp3');
 
 playedAudioSrc = null;
-Voice.speak('TRẮC THỦ', 'Mục tiêu bốc cháy! B-52 rơi tại chỗ!', true);
+Voice.speak('TRẮC THỦ', 'Trúng rồi! B-52 bốc cháy dữ dội!', true);
 assert.strictEqual(playedAudioSrc, 'assets/audio/cue_kill.mp3', 'Downed bomber plays cue_kill.mp3');
 
 // Test 5: Debrief history narration plays historical neural voice file

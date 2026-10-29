@@ -13066,7 +13066,7 @@ const Voice = {
             }
             if (/thắng|hoàn thành|bắn rơi|toàn thắng/i.test(lower)) return 'assets/audio/cue_win.mp3';
         }
-        if (/bốc cháy|rơi tại chỗ|bắn rơi|bắn trúng/i.test(lower)) return 'assets/audio/cue_kill.mp3';
+        if (/bốc cháy|rơi tại chỗ|bắn rơi|bắn trúng|trúng rồi/i.test(lower)) return 'assets/audio/cue_kill.mp3';
         if (who === 'TRẮC THỦ' && /nhiễu nặng/i.test(lower)) return 'assets/audio/cue_jam.mp3';
         if (/bám chắc|phóng đạn|khóa chặt/i.test(lower)) return 'assets/audio/cue_lock.mp3';
         return null;
