@@ -471,6 +471,7 @@
         let autoAIEnabled = true;
         let autoPilotActive = false;
         let autoHopCooldown = 0;
+        let autoPilotTarget = null;
         let aiFireTimer = 0;
         let cameraShake = 0;
         let radarSweepAngle = 0;
@@ -621,19 +622,42 @@
             const ctx = c.getContext('2d');
 
             // ---- Ground: rice paddies, villages, Hanoi blocks, Red River, bomb craters ----
-            // Three layers share one UV: albedo, an emissive map for lit windows and fires, and a
-            // roughness map so only water is glossy. World (x, z) maps to canvas px = (v + 340) / 680 * 2048.
+            // Four layers share one UV: albedo, emissive (fires/windows), roughness (water/asphalt gloss),
+            // and procedural bump map (dikes, field bunds, crater lips, road edges).
             const W = 2048, toPx = v => (v + 340) / 680 * W, toWorld = p => p / W * 680 - 340;
             const mk = fill => { const cv = document.createElement('canvas'); cv.width = cv.height = W; const x = cv.getContext('2d'); x.fillStyle = fill; x.fillRect(0, 0, W, W); return [cv, x]; };
             const [eCanvas, ectx] = mk('#000000');
-            const [rCanvas, rctx] = mk('#E6E6E6');
+            const [rCanvas, rctx] = mk('#E0E0E0');
+            const [bCanvas, bctx] = mk('#808080');
             const rnd = (a, b) => a + Math.random() * (b - a);
             const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 
-            ctx.fillStyle = '#1A1E15';
+            // Precomputed sampled river centerline for fast 2D distance queries
+            const riverPoints = [];
+            for (let t = 0; t <= 1; t += 0.005) {
+                const u = 1 - t;
+                const rx = u * u * u * 620 + 3 * u * u * t * 960 + 3 * u * t * t * 1280 + t * t * t * 1680;
+                const ry = 3 * u * u * t * 620 + 3 * u * t * t * 1180 + t * t * t * 2048;
+                riverPoints.push({ x: rx, y: ry });
+            }
+            const distToRiverCurve = (px, py) => {
+                const approxIdx = Math.max(0, Math.min(riverPoints.length - 1, Math.round((py / W) * (riverPoints.length - 1))));
+                let minD = Infinity;
+                const start = Math.max(0, approxIdx - 10);
+                const end = Math.min(riverPoints.length - 1, approxIdx + 10);
+                for (let i = start; i <= end; i++) {
+                    const pt = riverPoints[i];
+                    const d = Math.hypot(px - pt.x, py - pt.y);
+                    if (d < minD) minD = d;
+                }
+                return minD;
+            };
+
+            ctx.fillStyle = '#171C12';
             ctx.fillRect(0, 0, W, W);
-            // paddy fields in 512 px blocks, each block at its own angle
-            const paddy = ['#1E2417', '#232A19', '#1B2015', '#28291B', '#212718', '#1C2326', '#202A1D', '#262619'];
+
+            // Paddy fields in 512 px blocks, each block at its own angle
+            const paddy = ['#1C2316', '#222918', '#1A2014', '#26281A', '#202617', '#19211B', '#1E281C', '#242518'];
             for (let bx = 0; bx < W; bx += 512) for (let by = 0; by < W; by += 512) {
                 ctx.save();
                 ctx.beginPath(); ctx.rect(bx, by, 512, 512); ctx.clip();
@@ -643,88 +667,140 @@
                     const h = rnd(16, 38);
                     for (let x = -380; x < 380;) {
                         const w = rnd(18, 50);
-                        ctx.fillStyle = pick(paddy);
+                        const isFlooded = Math.random() < 0.22;
+                        ctx.fillStyle = isFlooded ? '#111A15' : pick(paddy);
                         ctx.fillRect(x, y, w, h);
-                        ctx.strokeStyle = 'rgba(78, 70, 50, 0.55)';
-                        ctx.lineWidth = 1.3;
+                        ctx.strokeStyle = 'rgba(74, 66, 48, 0.65)';
+                        ctx.lineWidth = 1.4;
                         ctx.strokeRect(x, y, w, h);
+
+                        // Micro-relief: raised field bunds on bump map and specular sheen on flooded paddies
+                        bctx.save();
+                        bctx.translate(bx + 256, by + 256);
+                        bctx.rotate(ctx.rotate);
+                        bctx.strokeStyle = '#9C9C9C';
+                        bctx.lineWidth = 1.4;
+                        bctx.strokeRect(x, y, w, h);
+                        bctx.restore();
+
+                        if (isFlooded) {
+                            rctx.save();
+                            rctx.translate(bx + 256, by + 256);
+                            rctx.fillStyle = '#262626';
+                            rctx.fillRect(x, y, w, h);
+                            rctx.restore();
+                        }
                         x += w;
                     }
                     y += h;
                 }
                 ctx.restore();
             }
-            for (let i = 0; i < 26000; i++) {   // soil and crop speckle
-                ctx.fillStyle = Math.random() < 0.5 ? `rgba(0,0,0,${rnd(0.05, 0.2)})` : `rgba(120,110,80,${rnd(0.03, 0.1)})`;
+            for (let i = 0; i < 28000; i++) {   // soil and crop speckle
+                ctx.fillStyle = Math.random() < 0.5 ? `rgba(0,0,0,${rnd(0.06, 0.22)})` : `rgba(125,115,85,${rnd(0.04, 0.12)})`;
                 ctx.fillRect(Math.random() * W, Math.random() * W, rnd(1, 3), rnd(1, 3));
             }
 
-            // Red River with sandy banks and dike roads; West Lake and Hoàn Kiếm
+            // Red River with sandy banks, silt floodplains, sandbars & Red River Dikes
             const river = c2 => { c2.beginPath(); c2.moveTo(620, 0); c2.bezierCurveTo(960, 620, 1280, 1180, 1680, 2048); c2.stroke(); };
             ctx.lineCap = 'round';
-            ctx.strokeStyle = '#3A3628'; ctx.lineWidth = 240; river(ctx);
-            ctx.strokeStyle = '#4A4434'; ctx.lineWidth = 190; river(ctx);
-            ctx.strokeStyle = '#0D1A22'; ctx.lineWidth = 150; river(ctx);
-            ctx.strokeStyle = '#11222C'; ctx.lineWidth = 90; river(ctx);
-            rctx.lineCap = 'round'; rctx.strokeStyle = '#1C1C1C'; rctx.lineWidth = 150; river(rctx);
+            // Alluvial floodplain silt
+            ctx.strokeStyle = '#36261C'; ctx.lineWidth = 260; river(ctx);
+            // Sandy alluvium banks
+            ctx.strokeStyle = '#48382A'; ctx.lineWidth = 205; river(ctx);
+            // Shallow muddy silt
+            ctx.strokeStyle = '#221610'; ctx.lineWidth = 155; river(ctx);
+            // Deep silt channel
+            ctx.strokeStyle = '#140E0A'; ctx.lineWidth = 95; river(ctx);
+
+            // Water surface mirror gloss in the riverbed
+            rctx.lineCap = 'round'; rctx.strokeStyle = '#121212'; rctx.lineWidth = 155; river(rctx);
+
+            // Bump map: lower river channel and raised Red River Dikes (Đê Sông Hồng)
+            bctx.lineCap = 'round';
+            bctx.strokeStyle = '#525252'; bctx.lineWidth = 150; river(bctx); // channel depression
+            bctx.strokeStyle = '#B0B0B0'; bctx.lineWidth = 230; river(bctx); // outer dike berm
+            bctx.strokeStyle = '#525252'; bctx.lineWidth = 150; river(bctx); // re-carve inner trench
+
+            // Sandbars / Alluvial islands (Bãi giữa sông Hồng)
+            const sandbar = (sx, sy, srw, srh, sang) => {
+                ctx.save(); ctx.translate(sx, sy); ctx.rotate(sang);
+                ctx.fillStyle = '#4D3E2E'; ctx.beginPath(); ctx.ellipse(0, 0, srw, srh, 0, 0, 6.283); ctx.fill();
+                ctx.fillStyle = '#3E3424'; ctx.beginPath(); ctx.ellipse(0, 0, srw * 0.7, srh * 0.6, 0, 0, 6.283); ctx.fill();
+                ctx.restore();
+                bctx.save(); bctx.translate(sx, sy); bctx.rotate(sang);
+                bctx.fillStyle = '#8C8C8C'; bctx.beginPath(); bctx.ellipse(0, 0, srw, srh, 0, 0, 6.283); bctx.fill();
+                bctx.restore();
+            };
+            sandbar(880, 520, 75, 26, 0.58);
+            sandbar(1120, 880, 85, 28, 0.45);
+            sandbar(1420, 1480, 95, 32, 0.52);
+
+            // Lakes: West Lake (Hồ Tây) and Hoàn Kiếm Lake
             const lake = (c2, x, y, rx, ry, fill) => { c2.fillStyle = fill; c2.beginPath(); c2.ellipse(x, y, rx, ry, 0.2, 0, Math.PI * 2); c2.fill(); };
-            lake(ctx, 680, 740, 238, 222, '#3A3628'); lake(ctx, 680, 740, 225, 210, '#0E1C25'); lake(rctx, 680, 740, 225, 210, '#1C1C1C');
-            lake(ctx, 920, 960, 80, 58, '#0F1F29'); lake(rctx, 920, 960, 80, 58, '#1C1C1C');
+            lake(ctx, 680, 740, 240, 224, '#382F24'); lake(ctx, 680, 740, 225, 210, '#0B161F'); lake(rctx, 680, 740, 225, 210, '#101010');
+            lake(bctx, 680, 740, 225, 210, '#525252');
+            lake(ctx, 920, 960, 84, 62, '#382F24'); lake(ctx, 920, 960, 80, 58, '#0A151C'); lake(rctx, 920, 960, 80, 58, '#101010');
+            lake(bctx, 920, 960, 80, 58, '#525252');
+
             const isWater = (px, py) => {
                 if (Math.hypot((px - 680) / 225, (py - 740) / 210) < 1.05 || Math.hypot((px - 920) / 80, (py - 960) / 58) < 1.1) return true;
-                // distance to the river curve, sampled
-                for (let t = 0; t <= 1; t += 0.01) {
-                    const u = 1 - t;
-                    const rx = u * u * u * 620 + 3 * u * u * t * 960 + 3 * u * t * t * 1280 + t * t * t * 1680;
-                    const ry = 3 * u * u * t * 620 + 3 * u * t * t * 1180 + t * t * t * 2048;
-                    if (Math.hypot(px - rx, py - ry) < 110) return true;
-                }
-                return false;
+                return distToRiverCurve(px, py) < 90;
             };
 
-            // roads: asphalt out of the city, dirt tracks between villages
+            // Roads: asphalt avenues and dike-top crest roads
             const cityC = { x: 900, y: 1250 }, cityR = { x: 520, y: 420 };
             ctx.lineCap = 'round';
             for (let k = 0; k < 9; k++) {
                 const a = k / 9 * Math.PI * 2 + rnd(-0.2, 0.2);
-                ctx.strokeStyle = k % 3 === 0 ? '#3E3B35' : '#3A3427';
-                ctx.lineWidth = k % 3 === 0 ? 7 : 4;
+                ctx.strokeStyle = k % 3 === 0 ? '#3C3832' : '#373226';
+                ctx.lineWidth = k % 3 === 0 ? 7.5 : 4.5;
                 ctx.beginPath();
                 ctx.moveTo(cityC.x, cityC.y);
                 ctx.quadraticCurveTo(cityC.x + Math.cos(a + 0.3) * 700, cityC.y + Math.sin(a + 0.3) * 700, cityC.x + Math.cos(a) * 1500, cityC.y + Math.sin(a) * 1500);
                 ctx.stroke();
+
+                // Wet asphalt sheen & raised road embankment on bump map
+                rctx.strokeStyle = '#323232'; rctx.lineWidth = ctx.lineWidth; rctx.stroke();
+                bctx.strokeStyle = '#9A9A9A'; bctx.lineWidth = ctx.lineWidth; bctx.stroke();
             }
 
-            // Hanoi: street grid, blocks and rooftops inside an ellipse; positions kept for 3D buildings
+            // Hanoi: street grid, blocks and rooftops inside an ellipse
             const inCity = (px, py) => Math.hypot((px - cityC.x) / cityR.x, (py - cityC.y) / cityR.y) < 1;
             const cityLots = [], villageLots = [], treeSpots = [];
             ctx.save();
             ctx.beginPath(); ctx.ellipse(cityC.x, cityC.y, cityR.x, cityR.y, 0, 0, Math.PI * 2); ctx.clip();
-            ctx.fillStyle = '#26251F';
+            ctx.fillStyle = '#24231E';
             ctx.fillRect(cityC.x - cityR.x, cityC.y - cityR.y, cityR.x * 2, cityR.y * 2);
             for (let y = cityC.y - cityR.y; y < cityC.y + cityR.y; y += 34) {
                 for (let x = cityC.x - cityR.x; x < cityC.x + cityR.x; x += 40) {
                     if (isWater(x + 18, y + 15)) continue;
-                    ctx.fillStyle = pick(['#34302A', '#2E2B26', '#3A342B', '#2B2925', '#403629']);
+                    ctx.fillStyle = pick(['#322E28', '#2D2924', '#383229', '#292723', '#3E3427']);
                     ctx.fillRect(x + 4, y + 4, 32, 26);
                     for (let k = 0; k < 4; k++) {   // rooftops inside the block
-                        ctx.fillStyle = pick(['#4A2E22', '#3B3530', '#2A2724', '#55402F']);
+                        ctx.fillStyle = pick(['#5C3426', '#483028', '#38302A', '#664230']);
                         ctx.fillRect(x + 5 + rnd(0, 22), y + 5 + rnd(0, 16), rnd(5, 10), rnd(4, 9));
                     }
                     if (Math.random() < 0.7) cityLots.push([toWorld(x + 20), toWorld(y + 17)]);
                 }
             }
             ctx.restore();
-            // rubble where the carpet bombing hit (Khâm Thiên, Bạch Mai...)
+
+            // Rubble and bomb craters where carpet bombing hit (Khâm Thiên, Bạch Mai, Yên Viên...)
             for (let s = 0; s < 9; s++) {
                 const x0 = rnd(200, 1850), y0 = rnd(200, 1850), a = rnd(0, Math.PI), n = 30 + Math.floor(rnd(0, 30));
                 for (let k = 0; k < n; k++) {
                     const x = x0 + Math.cos(a) * k * 9 + rnd(-10, 10), y = y0 + Math.sin(a) * k * 9 + rnd(-10, 10), r = rnd(2.5, 6);
                     if (isWater(x, y)) continue;
-                    ctx.fillStyle = '#4A4434'; ctx.beginPath(); ctx.arc(x, y, r + 1.8, 0, 6.283); ctx.fill();
-                    ctx.fillStyle = '#0B0B09'; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
+                    // Overturned clay rim and deep charred blast hole
+                    ctx.fillStyle = '#463222'; ctx.beginPath(); ctx.arc(x, y, r + 2.2, 0, 6.283); ctx.fill();
+                    ctx.fillStyle = '#0A0907'; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
+
+                    // Bump map: raised crater rim lip and indented blast pit
+                    bctx.fillStyle = '#C8C8C8'; bctx.beginPath(); bctx.arc(x, y, r + 2.0, 0, 6.283); bctx.fill();
+                    bctx.fillStyle = '#202020'; bctx.beginPath(); bctx.arc(x, y, r * 0.85, 0, 6.283); bctx.fill();
                 }
-                // still-burning fires along the strike
+                // Still-burning fires and smoldering embers along the strike
                 for (let k = 0; k < 3; k++) {
                     const fx = x0 + Math.cos(a) * rnd(0, 250), fy = y0 + Math.sin(a) * rnd(0, 250), fr = rnd(8, 22);
                     const g = ectx.createRadialGradient(fx, fy, 0, fx, fy, fr);
@@ -733,7 +809,7 @@
                 }
             }
 
-            // villages: bamboo hedges around a few houses
+            // Villages: bamboo hedges around a few houses
             for (let v = 0; v < 70; v++) {
                 const x = rnd(60, W - 60), y = rnd(60, W - 60);
                 if (inCity(x, y) || isWater(x, y) || Math.hypot(x - 1024, y - 1084) < 160) continue;
@@ -749,31 +825,66 @@
                 }
                 for (let k = 0; k < 7; k++) treeSpots.push([toWorld(x + Math.cos(k) * r * rnd(0.7, 1.1)), toWorld(y + Math.sin(k) * r * rnd(0.7, 1.1))]);
             }
-            // city lights under the blackout: sparse, warm, a few cold ones
+            // City lights under the blackout: sparse, warm, a few cold ones
             for (let i = 0; i < 1400; i++) {
                 const x = cityC.x + rnd(-1, 1) * cityR.x, y = cityC.y + rnd(-1, 1) * cityR.y;
                 if (!inCity(x, y) || isWater(x, y)) continue;
                 ectx.fillStyle = Math.random() < 0.88 ? `rgba(255,176,90,${rnd(0.35, 0.85)})` : `rgba(150,200,255,${rnd(0.3, 0.6)})`;
                 ectx.fillRect(x, y, rnd(1, 3), rnd(1, 3));
             }
-            // launch site: bulldozed earth pad, tyre tracks, revetment berm
+            // Launch site: bulldozed earth pad, tyre tracks, revetment berm
             const sx = toPx(2.8), sy = toPx(20.5);
             ctx.fillStyle = '#3A3427'; ctx.beginPath(); ctx.arc(sx, sy, 90, 0, 6.283); ctx.fill();
             ctx.strokeStyle = 'rgba(25,22,16,0.7)'; ctx.lineWidth = 3;
             for (let k = 0; k < 7; k++) { ctx.beginPath(); ctx.arc(sx, sy, 30 + k * 8, rnd(0, 6), rnd(0, 6) + 2.5); ctx.stroke(); }
             ctx.strokeStyle = '#4C4535'; ctx.lineWidth = 9; ctx.beginPath(); ctx.arc(sx, sy, 24, 0, 6.283); ctx.stroke();
+            // Berm elevation on bump map
+            bctx.strokeStyle = '#A6A6A6'; bctx.lineWidth = 14; bctx.beginPath(); bctx.arc(sx, sy, 72, 0, 6.283); bctx.stroke();
 
             const terrainTex = new THREE.CanvasTexture(c);
             terrainTex.anisotropy = 8;
             const terrainEmissive = new THREE.CanvasTexture(eCanvas);
             const terrainRough = new THREE.CanvasTexture(rCanvas);
+            const terrainBump = new THREE.CanvasTexture(bCanvas);
+            terrainBump.anisotropy = 4;
 
-            const terrainGeo = new THREE.PlaneBufferGeometry(680, 680, 128, 128);
+            const terrainGeo = new THREE.PlaneBufferGeometry(680, 680, 192, 192);
             terrainGeo.rotateX(-Math.PI / 2);
+
+            // Natural Hanoi delta topography with river channels, elevated dikes, lakes & distant mountains
             const terrainHeight = (vx, vz) => {
-                const distFromBattery = Math.hypot(vx, vz - 22);
-                if (distFromBattery < 18) return Math.exp(-Math.pow((distFromBattery - 7.5) / 2.2, 2)) * 1.15;
-                return Math.max(-0.4, Math.sin(vx * 0.025) * Math.cos(vz * 0.025) * 1.8 + Math.sin(vx * 0.11 + vz * 0.07) * 0.25);
+                // Launcher battery position: level ground for equipment, surrounded by protective earthen berm
+                const distFromBattery = Math.hypot(vx - 2.8, vz - 20.5);
+                if (distFromBattery < 7.5) return 0.0;
+                let h = 0.0;
+                if (distFromBattery < 18) {
+                    h += Math.exp(-Math.pow((distFromBattery - 11.5) / 2.8, 2)) * 1.35;
+                }
+
+                const px = toPx(vx), py = toPx(vz);
+                const riverDist = distToRiverCurve(px, py);
+                if (riverDist < 75) {
+                    h += -1.8 + Math.pow(riverDist / 75, 2) * 1.0;
+                } else if (riverDist < 130) {
+                    const dikeF = 1.0 - Math.abs(riverDist - 100) / 30;
+                    if (dikeF > 0) h += dikeF * 2.2;
+                }
+
+                const wLakeD = Math.hypot((px - 680) / 225, (py - 740) / 210);
+                if (wLakeD < 1.0) h += -1.2 * (1.0 - wLakeD * wLakeD);
+                const hkD = Math.hypot((px - 920) / 80, (py - 960) / 58);
+                if (hkD < 1.0) h += -0.9 * (1.0 - hkD * hkD);
+
+                h += Math.sin(vx * 0.022) * Math.cos(vz * 0.022) * 0.75 + Math.sin(vx * 0.065 + vz * 0.045) * 0.22;
+
+                const distNorth = Math.max(0, -vz - 130);
+                const distWest = Math.max(0, -vx - 130);
+                const mtnF = Math.hypot(distNorth, distWest) / 160;
+                if (mtnF > 0) {
+                    const mtnProfile = Math.sin(vx * 0.03) * Math.cos(vz * 0.03) * 7 + Math.sin(vx * 0.07 + vz * 0.04) * 3 + 10;
+                    h += Math.min(24, mtnF * mtnF * mtnProfile);
+                }
+                return h;
             };
             const pos = terrainGeo.attributes.position;
             for (let i = 0; i < pos.count; i++) pos.setY(i, terrainHeight(pos.getX(i), pos.getZ(i)));
@@ -783,18 +894,51 @@
             const terrainMat = new THREE.MeshStandardMaterial({
                 map: terrainTex,
                 emissiveMap: terrainEmissive, emissive: 0xFFFFFF, emissiveIntensity: 1.1,
-                roughnessMap: terrainRough, roughness: 1,
-                metalness: 0.0,
+                roughnessMap: terrainRough, roughness: 0.9,
+                bumpMap: terrainBump, bumpScale: 0.22,
+                metalness: 0.04,
                 envMapIntensity: 0.7
             });
             const terrainMesh = new THREE.Mesh(terrainGeo, terrainMat);
             worldCombatGroup.add(terrainMesh);
 
+            // Specular reflective water mesh filling the Red River & lakes
+            const wcRipple = document.createElement('canvas');
+            wcRipple.width = wcRipple.height = 256;
+            const wcrCtx = wcRipple.getContext('2d');
+            wcrCtx.fillStyle = '#808080';
+            wcrCtx.fillRect(0, 0, 256, 256);
+            for (let i = 0; i < 350; i++) {
+                const rx = Math.random() * 256, ry = Math.random() * 256, rw = 10 + Math.random() * 24;
+                wcrCtx.strokeStyle = Math.random() < 0.5 ? 'rgba(175,175,175,0.22)' : 'rgba(85,85,85,0.22)';
+                wcrCtx.lineWidth = 1.4;
+                wcrCtx.beginPath();
+                wcrCtx.ellipse(rx, ry, rw, 2.2, 0.12, 0, 6.283);
+                wcrCtx.stroke();
+            }
+            const waterBumpTex = new THREE.CanvasTexture(wcRipple);
+            waterBumpTex.wrapS = waterBumpTex.wrapT = THREE.RepeatWrapping;
+            waterBumpTex.repeat.set(16, 16);
+
+            const waterGeo = new THREE.PlaneBufferGeometry(680, 680, 8, 8);
+            waterGeo.rotateX(-Math.PI / 2);
+            const waterMat = new THREE.MeshStandardMaterial({
+                color: 0x08131A,
+                roughness: 0.12,
+                metalness: 0.82,
+                bumpMap: waterBumpTex,
+                bumpScale: 0.04,
+                envMapIntensity: 2.2
+            });
+            const waterMesh = new THREE.Mesh(waterGeo, waterMat);
+            waterMesh.position.y = -0.52;
+            worldCombatGroup.add(waterMesh);
+
             // ---- 3D houses, city blocks and trees (instanced, cheap) ----
             const wc = document.createElement('canvas');
             wc.width = wc.height = 128;
             const wctx = wc.getContext('2d');
-            wctx.fillStyle = '#6A6052'; wctx.fillRect(0, 0, 128, 128);
+            wctx.fillStyle = '#6E6454'; wctx.fillRect(0, 0, 128, 128);
             const we = document.createElement('canvas');
             we.width = we.height = 128;
             const wectx = we.getContext('2d');
@@ -811,10 +955,10 @@
             const bodyMat = new THREE.MeshStandardMaterial({
                 map: new THREE.CanvasTexture(wc), emissiveMap: new THREE.CanvasTexture(we), emissive: 0xFFFFFF, emissiveIntensity: 0.9, roughness: 0.92
             });
-            const roofGeo = new THREE.ConeGeometry(0.78, 0.55, 4);
+            const roofGeo = new THREE.ConeGeometry(0.82, 0.55, 4);
             roofGeo.rotateY(Math.PI / 4);
             roofGeo.translate(0, 1.27, 0);
-            const roofMat = new THREE.MeshStandardMaterial({ color: 0x5A3226, roughness: 0.85 });
+            const roofMat = new THREE.MeshStandardMaterial({ color: 0x7E3524, roughness: 0.85 });
             const lots = cityLots.map(p => [...p, true]).concat(villageLots.map(p => [...p, false]))
                 .filter(([x, z]) => Math.hypot(x - 2.8, z - 20.5) > 46 && Math.abs(x) < 330 && Math.abs(z) < 330);
             const bodies = new THREE.InstancedMesh(bodyGeo, bodyMat, lots.length);
@@ -824,37 +968,51 @@
             lots.forEach(([x, z, city], i) => {
                 const w = city ? rnd(3, 6) : rnd(2.2, 3.6), d = city ? rnd(3, 6) : rnd(2, 3), h = city ? rnd(2.5, 9) : rnd(1.6, 2.4);
                 q.setFromAxisAngle(WORLD_UP, city ? rnd(-0.08, 0.08) : rnd(0, Math.PI));
-                p3.set(x, terrainHeight(x, z) - 0.2, z);
+                p3.set(x, terrainHeight(x, z) - 0.15, z);
                 bodies.setMatrixAt(i, m4.compose(p3, q, sc.set(w, h, d)));
                 bodies.setColorAt(i, col.setHSL(0.08, rnd(0.05, 0.2), rnd(0.35, 0.65)));
                 if (!city || h < 4) {   // tiled roofs on low houses, flat roofs on city blocks
-                    m4.compose(p3.clone().setY(p3.y + h - 1), q, sc.set(w * 1.15, 1.1, d * 1.15));
+                    m4.compose(p3.clone().setY(p3.y + h - 0.9), q, sc.set(w * 1.15, 1.1, d * 1.15));
                     roofs.setMatrixAt(nRoof++, m4);
                 }
             });
             roofs.count = nRoof;
-            // instances spread over the whole map: the base geometry's bounds would cull them wrongly
             bodies.frustumCulled = roofs.frustumCulled = false;
             worldCombatGroup.add(bodies, roofs);
 
-            const treeGeo = new THREE.IcosahedronGeometry(1, 0);
-            const trees = new THREE.InstancedMesh(treeGeo, new THREE.MeshStandardMaterial({ color: 0x1F3A1C, roughness: 1, flatShading: true }), treeSpots.length + 900);
+            // Realistic low-poly trees with woody bark trunk and lush tiered foliage crown
+            const trunkGeo = new THREE.CylinderGeometry(0.12, 0.22, 1.2, 5);
+            trunkGeo.translate(0, 0.6, 0);
+            const crownGeo = new THREE.DodecahedronGeometry(0.9, 0);
+            crownGeo.scale(1.15, 0.85, 1.15);
+            crownGeo.translate(0, 1.5, 0);
+
+            const maxTrees = treeSpots.length + 1100;
+            const trunks = new THREE.InstancedMesh(trunkGeo, new THREE.MeshStandardMaterial({ color: 0x2A221B, roughness: 0.95 }), maxTrees);
+            const crowns = new THREE.InstancedMesh(crownGeo, new THREE.MeshStandardMaterial({ roughness: 0.88, flatShading: true }), maxTrees);
             let nTree = 0;
             const addTree = (x, z) => {
-                if (Math.hypot(x - 2.8, z - 20.5) < 30 || Math.abs(x) > 335 || Math.abs(z) > 335) return;
-                const s = rnd(1.4, 3.2);
-                trees.setMatrixAt(nTree, m4.compose(p3.set(x, terrainHeight(x, z) + s * 0.7, z), q.setFromAxisAngle(WORLD_UP, rnd(0, 6)), sc.set(s, s * rnd(1, 1.6), s)));
-                trees.setColorAt(nTree, col.setHSL(rnd(0.24, 0.32), rnd(0.25, 0.45), rnd(0.25, 0.42)));
+                if (Math.hypot(x - 2.8, z - 20.5) < 28 || Math.abs(x) > 335 || Math.abs(z) > 335) return;
+                const th = terrainHeight(x, z);
+                if (th < -0.3) return;
+                const s = rnd(1.3, 3.0);
+                p3.set(x, th, z);
+                q.setFromAxisAngle(WORLD_UP, rnd(0, 6.28));
+                m4.compose(p3, q, sc.set(s, s, s));
+                trunks.setMatrixAt(nTree, m4);
+                m4.compose(p3, q, sc.set(s, s * rnd(0.95, 1.35), s));
+                crowns.setMatrixAt(nTree, m4);
+                crowns.setColorAt(nTree, col.setHSL(rnd(0.22, 0.34), rnd(0.28, 0.52), rnd(0.20, 0.38)));
                 nTree++;
             };
             treeSpots.forEach(([x, z]) => addTree(x, z));
-            for (let k = 0; k < 900; k++) {   // scattered trees and bamboo clumps along field edges
+            for (let k = 0; k < 1100; k++) {
                 const px = rnd(0, W), py = rnd(0, W);
                 if (!isWater(px, py)) addTree(toWorld(px), toWorld(py));
             }
-            trees.count = nTree;
-            trees.frustumCulled = false;
-            worldCombatGroup.add(trees);
+            trunks.count = crowns.count = nTree;
+            trunks.frustumCulled = crowns.frustumCulled = false;
+            worldCombatGroup.add(trunks, crowns);
 
             // Long Biên Cantilever Steel Bridge spanning the Red River
             const bridgeGroup = new THREE.Group();
@@ -1076,13 +1234,104 @@
             rainSystem.frustumCulled = false;
             scene.add(rainSystem);
 
-            // Wet concrete launch pad under SAM-2 #03 (catches the orange launch glare)
-            const padMat = new THREE.MeshStandardMaterial({ color: 0x2A2D31, roughness: 0.32, metalness: 0.1 });
+            // Detailed octagonal concrete launch pad with radial expansion joints, steel turntable plate & rocket scorch marks
+            const padCanvas = document.createElement('canvas');
+            padCanvas.width = padCanvas.height = 512;
+            const pctx = padCanvas.getContext('2d');
+            pctx.fillStyle = '#262A2E';
+            pctx.fillRect(0, 0, 512, 512);
+
+            // Expansion seams (8 sectors)
+            pctx.strokeStyle = '#181C1E';
+            pctx.lineWidth = 3;
+            pctx.beginPath();
+            pctx.arc(256, 256, 240, 0, Math.PI * 2);
+            pctx.stroke();
+
+            for (let a = 0; a < 8; a++) {
+                const ang = a * Math.PI / 4;
+                pctx.beginPath();
+                pctx.moveTo(256, 256);
+                pctx.lineTo(256 + Math.cos(ang) * 240, 256 + Math.sin(ang) * 240);
+                pctx.stroke();
+            }
+
+            // Inner turntable plate
+            pctx.fillStyle = '#1D2124';
+            pctx.beginPath();
+            pctx.arc(256, 256, 120, 0, Math.PI * 2);
+            pctx.fill();
+            pctx.strokeStyle = '#323940';
+            pctx.lineWidth = 4;
+            pctx.stroke();
+
+            // Rocket booster exhaust scorch flare
+            const blastGrad = pctx.createRadialGradient(256, 256, 40, 256, 380, 200);
+            blastGrad.addColorStop(0, 'rgba(10, 10, 12, 0.85)');
+            blastGrad.addColorStop(0.5, 'rgba(20, 18, 16, 0.6)');
+            blastGrad.addColorStop(1, 'rgba(38, 42, 46, 0)');
+            pctx.fillStyle = blastGrad;
+            pctx.beginPath();
+            pctx.arc(256, 256, 230, 0.2, Math.PI - 0.2);
+            pctx.fill();
+
+            // Weathered yellow safety warning circle
+            pctx.strokeStyle = 'rgba(215, 165, 42, 0.7)';
+            pctx.lineWidth = 4;
+            pctx.setLineDash([12, 8]);
+            pctx.beginPath();
+            pctx.arc(256, 256, 205, 0, Math.PI * 2);
+            pctx.stroke();
+            pctx.setLineDash([]);
+
+            const padTex = new THREE.CanvasTexture(padCanvas);
+            padTex.anisotropy = 4;
+            const padMat = new THREE.MeshStandardMaterial({
+                map: padTex,
+                roughness: 0.28,
+                metalness: 0.18,
+                color: 0xE0E0E0
+            });
             padMat.userData.assetKey = 'ground';
+
+            // Launch pad under SAM-2 #03
             const pad = new THREE.Mesh(new THREE.CircleGeometry(6.6, 48), padMat);
             pad.rotation.x = -Math.PI / 2;
             pad.position.set(2.8, 0.06, 21.5);
             worldCombatGroup.add(pad);
+
+            // Flanking launch pads under #01 and #02
+            [-22, 22].forEach(lx => {
+                const flankPad = new THREE.Mesh(new THREE.CircleGeometry(5.8, 40), padMat);
+                flankPad.rotation.x = -Math.PI / 2;
+                flankPad.position.set(lx, 0.06, 10);
+                worldCombatGroup.add(flankPad);
+            });
+
+            // Tactical signal & power cables connecting Fan Song radar van to launchers
+            const cableMat = new THREE.MeshStandardMaterial({ color: 0x16181B, roughness: 0.85, metalness: 0.15 });
+            const addCable = (pts) => {
+                const curve = new THREE.CatmullRomCurve3(pts);
+                const cableGeo = new THREE.TubeGeometry(curve, 28, 0.06, 6, false);
+                worldCombatGroup.add(new THREE.Mesh(cableGeo, cableMat));
+            };
+            addCable([
+                new THREE.Vector3(-12.5, 0.07, 15.5),
+                new THREE.Vector3(-8.0, 0.07, 17.5),
+                new THREE.Vector3(-2.0, 0.07, 19.0),
+                new THREE.Vector3(2.0, 0.07, 20.2)
+            ]);
+            addCable([
+                new THREE.Vector3(-14.2, 0.07, 15.0),
+                new THREE.Vector3(-17.5, 0.07, 13.0),
+                new THREE.Vector3(-21.0, 0.07, 10.5)
+            ]);
+            addCable([
+                new THREE.Vector3(-12.0, 0.07, 15.0),
+                new THREE.Vector3(0.0, 0.07, 13.5),
+                new THREE.Vector3(12.0, 0.07, 11.5),
+                new THREE.Vector3(20.5, 0.07, 10.2)
+            ]);
 
             buildSparkSystem();
         }

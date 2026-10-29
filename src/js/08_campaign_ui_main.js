@@ -1103,6 +1103,8 @@ window.onload = async function () {
 };
 function resetAutoPilotUI() {
     autoPilotActive = false;
+    autoPilotTarget = null;
+    autoHopCooldown = 0;
     const btn = document.getElementById('btn-auto-pilot');
     if (btn) {
         btn.classList.remove('is-active');

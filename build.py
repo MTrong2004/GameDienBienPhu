@@ -62,10 +62,31 @@ def assemble():
 def run_tests():
     verify_script = os.path.join('tests', 'verify_suite.py')
     e2e_script = os.path.join('tests', 'test_e2e_suite.js')
+    mig21_script = os.path.join('tests', 'test_mig21_model.js')
+    launcher_script = os.path.join('tests', 'test_launcher_model.js')
+    b52_script = os.path.join('tests', 'test_b52_model.js')
     print("\n--- Running Verification Suite ---")
     ret1 = subprocess.run([sys.executable, verify_script]).returncode
     if ret1 != 0:
         print(f"[FAIL] {verify_script} failed!")
+        return False
+
+    print("\n--- Running MiG-21 3D Model Verification ---")
+    ret_mig = subprocess.run(['node', mig21_script]).returncode
+    if ret_mig != 0:
+        print(f"[FAIL] {mig21_script} failed!")
+        return False
+
+    print("\n--- Running SM-63 Launcher 3D Model Verification ---")
+    ret_launcher = subprocess.run(['node', launcher_script]).returncode
+    if ret_launcher != 0:
+        print(f"[FAIL] {launcher_script} failed!")
+        return False
+
+    print("\n--- Running B-52 3D Model Verification ---")
+    ret_b52 = subprocess.run(['node', b52_script]).returncode
+    if ret_b52 != 0:
+        print(f"[FAIL] {b52_script} failed!")
         return False
 
     print("\n--- Running E2E Test Suite (Node.js) ---")

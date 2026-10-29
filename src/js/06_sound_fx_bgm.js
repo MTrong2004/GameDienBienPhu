@@ -74,12 +74,12 @@
 
             setup(ctx) {
                 const comp = ctx.createDynamicsCompressor();
-                comp.threshold.value = -16;
-                comp.ratio.value = 4;
-                comp.attack.value = 0.004;
-                comp.release.value = 0.3;
+                comp.threshold.value = -18;
+                comp.ratio.value = 3.5;
+                comp.attack.value = 0.01;
+                comp.release.value = 0.25;
                 this.master = ctx.createGain();
-                this.master.gain.value = 0.9;
+                this.master.gain.value = 0.75;
                 this.masterGain = this.master;
                 this.master.connect(comp);
                 comp.connect(ctx.destination);
@@ -96,11 +96,12 @@
                 this.brown = this.makeNoise(ctx, 'brown');
 
                 const L = this.L;
-                L.rain = this.layer(this.loop(this.white), [this.filter('highpass', 1400), this.filter('lowpass', 7000)]);
+                // ponytail: Brown/warm-filtered noise layers reduce harsh buzzing/static; upgrade to dynamic parametric EQ if fine tone controls added
+                L.rain = this.layer(this.loop(this.brown), [this.filter('highpass', 400), this.filter('lowpass', 2400)]);
                 L.rumble = this.layer(this.loop(this.brown), [this.filter('lowpass', 120)], 0.3);
-                L.jam = this.layer(this.loop(this.white), [this.filter('bandpass', 2600, 0.7)]);
+                L.jam = this.layer(this.loop(this.brown), [this.filter('bandpass', 1200, 0.5)]);
                 const d1 = this.osc('sawtooth', 52), d2 = this.osc('sawtooth', 55.3);
-                L.drone = this.layer(d1, [this.filter('lowpass', 240)], 0.2);
+                L.drone = this.layer(d1, [this.filter('lowpass', 140)], 0.2);
                 d2.connect(L.drone.f);
                 L.drone.oscs = [d1, d2];
                 const tb = this.osc('sawtooth', 800);
@@ -111,7 +112,7 @@
                 const tr = this.osc('sine', 900);
                 L.track = this.layer(tr, []);
                 L.track.osc = tr;
-                L.wind = this.layer(this.loop(this.white), [this.filter('bandpass', 850, 1.4)], 0.15);
+                L.wind = this.layer(this.loop(this.brown), [this.filter('bandpass', 650, 1.0)], 0.15);
                 this.ready = true;
             },
 
@@ -224,18 +225,18 @@
                 const archiveEl = (typeof document !== 'undefined') ? document.getElementById('screen-archive') : null;
                 const archiveOpen = !!(archiveEl && archiveEl.classList.contains('is-open'));
                 const live = SoundEngine.enabled && !gamePaused && !archiveOpen;
-                this.master.gain.setTargetAtTime(live ? 0.9 : 0, t, 0.05);
+                this.master.gain.setTargetAtTime(live ? 0.75 : 0, t, 0.05);
                 const world = currentMode !== 'HANGAR' && !archiveOpen;
                 const air = currentMode === 'MIG21' && (gameState === 'PLAYING' || gameState === 'ENDING') && !archiveOpen;
                 const missileView = !archiveOpen && !!guidedMissile && guidedMissile.t > 0.7;
 
-                set(L.rain, world && !air ? (missileView ? 0.03 : 0.09) : 0);
+                set(L.rain, world && !air ? (missileView ? 0.015 : 0.035) : 0);
                 set(L.rumble, world && !air ? 0.22 : air ? 0.08 : 0);
 
-                // jamming hiss in the operator's headphones, crackling with the noise level
+                // Jamming static in headphones — toned down to avoid harsh buzzing/crackling
                 const jamOn = currentMode === 'SAM2' && gameState === 'PLAYING' && activeMission && activeMission.jam;
-                set(L.jam, jamOn ? jammingLevel * (0.05 + Math.random() * 0.05) : 0, 0.03);
-                if (jamOn) L.jam.f.frequency.setTargetAtTime(1800 + Math.random() * 1600, t, 0.05);
+                set(L.jam, jamOn ? jammingLevel * 0.016 : 0, 0.08);
+                if (jamOn) L.jam.f.frequency.setTargetAtTime(1100 + jammingLevel * 300, t, 0.1);
 
                 // B-52 engines: loudest bomber near the camera
                 let near = Infinity;
@@ -251,9 +252,9 @@
                 // Canopy aerodynamic wind buffeting & G-load
                 const migG = (air && typeof mig !== 'undefined') ? (Math.abs(mig.bank || 0) * 0.5 + Math.abs(mig.pitch || 0) * 0.5) : 0;
                 const migSpd = (air && typeof mig !== 'undefined' && mig.speed) ? mig.speed / 18 : 0;
-                set(L.wind, air ? (0.03 + migSpd * 0.16 + migG * 0.12) : 0, 0.08);
+                set(L.wind, air ? (0.02 + migSpd * 0.08 + migG * 0.06) : 0, 0.08);
                 if (air && L.wind && L.wind.f && L.wind.f.frequency) {
-                    L.wind.f.frequency.setTargetAtTime(450 + migSpd * 1100 + migG * 700, t, 0.1);
+                    L.wind.f.frequency.setTargetAtTime(350 + migSpd * 800 + migG * 400, t, 0.1);
                 }
 
                 // MiG supersonic shockwave
@@ -292,12 +293,14 @@
                 if (!this.ensure()) return;
                 const t = SoundEngine.ctx.currentTime;
                 if (isMiG) {
-                    this.tone({ t0: t, freq: 240, freqEnd: 75, peak: 0.5, a: 0.003, dur: 0.4 });
+                    this.tone({ t0: t, type: 'triangle', freq: 280, freqEnd: 60, peak: 0.65, a: 0.002, dur: 0.45, wet: 0.3 });
+                    this.burst({ t0: t, brown: true, type: 'lowpass', freq: 650, freqEnd: 140, peak: 0.6, a: 0.005, hold: 0.18, rel: 0.6, wet: 0.35 });
                     this.burst({ type: 'lowpass', freq: 5200, freqEnd: 1100, peak: 0.5, a: 0.01, hold: 0.35, rel: 1.1, wet: 0.25 });
                     this.burst({ type: 'highpass', freq: 2800, peak: 0.25, a: 0.005, hold: 0.15, rel: 0.5 });
                     return;
                 }
-                // V-750 booster: blast, roar that fades as it climbs away, crackle, sub thump
+                // V-750 booster: sub thump kick, blast, roar that fades as it climbs away, crackle
+                this.tone({ t0: t, type: 'triangle', freq: 65, freqEnd: 18, peak: 1.1, a: 0.001, dur: 0.6, wet: 0.35 });
                 this.tone({ freq: 85, freqEnd: 24, peak: 0.95, a: 0.003, dur: 1.5, wet: 0.4 });
                 this.tone({ t0: t, type: 'sine', freq: 48, freqEnd: 18, peak: 0.9, a: 0.002, dur: 1.6, wet: 0.55 });
                 this.burst({ type: 'lowpass', freq: 2800, freqEnd: 320, peak: 0.9, a: 0.02, hold: 1.8, rel: 2.8, wet: 0.55 });
@@ -418,7 +421,7 @@
                 this.burst({ t0: t + 0.15, type: 'highpass', freq: 3500, peak: 0.08, a: 0.02, hold: 0.1, rel: 0.3 });
             },
 
-            // Súng/Pháo phòng không bảo vệ bầu trời Hà Nội (Cao xạ 37mm, 57mm, 100mm) - âm thanh đanh thép, chân thực
+            // Súng/Pháo phòng không bảo vệ bầu trời Hà Nội (Cao xạ 37mm, 57mm, 100mm) - âm thanh đanh thép, trầm chắc, không rè
             aaa(dist, heavy) {
                 if (!this.ensure()) return;
                 const ctx = SoundEngine.ctx;
@@ -426,38 +429,38 @@
                 const t = ctx.currentTime + Math.min(0.25, d * 0.001);
                 // ponytail: Procedural synthesis calibrated for authentic artillery crack & low-end thump; upgrade to multi-sampled audio buffers if real field recordings are provided.
                 const atten = 1 / Math.sqrt(1 + d / 200);
-                const v = Math.min(0.65, (heavy ? 0.60 : 0.46) * atten);
+                const v = Math.min(0.40, (heavy ? 0.38 : 0.26) * atten);
 
                 if (heavy) {
                     // Pháo cao xạ hạng nặng 100mm: Tiếng nổ đầu nòng trầm vang uy lực, rền vang khắp trận địa
-                    this.tone({ t0: t, type: 'triangle', freq: 105, freqEnd: 28, peak: v * 0.85, a: 0.004, dur: 0.4, wet: 0.6 });
-                    this.burst({ t0: t, type: 'bandpass', freq: 850, Q: 1.0, peak: v * 0.75, a: 0.001, hold: 0.03, rel: 0.16, wet: 0.5 });
-                    this.burst({ t0: t, brown: true, type: 'lowpass', freq: 360, freqEnd: 90, peak: v * 0.85, a: 0.003, hold: 0.06, rel: 0.55, wet: 0.7 });
-                    this.tone({ t0: t + 0.08, type: 'sine', freq: 55, freqEnd: 22, peak: v * 0.40, a: 0.01, dur: 0.5, wet: 0.75 });
+                    this.tone({ t0: t, type: 'triangle', freq: 105, freqEnd: 28, peak: v * 0.75, a: 0.004, dur: 0.4, wet: 0.6 });
+                    this.burst({ t0: t, type: 'bandpass', freq: 750, Q: 1.0, peak: v * 0.50, a: 0.001, hold: 0.03, rel: 0.16, wet: 0.5 });
+                    this.burst({ t0: t, brown: true, type: 'lowpass', freq: 320, freqEnd: 90, peak: v * 0.70, a: 0.003, hold: 0.06, rel: 0.55, wet: 0.7 });
+                    this.tone({ t0: t + 0.08, type: 'sine', freq: 55, freqEnd: 22, peak: v * 0.35, a: 0.01, dur: 0.5, wet: 0.75 });
                 } else {
                     // Pháo cao xạ 37mm / 57mm: Loạt bắn liên thanh 3-4 phát giòn giã, đanh gọn
                     const n = 3 + Math.floor(Math.random() * 2);
                     for (let k = 0; k < n; k++) {
                         const tk = t + k * 0.082;
                         const roundV = v * (0.8 + Math.random() * 0.2);
-                        this.tone({ t0: tk, type: 'triangle', freq: 190, freqEnd: 55, peak: roundV * 0.65, a: 0.002, dur: 0.075, wet: 0.4 });
-                        this.burst({ t0: tk, type: 'bandpass', freq: 1600 + Math.random() * 300, Q: 1.2, peak: roundV * 0.70, a: 0.001, hold: 0.012, rel: 0.045, wet: 0.35 });
-                        this.burst({ t0: tk, brown: true, type: 'lowpass', freq: 450, peak: roundV * 0.50, a: 0.002, hold: 0.015, rel: 0.07, wet: 0.3 });
+                        this.tone({ t0: tk, type: 'triangle', freq: 190, freqEnd: 55, peak: roundV * 0.55, a: 0.002, dur: 0.075, wet: 0.4 });
+                        this.burst({ t0: tk, type: 'bandpass', freq: 1300 + Math.random() * 200, Q: 1.0, peak: roundV * 0.45, a: 0.001, hold: 0.012, rel: 0.045, wet: 0.35 });
+                        this.burst({ t0: tk, brown: true, type: 'lowpass', freq: 400, peak: roundV * 0.40, a: 0.002, hold: 0.015, rel: 0.07, wet: 0.3 });
                     }
                 }
             },
 
-            // Đạn pháo phòng không phát nổ trên không (Flak airburst shrapnel) - tiếng nổ chụp rách trời
+            // Đạn pháo phòng không phát nổ trên không (Flak airburst shrapnel) - tiếng nổ chụp đanh gọn
             flakBurst(dist, heavy) {
                 if (!this.ensure()) return;
                 const ctx = SoundEngine.ctx;
                 const d = Math.max(0, dist || 0);
                 const t = ctx.currentTime + Math.min(0.45, d * 0.0018);
                 const atten = 1 / Math.sqrt(1 + d / 200);
-                const v = Math.min(0.55, (heavy ? 0.52 : 0.38) * atten);
-                this.burst({ t0: t, type: 'bandpass', freq: 1600, Q: 1.1, peak: v * 0.70, a: 0.002, hold: 0.015, rel: 0.08, wet: 0.45 });
-                this.tone({ t0: t, type: 'triangle', freq: 140, freqEnd: 42, peak: v * 0.65, a: 0.003, dur: 0.18, wet: 0.6 });
-                this.burst({ t0: t + 0.01, brown: true, type: 'lowpass', freq: 480, freqEnd: 110, peak: v * 0.75, a: 0.004, hold: 0.025, rel: 0.26, wet: 0.7 });
+                const v = Math.min(0.35, (heavy ? 0.32 : 0.22) * atten);
+                this.burst({ t0: t, type: 'bandpass', freq: 1300, Q: 1.0, peak: v * 0.48, a: 0.002, hold: 0.015, rel: 0.08, wet: 0.45 });
+                this.tone({ t0: t, type: 'triangle', freq: 140, freqEnd: 42, peak: v * 0.50, a: 0.003, dur: 0.18, wet: 0.6 });
+                this.burst({ t0: t + 0.01, brown: true, type: 'lowpass', freq: 420, freqEnd: 110, peak: v * 0.55, a: 0.004, hold: 0.025, rel: 0.26, wet: 0.7 });
             },
 
             // Đạn pháo 23mm MiG-21 (GSh-23L) hoặc súng máy phòng thủ đuôi B-52

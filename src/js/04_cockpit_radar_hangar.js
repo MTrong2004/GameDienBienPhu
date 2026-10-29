@@ -86,14 +86,21 @@ function setCinematicCamera(preset) {
         tacticalMap3DGroup.visible = (preset === 'MAP3D');
     }
 
-    cockpitCanvas.classList.add('hidden');
     if (preset === 'COCKPIT') {
+        cockpitCanvas.classList.remove('hidden');
         playerMiG21.visible = false;
         leftHud.style.display = rightRadar.style.display = 'none';
+        const reticle = document.getElementById('hud-reticle');
+        if (reticle) reticle.style.display = 'none';
+        if (cockpit3D) cockpit3D.group.visible = false;
         updateReticleTheme('MIG21');
     } else {
+        cockpitCanvas.classList.add('hidden');
         playerMiG21.visible = preset === 'CHASE';
         leftHud.style.display = rightRadar.style.display = (preset === 'CHASE') ? 'none' : '';
+        const reticle = document.getElementById('hud-reticle');
+        if (reticle) reticle.style.display = 'block';
+        if (cockpit3D) cockpit3D.group.visible = false;
         updateReticleTheme(preset === 'CHASE' ? 'MIG21' : 'SAM2');
     }
 }
@@ -294,21 +301,97 @@ function spawnSmokePuff(origin, size, vel, life, kind) {
     });
 }
 
-// SAM-2 launch: ground-hugging billows pushed out from the pad, fire core, sparks
+// ponytail: Soft feathered vapor shock rings & ground launch wave surrounding missile
+let _shockRingTex = null;
+function getShockRingTexture() {
+    if (_shockRingTex) return _shockRingTex;
+    const c = document.createElement('canvas');
+    c.width = c.height = 128;
+    const ctx = c.getContext ? c.getContext('2d') : null;
+    if (!ctx) return new THREE.CanvasTexture(c);
+    const cx = 64, cy = 64;
+    // Ultra-soft gaussian-feathered toroidal vapor ring
+    const grd = ctx.createRadialGradient(cx, cy, 10, cx, cy, 62);
+    grd.addColorStop(0, 'rgba(255, 255, 255, 0)');
+    grd.addColorStop(0.28, 'rgba(255, 245, 210, 0.06)');
+    grd.addColorStop(0.52, 'rgba(255, 230, 160, 0.80)');
+    grd.addColorStop(0.68, 'rgba(255, 175, 70, 0.40)');
+    grd.addColorStop(0.85, 'rgba(255, 120, 30, 0.08)');
+    grd.addColorStop(1.0, 'rgba(255, 80, 10, 0)');
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, 128, 128);
+    _shockRingTex = new THREE.CanvasTexture(c);
+    return _shockRingTex;
+}
+
+function spawnMissileShockRing(pos, dir, scale = 1) {
+    const tex = getShockRingTexture();
+    const size = 3.6 * scale;
+    const geo = new THREE.PlaneGeometry(size, size);
+    const mat = new THREE.MeshBasicMaterial({
+        map: tex, color: 0xFFE89E, transparent: true, opacity: 0,
+        blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.copy(pos);
+    mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), dir);
+    mesh.rotation.z = Math.random() * Math.PI * 2;
+    worldCombatGroup.add(mesh);
+    explosionParticles.push({
+        mesh, vel: dir.clone().multiplyScalar(4), life: 0.55, maxLife: 0.55,
+        isShockwave: true, baseScale: 1, grow: 4.2, baseOpacity: 0.75
+    });
+}
+
+function spawnGroundShockwave(origin) {
+    const tex = getShockRingTexture();
+    const geo = new THREE.PlaneGeometry(6.5, 6.5);
+    const mat = new THREE.MeshBasicMaterial({
+        map: tex, color: 0xFFA040, transparent: true, opacity: 0,
+        blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(origin.x, 0.35, origin.z);
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.rotation.z = Math.random() * Math.PI * 2;
+    worldCombatGroup.add(mesh);
+    explosionParticles.push({
+        mesh, vel: new THREE.Vector3(), life: 0.75, maxLife: 0.75,
+        isShockwave: true, baseScale: 1, grow: 5.2, baseOpacity: 0.8
+    });
+}
+
+function triggerLaunchFlash() {
+    const flashEl = document.getElementById('explosion-flash');
+    if (!flashEl) return;
+    flashEl.style.background = 'radial-gradient(circle at center, rgba(255, 220, 140, 0.35), rgba(249, 115, 22, 0.18), transparent 70%)';
+    flashEl.style.opacity = '0.55';
+    setTimeout(() => {
+        if (flashEl) {
+            flashEl.style.opacity = '0';
+            setTimeout(() => {
+                flashEl.style.background = 'radial-gradient(circle at center, rgba(254, 240, 138, 0.42), rgba(234, 88, 12, 0.22), transparent 74%)';
+            }, 180);
+        }
+    }, 90);
+}
+
+// SAM-2 launch: ground-hugging billows pushed out from the pad, fire core, sparks, shockwave
 function launchBlast(origin) {
     const ground = new THREE.Vector3(origin.x, 1.0, origin.z);
-    for (let b = 0; b < 22; b++) {
+    spawnGroundShockwave(ground);
+    for (let b = 0; b < 24; b++) {
         // billow sideways and away from the deck camera so the shot stays readable
         const a = Math.PI + (Math.random() - 0.5) * Math.PI * 1.3 + Math.PI / 2;
-        const sp = 2.5 + Math.random() * 5;
+        const sp = 2.5 + Math.random() * 5.5;
         const p = ground.clone().add(new THREE.Vector3(Math.cos(a) * 1.5, Math.random() * 2, Math.sin(a) * 1.5));
-        spawnSmokePuff(p, 4 + Math.random() * 4, new THREE.Vector3(Math.cos(a) * sp, 0.8 + Math.random() * 2.5, Math.sin(a) * sp), 3.5 + Math.random() * 2.5, 'smoke');
+        spawnSmokePuff(p, 4.2 + Math.random() * 4.2, new THREE.Vector3(Math.cos(a) * sp, 0.8 + Math.random() * 2.6, Math.sin(a) * sp), 3.5 + Math.random() * 2.5, 'smoke');
     }
-    for (let b = 0; b < 12; b++) {
+    for (let b = 0; b < 14; b++) {
         const p = ground.clone().add(new THREE.Vector3((Math.random() - 0.5) * 3, Math.random() * 2.5, (Math.random() - 0.5) * 3));
-        spawnSmokePuff(p, 3.5 + Math.random() * 3, new THREE.Vector3((Math.random() - 0.5) * 6, 1 + Math.random() * 3, (Math.random() - 0.5) * 6), 0.5 + Math.random() * 0.4, 'fire');
+        spawnSmokePuff(p, 3.6 + Math.random() * 3.0, new THREE.Vector3((Math.random() - 0.5) * 6, 1 + Math.random() * 3.5, (Math.random() - 0.5) * 6), 0.55 + Math.random() * 0.4, 'fire');
     }
-    spawnSparks(ground, 160, 22, 0.8);
+    spawnSparks(ground, 180, 24, 0.82);
 }
 
 function updatePosterClock(dt) {
@@ -615,8 +698,17 @@ function animateLoop(now) {
     if (skyFlashLight.intensity > 0) {
         skyFlashLight.intensity = Math.max(0, skyFlashLight.intensity - dt * 16);
     }
-    if (launchPadLight.intensity > 0) {
-        launchPadLight.intensity = Math.max(0, launchPadLight.intensity - dt * 12);
+    // ponytail: Dynamic rocket plume lighting smoothly illuminates launcher, ground, and smoke during launch
+    const hotMissile = (typeof guidedMissile !== 'undefined' && guidedMissile && guidedMissile.t < 3.2) ? guidedMissile
+        : (typeof activeMissiles !== 'undefined' && activeMissiles.find(m => m.t < 2.6));
+    if (hotMissile && hotMissile.mesh) {
+        const boost = hotMissile.t < 2.4;
+        launchPadLight.position.lerp(hotMissile.mesh.position, Math.min(1, dt * 18));
+        launchPadLight.distance = boost ? 160 : 70;
+        const targetIntensity = boost ? 6.5 : 2.5;
+        launchPadLight.intensity += (targetIntensity - launchPadLight.intensity) * Math.min(1, dt * 8);
+    } else if (launchPadLight.intensity > 0) {
+        launchPadLight.intensity = Math.max(0, launchPadLight.intensity - dt * 8);
     }
 
     updateBombers(dt, now);
@@ -700,6 +792,12 @@ function animateLoop(now) {
                 p.mesh.material.emissive.setRGB(0.55 * hot, 0.22 * hot, 0.04 * hot);
                 p.mesh.material.opacity = Math.min(1, age * 8) * (1 - age) * p.baseOpacity;
             }
+        } else if (p.isShockwave) {
+            const age = 1 - Math.max(0, p.life / p.maxLife);
+            p.mesh.scale.setScalar(p.baseScale * (1 + age * p.grow));
+            // Silky smooth bell-curve envelope: zero abrupt popping, smooth expansion and dissolution
+            const alpha = Math.sin(Math.pow(age, 0.65) * Math.PI);
+            p.mesh.material.opacity = alpha * p.baseOpacity;
         } else if (p.isVolumetricSmoke) {
             p.mesh.lookAt(camera.position);
             const ratio = Math.max(0, p.life / (p.maxLife || 1.2));

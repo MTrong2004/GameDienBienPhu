@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<body style="margin:0;overflow:hidden;background:#000;">
+<iframe id="game" src="index.html" style="width:1280px;height:720px;border:none;"></iframe>
+<script>
+window.onload = () => {
+    setTimeout(() => {
+        const win = document.getElementById('game').contentWindow;
+        if (win && win.enterHangar) {
+            win.enterHangar();
+            win.loadHangarShowcaseModel('B52');
+            win.hangarPitch = 1.4; // top-down
+            win.hangarYaw = 0;
+            win.hangarDist = 28;
+            win.hangarDrag = true; // prevent auto-rotation
+        }
+    }, 1500);
+};
+</script>
+</body>
+</html>

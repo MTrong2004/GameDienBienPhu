@@ -103,6 +103,26 @@
             outer.position.y = -0.6;
             worldCombatGroup.add(outer);
 
+            // Distant mountain ranges (Tam Đảo & Ba Vì) silhouetting against the night horizon
+            const mtnGeo = new THREE.CylinderGeometry(2600, 3800, 320, 64, 4, true);
+            mtnGeo.translate(0, 130, 0);
+            const mpos = mtnGeo.attributes.position;
+            for (let i = 0; i < mpos.count; i++) {
+                const y = mpos.getY(i);
+                if (y > 20) {
+                    const ang = Math.atan2(mpos.getZ(i), mpos.getX(i));
+                    const ridge = Math.sin(ang * 6) * 45 + Math.cos(ang * 11) * 28 + Math.sin(ang * 3 + 1.2) * 55;
+                    mpos.setY(i, y + Math.max(-10, ridge));
+                }
+            }
+            mtnGeo.computeVertexNormals();
+            const mtnMat = new THREE.MeshLambertMaterial({
+                color: 0x090E16,
+                emissive: 0x030508
+            });
+            const distantMountains = new THREE.Mesh(mtnGeo, mtnMat);
+            worldCombatGroup.add(distantMountains);
+
             // MiG-21 arena: moonlit cloud tops ~2.5 km below the bombers
             const c = document.createElement('canvas');
             c.width = c.height = 512;
@@ -865,7 +885,8 @@
 
         function launchSamMissile(launcher, target, guided) {
             SoundEngine.playLaunch(false);
-            cameraShake = 0.52;
+            cameraShake = 0.68;
+            triggerLaunchFlash();
             const origin = launcher.battery.root.position.clone().add(new THREE.Vector3(0, 3.8, -1));
             const mesh = HighPolyFactory.createSAM2Missile();
             mesh.scale.setScalar(0.78);
@@ -880,6 +901,7 @@
                 kind: 'SAM', mesh, dir: los.clone().add(new THREE.Vector3(0, 0.5, 0)).normalize(),
                 speed: 6, t: 0, life: 44, target, guided, q: 1, blind: 0, lost: false, smokeTick: 0, prevNear: Infinity, flame
             };
+            spawnMissileShockRing(origin, m.dir, 1.15);
             activeMissiles.push(m);
             if (guided) guidedMissile = m;
             if (!guided) {
@@ -901,7 +923,8 @@
             missionAmmo--;
             missionShots++;
             SoundEngine.playLaunch(true);
-            cameraShake = 0.45;
+            cameraShake = 0.48;
+            triggerLaunchFlash();
             const mesh = HighPolyFactory.createK13Missile();
             mesh.scale.setScalar(2.2);
             const flame = attachBoosterFlame(mesh, -1.15, -1, 0.22);
@@ -911,6 +934,7 @@
             // APU-13 launch rail smoke puff & rocket ignition flash
             spawnSmokePuff(mesh.position.clone(), 3.2, mig.fwd.clone().multiplyScalar(-5), 0.7, 'smoke');
             spawnSmokePuff(mesh.position.clone(), 2.2, mig.fwd.clone().multiplyScalar(-2), 0.25, 'fire');
+            spawnMissileShockRing(mesh.position.clone(), mig.fwd, 0.6);
             activeMissiles.push({
                 kind: 'K13', mesh, dir: mig.fwd.clone(), speed: mig.speed + 6, speed0: mig.speed,
                 t: 0, life: 7, target: mig.target, guided: false, smokeTick: 0, prevNear: Infinity, flame
@@ -1007,13 +1031,22 @@
                     m.life = Math.min(m.life, 3);
                     if (gameState === 'PLAYING') showRadio('SĨ QUAN ĐIỀU KHIỂN', 'Mất tín hiệu dẫn — đạn lạc! Phải nhảy tần trước khi máy gây nhiễu bám tới.');
                 }
-                const right = _tmpR.crossVectors(m.dir, WORLD_UP);
-                if (right.lengthSq() < 1e-4) right.set(1, 0, 0);
-                right.normalize();
-                const up = _tmpU.crossVectors(right, m.dir).normalize();
-                const ax = deadzone(smoothAimX, 0.06), ay = deadzone(smoothAimY, 0.06);
-                const ctl = 1.15 * energy * (0.3 + 0.7 * Math.min(1, m.q / 0.6));   // mushy in noise or when slow
-                m.dir.addScaledVector(right, ax * ctl * dt).addScaledVector(up, ay * ctl * dt);
+                if (autoPilotActive && tgt && activeBombers.includes(tgt)) {
+                    // Precision 3-point radio command guidance (Phương pháp Ba Điểm / K)
+                    const tgtPos = tgt.mesh.position;
+                    const d = tgtPos.distanceTo(m.mesh.position);
+                    const lead = leadDirection(m, tgt, inChaff(tgtPos));
+                    const steerRate = (d < 130 ? 4.5 : 3.2) * energy * (0.65 + 0.35 * Math.min(1, m.q / 0.5));
+                    m.dir.lerp(lead, Math.min(1, dt * steerRate)).normalize();
+                } else {
+                    const right = _tmpR.crossVectors(m.dir, WORLD_UP);
+                    if (right.lengthSq() < 1e-4) right.set(1, 0, 0);
+                    right.normalize();
+                    const up = _tmpU.crossVectors(right, m.dir).normalize();
+                    const ax = deadzone(smoothAimX, 0.06), ay = deadzone(smoothAimY, 0.06);
+                    const ctl = 1.15 * energy * (0.3 + 0.7 * Math.min(1, m.q / 0.6));   // mushy in noise or when slow
+                    m.dir.addScaledVector(right, ax * ctl * dt).addScaledVector(up, ay * ctl * dt);
+                }
                 // terminal phase: stick strictly to designated target if active; fallback to nearest B-52 only if lost/destroyed
                 m.seek = null;
                 if (tgt && activeBombers.includes(tgt)) {
@@ -1029,15 +1062,17 @@
                     });
                 }
                 if (m.seek) {
-                    m.dir.lerp(leadDirection(m, m.seek, inChaff(m.seek.mesh.position)), Math.min(1, dt * 2.4 * energy * (0.55 + 0.45 * m.q)));
-                } else if (tgt && m.q >= 0.5) {
+                    m.dir.lerp(leadDirection(m, m.seek, inChaff(m.seek.mesh.position)), Math.min(1, dt * (autoPilotActive ? 3.6 : 2.4) * energy * (0.55 + 0.45 * m.q)));
+                } else if (!autoPilotActive && tgt && m.q >= 0.5) {
                     const gain = m.mesh.position.distanceTo(tgt.mesh.position) < 120 ? 1.1 : 0.12;
                     m.dir.lerp(leadDirection(m, tgt, inChaff(tgt.mesh.position)), Math.min(1, dt * gain * m.q));
                 }
-                const n = (1 - m.q) * 1.6 * dt;
-                m.dir.x += (Math.random() - 0.5) * n;
-                m.dir.y += (Math.random() - 0.5) * n;
-                m.dir.z += (Math.random() - 0.5) * n;
+                if (!autoPilotActive || m.q < 0.3) {
+                    const n = (1 - m.q) * (autoPilotActive ? 0.4 : 1.6) * dt;
+                    m.dir.x += (Math.random() - 0.5) * n;
+                    m.dir.y += (Math.random() - 0.5) * n;
+                    m.dir.z += (Math.random() - 0.5) * n;
+                }
             } else if (m.guided) {
                 m.dir.y -= 0.08 * dt;   // no commands: the missile sags off the line
             } else if (tgt) {
@@ -1078,17 +1113,26 @@
                 if (m.flame) {
                     // booster burns out at 2.4 s; the sustainer plume is shorter and paler
                     const boost = m.kind === 'SAM' && m.t < 2.4;
-                    const w = boost ? 1.15 : 0.8, len = (boost ? 1.3 : 0.75) * (0.86 + Math.random() * 0.28);
+                    const w = boost ? 1.2 : 0.8, len = (boost ? 1.35 : 0.75) * (0.88 + Math.random() * 0.24);
                     m.flame.scale.set(w, w, len);
-                    m.flame.userData.glow.scale.setScalar(m.flame.userData.size * (boost ? 2.4 : 1.5) * (0.9 + Math.random() * 0.2));
+                    m.flame.userData.glow.scale.setScalar(m.flame.userData.size * (boost ? 2.5 : 1.5) * (0.92 + Math.random() * 0.16));
+                }
+                // Transonic Mach condensation vapor ring as missile breaks sound barrier
+                if (m.t >= 0.85 && !m.sonicVapor) {
+                    m.sonicVapor = true;
+                    spawnMissileShockRing(m.mesh.position, m.dir, m.kind === 'SAM' ? 1.25 : 0.65);
+                }
+                if (m.t < 2.4 && Math.random() < 0.35) {
+                    const tail = m.mesh.position.clone().addScaledVector(m.dir, m.kind === 'SAM' ? -4.8 : -2.6);
+                    spawnSparks(tail, 2, 18, 0.2);
                 }
                 m.smokeTick += dt;
                 if (m.smokeTick >= 0.03) {
                     m.smokeTick = 0;
                     const tail = m.mesh.position.clone().addScaledVector(m.dir, m.kind === 'SAM' ? -4.6 : -2.8);
-                    const s = m.kind === 'SAM' ? 3 : 1.2;
-                    spawnSmokePuff(tail, s + Math.random() * s * 0.5, new THREE.Vector3((Math.random() - 0.5) * 1.6, 0.6, (Math.random() - 0.5) * 1.6), 2.4 + Math.random(), 'trail');
-                    if (Math.random() < 0.5) spawnSmokePuff(tail, s * 0.9, new THREE.Vector3(), 0.2, 'fire');
+                    const s = m.kind === 'SAM' ? 3.2 : 1.25;
+                    spawnSmokePuff(tail, s + Math.random() * s * 0.45, new THREE.Vector3((Math.random() - 0.5) * 1.5, 0.6, (Math.random() - 0.5) * 1.5), 2.4 + Math.random(), 'trail');
+                    if (Math.random() < 0.45) spawnSmokePuff(tail, s * 0.85, new THREE.Vector3(), 0.2, 'fire');
                 }
 
                 // radio proximity fuze: fires at the closest point of approach (jamming does not affect it)
@@ -1156,7 +1200,8 @@
             // Booster separation visual feedback at T+2.4s
             if (!m.staged && m.t >= 2.4) {
                 m.staged = true;
-                cameraShake = Math.max(cameraShake, 0.32);
+                cameraShake = Math.max(cameraShake, 0.35);
+                spawnMissileShockRing(p.clone().addScaledVector(m.dir, -4.5), m.dir, 1.4);
                 spawnSmokePuff(p.clone().addScaledVector(m.dir, -4.5), 5.5, new THREE.Vector3(0, -1.2, 0), 1.2, 'smoke');
                 spawnSparks(p.clone().addScaledVector(m.dir, -4.5), 24, 18, 0.22);
             }
@@ -1190,6 +1235,10 @@
             c.lookOff.lerp(lookWant, k);
             camera.position.copy(c.fromPos).lerp(_tmpV.copy(p).add(c.off), e);
             camera.position.addScaledVector(shakeVec, 0.12);
+            if (c.t < 1.0) {
+                const launchRumble = (1 - c.t) * 0.28;
+                camera.position.add(new THREE.Vector3((Math.random() - 0.5) * launchRumble, (Math.random() - 0.5) * launchRumble, (Math.random() - 0.5) * launchRumble));
+            }
             camera.up.copy(WORLD_UP).lerp(up, e).normalize();
             camera.lookAt(_tmpL.copy(c.fromLook).lerp(_tmpV2.copy(p).add(c.lookOff), e));
             camera.up.copy(WORLD_UP);   // every other view builds its lookAt on world-up
@@ -1326,9 +1375,10 @@
         // ---- 3D MiG-21 cockpit (attached to the camera) ----
         function buildCockpit3D() {
             const g = new THREE.Group();
-            const frameMat = new THREE.MeshStandardMaterial({ color: 0x2A3330, roughness: 0.55, metalness: 0.45 });
-            const paintMat = new THREE.MeshStandardMaterial({ color: 0x1D6B5B, roughness: 0.7, metalness: 0.1 });
-            const blackMat = new THREE.MeshStandardMaterial({ color: 0x0B0E0E, roughness: 0.9 });
+            const frameMat = new THREE.MeshStandardMaterial({ color: 0x222725, roughness: 0.45, metalness: 0.55 });
+            const paintMat = new THREE.MeshStandardMaterial({ color: 0x137A63, roughness: 0.65, metalness: 0.15 });
+            const darkConsoleMat = new THREE.MeshStandardMaterial({ color: 0x141B19, roughness: 0.8, metalness: 0.2 });
+            const blackMat = new THREE.MeshStandardMaterial({ color: 0x0A0D0C, roughness: 0.92 });
             const tube = (a, b, r, mat, parent = g) => {
                 const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b);
                 const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, A.distanceTo(B), 10), mat);
@@ -1345,10 +1395,84 @@
                 return m;
             };
 
-            // instrument panel with live gauges
+            // ---- 1. MiG-21 forward nose, red intake cowl, radome shock cone & pitot boom visible through windshield ----
+            const alumNoseMat = new THREE.MeshStandardMaterial({ color: 0x828F96, roughness: 0.35, metalness: 0.78 });
+            const noseHood = new THREE.Mesh(new THREE.CylinderGeometry(0.44, 0.62, 4.4, 24), alumNoseMat);
+            noseHood.rotation.x = Math.PI / 2;
+            noseHood.position.set(0, -0.52, -4.4);
+            g.add(noseHood);
+
+            const antiGlare = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.03, 4.35), blackMat);
+            antiGlare.rotation.x = -0.02;
+            antiGlare.position.set(0, -0.12, -4.4);
+            g.add(antiGlare);
+
+            const redLipMat = new THREE.MeshStandardMaterial({ color: 0xDC2626, roughness: 0.35, metalness: 0.2 });
+            const redLip = new THREE.Mesh(new THREE.TorusGeometry(0.44, 0.04, 16, 32), redLipMat);
+            redLip.position.set(0, -0.52, -6.6);
+            g.add(redLip);
+
+            const radomeCone = new THREE.Mesh(new THREE.ConeGeometry(0.28, 1.35, 24), new THREE.MeshStandardMaterial({ color: 0x059669, roughness: 0.28, metalness: 0.2 }));
+            radomeCone.rotation.x = -Math.PI / 2;
+            radomeCone.position.set(0, -0.52, -7.05);
+            g.add(radomeCone);
+
+            const pitotMat = new THREE.MeshStandardMaterial({ color: 0xD1D5DB, metalness: 0.9, roughness: 0.2 });
+            const pitotBoom = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.018, 2.6, 12), pitotMat);
+            pitotBoom.rotation.x = Math.PI / 2;
+            pitotBoom.position.set(0.16, -0.42, -7.9);
+            g.add(pitotBoom);
+            [-1, 1].forEach(ax => {
+                const vane = new THREE.Mesh(new THREE.BoxGeometry(ax === 1 ? 0.08 : 0.004, ax === -1 ? 0.08 : 0.004, 0.04), pitotMat);
+                vane.position.set(0.16, -0.42, -8.7);
+                g.add(vane);
+            });
+
+            // Outer delta wing roots & nav lights in peripheral vision
+            [-1, 1].forEach(sd => {
+                const wingSliver = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.05, 1.8), alumNoseMat);
+                wingSliver.position.set(sd * 2.0, -0.55, -3.4);
+                wingSliver.rotation.y = sd * -0.45;
+                g.add(wingSliver);
+                const nLight = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), new THREE.MeshBasicMaterial({ color: sd < 0 ? 0xEF4444 : 0x10B981 }));
+                nLight.position.set(sd * 3.1, -0.54, -4.1);
+                g.add(nLight);
+            });
+
+            // ---- 2. KM-1M Ejection seat, bulkhead & cockpit floor ----
+            const seatTubMat = new THREE.MeshStandardMaterial({ color: 0x1A2320, roughness: 0.7, metalness: 0.2 });
+            const seatLeatherMat = new THREE.MeshStandardMaterial({ color: 0x1B1E1B, roughness: 0.85 });
+            const seatHarnessMat = new THREE.MeshStandardMaterial({ color: 0x3E4B3E, roughness: 0.9 });
+            box(1.3, 1.7, 0.06, seatTubMat, 0, -0.1, 0.35);
+            [-0.2, 0.2].forEach(rx => { tube([rx, -1.1, 0.3], [rx, 0.65, 0.3], 0.022, frameMat); });
+            const headrest = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.32, 0.12), seatLeatherMat);
+            headrest.position.set(0, 0.28, 0.26);
+            g.add(headrest);
+            const handleGeo = new THREE.TorusGeometry(0.065, 0.014, 8, 20, Math.PI);
+            [-0.1, 0.1].forEach(hx => {
+                const hMesh = new THREE.Mesh(handleGeo, new THREE.MeshStandardMaterial({ color: 0xFBBF24, roughness: 0.4, metalness: 0.3 }));
+                hMesh.position.set(hx, 0.44, 0.24);
+                g.add(hMesh);
+            });
+            box(0.68, 0.7, 0.1, seatTubMat, 0, -0.45, 0.24);
+            box(0.56, 0.12, 0.55, seatLeatherMat, 0, -0.88, -0.05);
+            [-0.32, 0.32].forEach(sx => { box(0.08, 0.36, 0.55, seatTubMat, sx, -0.72, -0.05); });
+            [-0.12, 0.12].forEach(hx => { tube([hx, 0.22, 0.22], [hx * 0.9, -0.32, 0.05], 0.025, seatHarnessMat); });
+
+            // Cockpit floor & rudder pedals
+            box(0.9, 0.04, 1.8, darkConsoleMat, 0, -1.25, -1.2, -0.08);
+            [-0.2, 0.2].forEach(px => {
+                const pedal = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.18, 0.03), frameMat);
+                pedal.position.set(px, -1.14, -1.82);
+                pedal.rotation.x = -0.4;
+                g.add(pedal);
+                tube([px, -1.22, -1.75], [px, -1.14, -1.82], 0.015, frameMat);
+            });
+
+            // ---- 3. Instrument panel with live gauges (2048 x 800) ----
             const canvas = document.createElement('canvas');
-            canvas.width = 1024;
-            canvas.height = 400;
+            canvas.width = 2048;
+            canvas.height = 800;
             const tex = new THREE.CanvasTexture(canvas);
             tex.anisotropy = 4;
             const panel = new THREE.Mesh(new THREE.PlaneGeometry(2.56, 1.0), new THREE.MeshStandardMaterial({
@@ -1357,13 +1481,14 @@
             panel.position.set(0, -0.78, -2.35);
             panel.rotation.x = -0.32;
             g.add(panel);
-            // raised bezels around the round instruments (positions match drawCockpitPanel)
+
+            // 3D instrument bezels and screws
             const bezelMat = new THREE.MeshStandardMaterial({ color: 0x1A1D1C, roughness: 0.35, metalness: 0.7 });
             [[110, 115, 76], [285, 115, 76], [110, 300, 62], [285, 300, 62], [735, 110, 66], [905, 110, 66], [512, 120, 106], [512, 318, 70]].forEach(([px, py, r]) => {
                 const ring = new THREE.Mesh(new THREE.TorusGeometry((r + 6) / 400, 0.014, 8, 40), bezelMat);
                 ring.position.set((px / 1024 - 0.5) * 2.56, (0.5 - py / 400), 0.012);
                 panel.add(ring);
-                for (let k = 0; k < 4; k++) {   // bezel screws
+                for (let k = 0; k < 4; k++) {
                     const sc = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.01, 6), bezelMat);
                     const a = Math.PI / 4 + k * Math.PI / 2, rr = (r + 14) / 400;
                     sc.rotation.x = Math.PI / 2;
@@ -1372,13 +1497,25 @@
                 }
             });
             box(2.72, 1.1, 0.1, paintMat, 0, -0.79, -2.42, -0.32);
-            // glare shield coaming with a padded edge
+
+            // Glare shield coaming with padded edge
             box(2.72, 0.07, 0.5, blackMat, 0, -0.27, -2.32, -0.05);
             tube([-1.36, -0.25, -2.08], [1.36, -0.25, -2.08], 0.04, blackMat);
-            // ASP-PFD gyro gunsight body and reflector glass
+
+            // ---- 4. ASP-PFD Collimator gyro gunsight body and reflector glass ----
             box(0.36, 0.24, 0.44, frameMat, 0, -0.17, -2.14);
+            const sightCyl = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.15, 16), blackMat);
+            sightCyl.position.set(0, -0.04, -2.14);
+            g.add(sightCyl);
+            [-0.19, 0.19].forEach(kx => {
+                const dialKnob = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.04, 12), bezelMat);
+                dialKnob.rotation.z = Math.PI / 2;
+                dialKnob.position.set(kx, -0.15, -2.14);
+                g.add(dialKnob);
+            });
+
             const glass = new THREE.Mesh(new THREE.PlaneGeometry(0.42, 0.36), new THREE.MeshBasicMaterial({
-                color: 0xA7F3D0, transparent: true, opacity: 0.1, depthWrite: false, side: THREE.DoubleSide
+                color: 0xA7F3D0, transparent: true, opacity: 0.12, depthWrite: false, side: THREE.DoubleSide
             }));
             glass.position.set(0, 0.07, -2.2);
             glass.rotation.x = -0.55;
@@ -1387,39 +1524,133 @@
             edge.position.copy(glass.position);
             edge.rotation.copy(glass.rotation);
             g.add(edge);
-            // windshield frame, canopy rails, rear-view periscope
+
+            // High-resolution illuminated ASP reticle
+            const sc2 = document.createElement('canvas');
+            sc2.width = sc2.height = 256;
+            const sctx = sc2.getContext('2d');
+            sctx.strokeStyle = '#FF6A2A'; sctx.lineWidth = 4;
+            sctx.beginPath(); sctx.arc(128, 128, 76, 0, 6.283); sctx.stroke();
+            for (let k = 0; k < 12; k++) {
+                const a = k * Math.PI / 6;
+                sctx.lineWidth = k % 3 === 0 ? 4 : 2;
+                sctx.beginPath();
+                sctx.moveTo(128 + Math.cos(a) * 70, 128 + Math.sin(a) * 70);
+                sctx.lineTo(128 + Math.cos(a) * 82, 128 + Math.sin(a) * 82);
+                sctx.stroke();
+            }
+            sctx.lineWidth = 2.5;
+            sctx.beginPath();
+            sctx.moveTo(128 - 36, 128); sctx.lineTo(128 - 12, 128);
+            sctx.moveTo(128 + 12, 128); sctx.lineTo(128 + 36, 128);
+            sctx.moveTo(128, 128 - 36); sctx.lineTo(128, 128 - 12);
+            sctx.moveTo(128, 128 + 12); sctx.lineTo(128, 128 + 36);
+            sctx.stroke();
+            sctx.fillStyle = '#FFD27A';
+            sctx.beginPath(); sctx.arc(128, 128, 5, 0, 6.283); sctx.fill();
+            for (let k = 0; k < 4; k++) {
+                const a = k * Math.PI / 2 + Math.PI / 4, dx = 128 + Math.cos(a) * 98, dy = 128 + Math.sin(a) * 98;
+                sctx.beginPath(); sctx.moveTo(dx, dy - 5); sctx.lineTo(dx + 5, dy); sctx.lineTo(dx, dy + 5); sctx.lineTo(dx - 5, dy); sctx.closePath(); sctx.fill();
+            }
+            const sightRet = new THREE.Mesh(new THREE.PlaneGeometry(0.32, 0.32), new THREE.MeshBasicMaterial({
+                map: new THREE.CanvasTexture(sc2), transparent: true, opacity: 0.65, blending: THREE.AdditiveBlending, depthWrite: false
+            }));
+            sightRet.position.set(0, 0.07, -2.19);
+            sightRet.rotation.x = -0.55;
+            g.add(sightRet);
+
+            // ---- 5. Windshield frame, TS-27AM periscope, defrost manifold & canopy rails ----
             tube([-0.62, -0.26, -2.2], [-0.4, 0.72, -1.75], 0.035, frameMat);
             tube([0.62, -0.26, -2.2], [0.4, 0.72, -1.75], 0.035, frameMat);
             tube([-0.4, 0.72, -1.75], [0.4, 0.72, -1.75], 0.035, frameMat);
             tube([-0.62, -0.26, -2.2], [-1.05, -0.35, 0.2], 0.04, frameMat);
             tube([0.62, -0.26, -2.2], [1.05, -0.35, 0.2], 0.04, frameMat);
-            box(0.2, 0.06, 0.05, blackMat, 0, 0.69, -1.74);
-            // side consoles and throttle
+            // Defrost tube & warm air nozzles
+            tube([-0.62, -0.25, -2.16], [0.62, -0.25, -2.16], 0.02, frameMat);
+            for (let n = -3; n <= 3; n++) {
+                const noz = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.012, 0.025, 6), frameMat);
+                noz.position.set(n * 0.16, -0.23, -2.15);
+                noz.rotation.x = -0.6;
+                g.add(noz);
+            }
+            // TS-27AM rearview periscope
+            const periHousing = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.11, 0.18), frameMat);
+            periHousing.position.set(0, 0.72, -1.74);
+            g.add(periHousing);
+            const periMirror = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.085), new THREE.MeshStandardMaterial({ color: 0xCBD5E1, metalness: 0.95, roughness: 0.05 }));
+            periMirror.position.set(0, 0.72, -1.73);
+            periMirror.rotation.x = 0.32;
+            g.add(periMirror);
+
+            // Emergency canopy jettison lever
+            const jettisonLever = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.16, 8), redLipMat);
+            jettisonLever.position.set(1.08, -0.32, -0.9);
+            jettisonLever.rotation.z = -0.5;
+            g.add(jettisonLever);
+
+            // Side consoles
             box(0.5, 0.25, 1.6, paintMat, -1.15, -1.0, -1.3);
             box(0.5, 0.25, 1.6, paintMat, 1.15, -1.0, -1.3);
-            tube([-0.95, -0.88, -1.4], [-0.9, -0.62, -1.5], 0.03, frameMat);
-            const knob = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 8), blackMat);
-            knob.position.set(-0.9, -0.6, -1.5);
-            g.add(knob);
-            // control stick that follows the mouse
+            box(0.42, 0.02, 1.45, darkConsoleMat, -1.15, -0.87, -1.3);
+            box(0.42, 0.02, 1.45, darkConsoleMat, 1.15, -0.87, -1.3);
+
+            // Left console: Throttle quadrant (RUD)
+            const throttleSlot = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.04, 0.42), blackMat);
+            throttleSlot.position.set(-0.95, -0.86, -1.45);
+            g.add(throttleSlot);
+            const throttleLever = new THREE.Group();
+            throttleLever.position.set(-0.95, -0.84, -1.45);
+            tube([0, 0, 0], [0, 0.2, -0.04], 0.02, frameMat, throttleLever);
+            const throttleGrip = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.06, 0.13), blackMat);
+            throttleGrip.position.set(0, 0.22, -0.04);
+            throttleLever.add(throttleGrip);
+            const pttBtn = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.012, 6), redLipMat);
+            pttBtn.rotation.z = Math.PI / 2;
+            pttBtn.position.set(0.052, 0.23, -0.04);
+            throttleLever.add(pttBtn);
+            g.add(throttleLever);
+
+            // Control stick (RUS) with accordion boot and KG-13 grip
             const stick = new THREE.Group();
-            stick.position.set(0, -1.55, -1.25);
-            tube([0, 0, 0], [0, 0.55, -0.12], 0.035, blackMat, stick);
-            const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.05, 0.18, 10), blackMat);
-            grip.position.set(0, 0.6, -0.13);
-            stick.add(grip);
+            stick.position.set(0, -1.35, -1.25);
+            for (let b = 0; b < 3; b++) {
+                const bootRing = new THREE.Mesh(new THREE.TorusGeometry(0.08 - b * 0.018, 0.018, 8, 20), blackMat);
+                bootRing.position.set(0, b * 0.035, 0);
+                bootRing.rotation.x = Math.PI / 2;
+                stick.add(bootRing);
+            }
+            tube([0, 0.08, 0], [0, 0.52, -0.1], 0.028, frameMat, stick);
+            const gripGroup = new THREE.Group();
+            gripGroup.position.set(0, 0.58, -0.11);
+            const gripBody = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.04, 0.16, 12), blackMat);
+            gripGroup.add(gripBody);
+            const palmRest = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.02, 0.08), blackMat);
+            palmRest.position.set(0, -0.08, 0.01);
+            gripGroup.add(palmRest);
+            const trigger = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.06, 0.03), frameMat);
+            trigger.position.set(0, 0.02, -0.05);
+            gripGroup.add(trigger);
+            const launchBtn = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.015, 10), redLipMat);
+            launchBtn.position.set(-0.03, 0.07, -0.02);
+            launchBtn.rotation.z = 0.3;
+            gripGroup.add(launchBtn);
+            const trimHat = new THREE.Mesh(new THREE.ConeGeometry(0.02, 0.025, 8), frameMat);
+            trimHat.position.set(0, 0.09, 0);
+            gripGroup.add(trimHat);
+            stick.add(gripGroup);
             g.add(stick);
-            // dim floodlight on the panel, plus the red night-lighting of the consoles
-            const flood = new THREE.PointLight(0x9CFFD0, 0.45, 5);
+
+            // Cockpit lighting: soft emerald panel floodlight + Soviet red night sidelights
+            const flood = new THREE.PointLight(0x6EE7B7, 0.55, 5);
             flood.position.set(0, -0.3, -1.6);
             g.add(flood);
             [-1, 1].forEach(sd => {
-                const red = new THREE.PointLight(0xFF4A36, 0.35, 2.2);
+                const red = new THREE.PointLight(0xEF4444, 0.38, 2.4);
                 red.position.set(sd * 0.95, -0.55, -1.2);
                 g.add(red);
             });
 
-            // canopy bow and rear arch as smooth curved frames
+            // Canopy bow and rear arch
             const arch = (pts, r) => {
                 const curve = new THREE.CatmullRomCurve3(pts.map(p => new THREE.Vector3(...p)));
                 g.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 40, r, 8, false), frameMat));
@@ -1427,13 +1658,8 @@
             arch([[-1.08, -0.34, 0.15], [-0.85, 0.55, 0.05], [0, 0.95, 0.0], [0.85, 0.55, 0.05], [1.08, -0.34, 0.15]], 0.045);
             arch([[-0.64, -0.27, -2.18], [-0.52, 0.3, -1.98], [-0.4, 0.72, -1.75]], 0.03);
             arch([[0.64, -0.27, -2.18], [0.52, 0.3, -1.98], [0.4, 0.72, -1.75]], 0.03);
-            // rear-view mirror on the bow
-            const mirror = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.1, 0.02), new THREE.MeshStandardMaterial({ color: 0x9FB0B8, metalness: 1, roughness: 0.05 }));
-            mirror.position.set(0, 0.8, -1.72);
-            mirror.rotation.x = 0.35;
-            g.add(mirror);
 
-            // canopy glass with rain running over it
+            // Canopy glass with rain streaming over it
             const rc = document.createElement('canvas');
             rc.width = rc.height = 256;
             const rctx = rc.getContext('2d');
@@ -1451,12 +1677,12 @@
             canopy.position.set(0, -0.45, -0.1);
             g.add(canopy);
 
-            // cockpit sills and side walls
+            // Cockpit sills and side walls
             [-1, 1].forEach(sd => {
                 box(0.12, 0.14, 2.4, blackMat, sd * 1.12, -0.36, -1.0);
                 box(0.08, 0.7, 2.2, paintMat, sd * 1.3, -0.75, -1.05);
             });
-            // switch rows and circuit breakers on both consoles
+            // Switch rows and circuit breakers on both consoles
             const swGeo = new THREE.CylinderGeometry(0.012, 0.012, 0.07, 6);
             const switches = new THREE.InstancedMesh(swGeo, new THREE.MeshStandardMaterial({ color: 0xD8D8D0, metalness: 0.8, roughness: 0.3 }), 48);
             const m4 = new THREE.Matrix4(), qq = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -0.4);
@@ -1468,7 +1694,7 @@
                 }
             });
             g.add(switches);
-            // annunciator lamps on the right console, blinking in renderMiG21CockpitDashboard
+            // Annunciator lamps on the right console
             const lamps = [];
             [0xEF4444, 0xFBBF24, 0x4ADE80, 0xFBBF24].forEach((c, k) => {
                 const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.025, 0.05), new THREE.MeshStandardMaterial({ color: 0x220000, emissive: c, emissiveIntensity: 0.2 }));
@@ -1476,193 +1702,629 @@
                 g.add(lamp);
                 lamps.push(lamp);
             });
-            // ASP gunsight: glowing reticle on the reflector glass
-            const sc2 = document.createElement('canvas');
-            sc2.width = sc2.height = 128;
-            const sctx = sc2.getContext('2d');
-            sctx.strokeStyle = '#FF6A2A'; sctx.lineWidth = 3;
-            sctx.beginPath(); sctx.arc(64, 64, 44, 0, 6.283); sctx.stroke();
-            sctx.fillStyle = '#FFD27A'; sctx.beginPath(); sctx.arc(64, 64, 4, 0, 6.283); sctx.fill();
-            for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4; sctx.fillRect(64 + Math.cos(a) * 52 - 2, 64 + Math.sin(a) * 52 - 2, 4, 4); }
-            const sightRet = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sc2), transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false }));
-            sightRet.position.set(0, 0.07, -2.19);
-            sightRet.rotation.x = -0.55;
-            g.add(sightRet);
 
             g.visible = false;
             camera.add(g);
-            cockpit3D = { group: g, ctx: canvas.getContext('2d'), tex, stick, lastDraw: 0, rainTex, lamps };
+            cockpit3D = { group: g, ctx: canvas.getContext('2d'), tex, stick, throttleLever, lastDraw: 0, rainTex, lamps };
         }
 
         function renderMiG21CockpitDashboard(now) {
-            if (!cockpit3D) return;
-            const show = cameraPreset === 'COCKPIT' && currentMode === 'MIG21';
-            cockpit3D.group.visible = show;
-            if (!show) return;
-            cockpit3D.stick.rotation.set(-smoothAimY * 0.25, 0, -smoothAimX * 0.3);
-            // rain streams back over the canopy faster at speed; annunciators flicker
-            cockpit3D.rainTex.offset.y += (0.05 + mig.speed * 0.004) * 0.016;
-            cockpit3D.rainTex.offset.x = Math.sin(now * 0.0003) * 0.02;
-            cockpit3D.lamps.forEach((l, k) => { l.material.emissiveIntensity = (k === 0 ? mig.underFire > 0 && now % 400 < 200 : k === 2 ? mig.irLock >= 1.5 : (now * 0.001 + k) % 3 < 0.15) ? 2.2 : 0.15; });
-            if (now - cockpit3D.lastDraw < 70) return;
-            cockpit3D.lastDraw = now;
-            drawCockpitPanel(cockpit3D.ctx, now);
-            cockpit3D.tex.needsUpdate = true;
+            const canvas = document.getElementById('mig21-cockpit-canvas');
+            if (!canvas) return;
+
+            const isCockpit = (currentMode === 'MIG21' && cameraPreset === 'COCKPIT');
+            if (!isCockpit) {
+                if (!canvas.classList.contains('hidden')) canvas.classList.add('hidden');
+                return;
+            }
+            if (canvas.classList.contains('hidden')) canvas.classList.remove('hidden');
+
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            if (canvas.width !== w || canvas.height !== h) {
+                canvas.width = w;
+                canvas.height = h;
+            }
+
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, w, h);
+
+            const cx = w * 0.5;
+            const p = playerMiG21 ? playerMiG21.position : { x: 0, y: 100, z: 0 };
+            const altM = Math.round(p.y * 25);
+            const spdKmh = Math.round(mig.speed * 60);
+            const hdgDeg = Math.round((Math.atan2(-mig.fwd.x, -mig.fwd.z) * 180 / Math.PI + 360) % 360);
+
+            // ---- 1. Outer Heavy Canopy Arch Frame (Matching Image 1) ----
+            ctx.save();
+            const archThick = Math.max(26, w * 0.024);
+            const archGrad = ctx.createLinearGradient(0, 0, w, 0);
+            archGrad.addColorStop(0, '#0E1715');
+            archGrad.addColorStop(0.35, '#1E2C28');
+            archGrad.addColorStop(0.5, '#2B3B36');
+            archGrad.addColorStop(0.65, '#1E2C28');
+            archGrad.addColorStop(1, '#0E1715');
+
+            ctx.strokeStyle = archGrad;
+            ctx.lineWidth = archThick;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(-10, h + 10);
+            ctx.bezierCurveTo(w * 0.05, h * 0.18, w * 0.22, h * 0.04, cx, h * 0.04);
+            ctx.bezierCurveTo(w * 0.78, h * 0.04, w * 0.95, h * 0.18, w + 10, h + 10);
+            ctx.stroke();
+
+            // Inner rubber gasket seam
+            ctx.strokeStyle = '#070C0B';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(-10, h + 10);
+            ctx.bezierCurveTo(w * 0.07, h * 0.20, w * 0.24, h * 0.065, cx, h * 0.065);
+            ctx.bezierCurveTo(w * 0.76, h * 0.065, w * 0.93, h * 0.20, w + 10, h + 10);
+            ctx.stroke();
+
+            // Rivet studs along the arch curve
+            ctx.fillStyle = '#64748B';
+            const numRivets = 24;
+            for (let i = 1; i < numRivets; i++) {
+                const u = i / numRivets;
+                let rx, ry;
+                if (u <= 0.5) {
+                    const t = u * 2, mt = 1 - t;
+                    rx = mt * mt * (w * 0.06) + 2 * mt * t * (w * 0.22) + t * t * cx;
+                    ry = mt * mt * (h * 0.9) + 2 * mt * t * (h * 0.06) + t * t * (h * 0.045);
+                } else {
+                    const t = (u - 0.5) * 2, mt = 1 - t;
+                    rx = mt * mt * cx + 2 * mt * t * (w * 0.78) + t * t * (w * 0.94);
+                    ry = mt * mt * (h * 0.045) + 2 * mt * t * (h * 0.06) + t * t * (h * 0.9);
+                }
+                ctx.beginPath(); ctx.arc(rx, ry, 3.2, 0, Math.PI * 2); ctx.fill();
+            }
+
+            // ---- 2. Green Instrument Glow Reflections on Curved Glass (Matching Image 1) ----
+            const drawReflection = (rx, ry, r, alpha) => {
+                const g = ctx.createRadialGradient(rx, ry, 2, rx, ry, r);
+                g.addColorStop(0, `rgba(52, 211, 153, ${alpha})`);
+                g.addColorStop(0.6, `rgba(16, 185, 129, ${alpha * 0.5})`);
+                g.addColorStop(1, 'rgba(5, 150, 105, 0)');
+                ctx.fillStyle = g;
+                ctx.beginPath(); ctx.arc(rx, ry, r, 0, Math.PI * 2); ctx.fill();
+            };
+            drawReflection(w * 0.14, h * 0.44, 38, 0.24);
+            drawReflection(w * 0.12, h * 0.54, 48, 0.28);
+            drawReflection(w * 0.15, h * 0.64, 36, 0.20);
+            drawReflection(w * 0.85, h * 0.46, 42, 0.26);
+            drawReflection(w * 0.88, h * 0.58, 46, 0.30);
+            drawReflection(w * 0.84, h * 0.68, 34, 0.20);
+
+            // ---- 3. Top HUD Telemetry Overlays (Exact Match to Image 1) ----
+            ctx.font = 'bold 15px "JetBrains Mono", monospace';
+            ctx.fillStyle = '#86EFAC';
+            ctx.shadowColor = '#4ADE80';
+            ctx.shadowBlur = 8;
+            ctx.textAlign = 'left';
+            ctx.fillText('MÔ PHỎNG: HÀ NỘI 12 NGÀY ĐÊM', w * 0.045, h * 0.055);
+            const timeStr = activeMission ? activeMission.clock : '23:17';
+            const dateStr = activeMission ? activeMission.date : '26/12/1972';
+            ctx.fillText(`THỜI GIAN: ${timeStr} ${dateStr}`, w * 0.045, h * 0.082);
+
+            ctx.textAlign = 'right';
+            ctx.fillText(`ĐỘ CAO: ${altM}m | TỐC ĐỘ: ${spdKmh} km/h | HEADING: ${hdgDeg}°`, w * 0.955, h * 0.055);
+
+            // Bottom-Left Amber Radar Lock Readout
+            const distKm = mig.dist ? (mig.dist * KM_PER_UNIT).toFixed(1) : '4.2';
+            const targetName = mig.target ? (mig.target.type || 'B-52') : 'B-52';
+            const isHot = mig.irLock >= 1.5;
+            ctx.textAlign = 'left';
+            ctx.fillStyle = isHot ? '#FB923C' : '#FDBA74';
+            ctx.shadowColor = isHot ? '#FB923C' : '#FDBA74';
+            ctx.shadowBlur = isHot ? 16 : 8;
+            ctx.font = 'bold 16px "JetBrains Mono", monospace';
+            const lockTag = isHot ? 'LOCK' : mig.irLock > 0 ? 'TRACK' : 'SEARCH';
+            ctx.fillText(`RADAR: ${lockTag} — ${targetName} / ${distKm}km / HOT`, w * 0.038, h - 38);
+            ctx.shadowBlur = 0;
+
+            // ---- 4. ASP-PFD Collimator Gunsight & Glowing Orange Reticle ----
+            const sightCenterY = h * 0.395;
+            const sightBaseY = h * 0.505;
+            const sightW = Math.min(220, w * 0.16);
+
+            // Trapezoidal combiner glass plate
+            const glassTopW = sightW * 0.72, glassBottomW = sightW * 0.95;
+            const glassTopY = sightCenterY - 65, glassBottomY = sightBaseY - 10;
+            ctx.fillStyle = 'rgba(167, 243, 208, 0.07)';
+            ctx.strokeStyle = 'rgba(203, 213, 225, 0.45)';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(cx - glassTopW / 2, glassTopY);
+            ctx.lineTo(cx + glassTopW / 2, glassTopY);
+            ctx.lineTo(cx + glassBottomW / 2, glassBottomY);
+            ctx.lineTo(cx - glassBottomW / 2, glassBottomY);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Left & right metal mounting posts
+            ctx.fillStyle = '#18211E';
+            ctx.strokeStyle = '#0B0F0E';
+            ctx.lineWidth = 1.5;
+            [-1, 1].forEach(sd => {
+                const bx = cx + sd * (glassBottomW / 2), tx = cx + sd * (glassTopW / 2);
+                ctx.beginPath();
+                ctx.moveTo(bx - sd * 4, glassBottomY + 12);
+                ctx.lineTo(tx - sd * 3, glassTopY + 10);
+                ctx.lineTo(tx + sd * 6, glassTopY + 10);
+                ctx.lineTo(bx + sd * 8, glassBottomY + 12);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            });
+
+            // Glowing Orange ASP-PFD Collimator Reticle (Exact Match to Image 1)
+            const aimOffX = smoothAimX * 18, aimOffY = smoothAimY * 14;
+            const retX = cx + aimOffX, retY = sightCenterY + aimOffY;
+            ctx.strokeStyle = '#FB923C';
+            ctx.fillStyle = '#FDBA74';
+            ctx.shadowColor = '#EA580C';
+            ctx.shadowBlur = 18;
+
+            ctx.lineWidth = 3.5;
+            ctx.beginPath(); ctx.arc(retX, retY, 44, 0, Math.PI * 2); ctx.stroke();
+            ctx.lineWidth = 2.5;
+            ctx.beginPath(); ctx.arc(retX, retY, 22, 0, Math.PI * 2); ctx.stroke();
+            // Crosshairs
+            ctx.beginPath();
+            ctx.moveTo(retX - 58, retY); ctx.lineTo(retX - 8, retY);
+            ctx.moveTo(retX + 8, retY); ctx.lineTo(retX + 58, retY);
+            ctx.moveTo(retX, retY - 58); ctx.lineTo(retX, retY - 8);
+            ctx.moveTo(retX, retY + 8); ctx.lineTo(retX, retY + 58);
+            ctx.stroke();
+            // Central pipper dot
+            ctx.beginPath(); ctx.arc(retX, retY, 3.5, 0, Math.PI * 2); ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // Heavy cast-iron sight chassis base
+            ctx.fillStyle = '#101715';
+            ctx.strokeStyle = '#273631';
+            ctx.lineWidth = 3;
+            ctx.fillRect(cx - sightW * 0.45, sightBaseY - 14, sightW * 0.9, 58);
+            ctx.strokeRect(cx - sightW * 0.45, sightBaseY - 14, sightW * 0.9, 58);
+
+            // Digital readout box right under the sight
+            ctx.fillStyle = '#06130D';
+            ctx.strokeStyle = '#10B981';
+            ctx.lineWidth = 1.2;
+            const digW = 100, digH = 34;
+            ctx.fillRect(cx - digW / 2, sightBaseY + 6, digW, digH);
+            ctx.strokeRect(cx - digW / 2, sightBaseY + 6, digW, digH);
+            ctx.fillStyle = '#34D399';
+            ctx.font = 'bold 8px "JetBrains Mono", monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${altM}m | ${spdKmh} km/h`, cx, sightBaseY + 18);
+            ctx.fillText(`THỜI GIAN ${dateStr}`, cx, sightBaseY + 30);
+
+            // Top-right Cyrillic switch box ("АЗС / ПИТАНИЕ ПВД")
+            const swBoxX = cx + sightW * 0.48, swBoxY = sightBaseY - 6;
+            ctx.fillStyle = '#126655';
+            ctx.strokeStyle = '#0B4237';
+            ctx.lineWidth = 2;
+            ctx.fillRect(swBoxX, swBoxY, 88, 64);
+            ctx.strokeRect(swBoxX, swBoxY, 88, 64);
+            ctx.fillStyle = '#091512';
+            ctx.fillRect(swBoxX + 6, swBoxY + 8, 76, 22);
+            ctx.fillRect(swBoxX + 6, swBoxY + 34, 76, 22);
+            ctx.fillStyle = '#6EE7B7';
+            ctx.font = 'bold 8px "JetBrains Mono", monospace';
+            ctx.textAlign = 'left';
+            ctx.fillText('АЗС   ПИТАНИЕ', swBoxX + 10, swBoxY + 18);
+            ctx.fillText('      ПВД', swBoxX + 10, swBoxY + 26);
+            ctx.fillText('ПИТАНИЕ ПВД', swBoxX + 10, swBoxY + 48);
+
+            // ---- 5. Soviet Turquoise Instrument Panel Body (#137a63) ----
+            const dashTopY = h * 0.505;
+            const dashGrad = ctx.createLinearGradient(0, dashTopY, 0, h);
+            dashGrad.addColorStop(0, '#168B75');
+            dashGrad.addColorStop(0.35, '#127866');
+            dashGrad.addColorStop(0.75, '#0E6253');
+            dashGrad.addColorStop(1, '#083B32');
+
+            ctx.fillStyle = dashGrad;
+            ctx.strokeStyle = '#1D9E85';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(-10, h * 0.72);
+            ctx.lineTo(w * 0.08, dashTopY + 38);
+            ctx.lineTo(cx - sightW * 0.52, dashTopY + 10);
+            ctx.lineTo(cx + sightW * 0.85, dashTopY + 10);
+            ctx.lineTo(w * 0.92, dashTopY + 38);
+            ctx.lineTo(w + 10, h * 0.72);
+            ctx.lineTo(w + 10, h + 10);
+            ctx.lineTo(-10, h + 10);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Chipped paint scuffs along edges (yellow primer + silver duralumin)
+            ctx.strokeStyle = 'rgba(234, 179, 8, 0.45)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(w * 0.09, dashTopY + 39); ctx.lineTo(cx - sightW * 0.51, dashTopY + 11);
+            ctx.stroke();
+            ctx.strokeStyle = 'rgba(203, 213, 225, 0.35)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(w * 0.095, dashTopY + 38); ctx.lineTo(cx - sightW * 0.52, dashTopY + 10);
+            ctx.stroke();
+
+            // ---- 6. 12+ Soviet Green Analog Instruments (Matching Image 1) ----
+            const drawSovietDial = (gx, gy, gr, title, valStr, frac, unit = '', isHorizon = false) => {
+                ctx.save();
+                ctx.translate(gx, gy);
+
+                // Bezel rim & shadow
+                ctx.fillStyle = '#060A08';
+                ctx.beginPath(); ctx.arc(0, 0, gr + 5, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#1B2623'; ctx.lineWidth = 4; ctx.stroke();
+
+                // Bezel screw heads
+                ctx.fillStyle = '#475569';
+                for (let k = 0; k < 4; k++) {
+                    const ang = Math.PI / 4 + k * Math.PI / 2;
+                    ctx.beginPath(); ctx.arc(Math.cos(ang) * (gr + 3), Math.sin(ang) * (gr + 3), 1.6, 0, Math.PI * 2); ctx.fill();
+                }
+
+                // Inner dial face
+                ctx.fillStyle = '#050807';
+                ctx.beginPath(); ctx.arc(0, 0, gr, 0, Math.PI * 2); ctx.fill();
+
+                if (isHorizon) {
+                    ctx.save();
+                    ctx.beginPath(); ctx.arc(0, 0, gr - 3, 0, Math.PI * 2); ctx.clip();
+                    ctx.rotate(-mig.bank);
+                    const pitchOff = mig.pitch * (gr * 1.5);
+                    ctx.fillStyle = '#1E3A8A'; ctx.fillRect(-gr * 2, -gr * 2 + pitchOff, gr * 4, gr * 2);
+                    ctx.fillStyle = '#78350F'; ctx.fillRect(-gr * 2, pitchOff, gr * 4, gr * 2);
+                    ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 2.5;
+                    ctx.beginPath(); ctx.moveTo(-gr, pitchOff); ctx.lineTo(gr, pitchOff); ctx.stroke();
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.75)'; ctx.lineWidth = 1.5;
+                    for (let p = -2; p <= 2; p++) {
+                        if (p === 0) continue;
+                        const py = pitchOff - p * (gr * 0.32);
+                        ctx.beginPath(); ctx.moveTo(-gr * 0.35, py); ctx.lineTo(gr * 0.35, py); ctx.stroke();
+                    }
+                    ctx.restore();
+                    // Miniature orange aircraft silhouette
+                    ctx.strokeStyle = '#FB923C'; ctx.lineWidth = 3.5;
+                    ctx.beginPath();
+                    ctx.moveTo(-gr * 0.55, 0); ctx.lineTo(-gr * 0.15, 0);
+                    ctx.lineTo(0, gr * 0.15);
+                    ctx.lineTo(gr * 0.15, 0); ctx.lineTo(gr * 0.55, 0);
+                    ctx.stroke();
+                } else {
+                    // Luminous green tick marks
+                    ctx.strokeStyle = '#4ADE80';
+                    for (let t = 0; t <= 12; t++) {
+                        const a = -Math.PI * 1.25 + (t / 12) * Math.PI * 1.5;
+                        const isMaj = t % 3 === 0;
+                        ctx.lineWidth = isMaj ? 2 : 1;
+                        const len = isMaj ? gr * 0.22 : gr * 0.12;
+                        ctx.beginPath();
+                        ctx.moveTo(Math.cos(a) * (gr - len), Math.sin(a) * (gr - len));
+                        ctx.lineTo(Math.cos(a) * (gr - 2), Math.sin(a) * (gr - 2));
+                        ctx.stroke();
+                    }
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = '#86EFAC';
+                    ctx.font = `bold ${Math.max(8, Math.round(gr * 0.28))}px "JetBrains Mono", monospace`;
+                    ctx.fillText(title, 0, gr * 0.42);
+                    if (valStr) {
+                        ctx.fillStyle = '#6EE7B7';
+                        ctx.font = `bold ${Math.max(7, Math.round(gr * 0.24))}px "JetBrains Mono", monospace`;
+                        ctx.fillText(valStr, 0, gr * 0.68);
+                    }
+                    // Phosphor needle
+                    const a = -Math.PI * 1.25 + Math.max(0, Math.min(1, frac)) * Math.PI * 1.5;
+                    ctx.strokeStyle = '#FEF08A';
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath();
+                    ctx.moveTo(-Math.cos(a) * (gr * 0.2), -Math.sin(a) * (gr * 0.2));
+                    ctx.lineTo(Math.cos(a) * (gr - 4), Math.sin(a) * (gr - 4));
+                    ctx.stroke();
+                    ctx.fillStyle = '#1E293B';
+                    ctx.beginPath(); ctx.arc(0, 0, gr * 0.16, 0, Math.PI * 2); ctx.fill();
+                }
+
+                // Curved glass lens reflection highlight
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.09)';
+                ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.arc(0, 0, gr - 4, -Math.PI * 0.85, -Math.PI * 0.25); ctx.stroke();
+                ctx.restore();
+            };
+
+            const gR_lg = Math.min(48, w * 0.038);
+            const gR_md = Math.min(40, w * 0.032);
+            const gR_sm = Math.min(32, w * 0.026);
+
+            // Left cluster
+            drawSovietDial(cx - w * 0.27, dashTopY + h * 0.13, gR_sm, 'АЧС-1', `${Math.round(missionTime)}s`, (missionTime % 60) / 60);
+            drawSovietDial(cx - w * 0.27, dashTopY + h * 0.28, gR_lg, 'УС-1600', `${spdKmh}`, spdKmh / 1600, 'км/ч');
+            drawSovietDial(cx - w * 0.16, dashTopY + h * 0.26, gR_lg, 'ВД-20', `${altM}`, altM / 20000, 'м');
+            drawSovietDial(cx - w * 0.27, dashTopY + h * 0.40, gR_md, 'ВАР-30', `${Math.round(mig.fwd.y * mig.speed * 25)}`, 0.5 + (mig.fwd.y * mig.speed * 25) / 200, 'м/с');
+            drawSovietDial(cx - w * 0.16, dashTopY + h * 0.38, gR_md, 'КУРС', `${hdgDeg}°`, hdgDeg / 360);
+
+            // Center instrument: Large AGD-1 Artificial Horizon
+            drawSovietDial(cx - w * 0.05, dashTopY + h * 0.27, gR_lg * 1.25, 'АГД-1', '', 0, '', true);
+            const fuelL = Math.max(0, Math.round(2200 - missionTime * 5));
+            drawSovietDial(cx - w * 0.05, dashTopY + h * 0.40, gR_sm, 'ТОПЛИВО', `${fuelL}л`, fuelL / 2600);
+
+            // Right cluster
+            drawSovietDial(cx + w * 0.11, dashTopY + h * 0.20, gR_md, 'ОБОРОТЫ', `${Math.round(70 + mig.throttle * 30)}%`, 0.55 + mig.throttle * 0.45);
+            drawSovietDial(cx + w * 0.11, dashTopY + h * 0.31, gR_md, 'Т ГАЗОВ', `${Math.round(520 + mig.throttle * 230)}°`, 0.45 + mig.throttle * 0.4);
+            drawSovietDial(cx + w * 0.11, dashTopY + h * 0.41, gR_sm, 'ГИДРО', '210', 0.7);
+            drawSovietDial(cx + w * 0.17, dashTopY + h * 0.27, gR_sm, 'МАХ', (mig.speed * 0.06).toFixed(1), mig.speed * 0.06 / 2.2);
+
+            // ---- 7. Slanted Right Console (Switches, Circuit Breakers, Flip Covers) ----
+            const rcX = cx + w * 0.23, rcY = dashTopY + h * 0.16;
+            ctx.fillStyle = '#0B4A3D';
+            ctx.strokeStyle = '#052A22';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(rcX, rcY);
+            ctx.lineTo(w * 0.94, rcY + 30);
+            ctx.lineTo(w + 10, h + 10);
+            ctx.lineTo(rcX + 20, h + 10);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 6; col++) {
+                    const sx = rcX + 25 + col * (w * 0.026), sy = rcY + 28 + row * 26 + col * 4;
+                    ctx.fillStyle = '#1E293B'; ctx.fillRect(sx - 6, sy - 8, 12, 16);
+                    ctx.fillStyle = '#E2E8F0';
+                    ctx.beginPath(); ctx.arc(sx, sy - 4, 3, 0, Math.PI * 2); ctx.fill();
+                    ctx.strokeStyle = '#94A3B8'; ctx.lineWidth = 2;
+                    ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx, sy - 9); ctx.stroke();
+                }
+            }
+            [-1, 1].forEach((sd, idx) => {
+                const fx = rcX + 40 + idx * 55, fy = rcY + 115;
+                ctx.fillStyle = '#DC2626'; ctx.fillRect(fx, fy, 22, 14);
+                ctx.strokeStyle = '#991B1B'; ctx.lineWidth = 1.5; ctx.strokeRect(fx, fy, 22, 14);
+            });
+
+            // ---- 8. Fighter Control Stick (KG-13 Grip in Foreground) ----
+            const stickBaseX = cx + w * 0.18 + smoothAimX * 24;
+            const stickBaseY = h - 25 + smoothAimY * 18;
+            ctx.save();
+            ctx.translate(stickBaseX, stickBaseY);
+            ctx.rotate(-smoothAimX * 0.15);
+            ctx.strokeStyle = '#1E2926';
+            ctx.lineWidth = 28;
+            ctx.lineCap = 'round';
+            ctx.beginPath(); ctx.moveTo(0, 80); ctx.lineTo(0, -20); ctx.stroke();
+
+            ctx.fillStyle = '#151D1B';
+            ctx.strokeStyle = '#273833';
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.roundRect(-22, -95, 44, 90, [12, 12, 6, 6]); ctx.fill(); ctx.stroke();
+            // Palm rest flare
+            ctx.fillStyle = '#101715';
+            ctx.beginPath(); ctx.roundRect(-30, -50, 16, 32, 6); ctx.fill();
+            // Front index finger weapons trigger lever
+            ctx.fillStyle = '#475569'; ctx.fillRect(-6, -65, 12, 22);
+            // Weapons release push button (red thumb button)
+            ctx.fillStyle = '#DC2626';
+            ctx.beginPath(); ctx.arc(-8, -85, 6, 0, Math.PI * 2); ctx.fill();
+            // 4-way trim hat switch
+            ctx.fillStyle = '#334155';
+            ctx.beginPath(); ctx.arc(8, -85, 7, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+
+            ctx.restore();
         }
 
         function drawCockpitPanel(ctx, now) {
-            const W = 1024, H = 400;
+            const W = 2048, H = 800, S = 2;
             if (!drawCockpitPanel.base) {
                 const b = document.createElement('canvas');
                 b.width = W; b.height = H;
                 const bx = b.getContext('2d');
                 const bg = bx.createLinearGradient(0, 0, 0, H);
-                bg.addColorStop(0, '#1F7464');
-                bg.addColorStop(1, '#0D433A');
+                bg.addColorStop(0, '#166F5F');
+                bg.addColorStop(0.5, '#125C4F');
+                bg.addColorStop(1, '#0A3B32');
                 bx.fillStyle = bg;
                 bx.fillRect(0, 0, W, H);
-                for (let k = 0; k < 9000; k++) {   // worn paint
-                    bx.fillStyle = Math.random() < 0.6 ? `rgba(0,0,0,${Math.random() * 0.12})` : `rgba(160,200,180,${Math.random() * 0.06})`;
+                // Metal texture grain & paint wear
+                for (let k = 0; k < 18000; k++) {
+                    bx.fillStyle = Math.random() < 0.6 ? `rgba(0,0,0,${Math.random() * 0.12})` : `rgba(160,220,195,${Math.random() * 0.06})`;
                     bx.fillRect(Math.random() * W, Math.random() * H, 1 + Math.random() * 3, 1 + Math.random() * 2);
                 }
-                for (let k = 0; k < 40; k++) {   // scuffs along the edges
-                    bx.strokeStyle = `rgba(190,190,170,${0.05 + Math.random() * 0.1})`;
+                for (let k = 0; k < 60; k++) {
+                    bx.strokeStyle = `rgba(190,210,195,${0.05 + Math.random() * 0.12})`;
                     bx.lineWidth = 1;
-                    const x = Math.random() * W, y = Math.random() < 0.5 ? Math.random() * 30 : H - Math.random() * 30;
-                    bx.beginPath(); bx.moveTo(x, y); bx.lineTo(x + 10 + Math.random() * 30, y + (Math.random() - 0.5) * 4); bx.stroke();
+                    const x = Math.random() * W, y = Math.random() < 0.5 ? Math.random() * 50 : H - Math.random() * 50;
+                    bx.beginPath(); bx.moveTo(x, y); bx.lineTo(x + 15 + Math.random() * 45, y + (Math.random() - 0.5) * 6); bx.stroke();
                 }
+                // Rivet rows along panel edges
                 bx.fillStyle = 'rgba(0,0,0,0.45)';
-                for (let x = 12; x < W; x += 34) { bx.beginPath(); bx.arc(x, 8, 2.4, 0, 6.283); bx.arc(x, H - 8, 2.4, 0, 6.283); bx.fill(); }
-                bx.fillStyle = 'rgba(230,226,210,0.55)';
-                bx.font = 'bold 11px "JetBrains Mono", monospace';
-                bx.fillText('НЕ ВКЛЮЧАТЬ НА ЗЕМЛЕ', 650, 200);
-                bx.fillText('ВЫП. ШАССИ', 20, 392);
+                for (let x = 18; x < W; x += 48) { bx.beginPath(); bx.arc(x, 14, 3.5, 0, 6.283); bx.arc(x, H - 14, 3.5, 0, 6.283); bx.fill(); }
+                // Authentic Cyrillic technical stencils
+                bx.fillStyle = 'rgba(230,240,230,0.65)';
+                bx.font = 'bold 18px "JetBrains Mono", monospace';
+                bx.fillText('НЕ ВКЛЮЧАТЬ НА ЗЕМЛЕ', 1320, 390);
+                bx.fillText('ВЫП. ШАССИ', 36, 782);
+                bx.fillText('САПФИР-21 / АСП-ПФД', 920, 48);
+                bx.fillStyle = 'rgba(239,68,68,0.7)';
+                bx.fillText('ВНИМАНИЕ! КАТАПУЛЬТИРОВАНИЕ', 1320, 782);
                 drawCockpitPanel.base = b;
             }
             ctx.drawImage(drawCockpitPanel.base, 0, 0);
-            ctx.strokeStyle = 'rgba(0,0,0,0.35)';
-            ctx.lineWidth = 3;
-            [395, 630].forEach(x => { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); });
-            ctx.fillStyle = 'rgba(0,0,0,0.4)';
-            for (let x = 14; x < W; x += 46) { ctx.beginPath(); ctx.arc(x, 10, 2.2, 0, 6.283); ctx.fill(); }
+            ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+            ctx.lineWidth = 4;
+            [395 * S, 630 * S].forEach(x => { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); });
 
             const p = playerMiG21.position;
             const kmh = mig.speed * 60, alt = p.y * 25, vs = mig.fwd.y * mig.speed * 25;
             const fuel = Math.max(0, 2200 - missionTime * 5 - mig.throttle * 0);
-            const gauge = (x, y, r, title, frac, unit) => {
+
+            // Helper to render high-contrast Soviet round gauges
+            const gauge = (x, y, r, title, frac, valStr, unit, redStart = null) => {
                 ctx.save();
                 ctx.translate(x, y);
-                ctx.fillStyle = '#0A0C0C';
-                ctx.beginPath(); ctx.arc(0, 0, r + 7, 0, 6.283); ctx.fill();
-                ctx.strokeStyle = '#3A4442'; ctx.lineWidth = 4; ctx.stroke();
-                ctx.fillStyle = '#050606';
+                // Outer bezel shadow & rim
+                ctx.fillStyle = '#070908';
+                ctx.beginPath(); ctx.arc(0, 0, r + 10, 0, 6.283); ctx.fill();
+                ctx.strokeStyle = '#2E3836'; ctx.lineWidth = 6; ctx.stroke();
+                // Inner dial face
+                ctx.fillStyle = '#060807';
                 ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.283); ctx.fill();
-                ctx.strokeStyle = '#E8E4D8';
-                ctx.lineWidth = 2;
-                for (let t = 0; t <= 10; t++) {
-                    const a = -Math.PI * 1.25 + (t / 10) * Math.PI * 1.5;
+
+                // Colored caution/danger arc if specified
+                if (redStart !== null) {
+                    ctx.strokeStyle = '#EF4444';
+                    ctx.lineWidth = 5;
+                    const aStart = -Math.PI * 1.25 + redStart * Math.PI * 1.5;
+                    const aEnd = -Math.PI * 1.25 + Math.PI * 1.5;
+                    ctx.beginPath(); ctx.arc(0, 0, r - 8, aStart, aEnd); ctx.stroke();
+                }
+
+                // Dial graduation tick marks
+                ctx.strokeStyle = '#E8EFEA';
+                for (let t = 0; t <= 20; t++) {
+                    const a = -Math.PI * 1.25 + (t / 20) * Math.PI * 1.5;
+                    const isMajor = t % 2 === 0;
+                    ctx.lineWidth = isMajor ? 3 : 1.5;
+                    const len = isMajor ? 16 : 9;
                     ctx.beginPath();
-                    ctx.moveTo(Math.cos(a) * (r - 10), Math.sin(a) * (r - 10));
+                    ctx.moveTo(Math.cos(a) * (r - len), Math.sin(a) * (r - len));
                     ctx.lineTo(Math.cos(a) * (r - 2), Math.sin(a) * (r - 2));
                     ctx.stroke();
                 }
+
+                // Title & live value text
                 ctx.textAlign = 'center';
                 ctx.fillStyle = '#C9F5D9';
-                ctx.font = 'bold 13px "JetBrains Mono", monospace';
-                ctx.fillText(title, 0, r * 0.42);
-                ctx.fillStyle = '#9FB8AE';
-                ctx.font = '11px "JetBrains Mono", monospace';
-                ctx.fillText(unit, 0, r * 0.68);
+                ctx.font = 'bold 20px "JetBrains Mono", monospace';
+                ctx.fillText(title, 0, r * 0.38);
+                ctx.fillStyle = '#A7F3D0';
+                ctx.font = 'bold 18px "JetBrains Mono", monospace';
+                ctx.fillText(valStr, 0, r * 0.64);
+                if (unit) {
+                    ctx.fillStyle = '#6EE7B7';
+                    ctx.font = '14px "JetBrains Mono", monospace';
+                    ctx.fillText(unit, 0, r * 0.82);
+                }
+
+                // Needle with counterweight
                 const a = -Math.PI * 1.25 + Math.max(0, Math.min(1, frac)) * Math.PI * 1.5;
-                ctx.strokeStyle = '#FFF3C4';
-                ctx.lineWidth = 3.5;
-                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a) * (r - 12), Math.sin(a) * (r - 12)); ctx.stroke();
-                ctx.fillStyle = '#2A2F2E';
-                ctx.beginPath(); ctx.arc(0, 0, 6, 0, 6.283); ctx.fill();
+                ctx.strokeStyle = '#FEF08A';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(-Math.cos(a) * 16, -Math.sin(a) * 16);
+                ctx.lineTo(Math.cos(a) * (r - 14), Math.sin(a) * (r - 14));
+                ctx.stroke();
+                // Needle center cap
+                ctx.fillStyle = '#1F2937';
+                ctx.beginPath(); ctx.arc(0, 0, 10, 0, 6.283); ctx.fill();
+                ctx.strokeStyle = '#D1D5DB'; ctx.lineWidth = 2; ctx.stroke();
+
+                // Curved lens glare reflection highlight
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+                ctx.lineWidth = 4;
+                ctx.beginPath(); ctx.arc(0, 0, r - 6, -Math.PI * 0.8, -Math.PI * 0.2); ctx.stroke();
                 ctx.restore();
             };
-            gauge(110, 115, 76, 'УС', kmh / 1600, `${Math.round(kmh)} км/ч`);
-            gauge(285, 115, 76, 'ВД-20', alt / 20000, `${Math.round(alt)} м`);
-            gauge(110, 300, 62, 'ВАР', 0.5 + vs / 200, `${Math.round(vs)} м/с`);
-            gauge(285, 300, 62, 'ТОПЛИВО', fuel / 2600, `${Math.round(fuel)} л`);
-            gauge(735, 110, 66, 'ОБОРОТЫ', 0.55 + mig.throttle * 0.45, `${Math.round(70 + mig.throttle * 30)}%`);
-            gauge(905, 110, 66, 'Т ГАЗОВ', 0.45 + mig.throttle * 0.4, `${Math.round(520 + mig.throttle * 230)}°`);
 
-            // RP-22 "Sapfir-21" radar scope: target position in the horizontal plane of the aircraft
+            // Gauge layout matching 3D bezels (scaled by S=2)
+            gauge(110 * S, 115 * S, 76 * S, 'УС-1600', kmh / 1600, `${Math.round(kmh)}`, 'км/ч', 0.85);
+            gauge(285 * S, 115 * S, 76 * S, 'ВД-20', alt / 20000, `${Math.round(alt)}`, 'м');
+            gauge(110 * S, 300 * S, 62 * S, 'ВАР-30', 0.5 + vs / 200, `${Math.round(vs)}`, 'м/с');
+            gauge(285 * S, 300 * S, 62 * S, 'ТОПЛИВО', fuel / 2600, `${Math.round(fuel)}`, 'л', 0.15);
+            gauge(735 * S, 110 * S, 66 * S, 'ОБОРОТЫ', 0.55 + mig.throttle * 0.45, `${Math.round(70 + mig.throttle * 30)}%`, null);
+            gauge(905 * S, 110 * S, 66 * S, 'Т ГАЗОВ', 0.45 + mig.throttle * 0.4, `${Math.round(520 + mig.throttle * 230)}°`, '°C', 0.8);
+
+            // RP-22 "Sapfir-21" Radar Scope CRT (Center Top)
             ctx.save();
-            ctx.translate(512, 120);
-            ctx.fillStyle = '#0A0C0C';
-            ctx.beginPath(); ctx.arc(0, 0, 106, 0, 6.283); ctx.fill();
-            ctx.fillStyle = '#02160E';
-            ctx.beginPath(); ctx.arc(0, 0, 98, 0, 6.283); ctx.fill();
+            ctx.translate(512 * S, 120 * S);
+            ctx.fillStyle = '#080B09';
+            ctx.beginPath(); ctx.arc(0, 0, 106 * S, 0, 6.283); ctx.fill();
+            ctx.fillStyle = '#02180E';
+            ctx.beginPath(); ctx.arc(0, 0, 98 * S, 0, 6.283); ctx.fill();
             ctx.clip();
 
             // Tactical Graticule & Range Arcs
             ctx.strokeStyle = 'rgba(74, 222, 128, 0.28)';
-            ctx.lineWidth = 1;
-            [45, 90, 135].forEach((rad) => {
-                ctx.setLineDash([3, 3]);
-                ctx.beginPath(); ctx.arc(0, 80, rad, Math.PI + 0.6, Math.PI * 2 - 0.6); ctx.stroke();
+            ctx.lineWidth = 1.5;
+            [45 * S, 90 * S, 135 * S].forEach((rad) => {
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath(); ctx.arc(0, 80 * S, rad, Math.PI + 0.6, Math.PI * 2 - 0.6); ctx.stroke();
             });
             ctx.setLineDash([]);
-            for (let y = -60; y <= 80; y += 35) { ctx.beginPath(); ctx.moveTo(-98, y); ctx.lineTo(98, y); ctx.stroke(); }
-            ctx.beginPath(); ctx.moveTo(0, -98); ctx.lineTo(0, 98); ctx.stroke();
+            for (let y = -60 * S; y <= 80 * S; y += 35 * S) { ctx.beginPath(); ctx.moveTo(-98 * S, y); ctx.lineTo(98 * S, y); ctx.stroke(); }
+            ctx.beginPath(); ctx.moveTo(0, -98 * S); ctx.lineTo(0, 98 * S); ctx.stroke();
 
             // Animated Sapfir B-scan Sweep Bar
-            const migSweep = Math.sin(t * 3.5) * 82;
-            ctx.strokeStyle = 'rgba(52, 211, 153, 0.35)';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath(); ctx.moveTo(migSweep, -90); ctx.lineTo(migSweep, 90); ctx.stroke();
+            const migSweep = Math.sin(now * 0.0035) * (82 * S);
+            ctx.strokeStyle = 'rgba(52, 211, 153, 0.45)';
+            ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(migSweep, -90 * S); ctx.lineTo(migSweep, 90 * S); ctx.stroke();
 
             if (mig.target) {
                 const toT = _tmpV2.copy(mig.target.mesh.position).sub(p);
                 const right = _tmpR.crossVectors(mig.fwd, WORLD_UP).normalize();
                 const lateral = toT.dot(right), ahead = toT.dot(mig.fwd);
                 if (ahead > 0) {
-                    const bx = Math.max(-90, Math.min(90, lateral / 260 * 90));
-                    const by = Math.max(-92, 80 - (ahead / 260) * 170);
+                    const bx = Math.max(-90 * S, Math.min(90 * S, (lateral / 260) * (90 * S)));
+                    const by = Math.max(-92 * S, (80 * S) - (ahead / 260) * (170 * S));
                     ctx.fillStyle = '#86EFAC';
                     ctx.shadowColor = '#4ADE80';
-                    ctx.shadowBlur = 12;
-                    ctx.fillRect(bx - 8, by - 4, 16, 7);
+                    ctx.shadowBlur = 20;
+                    ctx.fillRect(bx - 14, by - 8, 28, 16);
                     ctx.shadowBlur = 0;
                     ctx.strokeStyle = '#FEF08A';
-                    ctx.lineWidth = 1.2;
-                    ctx.strokeRect(bx - 10, by - 6, 20, 11);
+                    ctx.lineWidth = 2.5;
+                    ctx.strokeRect(bx - 18, by - 12, 36, 24);
                 }
                 ctx.fillStyle = '#4ADE80';
-                ctx.font = 'bold 14px "JetBrains Mono", monospace';
+                ctx.font = 'bold 24px "JetBrains Mono", monospace';
                 ctx.textAlign = 'center';
-                ctx.fillText(`Д ${(mig.dist * KM_PER_UNIT).toFixed(1)} км`, 0, 92);
+                ctx.fillText(`Д ${(mig.dist * KM_PER_UNIT).toFixed(1)} км`, 0, 92 * S);
             }
             ctx.restore();
             ctx.fillStyle = '#C9F5D9';
-            ctx.font = 'bold 12px "JetBrains Mono", monospace';
+            ctx.font = 'bold 20px "JetBrains Mono", monospace';
             ctx.textAlign = 'center';
-            ctx.fillText('РП-22 САПФИР', 512, 245);
+            ctx.fillText('РП-22 САПФИР', 512 * S, 245 * S);
 
-            // AGD-1 artificial horizon
+            // AGD-1 Artificial Horizon (Center Bottom)
             ctx.save();
-            ctx.translate(512, 318);
-            ctx.beginPath(); ctx.arc(0, 0, 68, 0, 6.283); ctx.clip();
+            ctx.translate(512 * S, 318 * S);
+            ctx.beginPath(); ctx.arc(0, 0, 68 * S, 0, 6.283); ctx.clip();
             ctx.rotate(-mig.bank);
-            const off = mig.pitch * 120;
-            ctx.fillStyle = '#3B6E9E'; ctx.fillRect(-140, -280 + off, 280, 280);
-            ctx.fillStyle = '#6B4A2B'; ctx.fillRect(-140, off, 280, 280);
-            ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 2;
-            ctx.beginPath(); ctx.moveTo(-140, off); ctx.lineTo(140, off); ctx.stroke();
-            ctx.lineWidth = 1;
+            const off = mig.pitch * (120 * S);
+            ctx.fillStyle = '#2563EB'; ctx.fillRect(-140 * S, -280 * S + off, 280 * S, 280 * S);
+            ctx.fillStyle = '#78350F'; ctx.fillRect(-140 * S, off, 280 * S, 280 * S);
+            ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(-140 * S, off); ctx.lineTo(140 * S, off); ctx.stroke();
+            ctx.lineWidth = 2;
             for (let k = -2; k <= 2; k++) {
                 if (!k) continue;
-                ctx.beginPath(); ctx.moveTo(-18, off - k * 22); ctx.lineTo(18, off - k * 22); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(-24 * S, off - k * (22 * S)); ctx.lineTo(24 * S, off - k * (22 * S)); ctx.stroke();
             }
             ctx.restore();
-            ctx.strokeStyle = '#FB923C'; ctx.lineWidth = 4;
-            ctx.beginPath(); ctx.moveTo(470, 318); ctx.lineTo(500, 318); ctx.lineTo(512, 328); ctx.lineTo(524, 318); ctx.lineTo(554, 318); ctx.stroke();
-            ctx.strokeStyle = '#3A4442'; ctx.lineWidth = 6;
-            ctx.beginPath(); ctx.arc(512, 318, 71, 0, 6.283); ctx.stroke();
+            // Horizon reference symbol & bezel
+            ctx.strokeStyle = '#FB923C'; ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo((512 - 42) * S, 318 * S); ctx.lineTo((512 - 12) * S, 318 * S);
+            ctx.lineTo(512 * S, (318 + 10) * S);
+            ctx.lineTo((512 + 12) * S, 318 * S); ctx.lineTo((512 + 42) * S, 318 * S);
+            ctx.stroke();
+            ctx.strokeStyle = '#2E3836'; ctx.lineWidth = 8;
+            ctx.beginPath(); ctx.arc(512 * S, 318 * S, 71 * S, 0, 6.283); ctx.stroke();
 
-            // warning / weapon lamps
+            // Warning & Weapon status indicator lamps
             const blink = now % 400 < 200;
             const lamps = [
                 ['ЗАХВАТ', mig.irLock >= 1.5 ? '#4ADE80' : mig.irLock > 0 && blink ? '#FBBF24' : null],
@@ -1673,24 +2335,29 @@
                 ['Р-3С П', missionAmmo >= 1 ? '#86EFAC' : null]
             ];
             lamps.forEach(([label, col], k) => {
-                const x = 665 + (k % 3) * 118, y = 215 + Math.floor(k / 3) * 78;
-                ctx.fillStyle = '#120E0A';
-                ctx.fillRect(x, y, 106, 62);
+                const x = (665 + (k % 3) * 118) * S, y = (215 + Math.floor(k / 3) * 78) * S;
+                const lw = 106 * S, lh = 62 * S;
+                ctx.fillStyle = '#0F1312';
+                ctx.fillRect(x, y, lw, lh);
+                ctx.strokeStyle = '#2A3331';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, y, lw, lh);
                 if (col) {
                     ctx.fillStyle = col;
                     ctx.shadowColor = col;
-                    ctx.shadowBlur = 16;
-                    ctx.fillRect(x + 5, y + 5, 96, 52);
+                    ctx.shadowBlur = 24;
+                    ctx.fillRect(x + 8, y + 8, lw - 16, lh - 16);
                     ctx.shadowBlur = 0;
                 }
-                ctx.fillStyle = col ? '#0B0B0B' : '#5B5F5E';
-                ctx.font = 'bold 15px "JetBrains Mono", monospace';
+                ctx.fillStyle = col ? '#0B0B0B' : '#475569';
+                ctx.font = 'bold 24px "JetBrains Mono", monospace';
                 ctx.textAlign = 'center';
-                ctx.fillText(label, x + 53, y + 37);
+                ctx.fillText(label, x + lw / 2, y + lh / 2 + 8);
             });
             ctx.fillStyle = '#C9F5D9';
-            ctx.font = 'bold 12px "JetBrains Mono", monospace';
-            ctx.fillText(`ТЯГА ${Math.round(mig.throttle * 100)}%  · ${getPilotCallsign()} ·  ПРОЧНОСТЬ ${mig.hp}%`, 820, 385);
+            ctx.font = 'bold 20px "JetBrains Mono", monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(`ТЯГА ${Math.round(mig.throttle * 100)}%  · ${getPilotCallsign()} ·  ПРОЧНОСТЬ ${mig.hp}%`, 820 * S, 385 * S);
         }
 
         // ---- Enhanced Tactical Dual Radar Scopes (P-35 PPI & SNR-75 B-Scope) ----
@@ -2090,6 +2757,7 @@
                 if (typeof showRadio === 'function') {
                     showRadio('SỞ CHỈ HUY', 'Đã chuyển về chế độ tác chiến thủ công.');
                 }
+                autoPilotTarget = null;
                 mouseAimX = smoothAimX = 0;
                 mouseAimY = smoothAimY = 0;
             }
@@ -2100,28 +2768,41 @@
             if (!autoPilotActive || gameState !== 'PLAYING' || gamePaused) return;
 
             const aliveBombers = activeBombers.filter(b => !b.downed);
-            if (aliveBombers.length === 0) return;
+            if (aliveBombers.length === 0) {
+                autoPilotTarget = null;
+                return;
+            }
 
             if (currentMode === 'SAM2') {
                 // Priority 1: Keep tracking current guided missile target if alive
-                let tgt = (guidedMissile && guidedMissile.target && !guidedMissile.target.downed) ? guidedMissile.target : null;
-                // Priority 2: Currently selected target if alive and still within effective envelope (<= 46 km)
+                let tgt = (guidedMissile && guidedMissile.target && !guidedMissile.target.downed && activeBombers.includes(guidedMissile.target)) ? guidedMissile.target : null;
+
+                // Priority 2: Persistent autoPilotTarget with strong hysteresis (stickiness) to eliminate target-switching jitter
+                if (!tgt && autoPilotTarget && !autoPilotTarget.downed && activeBombers.includes(autoPilotTarget)) {
+                    const d = distKm(autoPilotTarget);
+                    if (d >= 8 && d <= 56) {
+                        tgt = autoPilotTarget;
+                    }
+                }
+
+                // Priority 3: Currently locked target if valid
                 if (!tgt && selectedTarget && !selectedTarget.downed && activeBombers.includes(selectedTarget)) {
                     const d = distKm(selectedTarget);
-                    if (d >= 10 && d <= 46 && computeTargetQuality(selectedTarget) >= 0.2) {
+                    if (d >= 8 && d <= 56) {
                         tgt = selectedTarget;
                     }
                 }
-                // Priority 3: Score all alive bombers and pick best tactical target in 15-42 km window
+
+                // Priority 4: Score all alive bombers and pick best tactical target (10-52 km)
                 if (!tgt) {
                     let bestScore = Infinity;
                     aliveBombers.forEach(b => {
                         const d = distKm(b);
                         const q = computeTargetQuality(b);
                         let score = d;
-                        if (d > 44) score += (d - 44) * 4;
-                        if (d < 12) score += 35;
-                        if (q < 0.25) score += 45;
+                        if (d > 48) score += (d - 48) * 3;
+                        if (d < 10) score += 40;
+                        if (q < 0.2) score += 50;
                         if (score < bestScore) {
                             bestScore = score;
                             tgt = b;
@@ -2129,6 +2810,7 @@
                     });
                 }
                 if (!tgt) tgt = aliveBombers[0];
+                autoPilotTarget = tgt;
 
                 const tPos = tgt.mesh.position;
                 const rPos = RADAR_POS;
@@ -2141,23 +2823,25 @@
                 // Turn station or aim towards target
                 if (!guidedMissile && missileCamHold <= 0) {
                     const p = _tmpV.copy(tPos).project(camera);
-                    const onScreen = p.z > 0 && p.z < 1 && Math.abs(p.x) < 0.95 && Math.abs(p.y) < 0.85;
+                    const onScreen = p.z > 0 && p.z < 1 && Math.abs(p.x) < 0.96 && Math.abs(p.y) < 0.88;
+
+                    // Smooth proportional slewing of Fan Song radar station
+                    const slewSpeedYaw = onScreen ? 2.8 : 4.8;
+                    const slewSpeedPitch = onScreen ? 2.2 : 3.8;
+                    viewYaw += diffYaw * Math.min(1, dt * slewSpeedYaw);
+                    viewPitch = Math.max(0.04, Math.min(VIEW_PITCH_MAX, viewPitch + diffPitch * Math.min(1, dt * slewSpeedPitch)));
 
                     if (onScreen) {
-                        // Fine tracking crosshair directly onto target for firm lock
-                        mouseAimX += (Math.max(-0.95, Math.min(0.95, p.x)) - mouseAimX) * Math.min(1, dt * 10);
-                        mouseAimY += (Math.max(-0.85, Math.min(0.85, p.y)) - mouseAimY) * Math.min(1, dt * 10);
-                        // Station slews to center target in antenna beam
-                        if (Math.abs(diffYaw) > 0.04) viewYaw += Math.sign(diffYaw) * Math.min(Math.abs(diffYaw), dt * 1.6);
-                        if (Math.abs(diffPitch) > 0.04) viewPitch += Math.sign(diffPitch) * Math.min(Math.abs(diffPitch), dt * 1.3);
-                        viewPitch = Math.max(0.04, Math.min(VIEW_PITCH_MAX, viewPitch));
+                        // Instant precision lock onto target coordinates: eliminate smoothing lag so selectedScreenDist stays < 0.07
+                        mouseAimX = Math.max(-0.95, Math.min(0.95, p.x));
+                        mouseAimY = Math.max(-0.85, Math.min(0.85, p.y));
+                        smoothAimX = mouseAimX;
+                        smoothAimY = mouseAimY;
                     } else {
-                        // Coarse slew: quickly swing Fan Song antenna toward target azimuth & elevation
-                        viewYaw += Math.sign(diffYaw) * Math.min(Math.abs(diffYaw), dt * 3.2);
-                        let clampedPitch = Math.max(0.04, Math.min(VIEW_PITCH_MAX, targetPitch));
-                        viewPitch += Math.sign(clampedPitch - viewPitch) * Math.min(Math.abs(clampedPitch - viewPitch), dt * 2.4);
-                        mouseAimX += (0 - mouseAimX) * Math.min(1, dt * 6);
-                        mouseAimY += (0 - mouseAimY) * Math.min(1, dt * 6);
+                        mouseAimX += (0 - mouseAimX) * Math.min(1, dt * 10);
+                        mouseAimY += (0 - mouseAimY) * Math.min(1, dt * 10);
+                        smoothAimX = mouseAimX;
+                        smoothAimY = mouseAimY;
                     }
                 }
 
@@ -2175,8 +2859,8 @@
                 if (!guidedMissile && missileCamHold <= 0) {
                     const launcher = samLaunchers.find(l => l.loaded);
                     const dTgt = distKm(tgt);
-                    const inRange = dTgt >= 10 && dTgt <= 44;
-                    const canFire = launcher && trackTimer >= TRACK_TIME && inRange && targetQuality >= 0.28;
+                    const inRange = dTgt >= 10 && dTgt <= 48;
+                    const canFire = launcher && trackTimer >= TRACK_TIME && inRange && targetQuality >= 0.25;
                     if (canFire) {
                         triggerPrimaryWeaponFire();
                     } else if (!launcher && missionReserve > 0 && !reloadingLauncher) {
@@ -2188,22 +2872,19 @@
                     const tgtPos = m.target.mesh.position;
                     const d = mPos.distanceTo(tgtPos);
 
-                    // Lead tracking: project predicted intercept point onto missile chase camera
+                    // Crosshair alignment for visual feedback on chase camera
                     const tgo = d / Math.max(25, m.speed);
                     const leadPoint = _tmpV2.copy(tgtPos).addScaledVector(m.target.vel, tgo * 0.8);
                     const pLead = _tmpV.copy(leadPoint).project(camera);
                     if (pLead.z > 0 && pLead.z < 1) {
-                        mouseAimX += (Math.max(-0.85, Math.min(0.85, pLead.x)) - mouseAimX) * Math.min(1, dt * 7);
-                        mouseAimY += (Math.max(-0.85, Math.min(0.85, pLead.y)) - mouseAimY) * Math.min(1, dt * 7);
-                    } else {
-                        mouseAimX += (0 - mouseAimX) * Math.min(1, dt * 4);
-                        mouseAimY += (0 - mouseAimY) * Math.min(1, dt * 4);
+                        mouseAimX = Math.max(-0.85, Math.min(0.85, pLead.x));
+                        mouseAimY = Math.max(-0.85, Math.min(0.85, pLead.y));
+                        smoothAimX = mouseAimX;
+                        smoothAimY = mouseAimY;
                     }
 
-                    // Proximity command detonation:
-                    // Built-in radio fuze naturally explodes at closest approach (<15m).
-                    // Trigger emergency detonation only if inside lethal radius (d <= 8.5) and target starts drawing away.
-                    if (m.t > 2.2 && d <= 8.5 && m._prevDist && d > m._prevDist) {
+                    // Emergency command detonation inside lethal zone if drawing away
+                    if (m.t > 2.4 && d <= 8.5 && m._prevDist && d > m._prevDist) {
                         triggerPrimaryWeaponFire();
                     }
                     m._prevDist = d;
@@ -2246,9 +2927,11 @@
                 const desiredPitch = Math.atan2(steerVec.y, horizD);
                 let diffPitch = desiredPitch - mig.pitch;
 
-                // Correct sign: turning right requires positive mouseAimX (-diffYaw)
-                mouseAimX = Math.max(-1, Math.min(1, -diffYaw * 2.5));
-                mouseAimY = Math.max(-0.85, Math.min(0.85, diffPitch * 2.8));
+                // Responsive flight control without lag
+                mouseAimX = Math.max(-1, Math.min(1, -diffYaw * 2.8));
+                mouseAimY = Math.max(-0.85, Math.min(0.85, diffPitch * 3.0));
+                smoothAimX = mouseAimX;
+                smoothAimY = mouseAimY;
 
                 // Smart Throttle Control
                 if (dist > 180 || (aspect > 45 && dist > 75)) {
