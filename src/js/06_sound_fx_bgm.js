@@ -66,6 +66,8 @@
             ensure() {
                 const ctx = SoundEngine.ctx;
                 if (!ctx || !SoundEngine.enabled) return false;
+                const archiveEl = (typeof document !== 'undefined') ? document.getElementById('screen-archive') : null;
+                if (archiveEl && archiveEl.classList.contains('is-open')) return false;
                 if (!this.ready) this.setup(ctx);
                 return true;
             },
@@ -219,11 +221,13 @@
                 if (!ctx || !this.ready) { if (ctx && SoundEngine.enabled) this.setup(ctx); return; }
                 const t = ctx.currentTime, L = this.L;
                 const set = (layer, v, tc = 0.2) => layer.g.gain.setTargetAtTime(v, t, tc);
-                const live = SoundEngine.enabled && !gamePaused;
+                const archiveEl = (typeof document !== 'undefined') ? document.getElementById('screen-archive') : null;
+                const archiveOpen = !!(archiveEl && archiveEl.classList.contains('is-open'));
+                const live = SoundEngine.enabled && !gamePaused && !archiveOpen;
                 this.master.gain.setTargetAtTime(live ? 0.9 : 0, t, 0.05);
-                const world = currentMode !== 'HANGAR';
-                const air = currentMode === 'MIG21' && (gameState === 'PLAYING' || gameState === 'ENDING');
-                const missileView = !!guidedMissile && guidedMissile.t > 0.7;
+                const world = currentMode !== 'HANGAR' && !archiveOpen;
+                const air = currentMode === 'MIG21' && (gameState === 'PLAYING' || gameState === 'ENDING') && !archiveOpen;
+                const missileView = !archiveOpen && !!guidedMissile && guidedMissile.t > 0.7;
 
                 set(L.rain, world && !air ? (missileView ? 0.03 : 0.09) : 0);
                 set(L.rumble, world && !air ? 0.22 : air ? 0.08 : 0);

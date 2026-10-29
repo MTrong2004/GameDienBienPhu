@@ -32,6 +32,34 @@ function MockAudio(src) {
     this.pause = () => {};
 }
 
+const domElements = {};
+function getOrCreateElement(id) {
+    if (!domElements[id]) {
+        const classes = new Set();
+        domElements[id] = {
+            id,
+            textContent: '',
+            innerHTML: '',
+            style: {},
+            classList: {
+                add: (c) => classes.add(c),
+                remove: (c) => classes.delete(c),
+                contains: (c) => classes.has(c),
+                toggle: (c, force) => {
+                    if (force !== undefined) {
+                        force ? classes.add(c) : classes.delete(c);
+                        return force;
+                    }
+                    if (classes.has(c)) { classes.delete(c); return false; }
+                    classes.add(c); return true;
+                }
+            },
+            offsetWidth: 100
+        };
+    }
+    return domElements[id];
+}
+
 const windowMock = {
     Audio: MockAudio,
     AudioContext: function() { return mockCtx; },
@@ -64,13 +92,7 @@ const windowMock = {
     requestAnimationFrame: (cb) => 1,
     document: {
         body: { classList: { add: () => {}, remove: () => {}, toggle: () => {} } },
-        getElementById: (id) => ({
-            textContent: '',
-            innerHTML: '',
-            style: {},
-            classList: { add: () => {}, remove: () => {}, contains: () => false, toggle: () => {} },
-            offsetWidth: 100
-        }),
+        getElementById: (id) => getOrCreateElement(id),
         querySelectorAll: () => [],
         addEventListener: () => {}
     },
@@ -204,5 +226,22 @@ assert.strictEqual(Voice.isStoryPlaying(), false, 'isStoryPlaying resets to fals
 playedAudioSrc = null;
 Voice.speak('LOA PHÒNG KHÔNG', 'Đồng bào chú ý!', true);
 assert.strictEqual(playedAudioSrc, 'assets/audio/cue_air_raid.mp3', 'Voice cues work normally once story has concluded');
+
+// Test Archive silence mode:
+const screenArchive = getOrCreateElement('screen-archive');
+if (screenArchive) {
+    screenArchive.classList.add('is-open');
+    assert.strictEqual(SoundEngine.isSilenced(), true, 'SoundEngine.isSilenced must be true when archive is open');
+    assert.strictEqual(SoundFX.ensure(), false, 'SoundFX.ensure must return false when archive is open');
+    playedAudioSrc = null;
+    const playRes = Voice.playAudioFile('assets/audio/story_m1.mp3');
+    assert.strictEqual(playRes, false, 'Voice.playAudioFile must return false and not play when archive is open');
+    assert.strictEqual(playedAudioSrc, null, 'No audio file should play when archive is open');
+    Voice.speak('SỞ CHỈ HUY', 'Bắn rơi B-52!', true);
+    assert.strictEqual(playedAudioSrc, null, 'Voice.speak must be completely silent when archive is open');
+    screenArchive.classList.remove('is-open');
+    assert.strictEqual(SoundEngine.isSilenced(), false, 'SoundEngine.isSilenced must be false once archive is closed');
+    assert.strictEqual(SoundFX.ensure(), true, 'SoundFX.ensure must return true once archive is closed');
+}
 
 console.log('ALL AUDIO & VOICE RUNNABLE CHECKS PASSED!');

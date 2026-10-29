@@ -32,8 +32,14 @@
                 return this.ctx;
             },
 
+            isSilenced() {
+                if (typeof document === 'undefined') return false;
+                const archive = document.getElementById('screen-archive');
+                return !!(archive && archive.classList.contains('is-open'));
+            },
+
             playLaunch(isMiG) {
-                if (!this.enabled) return;
+                if (!this.enabled || this.isSilenced()) return;
                 this.init();
                 if (!this.ctx) return;
                 const now = this.ctx.currentTime;
@@ -71,7 +77,7 @@
             },
 
             playExplosion() {
-                if (!this.enabled) return;
+                if (!this.enabled || this.isSilenced()) return;
                 this.init();
                 if (!this.ctx) return;
                 const now = this.ctx.currentTime;
@@ -90,7 +96,7 @@
             },
 
             playLockBeep() {
-                if (!this.enabled) return;
+                if (!this.enabled || this.isSilenced()) return;
                 const t = performance.now();
                 if (t - this.lastLockPing < 480) return;
                 this.lastLockPing = t;

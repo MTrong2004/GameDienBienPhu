@@ -446,7 +446,10 @@
             smoothAimX += (mouseAimX - smoothAimX) * Math.min(1, dt * 8);
             smoothAimY += (mouseAimY - smoothAimY) * Math.min(1, dt * 8);
 
-            if (autoAIEnabled && activeBombers.length > 0 && gameState === 'MENU') {
+            const archiveEl = (typeof document !== 'undefined') ? document.getElementById('screen-archive') : null;
+            const archiveOpen = !!(archiveEl && archiveEl.classList.contains('is-open'));
+
+            if (autoAIEnabled && activeBombers.length > 0 && gameState === 'MENU' && !archiveOpen) {
                 const tgt = activeBombers[0];
                 const p = tgt.mesh.position.clone().project(camera);
                 if (p.z > 0 && p.z < 1) {
@@ -1291,6 +1294,8 @@
             const isOpen = screen && screen.classList.contains('is-open');
             const target = open !== undefined ? open : !isOpen;
             if (target) {
+                if (typeof Voice !== 'undefined' && Voice.stop) Voice.stop();
+                if (typeof SoundFX !== 'undefined' && SoundFX.siren) SoundFX.siren(false);
                 if (typeof gameState !== 'undefined' && gameState === 'PLAYING' && !gamePaused) {
                     gamePaused = true;
                     archivePausedGame = true;

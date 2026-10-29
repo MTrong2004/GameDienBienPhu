@@ -505,14 +505,24 @@
 
         function updateZeroLagTargetLockBracket() {
             const bracketEl = document.getElementById('hud-target-bracket');
+            const reticleRange = document.getElementById('reticle-range-tag');
             updateMapLabels();
             const t = currentMode === 'HANGAR' ? null
                 : currentMode === 'MIG21' ? mig.target
                 : gameState === 'PLAYING' || gameState === 'ENDING' ? selectedTarget : activeBombers[0];
             lockedBomber = t || null;
-            if (!t) { bracketEl.style.opacity = '0'; updateTargetTelemetry(null); return; }
+            if (!t) {
+                bracketEl.style.opacity = '0';
+                if (reticleRange) reticleRange.classList.add('hidden');
+                updateTargetTelemetry(null);
+                return;
+            }
             const v = _tmpV.copy(t.mesh.position).project(camera);
-            if (v.z <= 0 || v.z >= 1) { bracketEl.style.opacity = '0'; return; }
+            if (v.z <= 0 || v.z >= 1) {
+                bracketEl.style.opacity = '0';
+                if (reticleRange) reticleRange.classList.add('hidden');
+                return;
+            }
             let px = (v.x * 0.5 + 0.5) * window.innerWidth;
             let py = (-(v.y * 0.5) + 0.5) * window.innerHeight;
             const samPlay = currentMode === 'SAM2' && gameState === 'PLAYING';
@@ -526,15 +536,65 @@
             document.getElementById('bracket-callsign').textContent = t.callsign + (t.damaged ? ' (BỊ THƯƠNG)' : '');
 
             let text = 'MỤC TIÊU', good = true;
+            let rangeText = '-- KM';
+            let rangeClass = 'px-1 py-0.5 bg-cyan-950/90 text-cyan-300 border border-cyan-400/50 font-bold';
+
             if (currentMode === 'MIG21') {
+                const distU = playerMiG21 ? playerMiG21.position.distanceTo(t.mesh.position) : (mig.dist || 0);
+                const dKm = distU * KM_PER_UNIT;
+                rangeText = dKm < 1.0 ? `${Math.round(distU * 25)} M` : `${dKm.toFixed(2)} KM`;
+
                 good = mig.irLock >= 1.5;
                 text = good ? 'KHÓA NHIỆT' : mig.envelope || `ĐANG KHÓA ${mig.irLock.toFixed(1)}s`;
+
+                // Tactical color accents based on MiG-21 engagement envelope
+                if (distU < 40) {
+                    rangeClass = 'px-1 py-0.5 bg-rose-950/90 text-rose-300 border border-rose-500/50 font-bold';
+                } else if (distU <= 140) {
+                    rangeClass = 'px-1 py-0.5 bg-emerald-950/90 text-emerald-300 border border-emerald-400/50 font-bold';
+                } else if (distU <= 200) {
+                    rangeClass = 'px-1 py-0.5 bg-cyan-950/90 text-cyan-300 border border-cyan-400/50 font-bold';
+                } else {
+                    rangeClass = 'px-1 py-0.5 bg-amber-950/90 text-amber-300 border border-amber-400/50 font-bold';
+                }
+
+                if (reticleRange) {
+                    reticleRange.classList.remove('hidden');
+                    const colorCls = distU < 40 ? 'text-rose-400' : distU <= 140 ? 'text-emerald-300' : distU <= 200 ? 'text-cyan-300' : 'text-amber-300';
+                    reticleRange.innerHTML = `<span class="text-amber-400/80 drop-shadow">CỰ LY:</span> <span class="font-bold drop-shadow ${colorCls}">${rangeText}</span>`;
+                }
             } else if (samPlay) {
+                if (reticleRange) reticleRange.classList.add('hidden');
+                const dKm = distKm(t);
+                if (targetQuality < 0.3) {
+                    rangeText = '— KM [NHIỄU]';
+                    rangeClass = 'px-1 py-0.5 bg-rose-950/90 text-rose-300 border border-rose-500/50 font-bold';
+                } else if (targetQuality < 0.5) {
+                    rangeText = `~${Math.round(dKm)} KM`;
+                    rangeClass = 'px-1 py-0.5 bg-amber-950/90 text-amber-300 border border-amber-400/50 font-bold';
+                } else {
+                    rangeText = `${dKm.toFixed(1)} KM`;
+                    rangeClass = dKm <= NOMINAL_RANGE_KM
+                        ? 'px-1 py-0.5 bg-emerald-950/90 text-emerald-300 border border-emerald-400/50 font-bold'
+                        : 'px-1 py-0.5 bg-amber-950/90 text-amber-300 border border-amber-400/50 font-bold';
+                }
+
                 if (guidedMissile) { text = `DẪN ĐẠN ${Math.round(targetQuality * 100)}%`; good = targetQuality >= 0.3; }
-                else if (targetQuality < (distKm(t) > FAR_TRACK_KM ? 0.12 : 0.3)) { text = 'NHIỄU — MẤT BÁM'; good = false; }
-                else if (trackTimer < TRACK_TIME) { text = `${distKm(t) > NOMINAL_RANGE_KM ? 'NGOÀI TẦM · ' : ''}BÁM ${Math.round(trackTimer / TRACK_TIME * 100)}%`; good = false; }
-                else text = distKm(t) > NOMINAL_RANGE_KM ? 'BÁM CHẮC · NGOÀI TẦM' : 'BÁM CHẮC';
+                else if (targetQuality < (dKm > FAR_TRACK_KM ? 0.12 : 0.3)) { text = 'NHIỄU — MẤT BÁM'; good = false; }
+                else if (trackTimer < TRACK_TIME) { text = `${dKm > NOMINAL_RANGE_KM ? 'NGOÀI TẦM · ' : ''}BÁM ${Math.round(trackTimer / TRACK_TIME * 100)}%`; good = false; }
+                else text = dKm > NOMINAL_RANGE_KM ? 'BÁM CHẮC · NGOÀI TẦM' : 'BÁM CHẮC';
+            } else {
+                if (reticleRange) reticleRange.classList.add('hidden');
+                const dKm = distKm(t);
+                rangeText = `${dKm.toFixed(1)} KM`;
             }
+
+            const rangeEl = document.getElementById('bracket-range');
+            if (rangeEl) {
+                rangeEl.textContent = rangeText;
+                rangeEl.className = rangeClass;
+            }
+
             const distEl = document.getElementById('bracket-dist');
             distEl.textContent = text;
             distEl.className = good ? 'px-1 py-0.5 bg-emerald text-canvas font-bold' : 'px-1 py-0.5 bg-vermilion text-alabaster font-bold';
@@ -549,18 +609,39 @@
                 return;
             }
             set('hud-tgt-name', t.callsign);
-            // noise jamming denies range first: below q = 0.5 only the angle is known
-            set('hud-tgt-range', targetQuality >= 0.5 ? `${distKm(t).toFixed(1)} KM` : '— (NHIỄU)');
-            set('hud-tgt-alt', `${Math.round(t.mesh.position.y * 25).toLocaleString('vi-VN')} M`);
-            set('hud-tgt-q', `${Math.round(targetQuality * 100)}%`);
-            const lock = document.getElementById('hud-lock-status');
-            const st = targetQuality < (distKm(t) > FAR_TRACK_KM ? 0.12 : 0.3) ? ['MẤT BÁM [NHIỄU]', 'vermilion']
-                : trackTimer < TRACK_TIME ? [`ĐANG BÁM ${trackTimer.toFixed(1)}s`, 'amber-400']
-                : distKm(t) > NOMINAL_RANGE_KM ? ['NGOÀI TẦM — ĐẠN ĐẾN NƠI SẼ YẾU', 'amber-400']
-                : ['BÁM CHẮC — SẴN SÀNG PHÓNG', 'emerald'];
-            if (lock.textContent !== st[0]) {
-                lock.textContent = st[0];
-                lock.className = `px-2 py-0.5 rounded bg-${st[1]}/20 border border-${st[1]} text-${st[1]} text-[10px] font-bold`;
+            if (currentMode === 'MIG21') {
+                const distU = playerMiG21 ? playerMiG21.position.distanceTo(t.mesh.position) : (mig.dist || 0);
+                const dKm = distU * KM_PER_UNIT;
+                set('hud-tgt-range', dKm < 1.0 ? `${Math.round(distU * 25)} M` : `${dKm.toFixed(2)} KM`);
+                set('hud-tgt-alt', `${Math.round(t.mesh.position.y * 25).toLocaleString('vi-VN')} M`);
+                set('hud-tgt-q', mig.irLock >= 1.5 ? '100% [KHÓA]' : `${Math.round(mig.irLock / 1.5 * 100)}%`);
+                const lock = document.getElementById('hud-lock-status');
+                if (lock) {
+                    const st = mig.irLock >= 1.5 ? ['KHÓA NHIỆT — SẴN SÀNG PHÓNG', 'emerald']
+                        : mig.envelope ? [mig.envelope, 'amber-400']
+                        : [`ĐANG KHÓA ${mig.irLock.toFixed(1)}s`, 'amber-400'];
+                    if (lock.textContent !== st[0]) {
+                        lock.textContent = st[0];
+                        lock.className = `px-2 py-0.5 rounded bg-${st[1]}/20 border border-${st[1]} text-${st[1]} text-[10px] font-bold`;
+                    }
+                }
+            } else {
+                // SAM-2 mode
+                // noise jamming denies range first: below q = 0.5 only the angle is known
+                set('hud-tgt-range', targetQuality >= 0.5 ? `${distKm(t).toFixed(1)} KM` : '— (NHIỄU)');
+                set('hud-tgt-alt', `${Math.round(t.mesh.position.y * 25).toLocaleString('vi-VN')} M`);
+                set('hud-tgt-q', `${Math.round(targetQuality * 100)}%`);
+                const lock = document.getElementById('hud-lock-status');
+                if (lock) {
+                    const st = targetQuality < (distKm(t) > FAR_TRACK_KM ? 0.12 : 0.3) ? ['MẤT BÁM [NHIỄU]', 'vermilion']
+                        : trackTimer < TRACK_TIME ? [`ĐANG BÁM ${trackTimer.toFixed(1)}s`, 'amber-400']
+                        : distKm(t) > NOMINAL_RANGE_KM ? ['NGOÀI TẦM — ĐẠN ĐẾN NƠI SẼ YẾU', 'amber-400']
+                        : ['BÁM CHẮC — SẴN SÀNG PHÓNG', 'emerald'];
+                    if (lock.textContent !== st[0]) {
+                        lock.textContent = st[0];
+                        lock.className = `px-2 py-0.5 rounded bg-${st[1]}/20 border border-${st[1]} text-${st[1]} text-[10px] font-bold`;
+                    }
+                }
             }
         }
 

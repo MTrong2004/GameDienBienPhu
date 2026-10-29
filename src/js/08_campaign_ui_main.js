@@ -41,7 +41,11 @@
             document.body.classList.toggle('in-menu', name !== null && name !== 'pause');
             if (name === 'campaign') renderMissionList();
             if (name === 'menu') renderMenuProgress();
-            if (name === 'archive' && typeof showArchiveNight === 'function') showArchiveNight('night-node-1');
+            if (name === 'archive') {
+                if (typeof Voice !== 'undefined' && Voice.stop) Voice.stop();
+                if (typeof SoundFX !== 'undefined' && SoundFX.siren) SoundFX.siren(false);
+                if (typeof showArchiveNight === 'function') showArchiveNight('night-node-1');
+            }
         }
 
         function continueCampaign() {
@@ -223,12 +227,13 @@
             const quoteEl = document.getElementById('brief-story-quote');
             if (quoteEl) {
                 quoteEl.innerHTML = `
-                    <div class="flex items-center justify-between gap-2 mb-1">
-                        <span class="text-[11px] uppercase font-mono tracking-widest text-amber-400 font-bold">
-                            BỐI CẢNH LỊCH SỬ &amp; Ý CHÍ CHIẾN ĐẤU
+                    <div class="flex items-center justify-between gap-2 mb-1.5">
+                        <span class="text-[11px] uppercase font-mono tracking-widest text-amber-400 font-bold flex items-center gap-1.5">
+                            <span class="text-amber-400">★</span> BỐI CẢNH LỊCH SỬ &amp; Ý CHÍ CHIẾN ĐẤU
                         </span>
-                        <button class="text-[11px] font-mono uppercase tracking-wider text-amber-300 hover:text-white px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/40 hover:bg-amber-500/40 transition-colors flex items-center gap-1" onclick="Voice.toggleBriefingStory()">
-                            <span class="font-mono text-amber-300 mr-1">[AUDIO]</span> <span id="btn-brief-audio-label">Nghe bối cảnh (Giọng nữ AI)</span>
+                        <button id="btn-brief-audio-toggle" class="audio-narrator-btn" onclick="Voice.toggleBriefingStory()" title="Bật / dừng thuyết minh bối cảnh lịch sử">
+                            <span class="text-amber-300">🔊</span>
+                            <span id="btn-brief-audio-label">Thuyết minh</span>
                         </button>
                     </div>
                     "${m.story}"
@@ -476,11 +481,13 @@
                 Voice._currU = null;
                 if (Voice._resumeTimer) { clearInterval(Voice._resumeTimer); Voice._resumeTimer = null; }
                 const label = document.getElementById('btn-brief-audio-label');
-                if (label) label.textContent = 'Nghe bối cảnh (Giọng nữ AI)';
+                if (label) label.textContent = 'Thuyết minh';
                 const dLabel = document.getElementById('btn-debrief-audio-label');
-                if (dLabel) dLabel.textContent = 'Nghe diễn biến (Giọng nữ AI)';
+                if (dLabel) dLabel.textContent = 'Thuyết minh';
             },
             playAudioFile(src, onEndCallback, isStory = false) {
+                const archiveEl = (typeof document !== 'undefined') ? document.getElementById('screen-archive') : null;
+                if (archiveEl && archiveEl.classList.contains('is-open')) return false;
                 if (this.currentAudio) {
                     try { this.currentAudio.pause(); this.currentAudio.currentTime = 0; } catch(e) {}
                     this.currentAudio = null;
@@ -496,9 +503,9 @@
                         this.currentAudio = null;
                         this.isStory = false;
                         const label = document.getElementById('btn-brief-audio-label');
-                        if (label) label.textContent = 'Nghe bối cảnh (Giọng nữ AI)';
+                        if (label) label.textContent = 'Thuyết minh';
                         const dLabel = document.getElementById('btn-debrief-audio-label');
-                        if (dLabel) dLabel.textContent = 'Nghe diễn biến (Giọng nữ AI)';
+                        if (dLabel) dLabel.textContent = 'Thuyết minh';
                     };
                     audio.onended = () => {
                         cleanup();
@@ -540,6 +547,8 @@
             },
             speak(who, text, interrupt) {
                 if (!SoundEngine.enabled) return;
+                const archiveEl = (typeof document !== 'undefined') ? document.getElementById('screen-archive') : null;
+                if (archiveEl && archiveEl.classList.contains('is-open')) return;
                 // Giữ voice dẫn chuyện bối cảnh không bị ngắt quãng giữa chừng
                 if (this.isStoryPlaying()) return;
                 // Bỏ hoàn toàn voice hướng dẫn / phím bấm / chuột / nạp đạn
@@ -614,9 +623,9 @@
                     Voice._currU = null;
                     if (Voice._resumeTimer) { clearInterval(Voice._resumeTimer); Voice._resumeTimer = null; }
                     const label = document.getElementById('btn-brief-audio-label');
-                    if (label) label.textContent = 'Nghe bối cảnh (Giọng nữ AI)';
+                    if (label) label.textContent = 'Thuyết minh';
                     const dLabel = document.getElementById('btn-debrief-audio-label');
-                    if (dLabel) dLabel.textContent = 'Nghe diễn biến (Giọng nữ AI)';
+                    if (dLabel) dLabel.textContent = 'Thuyết minh';
                 };
 
                 setTimeout(() => {
@@ -643,7 +652,7 @@
                             // Fallback sang SpeechSynthesis nếu không load được file
                             this.speak('DẪN TRUYỆN', m.story, true);
                         } else {
-                            if (label) label.textContent = 'Nghe bối cảnh (Giọng nữ AI)';
+                            if (label) label.textContent = 'Thuyết minh';
                         }
                     }, true);
                 }
@@ -674,7 +683,7 @@
                 if (typeof Audio !== 'undefined') {
                     played = this.playAudioFile(audioSrc, (err) => {
                         const lbl = document.getElementById('btn-debrief-audio-label');
-                        if (lbl) lbl.textContent = 'Nghe diễn biến (Giọng nữ AI)';
+                        if (lbl) lbl.textContent = 'Thuyết minh';
                     });
                 }
                 if (!played) {
@@ -813,24 +822,22 @@
             let rankBadge = '';
             const failAnalysisEl = document.getElementById('debrief-fail-analysis');
             if (missionWon) {
-                let rankTitle = 'HOÀN THÀNH NHIỆM VỤ';
+                let rankTitle = 'DŨNG SĨ BẢO VỆ BẦU TRỜI · HUÂN CHƯƠNG CHIẾN CÔNG';
                 let stars = '★';
                 let rankQuote = 'Bộ Tư lệnh ghi nhận chiến công xuất sắc bảo vệ vững chắc vùng trời Thủ đô.';
                 if (missionShots <= m.kills * 2 || (m.mode === 'MIG21' && missionKills >= 1)) {
-                    rankTitle = 'DŨNG SĨ DIỆT MỸ // HUÂN CHƯƠNG CHIẾN CÔNG HẠNG NHẤT';
+                    rankTitle = 'DŨNG SĨ DIỆT MỸ · HUÂN CHƯƠNG CHIẾN CÔNG HẠNG NHẤT';
                     stars = '★ ★ ★';
                     rankQuote = 'Bắn rơi tại chỗ Pháo đài bay B-52, lập chiến công vẻ vang trong trang sử hào hùng.';
                 } else if (missionShots <= m.kills * 3) {
-                    rankTitle = 'CHIẾN SĨ THI ĐUA // HUÂN CHƯƠNG QUÂN CÔNG';
+                    rankTitle = 'CHIẾN SĨ THI ĐUA · HUÂN CHƯƠNG CHIẾN CÔNG';
                     stars = '★ ★';
                     rankQuote = 'Đánh trúng đội hình địch, kiên cường giữ vững trận địa.';
                 }
                 rankBadge = `
                     <div class="medal-hero-card">
-                        <div class="flex items-center gap-3">
-                            <div class="medal-badge" style="margin-bottom:0"><span>${stars}</span> ${rankTitle}</div>
-                        </div>
-                        <div class="text-xs text-amber-200/80 font-serif italic max-w-sm text-right hidden sm:block">
+                        <div class="medal-badge" style="margin-bottom:0"><span>${stars}</span> ${rankTitle}</div>
+                        <div class="medal-quote text-xs text-amber-200/90 font-serif italic">
                             “${rankQuote}”
                         </div>
                     </div>
@@ -842,7 +849,7 @@
                         <div class="medal-badge is-fail" style="margin-bottom:0">
                             <span class="font-mono text-rose-400 mr-1.5">[!]</span> RÚT KINH NGHIỆM CHIẾN ĐẤU — QUYẾT TÂM ĐÁNH LẠI
                         </div>
-                        <div class="text-xs text-rose-300/80 font-mono text-right hidden sm:block">
+                        <div class="medal-quote text-xs text-rose-300/85 font-mono">
                             TIẾP TỤC RÈN LUYỆN Ý CHÍ &amp; BẢN LĨNH
                         </div>
                     </div>

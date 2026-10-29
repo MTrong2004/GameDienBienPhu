@@ -378,13 +378,53 @@
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 8px 16px;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(245, 158, 11, 0.08);
+        }
+        .debrief-stats .medal-hero-card .medal-badge {
+            margin-bottom: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .debrief-stats .medal-hero-card .medal-quote {
+            font-size: 13px;
+            line-height: 1.45;
+            color: rgba(254, 240, 138, 0.9);
+            font-family: 'Newsreader', Georgia, serif;
+            font-style: italic;
+            text-align: left;
+            max-width: 480px;
         }
         .debrief-stats .medal-hero-card.is-fail {
             background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(185, 28, 28, 0.08) 100%);
             border-color: rgba(239, 68, 68, 0.45);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(239, 68, 68, 0.08);
+        }
+        .audio-narrator-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #FDE047;
+            background: rgba(245, 158, 11, 0.18);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .audio-narrator-btn:hover {
+            background: rgba(245, 158, 11, 0.32);
+            border-color: #FDE047;
+            color: #FFFFFF;
+            transform: translateY(-1px);
         }
         .debrief-stats .stat-kpi-card {
             padding: 10px 14px;
@@ -1087,7 +1127,7 @@
                         </div>
                     </div>
                     <div class="classified-stamp">
-                        <span>MỆNH LỆNH TÁC CHIẾN // TỐI MẬT</span>
+                        <span>MỆNH LỆNH TÁC CHIẾN · TỐI MẬT</span>
                     </div>
                 </div>
 
@@ -1106,7 +1146,7 @@
                         <div id="brief-story-quote" class="brief-prologue p-3.5 bg-amber-950/20 border-l-4 border-amber-400 font-serif italic text-amber-200/95 text-xs sm:text-sm leading-relaxed rounded-r shadow-md"></div>
                         <div class="p-3.5 bg-black/60 border border-emerald-500/20 rounded-lg">
                             <div class="text-[11px] uppercase font-mono tracking-widest text-emerald-400 font-bold mb-2 flex items-center gap-1.5">
-                                <span class="font-mono text-amber-400">//</span> TÌNH BÁO TÁC CHIẾN &amp; DIỄN BIẾN
+                                <span class="text-amber-400">★</span> TÌNH BÁO TÁC CHIẾN &amp; DIỄN BIẾN
                             </div>
                             <div class="brief-body" id="brief-body"></div>
                         </div>
@@ -1117,7 +1157,7 @@
                         <!-- Direct Objectives Card -->
                         <div class="p-3.5 bg-emerald/10 border border-emerald/30 rounded-lg">
                             <div class="text-xs uppercase font-mono tracking-widest text-emerald font-bold mb-2 flex items-center gap-1.5">
-                                <span class="font-mono text-emerald-400">//</span> NHIỆM VỤ TIÊU DIỆT
+                                <span class="text-emerald-400">★</span> NHIỆM VỤ TIÊU DIỆT
                             </div>
                             <ul id="brief-objectives" class="brief-list"></ul>
                         </div>
@@ -1197,26 +1237,22 @@
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
                     <!-- Left Column: Combat record & KPIs (7 cols on lg) -->
                     <div class="lg:col-span-7 flex flex-col gap-2.5">
-                        <div class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-semibold flex items-center gap-2">
-                            <span class="font-mono text-amber-400 mr-1">[★]</span> BÁO CÁO THÀNH TÍCH TÁC CHIẾN &amp; HUÂN CHƯƠNG
+                        <div class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-semibold flex items-center gap-1.5">
+                            <span class="text-amber-400">★</span> BÁO CÁO THÀNH TÍCH TÁC CHIẾN
                         </div>
                         <div class="debrief-stats" id="debrief-stats"></div>
                     </div>
 
                     <!-- Right Column: Historical dispatch dossier (5 cols on lg) -->
                     <div class="lg:col-span-5 flex flex-col gap-2.5">
-                        <div class="flex items-center justify-between">
-                            <div class="text-xs uppercase font-mono tracking-widest text-amber-400 font-semibold flex items-center gap-2">
-                                <span class="font-mono text-amber-400 mr-1">//</span> HỒ SƠ LỊCH SỬ &amp; CHIẾN SỰ 1972
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="text-xs uppercase font-mono tracking-widest text-amber-400 font-semibold flex items-center gap-1.5 whitespace-nowrap">
+                                <span class="text-amber-400">★</span> HỒ SƠ CHIẾN SỰ 1972
                             </div>
-                            <div class="flex items-center gap-1.5">
-                                <button class="text-[11px] font-mono uppercase tracking-wider text-amber-300 hover:text-white px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/40 hover:bg-amber-500/40 transition-colors flex items-center gap-1" onclick="Voice.toggleDebriefHistory()">
-                                    <span class="font-mono text-amber-300 mr-1">[AUDIO]</span> <span id="btn-debrief-audio-label">Nghe diễn biến (Giọng nữ AI)</span>
-                                </button>
-                                <button class="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800/80 border border-zinc-700 hover:border-emerald-400 text-zinc-300 hover:text-emerald-300 transition-colors flex items-center gap-1.5" onclick="toggleRadioLog(true)" title="Xem lại các bức điện đài vô tuyến trong trận">
-                                    <span class="font-mono text-emerald-400 mr-1">[L]</span> Nhật ký đài
-                                </button>
-                            </div>
+                            <button id="btn-debrief-audio-toggle" class="audio-narrator-btn" onclick="Voice.toggleDebriefHistory()" title="Bật / dừng thuyết minh diễn biến lịch sử">
+                                <span class="text-amber-300">🔊</span>
+                                <span id="btn-debrief-audio-label">Thuyết minh</span>
+                            </button>
                         </div>
                         <div class="debrief-history-card">
                             <div class="brief-body" id="debrief-history"></div>
@@ -1495,8 +1531,9 @@
             <path id="bracket-path" d="M16 4 H4 V16 M56 4 H68 V16 M16 68 H4 V56 M56 68 H68 V56" stroke="#10B981" stroke-width="1.8"/>
             <polygon id="bracket-diamond" points="36,8 64,36 36,64 8,36" stroke="#E11D48" stroke-width="1.2" stroke-dasharray="3 2" fill="none"/>
         </svg>
-        <div class="mt-0.5 text-center font-mono text-[9px] leading-none tracking-tight whitespace-nowrap">
+        <div class="mt-0.5 text-center font-mono text-[9px] leading-none tracking-tight whitespace-nowrap flex items-center justify-center gap-1">
             <span id="bracket-callsign" class="px-1 py-0.5 bg-canvas/90 text-alabaster border hairline-border">B-52G #01</span>
+            <span id="bracket-range" class="px-1 py-0.5 bg-cyan-950/90 text-cyan-300 border border-cyan-400/50 font-bold">-- KM</span>
             <span id="bracket-dist" class="px-1 py-0.5 bg-emerald text-canvas font-bold">LOCKED</span>
         </div>
     </div>
@@ -1512,6 +1549,7 @@
             <line x1="64" y1="48" x2="88" y2="48" stroke="#10B981" stroke-width="1.4"/>
             <circle cx="48" cy="48" r="2.5" fill="#E11D48"/>
         </svg>
+        <div id="reticle-range-tag" class="text-center font-mono text-[10px] font-bold tracking-wider -mt-1 hidden"></div>
     </div>
 
     <!-- 5B. TACTICAL CORNER HUD (MISSION TITLE + CLOCK / OBJECTIVE TRACKER) + TOOLBAR -->
@@ -2755,8 +2793,14 @@
                 return this.ctx;
             },
 
+            isSilenced() {
+                if (typeof document === 'undefined') return false;
+                const archive = document.getElementById('screen-archive');
+                return !!(archive && archive.classList.contains('is-open'));
+            },
+
             playLaunch(isMiG) {
-                if (!this.enabled) return;
+                if (!this.enabled || this.isSilenced()) return;
                 this.init();
                 if (!this.ctx) return;
                 const now = this.ctx.currentTime;
@@ -2794,7 +2838,7 @@
             },
 
             playExplosion() {
-                if (!this.enabled) return;
+                if (!this.enabled || this.isSilenced()) return;
                 this.init();
                 if (!this.ctx) return;
                 const now = this.ctx.currentTime;
@@ -2813,7 +2857,7 @@
             },
 
             playLockBeep() {
-                if (!this.enabled) return;
+                if (!this.enabled || this.isSilenced()) return;
                 const t = performance.now();
                 if (t - this.lastLockPing < 480) return;
                 this.lastLockPing = t;
@@ -4425,7 +4469,10 @@
             smoothAimX += (mouseAimX - smoothAimX) * Math.min(1, dt * 8);
             smoothAimY += (mouseAimY - smoothAimY) * Math.min(1, dt * 8);
 
-            if (autoAIEnabled && activeBombers.length > 0 && gameState === 'MENU') {
+            const archiveEl = (typeof document !== 'undefined') ? document.getElementById('screen-archive') : null;
+            const archiveOpen = !!(archiveEl && archiveEl.classList.contains('is-open'));
+
+            if (autoAIEnabled && activeBombers.length > 0 && gameState === 'MENU' && !archiveOpen) {
                 const tgt = activeBombers[0];
                 const p = tgt.mesh.position.clone().project(camera);
                 if (p.z > 0 && p.z < 1) {
@@ -5270,6 +5317,8 @@
             const isOpen = screen && screen.classList.contains('is-open');
             const target = open !== undefined ? open : !isOpen;
             if (target) {
+                if (typeof Voice !== 'undefined' && Voice.stop) Voice.stop();
+                if (typeof SoundFX !== 'undefined' && SoundFX.siren) SoundFX.siren(false);
                 if (typeof gameState !== 'undefined' && gameState === 'PLAYING' && !gamePaused) {
                     gamePaused = true;
                     archivePausedGame = true;
@@ -5934,14 +5983,24 @@
 
         function updateZeroLagTargetLockBracket() {
             const bracketEl = document.getElementById('hud-target-bracket');
+            const reticleRange = document.getElementById('reticle-range-tag');
             updateMapLabels();
             const t = currentMode === 'HANGAR' ? null
                 : currentMode === 'MIG21' ? mig.target
                 : gameState === 'PLAYING' || gameState === 'ENDING' ? selectedTarget : activeBombers[0];
             lockedBomber = t || null;
-            if (!t) { bracketEl.style.opacity = '0'; updateTargetTelemetry(null); return; }
+            if (!t) {
+                bracketEl.style.opacity = '0';
+                if (reticleRange) reticleRange.classList.add('hidden');
+                updateTargetTelemetry(null);
+                return;
+            }
             const v = _tmpV.copy(t.mesh.position).project(camera);
-            if (v.z <= 0 || v.z >= 1) { bracketEl.style.opacity = '0'; return; }
+            if (v.z <= 0 || v.z >= 1) {
+                bracketEl.style.opacity = '0';
+                if (reticleRange) reticleRange.classList.add('hidden');
+                return;
+            }
             let px = (v.x * 0.5 + 0.5) * window.innerWidth;
             let py = (-(v.y * 0.5) + 0.5) * window.innerHeight;
             const samPlay = currentMode === 'SAM2' && gameState === 'PLAYING';
@@ -5955,15 +6014,65 @@
             document.getElementById('bracket-callsign').textContent = t.callsign + (t.damaged ? ' (BỊ THƯƠNG)' : '');
 
             let text = 'MỤC TIÊU', good = true;
+            let rangeText = '-- KM';
+            let rangeClass = 'px-1 py-0.5 bg-cyan-950/90 text-cyan-300 border border-cyan-400/50 font-bold';
+
             if (currentMode === 'MIG21') {
+                const distU = playerMiG21 ? playerMiG21.position.distanceTo(t.mesh.position) : (mig.dist || 0);
+                const dKm = distU * KM_PER_UNIT;
+                rangeText = dKm < 1.0 ? `${Math.round(distU * 25)} M` : `${dKm.toFixed(2)} KM`;
+
                 good = mig.irLock >= 1.5;
                 text = good ? 'KHÓA NHIỆT' : mig.envelope || `ĐANG KHÓA ${mig.irLock.toFixed(1)}s`;
+
+                // Tactical color accents based on MiG-21 engagement envelope
+                if (distU < 40) {
+                    rangeClass = 'px-1 py-0.5 bg-rose-950/90 text-rose-300 border border-rose-500/50 font-bold';
+                } else if (distU <= 140) {
+                    rangeClass = 'px-1 py-0.5 bg-emerald-950/90 text-emerald-300 border border-emerald-400/50 font-bold';
+                } else if (distU <= 200) {
+                    rangeClass = 'px-1 py-0.5 bg-cyan-950/90 text-cyan-300 border border-cyan-400/50 font-bold';
+                } else {
+                    rangeClass = 'px-1 py-0.5 bg-amber-950/90 text-amber-300 border border-amber-400/50 font-bold';
+                }
+
+                if (reticleRange) {
+                    reticleRange.classList.remove('hidden');
+                    const colorCls = distU < 40 ? 'text-rose-400' : distU <= 140 ? 'text-emerald-300' : distU <= 200 ? 'text-cyan-300' : 'text-amber-300';
+                    reticleRange.innerHTML = `<span class="text-amber-400/80 drop-shadow">CỰ LY:</span> <span class="font-bold drop-shadow ${colorCls}">${rangeText}</span>`;
+                }
             } else if (samPlay) {
+                if (reticleRange) reticleRange.classList.add('hidden');
+                const dKm = distKm(t);
+                if (targetQuality < 0.3) {
+                    rangeText = '— KM [NHIỄU]';
+                    rangeClass = 'px-1 py-0.5 bg-rose-950/90 text-rose-300 border border-rose-500/50 font-bold';
+                } else if (targetQuality < 0.5) {
+                    rangeText = `~${Math.round(dKm)} KM`;
+                    rangeClass = 'px-1 py-0.5 bg-amber-950/90 text-amber-300 border border-amber-400/50 font-bold';
+                } else {
+                    rangeText = `${dKm.toFixed(1)} KM`;
+                    rangeClass = dKm <= NOMINAL_RANGE_KM
+                        ? 'px-1 py-0.5 bg-emerald-950/90 text-emerald-300 border border-emerald-400/50 font-bold'
+                        : 'px-1 py-0.5 bg-amber-950/90 text-amber-300 border border-amber-400/50 font-bold';
+                }
+
                 if (guidedMissile) { text = `DẪN ĐẠN ${Math.round(targetQuality * 100)}%`; good = targetQuality >= 0.3; }
-                else if (targetQuality < (distKm(t) > FAR_TRACK_KM ? 0.12 : 0.3)) { text = 'NHIỄU — MẤT BÁM'; good = false; }
-                else if (trackTimer < TRACK_TIME) { text = `${distKm(t) > NOMINAL_RANGE_KM ? 'NGOÀI TẦM · ' : ''}BÁM ${Math.round(trackTimer / TRACK_TIME * 100)}%`; good = false; }
-                else text = distKm(t) > NOMINAL_RANGE_KM ? 'BÁM CHẮC · NGOÀI TẦM' : 'BÁM CHẮC';
+                else if (targetQuality < (dKm > FAR_TRACK_KM ? 0.12 : 0.3)) { text = 'NHIỄU — MẤT BÁM'; good = false; }
+                else if (trackTimer < TRACK_TIME) { text = `${dKm > NOMINAL_RANGE_KM ? 'NGOÀI TẦM · ' : ''}BÁM ${Math.round(trackTimer / TRACK_TIME * 100)}%`; good = false; }
+                else text = dKm > NOMINAL_RANGE_KM ? 'BÁM CHẮC · NGOÀI TẦM' : 'BÁM CHẮC';
+            } else {
+                if (reticleRange) reticleRange.classList.add('hidden');
+                const dKm = distKm(t);
+                rangeText = `${dKm.toFixed(1)} KM`;
             }
+
+            const rangeEl = document.getElementById('bracket-range');
+            if (rangeEl) {
+                rangeEl.textContent = rangeText;
+                rangeEl.className = rangeClass;
+            }
+
             const distEl = document.getElementById('bracket-dist');
             distEl.textContent = text;
             distEl.className = good ? 'px-1 py-0.5 bg-emerald text-canvas font-bold' : 'px-1 py-0.5 bg-vermilion text-alabaster font-bold';
@@ -5978,18 +6087,39 @@
                 return;
             }
             set('hud-tgt-name', t.callsign);
-            // noise jamming denies range first: below q = 0.5 only the angle is known
-            set('hud-tgt-range', targetQuality >= 0.5 ? `${distKm(t).toFixed(1)} KM` : '— (NHIỄU)');
-            set('hud-tgt-alt', `${Math.round(t.mesh.position.y * 25).toLocaleString('vi-VN')} M`);
-            set('hud-tgt-q', `${Math.round(targetQuality * 100)}%`);
-            const lock = document.getElementById('hud-lock-status');
-            const st = targetQuality < (distKm(t) > FAR_TRACK_KM ? 0.12 : 0.3) ? ['MẤT BÁM [NHIỄU]', 'vermilion']
-                : trackTimer < TRACK_TIME ? [`ĐANG BÁM ${trackTimer.toFixed(1)}s`, 'amber-400']
-                : distKm(t) > NOMINAL_RANGE_KM ? ['NGOÀI TẦM — ĐẠN ĐẾN NƠI SẼ YẾU', 'amber-400']
-                : ['BÁM CHẮC — SẴN SÀNG PHÓNG', 'emerald'];
-            if (lock.textContent !== st[0]) {
-                lock.textContent = st[0];
-                lock.className = `px-2 py-0.5 rounded bg-${st[1]}/20 border border-${st[1]} text-${st[1]} text-[10px] font-bold`;
+            if (currentMode === 'MIG21') {
+                const distU = playerMiG21 ? playerMiG21.position.distanceTo(t.mesh.position) : (mig.dist || 0);
+                const dKm = distU * KM_PER_UNIT;
+                set('hud-tgt-range', dKm < 1.0 ? `${Math.round(distU * 25)} M` : `${dKm.toFixed(2)} KM`);
+                set('hud-tgt-alt', `${Math.round(t.mesh.position.y * 25).toLocaleString('vi-VN')} M`);
+                set('hud-tgt-q', mig.irLock >= 1.5 ? '100% [KHÓA]' : `${Math.round(mig.irLock / 1.5 * 100)}%`);
+                const lock = document.getElementById('hud-lock-status');
+                if (lock) {
+                    const st = mig.irLock >= 1.5 ? ['KHÓA NHIỆT — SẴN SÀNG PHÓNG', 'emerald']
+                        : mig.envelope ? [mig.envelope, 'amber-400']
+                        : [`ĐANG KHÓA ${mig.irLock.toFixed(1)}s`, 'amber-400'];
+                    if (lock.textContent !== st[0]) {
+                        lock.textContent = st[0];
+                        lock.className = `px-2 py-0.5 rounded bg-${st[1]}/20 border border-${st[1]} text-${st[1]} text-[10px] font-bold`;
+                    }
+                }
+            } else {
+                // SAM-2 mode
+                // noise jamming denies range first: below q = 0.5 only the angle is known
+                set('hud-tgt-range', targetQuality >= 0.5 ? `${distKm(t).toFixed(1)} KM` : '— (NHIỄU)');
+                set('hud-tgt-alt', `${Math.round(t.mesh.position.y * 25).toLocaleString('vi-VN')} M`);
+                set('hud-tgt-q', `${Math.round(targetQuality * 100)}%`);
+                const lock = document.getElementById('hud-lock-status');
+                if (lock) {
+                    const st = targetQuality < (distKm(t) > FAR_TRACK_KM ? 0.12 : 0.3) ? ['MẤT BÁM [NHIỄU]', 'vermilion']
+                        : trackTimer < TRACK_TIME ? [`ĐANG BÁM ${trackTimer.toFixed(1)}s`, 'amber-400']
+                        : distKm(t) > NOMINAL_RANGE_KM ? ['NGOÀI TẦM — ĐẠN ĐẾN NƠI SẼ YẾU', 'amber-400']
+                        : ['BÁM CHẮC — SẴN SÀNG PHÓNG', 'emerald'];
+                    if (lock.textContent !== st[0]) {
+                        lock.textContent = st[0];
+                        lock.className = `px-2 py-0.5 rounded bg-${st[1]}/20 border border-${st[1]} text-${st[1]} text-[10px] font-bold`;
+                    }
+                }
             }
         }
 
@@ -7611,6 +7741,8 @@
             ensure() {
                 const ctx = SoundEngine.ctx;
                 if (!ctx || !SoundEngine.enabled) return false;
+                const archiveEl = (typeof document !== 'undefined') ? document.getElementById('screen-archive') : null;
+                if (archiveEl && archiveEl.classList.contains('is-open')) return false;
                 if (!this.ready) this.setup(ctx);
                 return true;
             },
@@ -7764,11 +7896,13 @@
                 if (!ctx || !this.ready) { if (ctx && SoundEngine.enabled) this.setup(ctx); return; }
                 const t = ctx.currentTime, L = this.L;
                 const set = (layer, v, tc = 0.2) => layer.g.gain.setTargetAtTime(v, t, tc);
-                const live = SoundEngine.enabled && !gamePaused;
+                const archiveEl = (typeof document !== 'undefined') ? document.getElementById('screen-archive') : null;
+                const archiveOpen = !!(archiveEl && archiveEl.classList.contains('is-open'));
+                const live = SoundEngine.enabled && !gamePaused && !archiveOpen;
                 this.master.gain.setTargetAtTime(live ? 0.9 : 0, t, 0.05);
-                const world = currentMode !== 'HANGAR';
-                const air = currentMode === 'MIG21' && (gameState === 'PLAYING' || gameState === 'ENDING');
-                const missileView = !!guidedMissile && guidedMissile.t > 0.7;
+                const world = currentMode !== 'HANGAR' && !archiveOpen;
+                const air = currentMode === 'MIG21' && (gameState === 'PLAYING' || gameState === 'ENDING') && !archiveOpen;
+                const missileView = !archiveOpen && !!guidedMissile && guidedMissile.t > 0.7;
 
                 set(L.rain, world && !air ? (missileView ? 0.03 : 0.09) : 0);
                 set(L.rumble, world && !air ? 0.22 : air ? 0.08 : 0);
@@ -8790,7 +8924,11 @@ const MISSIONS = [
             document.body.classList.toggle('in-menu', name !== null && name !== 'pause');
             if (name === 'campaign') renderMissionList();
             if (name === 'menu') renderMenuProgress();
-            if (name === 'archive' && typeof showArchiveNight === 'function') showArchiveNight('night-node-1');
+            if (name === 'archive') {
+                if (typeof Voice !== 'undefined' && Voice.stop) Voice.stop();
+                if (typeof SoundFX !== 'undefined' && SoundFX.siren) SoundFX.siren(false);
+                if (typeof showArchiveNight === 'function') showArchiveNight('night-node-1');
+            }
         }
 
         function continueCampaign() {
@@ -8972,12 +9110,13 @@ const MISSIONS = [
             const quoteEl = document.getElementById('brief-story-quote');
             if (quoteEl) {
                 quoteEl.innerHTML = `
-                    <div class="flex items-center justify-between gap-2 mb-1">
-                        <span class="text-[11px] uppercase font-mono tracking-widest text-amber-400 font-bold">
-                            BỐI CẢNH LỊCH SỬ &amp; Ý CHÍ CHIẾN ĐẤU
+                    <div class="flex items-center justify-between gap-2 mb-1.5">
+                        <span class="text-[11px] uppercase font-mono tracking-widest text-amber-400 font-bold flex items-center gap-1.5">
+                            <span class="text-amber-400">★</span> BỐI CẢNH LỊCH SỬ &amp; Ý CHÍ CHIẾN ĐẤU
                         </span>
-                        <button class="text-[11px] font-mono uppercase tracking-wider text-amber-300 hover:text-white px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/40 hover:bg-amber-500/40 transition-colors flex items-center gap-1" onclick="Voice.toggleBriefingStory()">
-                            <span class="font-mono text-amber-300 mr-1">[AUDIO]</span> <span id="btn-brief-audio-label">Nghe bối cảnh (Giọng nữ AI)</span>
+                        <button id="btn-brief-audio-toggle" class="audio-narrator-btn" onclick="Voice.toggleBriefingStory()" title="Bật / dừng thuyết minh bối cảnh lịch sử">
+                            <span class="text-amber-300">🔊</span>
+                            <span id="btn-brief-audio-label">Thuyết minh</span>
                         </button>
                     </div>
                     "${m.story}"
@@ -9225,11 +9364,13 @@ const MISSIONS = [
                 Voice._currU = null;
                 if (Voice._resumeTimer) { clearInterval(Voice._resumeTimer); Voice._resumeTimer = null; }
                 const label = document.getElementById('btn-brief-audio-label');
-                if (label) label.textContent = 'Nghe bối cảnh (Giọng nữ AI)';
+                if (label) label.textContent = 'Thuyết minh';
                 const dLabel = document.getElementById('btn-debrief-audio-label');
-                if (dLabel) dLabel.textContent = 'Nghe diễn biến (Giọng nữ AI)';
+                if (dLabel) dLabel.textContent = 'Thuyết minh';
             },
             playAudioFile(src, onEndCallback, isStory = false) {
+                const archiveEl = (typeof document !== 'undefined') ? document.getElementById('screen-archive') : null;
+                if (archiveEl && archiveEl.classList.contains('is-open')) return false;
                 if (this.currentAudio) {
                     try { this.currentAudio.pause(); this.currentAudio.currentTime = 0; } catch(e) {}
                     this.currentAudio = null;
@@ -9245,9 +9386,9 @@ const MISSIONS = [
                         this.currentAudio = null;
                         this.isStory = false;
                         const label = document.getElementById('btn-brief-audio-label');
-                        if (label) label.textContent = 'Nghe bối cảnh (Giọng nữ AI)';
+                        if (label) label.textContent = 'Thuyết minh';
                         const dLabel = document.getElementById('btn-debrief-audio-label');
-                        if (dLabel) dLabel.textContent = 'Nghe diễn biến (Giọng nữ AI)';
+                        if (dLabel) dLabel.textContent = 'Thuyết minh';
                     };
                     audio.onended = () => {
                         cleanup();
@@ -9289,6 +9430,8 @@ const MISSIONS = [
             },
             speak(who, text, interrupt) {
                 if (!SoundEngine.enabled) return;
+                const archiveEl = (typeof document !== 'undefined') ? document.getElementById('screen-archive') : null;
+                if (archiveEl && archiveEl.classList.contains('is-open')) return;
                 // Giữ voice dẫn chuyện bối cảnh không bị ngắt quãng giữa chừng
                 if (this.isStoryPlaying()) return;
                 // Bỏ hoàn toàn voice hướng dẫn / phím bấm / chuột / nạp đạn
@@ -9363,9 +9506,9 @@ const MISSIONS = [
                     Voice._currU = null;
                     if (Voice._resumeTimer) { clearInterval(Voice._resumeTimer); Voice._resumeTimer = null; }
                     const label = document.getElementById('btn-brief-audio-label');
-                    if (label) label.textContent = 'Nghe bối cảnh (Giọng nữ AI)';
+                    if (label) label.textContent = 'Thuyết minh';
                     const dLabel = document.getElementById('btn-debrief-audio-label');
-                    if (dLabel) dLabel.textContent = 'Nghe diễn biến (Giọng nữ AI)';
+                    if (dLabel) dLabel.textContent = 'Thuyết minh';
                 };
 
                 setTimeout(() => {
@@ -9392,7 +9535,7 @@ const MISSIONS = [
                             // Fallback sang SpeechSynthesis nếu không load được file
                             this.speak('DẪN TRUYỆN', m.story, true);
                         } else {
-                            if (label) label.textContent = 'Nghe bối cảnh (Giọng nữ AI)';
+                            if (label) label.textContent = 'Thuyết minh';
                         }
                     }, true);
                 }
@@ -9423,7 +9566,7 @@ const MISSIONS = [
                 if (typeof Audio !== 'undefined') {
                     played = this.playAudioFile(audioSrc, (err) => {
                         const lbl = document.getElementById('btn-debrief-audio-label');
-                        if (lbl) lbl.textContent = 'Nghe diễn biến (Giọng nữ AI)';
+                        if (lbl) lbl.textContent = 'Thuyết minh';
                     });
                 }
                 if (!played) {
@@ -9562,24 +9705,22 @@ const MISSIONS = [
             let rankBadge = '';
             const failAnalysisEl = document.getElementById('debrief-fail-analysis');
             if (missionWon) {
-                let rankTitle = 'HOÀN THÀNH NHIỆM VỤ';
+                let rankTitle = 'DŨNG SĨ BẢO VỆ BẦU TRỜI · HUÂN CHƯƠNG CHIẾN CÔNG';
                 let stars = '★';
                 let rankQuote = 'Bộ Tư lệnh ghi nhận chiến công xuất sắc bảo vệ vững chắc vùng trời Thủ đô.';
                 if (missionShots <= m.kills * 2 || (m.mode === 'MIG21' && missionKills >= 1)) {
-                    rankTitle = 'DŨNG SĨ DIỆT MỸ // HUÂN CHƯƠNG CHIẾN CÔNG HẠNG NHẤT';
+                    rankTitle = 'DŨNG SĨ DIỆT MỸ · HUÂN CHƯƠNG CHIẾN CÔNG HẠNG NHẤT';
                     stars = '★ ★ ★';
                     rankQuote = 'Bắn rơi tại chỗ Pháo đài bay B-52, lập chiến công vẻ vang trong trang sử hào hùng.';
                 } else if (missionShots <= m.kills * 3) {
-                    rankTitle = 'CHIẾN SĨ THI ĐUA // HUÂN CHƯƠNG QUÂN CÔNG';
+                    rankTitle = 'CHIẾN SĨ THI ĐUA · HUÂN CHƯƠNG CHIẾN CÔNG';
                     stars = '★ ★';
                     rankQuote = 'Đánh trúng đội hình địch, kiên cường giữ vững trận địa.';
                 }
                 rankBadge = `
                     <div class="medal-hero-card">
-                        <div class="flex items-center gap-3">
-                            <div class="medal-badge" style="margin-bottom:0"><span>${stars}</span> ${rankTitle}</div>
-                        </div>
-                        <div class="text-xs text-amber-200/80 font-serif italic max-w-sm text-right hidden sm:block">
+                        <div class="medal-badge" style="margin-bottom:0"><span>${stars}</span> ${rankTitle}</div>
+                        <div class="medal-quote text-xs text-amber-200/90 font-serif italic">
                             “${rankQuote}”
                         </div>
                     </div>
@@ -9591,7 +9732,7 @@ const MISSIONS = [
                         <div class="medal-badge is-fail" style="margin-bottom:0">
                             <span class="font-mono text-rose-400 mr-1.5">[!]</span> RÚT KINH NGHIỆM CHIẾN ĐẤU — QUYẾT TÂM ĐÁNH LẠI
                         </div>
-                        <div class="text-xs text-rose-300/80 font-mono text-right hidden sm:block">
+                        <div class="medal-quote text-xs text-rose-300/85 font-mono">
                             TIẾP TỤC RÈN LUYỆN Ý CHÍ &amp; BẢN LĨNH
                         </div>
                     </div>
