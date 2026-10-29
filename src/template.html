@@ -591,6 +591,12 @@
             padding: 3px 10px; color: #E4E4E7; background: rgba(4, 8, 10, 0.6); border: 1px solid rgba(255, 255, 255, 0.16); cursor: pointer;
         }
         .tool-btn:hover { border-color: #CDF7A1; color: #FFFFFF; }
+        .tool-btn.is-active {
+            background: rgba(16, 185, 129, 0.28) !important;
+            border-color: #34D399 !important;
+            color: #A3F58A !important;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.45);
+        }
         kbd { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 0 5px; margin-left: 4px; border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 3px; color: #A1A1AA; }
         #radio-box {
             position: fixed; left: 16px; top: 108px; transform: translateY(-6px);
@@ -1208,9 +1214,14 @@
                             <div class="text-xs uppercase font-mono tracking-widest text-amber-400 font-semibold flex items-center gap-2">
                                 <span class="font-mono text-amber-400 mr-1">//</span> HỒ SƠ LỊCH SỬ &amp; CHIẾN SỰ 1972
                             </div>
-                            <button class="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800/80 border border-zinc-700 hover:border-emerald-400 text-zinc-300 hover:text-emerald-300 transition-colors flex items-center gap-1.5" onclick="toggleRadioLog(true)" title="Xem lại các bức điện đài vô tuyến trong trận">
-                                <span class="font-mono text-emerald-400 mr-1">[L]</span> Nhật ký đài
-                            </button>
+                            <div class="flex items-center gap-1.5">
+                                <button class="text-[11px] font-mono uppercase tracking-wider text-amber-300 hover:text-white px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/40 hover:bg-amber-500/40 transition-colors flex items-center gap-1" onclick="Voice.toggleDebriefHistory()">
+                                    <span class="font-mono text-amber-300 mr-1">[AUDIO]</span> <span id="btn-debrief-audio-label">Nghe diễn biến (Giọng nữ AI)</span>
+                                </button>
+                                <button class="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800/80 border border-zinc-700 hover:border-emerald-400 text-zinc-300 hover:text-emerald-300 transition-colors flex items-center gap-1.5" onclick="toggleRadioLog(true)" title="Xem lại các bức điện đài vô tuyến trong trận">
+                                    <span class="font-mono text-emerald-400 mr-1">[L]</span> Nhật ký đài
+                                </button>
+                            </div>
                         </div>
                         <div class="debrief-history-card">
                             <div class="brief-body" id="debrief-history"></div>
@@ -1526,6 +1537,7 @@
         </div>
         <div class="poster-h2 poster-amber">CÒN: <span id="obj-timer" class="tabular-nums">02:30</span> · <span id="poster-state">SẴN SÀNG</span></div>
         <div id="game-toolbar" class="pointer-events-auto flex justify-end gap-2 mt-2">
+            <button id="btn-auto-pilot" class="tool-btn text-amber-300 border-amber-500/40 hover:border-amber-400" onclick="toggleAutoPilot()">Tự động: TẮT<kbd>P</kbd></button>
             <button class="tool-btn text-amber-300 border-amber-500/40 hover:border-amber-400" onclick="toggleRadioLog(true)">Nhật ký<kbd>L</kbd></button>
             <button class="tool-btn text-teal-300 border-teal-500/40 hover:border-teal-400" onclick="toggleTacticalGuide(true)">Cẩm nang<kbd>H</kbd></button>
             <button class="tool-btn" onclick="pauseMission()">Tạm dừng<kbd>Esc</kbd></button>

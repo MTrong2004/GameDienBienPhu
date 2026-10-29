@@ -126,6 +126,7 @@
             setCinematicCamera('DECK');
             setEccmSlider(2960);
             autoAIEnabled = true;
+            resetAutoPilotUI();
             setBomberCount(3, 1);
             showScreen('menu');
             renderMenuProgress();
@@ -227,7 +228,7 @@
                             BỐI CẢNH LỊCH SỬ &amp; Ý CHÍ CHIẾN ĐẤU
                         </span>
                         <button class="text-[11px] font-mono uppercase tracking-wider text-amber-300 hover:text-white px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/40 hover:bg-amber-500/40 transition-colors flex items-center gap-1" onclick="Voice.toggleBriefingStory()">
-                            <span class="font-mono text-amber-300 mr-1">[AUDIO]</span> <span id="btn-brief-audio-label">Nghe bối cảnh</span>
+                            <span class="font-mono text-amber-300 mr-1">[AUDIO]</span> <span id="btn-brief-audio-label">Nghe bối cảnh (Giọng nữ AI)</span>
                         </button>
                     </div>
                     "${m.story}"
@@ -250,6 +251,9 @@
             }
             if (!locked) {
                 showScreen('briefing');
+                if (typeof Voice !== 'undefined' && Voice.playBriefingStory) {
+                    Voice.playBriefingStory(m);
+                }
             }
         }
 
@@ -350,15 +354,18 @@
             activeMission = m;
             SoundEngine.init();
             clearCombatScene();
-            Voice.stop();
-            // Khau lenh xuat kich ngan gon, dut khoat (2 giay) de khong lam tre cac ban tin radar tiep theo
-            const pilotCallsign = m.pilot || '5121';
-            const combatCue = m.mode === 'MIG21'
-                ? `Tiêm kích ${pilotCallsign} bật tăng lực xuất kích, tiếp cận mục tiêu!`
-                : 'Tiểu đoàn vào cấp một! Tiêu diệt B-52 bảo vệ Hà Nội!';
-            Voice.speak('SỞ CHỈ HUY', combatCue, true);
+            if (typeof Voice === 'undefined' || !Voice.isStoryPlaying || !Voice.isStoryPlaying()) {
+                Voice.stop();
+                // Khau lenh xuat kich ngan gon, dut khoat (2 giay) de khong lam tre cac ban tin radar tiep theo
+                const pilotCallsign = m.pilot || '5121';
+                const combatCue = m.mode === 'MIG21'
+                    ? `Tiêm kích ${pilotCallsign} bật tăng lực xuất kích, tiếp cận mục tiêu!`
+                    : 'Tiểu đoàn vào cấp một! Tiêu diệt B-52 bảo vệ Hà Nội!';
+                Voice.speak('SỞ CHỈ HUY', combatCue, true);
+            }
             showCombatAlert(m);
             autoAIEnabled = false;
+            resetAutoPilotUI();
             gamePaused = false;
 
             setBomberCount(m.bombers, m.speed);
@@ -438,7 +445,8 @@
                 const pick = () => {
                     const vs = (synth.getVoices && synth.getVoices()) || [];
                     if (!vs.length) return;
-                    this.voice = vs.find(v => /^vi/i.test(v.lang) && /natural|online/i.test(v.name)) ||
+                    this.voice = vs.find(v => /^vi/i.test(v.lang) && /hoaimy|female|nữ/i.test(v.name)) ||
+                                 vs.find(v => /^vi/i.test(v.lang) && /natural|online/i.test(v.name)) ||
                                  vs.find(v => /^vi/i.test(v.lang)) ||
                                  vs.find(v => /vietnam/i.test(v.name)) || null;
                     this.checked = true;
@@ -453,7 +461,12 @@
                     .replace(/F-4/g, 'Ép 4').replace(/F-111/g, 'Ép 111').replace(/SAM-2/g, 'Sam 2')
                     .replace(/V-750/g, 'Vê 750').replace(/K-13/g, 'Ca 13');
             },
+            isStoryPlaying() {
+                return !!(this.isStory && this.currentAudio && !this.currentAudio.paused && !this.currentAudio.ended);
+            },
             stop() {
+                this.isStory = false;
+                this._wasPlayingOnPause = false;
                 if (this.currentAudio) {
                     try { this.currentAudio.pause(); this.currentAudio.currentTime = 0; } catch(e) {}
                     this.currentAudio = null;
@@ -463,28 +476,42 @@
                 Voice._currU = null;
                 if (Voice._resumeTimer) { clearInterval(Voice._resumeTimer); Voice._resumeTimer = null; }
                 const label = document.getElementById('btn-brief-audio-label');
-                if (label) label.textContent = 'Nghe bối cảnh';
+                if (label) label.textContent = 'Nghe bối cảnh (Giọng nữ AI)';
+                const dLabel = document.getElementById('btn-debrief-audio-label');
+                if (dLabel) dLabel.textContent = 'Nghe diễn biến (Giọng nữ AI)';
             },
-            playAudioFile(src, onEndCallback) {
-                this.stop();
+            playAudioFile(src, onEndCallback, isStory = false) {
+                if (this.currentAudio) {
+                    try { this.currentAudio.pause(); this.currentAudio.currentTime = 0; } catch(e) {}
+                    this.currentAudio = null;
+                }
+                this.isStory = !!isStory;
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                this.pending = 0;
                 try {
                     const audio = new Audio(src);
                     audio.volume = (typeof SoundFX !== 'undefined' && SoundFX.voiceVolume !== undefined) ? SoundFX.voiceVolume : 0.95;
                     this.currentAudio = audio;
-                    audio.onended = () => {
+                    const cleanup = () => {
                         this.currentAudio = null;
+                        this.isStory = false;
                         const label = document.getElementById('btn-brief-audio-label');
-                        if (label) label.textContent = 'Nghe bối cảnh';
+                        if (label) label.textContent = 'Nghe bối cảnh (Giọng nữ AI)';
+                        const dLabel = document.getElementById('btn-debrief-audio-label');
+                        if (dLabel) dLabel.textContent = 'Nghe diễn biến (Giọng nữ AI)';
+                    };
+                    audio.onended = () => {
+                        cleanup();
                         if (typeof onEndCallback === 'function') onEndCallback();
                     };
                     audio.onerror = (err) => {
-                        this.currentAudio = null;
+                        cleanup();
                         if (typeof onEndCallback === 'function') onEndCallback(err || new Error('Audio load error'));
                     };
                     const p = audio.play();
                     if (p && typeof p.catch === 'function') {
                         p.catch(err => {
-                            this.currentAudio = null;
+                            cleanup();
                             if (typeof onEndCallback === 'function') onEndCallback(err);
                         });
                     }
@@ -493,17 +520,40 @@
                     return false;
                 }
             },
+            findAudioCue(who, text) {
+                if (typeof Audio === 'undefined') return null;
+                const m = (typeof activeMission !== 'undefined' && activeMission) || null;
+                const lower = (text || '').toLowerCase();
+                if (who === 'LOA PHÒNG KHÔNG') return 'assets/audio/cue_air_raid.mp3';
+                if (who === 'SỞ CHỈ HUY') {
+                    if (/xuất kích|cấp 1|tiêu diệt b[\s-]?52/i.test(lower)) {
+                        return m && m.mode === 'MIG21'
+                            ? (m.pilot === '046' ? 'assets/audio/cue_mig21_046.mp3' : 'assets/audio/cue_mig21_5121.mp3')
+                            : 'assets/audio/cue_sam2.mp3';
+                    }
+                    if (/thắng|hoàn thành|bắn rơi|toàn thắng/i.test(lower)) return 'assets/audio/cue_win.mp3';
+                }
+                if (/bốc cháy|rơi tại chỗ|bắn rơi|bắn trúng/i.test(lower)) return 'assets/audio/cue_kill.mp3';
+                if (who === 'TRẮC THỦ' && /nhiễu nặng/i.test(lower)) return 'assets/audio/cue_jam.mp3';
+                if (/bám chắc|phóng đạn|khóa chặt/i.test(lower)) return 'assets/audio/cue_lock.mp3';
+                return null;
+            },
             speak(who, text, interrupt) {
                 if (!SoundEngine.enabled) return;
+                // Giữ voice dẫn chuyện bối cảnh không bị ngắt quãng giữa chừng
+                if (this.isStoryPlaying()) return;
+                // Bỏ hoàn toàn voice hướng dẫn / phím bấm / chuột / nạp đạn
+                if (who === 'HƯỚNG DẪN' || /chuột|bấm|nhấn|phím|kéo thanh|vòng ngắm|lệch chuột|hướng dẫn|thanh tần số|cách đánh|nạp bệ|kho đã hết|cả ba bệ|xe vận tải/i.test(text)) return;
 
-                // Khẩu lệnh xuất kích của Sở chỉ huy: ưu tiên file audio chất lượng cao NamMinh
-                if (who === 'SỞ CHỈ HUY' && typeof activeMission !== 'undefined' && activeMission) {
-                    const cueFile = activeMission.mode === 'MIG21'
-                        ? (activeMission.pilot === '046' ? 'assets/audio/cue_mig21_046.mp3' : 'assets/audio/cue_mig21_5121.mp3')
-                        : 'assets/audio/cue_sam2.mp3';
-                    if (typeof Audio !== 'undefined') {
-                        const played = this.playAudioFile(cueFile);
-                        if (played) return;
+                // ponytail: offline/local audio cue router; upgrade to dynamic client TTS WASM if complete offline speech is required.
+                const cueFile = this.findAudioCue(who, text);
+                if (cueFile) {
+                    const played = this.playAudioFile(cueFile);
+                    if (played) {
+                        if (who === 'LOA PHÒNG KHÔNG' && typeof SoundFX !== 'undefined' && SoundFX.loudspeakerChime) {
+                            SoundFX.loudspeakerChime();
+                        }
+                        return;
                     }
                 }
 
@@ -564,7 +614,9 @@
                     Voice._currU = null;
                     if (Voice._resumeTimer) { clearInterval(Voice._resumeTimer); Voice._resumeTimer = null; }
                     const label = document.getElementById('btn-brief-audio-label');
-                    if (label) label.textContent = 'Nghe bối cảnh';
+                    if (label) label.textContent = 'Nghe bối cảnh (Giọng nữ AI)';
+                    const dLabel = document.getElementById('btn-debrief-audio-label');
+                    if (dLabel) dLabel.textContent = 'Nghe diễn biến (Giọng nữ AI)';
                 };
 
                 setTimeout(() => {
@@ -574,36 +626,60 @@
                     } catch(e) {}
                 }, 15);
             },
-            toggleBriefingStory() {
-                if (this.currentAudio) {
-                    this.stop();
-                    return;
+            playBriefingStory(mission) {
+                const m = mission || (typeof activeMission !== 'undefined' && activeMission) || (typeof MISSIONS !== 'undefined' && MISSIONS[activeMissionIdx]) || null;
+                if (!m || !m.story) return;
+
+                this.stop();
+                const label = document.getElementById('btn-brief-audio-label');
+                if (label) label.textContent = 'Dừng đọc';
+
+                // Ưu tiên phát file giọng đọc AI Hoài My chuẩn cả local lẫn deploy trên web
+                const audioSrc = `assets/audio/story_${m.id}.mp3`;
+                let played = false;
+                if (typeof Audio !== 'undefined') {
+                    played = this.playAudioFile(audioSrc, (err) => {
+                        if (err) {
+                            // Fallback sang SpeechSynthesis nếu không load được file
+                            this.speak('DẪN TRUYỆN', m.story, true);
+                        } else {
+                            if (label) label.textContent = 'Nghe bối cảnh (Giọng nữ AI)';
+                        }
+                    }, true);
                 }
-                if (typeof window !== 'undefined' && window.speechSynthesis && window.speechSynthesis.speaking) {
+                if (!played) {
+                    this.speak('DẪN TRUYỆN', m.story, true);
+                }
+            },
+            toggleBriefingStory() {
+                if (this.isStoryPlaying()) {
                     this.stop();
                     return;
                 }
                 const m = (typeof activeMission !== 'undefined' && activeMission) || (typeof MISSIONS !== 'undefined' && MISSIONS[activeMissionIdx]) || null;
-                if (m && m.story) {
-                    const label = document.getElementById('btn-brief-audio-label');
-                    if (label) label.textContent = 'Dừng đọc';
+                if (m) this.playBriefingStory(m);
+            },
+            toggleDebriefHistory() {
+                if (this.currentAudio || (typeof window !== 'undefined' && window.speechSynthesis && window.speechSynthesis.speaking)) {
+                    this.stop();
+                    return;
+                }
+                const m = (typeof activeMission !== 'undefined' && activeMission) || (typeof MISSIONS !== 'undefined' && MISSIONS[activeMissionIdx]) || null;
+                if (!m) return;
+                const label = document.getElementById('btn-debrief-audio-label');
+                if (label) label.textContent = 'Dừng đọc';
 
-                    // Ưu tiên phát file giọng đọc AI Hoài My chuẩn như deploy trên web
-                    const audioSrc = `assets/audio/story_${m.id}.mp3`;
-                    let played = false;
-                    if (typeof Audio !== 'undefined') {
-                        played = this.playAudioFile(audioSrc, (err) => {
-                            if (err) {
-                                // Fallback sang SpeechSynthesis nếu không load được file
-                                this.speak('DẪN TRUYỆN', m.story, true);
-                            } else {
-                                if (label) label.textContent = 'Nghe bối cảnh';
-                            }
-                        });
-                    }
-                    if (!played) {
-                        this.speak('DẪN TRUYỆN', m.story, true);
-                    }
+                const audioSrc = `assets/audio/history_${m.id}.mp3`;
+                let played = false;
+                if (typeof Audio !== 'undefined') {
+                    played = this.playAudioFile(audioSrc, (err) => {
+                        const lbl = document.getElementById('btn-debrief-audio-label');
+                        if (lbl) lbl.textContent = 'Nghe diễn biến (Giọng nữ AI)';
+                    });
+                }
+                if (!played) {
+                    const histText = Array.isArray(m.history) ? m.history.join(' ') : (m.history || '');
+                    this.speak('DẪN TRUYỆN', histText, true);
                 }
             }
         };
@@ -726,6 +802,7 @@
 
         function showDebrief() {
             gameState = 'DEBRIEF';
+            resetAutoPilotUI();
             const m = activeMission;
             const idx = activeMissionIdx;
             document.getElementById('debrief-date').textContent = `MÀN ${idx + 1} · ${m.dateLabel} · ${m.title}`;
@@ -803,11 +880,7 @@
                 ['B-52 bắn rơi', `${missionKills}/${m.kills}`, 'val-accent'],
                 ['Đạn đã dùng', `${missionShots}/${m.ammo}`, 'val-muted'],
                 ['Hiệu suất trúng', `${hitRatio}%`, 'val-accent'],
-                ['Thời gian tác chiến', formatMMSS(missionTime), 'val-muted'],
-                ...(m.mode === 'SAM2' ? [
-                    ['B-52 bị thương', `${missionStats.damaged}`, 'val-muted'],
-                    ['B-52 lọt qua', `${missionStats.leaked}`, 'val-muted']
-                ] : [])
+                ['Thời gian tác chiến', formatMMSS(missionTime), 'val-muted']
             ].map(([k, v, cls]) => `
                 <div class="stat-kpi-card">
                     <span>${k}</span>
@@ -909,6 +982,9 @@
         function pauseMission() {
             if (gameState !== 'PLAYING') return;
             gamePaused = true;
+            if (typeof Voice !== 'undefined' && Voice.currentAudio && !Voice.currentAudio.paused) {
+                try { Voice.currentAudio.pause(); Voice._wasPlayingOnPause = true; } catch(e) {}
+            }
             if ('speechSynthesis' in window) speechSynthesis.pause();
             document.getElementById('pause-objective').textContent =
                 `${activeMission.dateLabel} — ${activeMission.title}: đã hạ ${missionKills}/${activeMission.kills} B-52, còn ${missionAmmo} đạn, ${formatMMSS(activeMission.timeLimit - missionTime)}`;
@@ -916,6 +992,10 @@
         }
         function resumeMission() {
             gamePaused = false;
+            if (typeof Voice !== 'undefined' && Voice.currentAudio && Voice._wasPlayingOnPause) {
+                try { Voice.currentAudio.play(); } catch(e) {}
+                Voice._wasPlayingOnPause = false;
+            }
             if ('speechSynthesis' in window) speechSynthesis.resume();
             showScreen(null);
         }
@@ -1004,3 +1084,12 @@
                 }
             });
         };
+        function resetAutoPilotUI() {
+            autoPilotActive = false;
+            const btn = document.getElementById('btn-auto-pilot');
+            if (btn) {
+                btn.classList.remove('is-active');
+                btn.innerHTML = 'Tự động: TẮT<kbd>P</kbd>';
+            }
+        }
+

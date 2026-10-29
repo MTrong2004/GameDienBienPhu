@@ -469,6 +469,8 @@
         let jammingLevel = 0.04;
         let totalB52Downed = 0;
         let autoAIEnabled = true;
+        let autoPilotActive = false;
+        let autoHopCooldown = 0;
         let aiFireTimer = 0;
         let cameraShake = 0;
         let radarSweepAngle = 0;

@@ -67,6 +67,7 @@ const windowMock = {
         getElementById: (id) => ({
             textContent: '',
             innerHTML: '',
+            style: {},
             classList: { add: () => {}, remove: () => {}, contains: () => false, toggle: () => {} },
             offsetWidth: 100
         }),
@@ -81,6 +82,7 @@ const sandbox = {
     Audio: MockAudio,
     window: windowMock,
     document: windowMock.document,
+    localStorage: windowMock.localStorage,
     AudioContext: windowMock.AudioContext,
     speechSynthesis: windowMock.speechSynthesis,
     SpeechSynthesisUtterance: windowMock.SpeechSynthesisUtterance,
@@ -145,5 +147,62 @@ spokenList = [];
 Voice.speak('TRẮC THỦ', 'Mục tiêu phương vị 280.', true);
 assert(spokenList.length > 0, 'Uses Vietnamese voice when present');
 assert.strictEqual(spokenList[0].lang, 'vi-VN', 'Lang must be vi-VN');
+
+// Test 3.1: Voice.speak strictly drops tutorial / control guidance voice
+spokenList = [];
+Voice.speak('HƯỚNG DẪN', 'Giữ vòng ngắm trên B-52 khoảng 2 giây để BÁM.', true);
+assert.strictEqual(spokenList.length, 0, 'Must suppress HƯỚNG DẪN voice lines');
+Voice.speak('TRẮC THỦ', 'Kéo thanh tần số hoặc bấm Q / E để đưa vạch phát ra khỏi đỉnh nhiễu!', true);
+assert.strictEqual(spokenList.length, 0, 'Must suppress keyboard/mouse tutorial voice lines');
+Voice.speak('SĨ QUAN ĐIỀU KHIỂN', 'Đạn rời bệ! Đưa chuột về giữa màn hình. Lệch chuột để lái đạn, Space để lệnh nổ.', true);
+assert.strictEqual(spokenList.length, 0, 'Must suppress steering control tutorial voice lines');
+
+// Test 4: Offline military cues play authentic neural MP3s at local
+playedAudioSrc = null;
+Voice.speak('LOA PHÒNG KHÔNG', 'Đồng bào chú ý! Máy bay địch cách Hà Nội 50 km!', true);
+assert.strictEqual(playedAudioSrc, 'assets/audio/cue_air_raid.mp3', 'Air raid alert plays cue_air_raid.mp3');
+
+playedAudioSrc = null;
+Voice.speak('TRẮC THỦ', 'Mục tiêu bốc cháy! B-52 rơi tại chỗ!', true);
+assert.strictEqual(playedAudioSrc, 'assets/audio/cue_kill.mp3', 'Downed bomber plays cue_kill.mp3');
+
+// Test 5: Debrief history narration plays historical neural voice file
+Voice.stop();
+playedAudioSrc = null;
+Voice.toggleDebriefHistory();
+assert.strictEqual(playedAudioSrc, 'assets/audio/history_m1.mp3', 'Debrief history must play history_m1.mp3');
+
+// Test 6: Auto-play story on opening mission & smooth continuous playback into combat
+Voice.stop();
+playedAudioSrc = null;
+windowMock.localStorage.getItem = () => JSON.stringify({ unlocked: 12, best: {} });
+if (sandbox.openBriefing) sandbox.openBriefing(3); // Mission 4
+else if (sandbox.window.openBriefing) sandbox.window.openBriefing(3);
+assert.strictEqual(playedAudioSrc, 'assets/audio/story_m4.mp3', 'Mission 4 must auto-play story_m4.mp3 on openBriefing');
+assert.strictEqual(Voice.isStoryPlaying(), true, 'isStoryPlaying must be true while story is playing');
+
+// Starting combat must NOT interrupt or stop the story voice
+sandbox.switchSimMode = () => {};
+sandbox.setBomberCount = () => {};
+sandbox.setCinematicCamera = () => {};
+sandbox.setEccmSlider = () => {};
+sandbox.setAirArena = () => {};
+sandbox.showCombatAlert = () => {};
+sandbox.updateObjectiveHud = () => {};
+if (sandbox.beginMission) sandbox.beginMission();
+else if (sandbox.window.beginMission) sandbox.window.beginMission();
+assert.strictEqual(Voice.isStoryPlaying(), true, 'beginMission must NOT cut off active story voice');
+assert.strictEqual(playedAudioSrc, 'assets/audio/story_m4.mp3', 'Audio source remains story_m4.mp3 without being stomped');
+
+// Radio speech attempts during story must not interrupt
+Voice.speak('SỞ CHỈ HUY', 'Toàn tiểu đoàn vào cấp 1!', true);
+assert.strictEqual(playedAudioSrc, 'assets/audio/story_m4.mp3', 'Radio chatter must not stomp ongoing story narration');
+
+// When story audio finishes, normal speech resumes
+Voice.stop();
+assert.strictEqual(Voice.isStoryPlaying(), false, 'isStoryPlaying resets to false on stop/end');
+playedAudioSrc = null;
+Voice.speak('LOA PHÒNG KHÔNG', 'Đồng bào chú ý!', true);
+assert.strictEqual(playedAudioSrc, 'assets/audio/cue_air_raid.mp3', 'Voice cues work normally once story has concluded');
 
 console.log('ALL AUDIO & VOICE RUNNABLE CHECKS PASSED!');

@@ -440,6 +440,9 @@
                 viewYaw -= edge(smoothAimX) * 1.6 * dt;
                 viewPitch = Math.max(0.04, Math.min(VIEW_PITCH_MAX, viewPitch + edge(smoothAimY) * 1.1 * dt));
             }
+            if (autoPilotActive && gameState === 'PLAYING' && !gamePaused && typeof updateAutoPilotSimulation === 'function') {
+                updateAutoPilotSimulation(dt);
+            }
             smoothAimX += (mouseAimX - smoothAimX) * Math.min(1, dt * 8);
             smoothAimY += (mouseAimY - smoothAimY) * Math.min(1, dt * 8);
 
@@ -744,6 +747,7 @@
                     }
                     return;
                 }
+                if (autoPilotActive && gameState === 'PLAYING') return;
                 mouseAimX = (e.clientX / window.innerWidth) * 2 - 1;
                 mouseAimY = -(e.clientY / window.innerHeight) * 2 + 1;
             });
@@ -843,6 +847,9 @@
                     }
                 } else if (gameState !== 'PLAYING' || gamePaused || archiveOpen || guideOpen || radioLogOpen) {
                     return;
+                } else if (e.code === 'KeyP' || e.key === 'p' || e.key === 'P') {
+                    e.preventDefault();
+                    if (typeof toggleAutoPilot === 'function') toggleAutoPilot();
                 } else if (e.code === 'Space' || e.key === ' ' || e.key === 'Spacebar') {
                     e.preventDefault();
                     if (!e.repeat) triggerPrimaryWeaponFire();
@@ -907,7 +914,7 @@
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
                                 <div class="lg:col-span-7 space-y-2 text-zinc-300 leading-relaxed">
                                     <div><strong class="text-alabaster font-mono">[LỰC LƯỢNG ĐỊCH]</strong> 90 lần chiếc B-52 (phía Mỹ ghi 129 lần chiếc) cùng 135 máy bay chiến thuật ném bom dồn dập vào Đông Anh, Gia Lâm, Yên Viên và đài phát thanh Mễ Trì.</div>
-                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Lúc <strong>20 giờ 13 phút</strong>, kíp chiến đấu <strong>Tiểu đoàn 59 (Trung đoàn Tên lửa 261)</strong> dưới sự chỉ huy của Tiểu đoàn trưởng Nguyễn Văn Phiệt đã phóng 2 quả tên lửa SAM-2, bắn rơi tại chỗ chiếc B-52G đầu tiên trên cánh đồng Chuôm (xã Phù Lỗ, Đông Anh cũ). Cả đêm ta bắn rơi 3 B-52.</div>
+                                    <div><strong class="text-alabaster font-mono">[DIỄN BIẾN TÁC CHIẾN]</strong> Lúc <strong>20 giờ 13 phút</strong>, kíp chiến đấu <strong>Tiểu đoàn 59 (Trung đoàn Tên lửa 261)</strong> dưới sự chỉ huy của Tiểu đoàn trưởng Nguyễn Thăng đã phóng 2 quả tên lửa SAM-2, bắn rơi tại chỗ chiếc B-52G đầu tiên trên cánh đồng Chuôm (xã Phù Lỗ, Đông Anh cũ). Cả đêm ta bắn rơi 3 B-52.</div>
                                     <div class="text-emerald-300 font-mono italic text-[11px] bg-emerald-950/30 p-2 rounded border border-emerald-500/20">“Báo cáo Sở chỉ huy: Tiểu đoàn 59 đã bắn rơi B-52 đầu tiên! Pháo đài bay cháy đỏ rực bầu trời phía Bắc!”</div>
                                 </div>
                                 <div class="lg:col-span-5 p-3 rounded bg-zinc-900/80 border border-white/10 space-y-2">

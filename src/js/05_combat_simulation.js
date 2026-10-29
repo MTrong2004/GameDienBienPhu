@@ -249,7 +249,7 @@
                 skyFlashLight.color.setHex(0xFF5500);
                 skyFlashLight.intensity = Math.max(skyFlashLight.intensity, 6);
                 cameraShake = Math.max(cameraShake, 0.45);
-                showRadio('ĐÀI QUAN SÁT', `Tốp ${c.name} đã cắt bom và quay ra! Đưa chuột ra mép màn hình, quay bệ ra sau để đánh đuổi!`);
+                showRadio('ĐÀI QUAN SÁT', `Tốp ${c.name} đã cắt bom và quay ra! Bám sát vệt bay, quay bệ đón đánh!`);
             }
         }
 
@@ -364,9 +364,9 @@
                 const ov = jam ? jamOverlap(playerFreq - c.jamFreq) : 0;
                 strongest = Math.max(strongest, ov);
                 const on = ov > 0.5;
-                if (on && !c.onFreq && selectedTarget && selectedTarget.cell === c && missionTime - lastJamCallout > 6) {
+                if (on && !c.onFreq && selectedTarget && selectedTarget.cell === c && missionTime - lastJamCallout > 35) {
                     lastJamCallout = missionTime;
-                    showRadio('TRẮC THỦ', activeMission.lines.shift || 'Máy gây nhiễu đã bám theo tần số! Nhảy tần (Q / E)!');
+                    showRadio('TRẮC THỦ', 'Nhiễu nặng! ' + (activeMission.lines.shift || 'Chuyển ngay tần số dự phòng!'));
                 }
                 c.onFreq = on;
                 c.members.forEach(b => { if (b.aura) b.aura.visible = on; });
@@ -760,11 +760,11 @@
                 showRadio('BỆ PHÓNG', missionReserve > 0 || reloadingLauncher ? 'Cả ba bệ đều trống — tổ nạp đạn đang lắp đạn, chờ chút!' : 'Hết đạn!');
                 return;
             }
-            if (!selectedTarget) { showRadio('TRẮC THỦ', 'Chưa có mục tiêu — đưa vòng ngắm lên một chiếc B-52.'); return; }
+            if (!selectedTarget) { showRadio('TRẮC THỦ', 'Chưa bắt được mục tiêu — bám theo vệt phản xạ B-52 trên màn sóng.'); return; }
             if (trackTimer < TRACK_TIME) {
                 showRadio('TRẮC THỦ', targetQuality < 0.3
-                    ? 'Nhiễu quá nặng, chưa bám được! Nhảy tần tránh đỉnh nhiễu, hoặc chờ mục tiêu vào gần.'
-                    : 'Chưa bám chắc — giữ vòng ngắm trên mục tiêu thêm chút nữa.');
+                    ? 'Nhiễu quá nặng, chưa bám được! Đổi tần số tránh đỉnh nhiễu, hoặc chờ mục tiêu vào gần.'
+                    : 'Chưa bám chắc — tiếp tục bám sát dải phản xạ thêm chút nữa.');
                 return;
             }
             launcher.loaded = false;
@@ -775,7 +775,7 @@
             setPosterLaunchState(true);
             if (!steerHintShown) {
                 steerHintShown = true;
-                showRadio('SĨ QUAN ĐIỀU KHIỂN', 'Đạn rời bệ! Đưa chuột về giữa màn hình. Lệch chuột để lái đạn, Space để lệnh nổ.');
+                showRadio('SĨ QUAN ĐIỀU KHIỂN', 'Đạn rời bệ! Giữ chắc cánh sóng bám sát đường bay mục tiêu!');
             }
         }
 
@@ -1986,5 +1986,131 @@
             const html = `V-750 · T+${m.t.toFixed(1)}s · M${(m.speed / 80 * 3.5).toFixed(1)} · CÁCH MỤC TIÊU ${rng} · TÍN HIỆU ${Math.round(m.q * 100)}%<br>${phase}`;
             const txt = document.getElementById('missile-hud-text');
             if (txt.innerHTML !== html) txt.innerHTML = html;
+        }
+        /* ============================================================================
+           10B. AI AUTO-PILOT / AUTO-COMBAT COMBAT ASSIST SYSTEM
+           ============================================================================ */
+        function toggleAutoPilot(forceState) {
+            if (gameState !== 'PLAYING') return;
+            autoPilotActive = typeof forceState === 'boolean' ? forceState : !autoPilotActive;
+            const btn = document.getElementById('btn-auto-pilot');
+            if (btn) {
+                btn.classList.toggle('is-active', autoPilotActive);
+                btn.innerHTML = `Tự động: ${autoPilotActive ? 'BẬT' : 'TẮT'}<kbd>P</kbd>`;
+            }
+            if (autoPilotActive) {
+                if (typeof showRadio === 'function') {
+                    showRadio('SỞ CHỈ HUY', 'Kích hoạt hệ thống hỗ trợ tác chiến tự động (AI Auto-Pilot)!');
+                }
+            } else {
+                if (typeof showRadio === 'function') {
+                    showRadio('SỞ CHỈ HUY', 'Đã chuyển về chế độ tác chiến thủ công.');
+                }
+                mouseAimX = smoothAimX = 0;
+                mouseAimY = smoothAimY = 0;
+            }
+        }
+        window.toggleAutoPilot = toggleAutoPilot;
+
+        function updateAutoPilotSimulation(dt) {
+            if (!autoPilotActive || gameState !== 'PLAYING' || gamePaused) return;
+
+            const aliveBombers = activeBombers.filter(b => !b.downed);
+            if (aliveBombers.length === 0) return;
+
+            if (currentMode === 'SAM2') {
+                // Priority 1: Keep tracking current guided missile target if alive
+                let tgt = (guidedMissile && guidedMissile.target && !guidedMissile.target.downed) ? guidedMissile.target : null;
+                // Priority 2: Currently selected target if alive
+                if (!tgt && selectedTarget && !selectedTarget.downed && activeBombers.includes(selectedTarget)) {
+                    tgt = selectedTarget;
+                }
+                // Priority 3: Nearest alive bomber
+                if (!tgt) {
+                    let bestD = Infinity;
+                    aliveBombers.forEach(b => {
+                        const d = distKm(b);
+                        if (d < bestD) { bestD = d; tgt = b; }
+                    });
+                }
+                if (!tgt) tgt = aliveBombers[0];
+
+                // Turn station or aim towards target
+                const p = _tmpV.copy(tgt.mesh.position).project(camera);
+                if (p.z > 0 && p.z < 1) {
+                    mouseAimX += (p.x - mouseAimX) * Math.min(1, dt * 8);
+                    mouseAimY += (p.y - mouseAimY) * Math.min(1, dt * 8);
+                } else if (!guidedMissile && missileCamHold <= 0) {
+                    const targetYaw = Math.atan2(-tgt.mesh.position.x, -tgt.mesh.position.z);
+                    const horizD = Math.hypot(tgt.mesh.position.x, tgt.mesh.position.z);
+                    const targetPitch = Math.atan2(tgt.mesh.position.y, horizD);
+                    let diffYaw = ((targetYaw - viewYaw + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+                    viewYaw += Math.sign(diffYaw) * Math.min(Math.abs(diffYaw), dt * 2.2);
+                    let clampedPitch = Math.max(0.04, Math.min(VIEW_PITCH_MAX, targetPitch));
+                    viewPitch += (clampedPitch - viewPitch) * Math.min(1, dt * 2.2);
+                    mouseAimX += (0 - mouseAimX) * Math.min(1, dt * 5);
+                    mouseAimY += (0 - mouseAimY) * Math.min(1, dt * 5);
+                }
+
+                // Anti-jamming (ECCM Frequency Hopping)
+                if (autoHopCooldown <= 0) {
+                    if (jamPromptState && jamPromptState.show) {
+                        hopFrequency(jamPromptState.best < 0 ? -45 : 45);
+                        autoHopCooldown = 0.65;
+                    }
+                } else {
+                    autoHopCooldown -= dt;
+                }
+
+                // Fire & Guidance & Reloading
+                if (!guidedMissile && missileCamHold <= 0) {
+                    const launcher = samLaunchers.find(l => l.loaded);
+                    const canFire = launcher && trackTimer >= TRACK_TIME && distKm(tgt) <= 55 && targetQuality >= 0.28;
+                    if (canFire) {
+                        triggerPrimaryWeaponFire();
+                    } else if (!launcher && missionReserve > 0 && !reloadingLauncher) {
+                        startReload();
+                    }
+                } else if (guidedMissile && guidedMissile.target) {
+                    const mPos = guidedMissile.mesh.position;
+                    const tPos = guidedMissile.target.mesh.position;
+                    const d = mPos.distanceTo(tPos);
+                    if (guidedMissile.t > 2.2 && d < 28) {
+                        triggerPrimaryWeaponFire(); // Proximity command detonation
+                    }
+                }
+            } else if (currentMode === 'MIG21') {
+                let tgt = (mig.target && !mig.target.downed) ? mig.target : aliveBombers[0];
+                if (!tgt) return;
+
+                const pMig = playerMiG21.position;
+                const toTgt = _tmpV2.copy(tgt.mesh.position).sub(pMig);
+                const dist = toTgt.length();
+
+                const desiredYaw = Math.atan2(-toTgt.x, -toTgt.z);
+                let diffYaw = ((desiredYaw - mig.yaw + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+                const horizD = Math.hypot(toTgt.x, toTgt.z);
+                const desiredPitch = Math.atan2(toTgt.y, horizD);
+                let diffPitch = desiredPitch - mig.pitch;
+
+                mouseAimX = Math.max(-1, Math.min(1, diffYaw * 2.2));
+                mouseAimY = Math.max(-0.85, Math.min(0.85, diffPitch * 2.8));
+
+                if (dist > 150) {
+                    mig.throttle = Math.min(1.0, mig.throttle + dt * 0.7);
+                } else if (dist < 50) {
+                    mig.throttle = Math.max(0.35, mig.throttle - dt * 0.7);
+                }
+
+                mig.target = tgt;
+                if (mig.irLock >= 1.5 && missionAmmo > 0) {
+                    fireK13();
+                } else if (dist < 130 && (mig.cannonAmmo || 0) > 0) {
+                    const offBore = THREE.MathUtils.radToDeg(mig.fwd.angleTo(toTgt));
+                    if (offBore < 15) {
+                        fireMiGCannon();
+                    }
+                }
+            }
         }
 
