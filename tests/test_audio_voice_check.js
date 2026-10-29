@@ -142,6 +142,18 @@ assert(typeof SoundFX.sonicBoom === 'function', 'SoundFX.sonicBoom exists');
 assert(typeof SoundFX.secondaryBoom === 'function', 'SoundFX.secondaryBoom exists');
 assert(typeof SoundFX.teletype === 'function', 'SoundFX.teletype exists');
 assert(typeof SoundFX.salvo === 'function', 'SoundFX.salvo exists');
+assert(typeof SoundFX.aaa === 'function', 'SoundFX.aaa exists');
+assert(typeof SoundFX.flakBurst === 'function', 'SoundFX.flakBurst exists');
+assert(typeof SoundEngine.playAAA === 'function', 'SoundEngine.playAAA exists');
+assert(typeof SoundEngine.playFlakBurst === 'function', 'SoundEngine.playFlakBurst exists');
+
+// Verify AAA & Flak synthesis runs cleanly
+SoundFX.aaa(80, false);
+SoundFX.aaa(150, true);
+SoundFX.flakBurst(120, false);
+SoundFX.flakBurst(220, true);
+SoundEngine.playAAA(60, false);
+SoundEngine.playFlakBurst(90, true);
 
 // Verify volume controls
 SoundFX.setVoiceVolume(0.7);

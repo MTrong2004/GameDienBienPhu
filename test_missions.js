@@ -107,7 +107,7 @@ const MISSIONS = [
     },
     {
         id: "m3",
-        story: "Đêm 20 tháng 12 năm 1972. Sau hai đêm bị giáng đòn, không quân chiến lược Mỹ tung lực lượng quy mô lớn chưa từng thấy: gần 100 lần chiếc B-52 dội bom ga Yên Viên, cầu Đuống, Gia Lâm. Bầu trời Hà Nội đêm nay rực lửa.",
+        story: "Đêm 20 tháng 12 năm 1972. Sau hai đêm đầu chiến dịch, không quân chiến lược Mỹ tiếp tục huy động lực lượng B-52 quy mô lớn, đánh phá Hà Nội và một số mục tiêu trọng yếu ở miền Bắc. Ga Yên Viên cùng các khu vực trọng điểm quanh Thủ đô chìm trong những đợt bom dữ dội. Bầu trời Hà Nội đêm nay lại rực lửa.",
         date: "20.12.1972",
         dateLabel: "Đêm 20/12/1972",
         clock: [20, 0],
@@ -320,7 +320,7 @@ const MISSIONS = [
             win: "Tiểu đoàn 71 giáng đòn sấm sét khép lại giai đoạn 1 của chiến dịch!"
         },
         history: [
-            "Đêm 24/12/1972, quân dân miền Bắc bắn rơi thêm <b>2 chiếc B-52</b> và nhiều máy bay chiến thuật trước khi lệnh tạm ngừng ném bom có hiệu lực.",
+            "Đêm 24/12/1972, quân dân miền Bắc bắn rơi thêm <b>1 chiếc B-52</b> và các máy bay chiến thuật trước khi lệnh tạm ngừng ném bom có hiệu lực.",
             "Sau 7 ngày đêm chiến đấu liên tục, quân dân ta đã bắn rơi tổng cộng <b>53 máy bay Mỹ, trong đó có 18 chiếc B-52</b>, giáng một đòn chí mạng vào lực lượng răn đe hạt nhân chiến lược của Lầu Năm Góc.",
             "Đúng 24 giờ ngày 24/12, Tổng thống Nixon buộc phải ra lệnh tạm ngừng ném bom 36 giờ lấy cớ nghỉ lễ Noel, nhưng thực chất là để củng cố lại lực lượng đang suy sụp nghiêm trọng."
         ]

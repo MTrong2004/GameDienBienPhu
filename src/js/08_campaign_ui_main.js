@@ -461,10 +461,16 @@ const Voice = {
         else synth.onvoiceschanged = pick;
     },
     clean(text) {
-        return String(text).replace(/<[^>]+>/g, '').replace(/B-52/g, 'B 52').replace(/MiG-21/g, 'Mích 21')
-            .replace(/Q \/ E/g, 'Q hoặc E').replace(/[—–]/g, ', ').replace(/\(([^)]*)\)/g, ', $1,')
-            .replace(/F-4/g, 'Ép 4').replace(/F-111/g, 'Ép 111').replace(/SAM-2/g, 'Sam 2')
-            .replace(/V-750/g, 'Vê 750').replace(/K-13/g, 'Ca 13');
+        return String(text).replace(/<[^>]+>/g, '').replace(/B-52/g, 'B 52').replace(/MiG-21MF/g, 'Mích 21 M F')
+            .replace(/MiG-21/g, 'Mích 21').replace(/Q \/ E/g, 'Q hoặc E').replace(/[—–]/g, ', ').replace(/\(([^)]*)\)/g, ', $1,')
+            .replace(/F-111A/g, 'Ép 111 A').replace(/F-111/g, 'Ép 111').replace(/F-105/g, 'Ép 105').replace(/F-4/g, 'Ép 4')
+            .replace(/SR-71/g, 'Ét R 71').replace(/BQM-34/g, 'B Q M 34').replace(/PK-KQ/g, 'Phòng không Không quân')
+            .replace(/QĐND/g, 'Quân đội nhân dân').replace(/SAM-2/g, 'Sam 2').replace(/V-750/g, 'Vê 750').replace(/K-13/g, 'Ca 13')
+            .replace(/ЗАХВАТ/g, 'Zác-vát').replace(/ASP-PFD/g, 'A S P').replace(/SNR-75/g, 'S N R 75')
+            .replace(/Pa-ri/g, 'Pa ri').replace(/Ních-xơn/g, 'Ních xơn').replace(/Nixon/g, 'Ních xơn')
+            .replace(/(\d+)\s*km\/h/g, '$1 ki-lô-mét trên giờ').replace(/(\d+)\s*km\b/g, '$1 ki-lô-mét')
+            .replace(/(\d+)\s*MHz\b/g, '$1 mê-ga-héc').replace(/(\d+)\s*kHz\b/g, '$1 ki-lô-héc')
+            .replace(/(\d+)h(\d+)/g, '$1 giờ $2 phút').replace(/(\d+)h\b/g, '$1 giờ');
     },
     isStoryPlaying() {
         return !!(this.isStory && this.currentAudio && !this.currentAudio.paused && !this.currentAudio.ended);
@@ -684,6 +690,10 @@ const Voice = {
             played = this.playAudioFile(audioSrc, (err) => {
                 const lbl = document.getElementById('btn-debrief-audio-label');
                 if (lbl) lbl.textContent = 'Thuyết minh';
+                if (err) {
+                    const histText = Array.isArray(m.history) ? m.history.join(' ') : (m.history || '');
+                    this.speak('DẪN TRUYỆN', histText, true);
+                }
             });
         }
         if (!played) {

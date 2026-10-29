@@ -171,6 +171,79 @@
                 this.textures.sparkSprite = makeGlowSprite(32, [
                     [0, 'rgba(255,255,255,1)'], [0.35, 'rgba(255,255,255,0.6)'], [1, 'rgba(255,255,255,0)']
                 ]);
+
+                // 4. Stenciled Soviet SNR-75 "Fan Song" Radar Cabin & Perforated Mesh Reflectors
+                const makeRadarTextures = () => {
+                    const c = document.createElement('canvas');
+                    c.width = 512;
+                    c.height = 512;
+                    const ctx = c.getContext('2d');
+                    ctx.fillStyle = '#2C3829';
+                    ctx.fillRect(0, 0, 512, 512);
+
+                    ctx.strokeStyle = '#1D251C';
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(8, 8, 496, 496);
+                    ctx.beginPath(); ctx.moveTo(256, 8); ctx.lineTo(256, 504); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(8, 256); ctx.lineTo(504, 256); ctx.stroke();
+
+                    // Louvers
+                    ctx.fillStyle = '#182017';
+                    for (let y = 60; y < 190; y += 12) {
+                        ctx.fillRect(40, y, 160, 6);
+                    }
+                    ctx.strokeStyle = '#3C4D39';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(36, 54, 168, 144);
+
+                    // Stencils
+                    ctx.fillStyle = '#E5E7EB';
+                    ctx.font = 'bold 22px monospace';
+                    ctx.fillText('СНР-75 ДВИНА', 260, 80);
+                    ctx.font = 'bold 16px monospace';
+                    ctx.fillStyle = '#A7F3D0';
+                    ctx.fillText('ĐÀI RADAR 291', 260, 115);
+                    ctx.fillStyle = '#CBD5E1';
+                    ctx.fillText('TẦN SỐ: 2900-3100 MHz', 260, 140);
+                    ctx.fillText('TIỂU ĐOÀN 77', 260, 165);
+
+                    // Hazard symbol
+                    ctx.fillStyle = '#EF4444';
+                    ctx.beginPath();
+                    ctx.moveTo(380, 290); ctx.lineTo(430, 380); ctx.lineTo(330, 380); ctx.closePath();
+                    ctx.fill();
+                    ctx.strokeStyle = '#FDE047';
+                    ctx.lineWidth = 4;
+                    ctx.stroke();
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.font = 'bold 28px monospace';
+                    ctx.fillText('!', 374, 370);
+
+                    // Dish perforated grid
+                    const cDish = document.createElement('canvas');
+                    cDish.width = 256;
+                    cDish.height = 256;
+                    const dCtx = cDish.getContext('2d');
+                    dCtx.fillStyle = '#5A6572';
+                    dCtx.fillRect(0, 0, 256, 256);
+                    dCtx.strokeStyle = '#3A424C';
+                    dCtx.lineWidth = 1.5;
+                    for (let i = 0; i <= 256; i += 16) {
+                        dCtx.beginPath(); dCtx.moveTo(0, i); dCtx.lineTo(256, i); dCtx.stroke();
+                        dCtx.beginPath(); dCtx.moveTo(i, 0); dCtx.lineTo(i, 256); dCtx.stroke();
+                    }
+                    for (let r = 24; r < 128; r += 26) {
+                        dCtx.beginPath(); dCtx.arc(128, 128, r, 0, Math.PI * 2); dCtx.stroke();
+                    }
+
+                    return {
+                        cabinTex: new THREE.CanvasTexture(c),
+                        dishTex: new THREE.CanvasTexture(cDish)
+                    };
+                };
+                const radarTex = makeRadarTextures();
+                this.textures.radarCabin = radarTex.cabinTex;
+                this.textures.radarDish = radarTex.dishTex;
                 this.textures.ready = true;
             },
 
@@ -798,39 +871,402 @@
                 return { root, yawTurntable, pitchBoom, loadedMissile };
             },
 
+            buildParabolicTrough(width, length, depth, thickness = 0.08) {
+                const shape = new THREE.Shape();
+                const steps = 16;
+                for (let i = 0; i <= steps; i++) {
+                    const u = (i / steps) * 2 - 1;
+                    const x = u * (width / 2);
+                    const y = (1 - u * u) * depth;
+                    if (i === 0) shape.moveTo(x, y);
+                    else shape.lineTo(x, y);
+                }
+                for (let i = steps; i >= 0; i--) {
+                    const u = (i / steps) * 2 - 1;
+                    const x = u * (width / 2);
+                    const y = (1 - u * u) * depth - thickness;
+                    shape.lineTo(x, y);
+                }
+                shape.closePath();
+                const ExtrudeGeom = THREE.ExtrudeBufferGeometry || THREE.ExtrudeGeometry;
+                const geom = new ExtrudeGeom(shape, {
+                    depth: length,
+                    bevelEnabled: false,
+                    steps: 1
+                });
+                geom.center();
+                return geom;
+            },
+
             /**
-             * 4. SNR-75 "FAN SONG" FIRE-CONTROL RADAR & P-35 EARLY WARNING RADAR
+             * 4. SNR-75 "FAN SONG" FIRE-CONTROL RADAR (СНР-75 ДВИНА)
              */
             createFanSongRadar() {
+                this.initTextures();
                 if (this.customGLBModels.RADAR) return this.customGLBModels.RADAR.clone();
                 const group = new THREE.Group();
-                const cabinMat = new THREE.MeshStandardMaterial({ color: 0x2D382C, metalness: 0.6, roughness: 0.45 });
-                const dishMat = new THREE.MeshStandardMaterial({ color: 0x6B7280, metalness: 0.7, roughness: 0.4, side: THREE.DoubleSide });
 
-                const van = new THREE.Mesh(new THREE.BoxGeometry(5.2, 3.1, 3.6), cabinMat);
-                van.position.y = 1.55;
-                group.add(van);
+                const vanMat = new THREE.MeshStandardMaterial({
+                    color: 0x2E3B2C,
+                    map: this.textures.radarCabin || null,
+                    roughness: 0.55,
+                    metalness: 0.35
+                });
+                const armorMat = new THREE.MeshStandardMaterial({
+                    color: 0x334230,
+                    roughness: 0.5,
+                    metalness: 0.45
+                });
+                const darkSteel = new THREE.MeshStandardMaterial({
+                    color: 0x1B1F23,
+                    roughness: 0.35,
+                    metalness: 0.85
+                });
+                const dishMat = new THREE.MeshStandardMaterial({
+                    color: 0x75808C,
+                    map: this.textures.radarDish || null,
+                    roughness: 0.35,
+                    metalness: 0.75,
+                    side: THREE.DoubleSide
+                });
+                const rubberMat = new THREE.MeshStandardMaterial({
+                    color: 0x16181A,
+                    roughness: 0.9,
+                    metalness: 0.05
+                });
+                const rimMat = new THREE.MeshStandardMaterial({
+                    color: 0x2A3326,
+                    roughness: 0.4,
+                    metalness: 0.6
+                });
+                const chromeMat = new THREE.MeshStandardMaterial({
+                    color: 0xEEEEEE,
+                    roughness: 0.1,
+                    metalness: 0.95
+                });
+                const brassMat = new THREE.MeshStandardMaterial({
+                    color: 0xC4A052,
+                    roughness: 0.25,
+                    metalness: 0.85
+                });
+                const opticMat = new THREE.MeshStandardMaterial({
+                    color: 0x1E3A8A,
+                    roughness: 0.1,
+                    metalness: 0.9
+                });
+                const beaconMat = new THREE.MeshBasicMaterial({ color: 0xFF2222 });
 
-                const tower = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.65, 4.6, 16), cabinMat);
-                tower.position.y = 4.4;
-                group.add(tower);
+                // 1. Heavy Towed Trailer Chassis & Axles
+                [-1.25, 1.25].forEach(x => {
+                    const beam = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.38, 6.4), darkSteel);
+                    beam.position.set(x, 0.78, 0);
+                    group.add(beam);
+                });
+                [-2.4, -0.8, 0.8, 2.4].forEach(z => {
+                    const cross = new THREE.Mesh(new THREE.BoxGeometry(2.7, 0.24, 0.28), darkSteel);
+                    cross.position.set(0, 0.78, z);
+                    group.add(cross);
+                });
 
+                // A-frame Tow Hitch & Towing Ring
+                [-0.55, 0.55].forEach(x => {
+                    const bar = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.18, 1.45), darkSteel);
+                    bar.position.set(x * 0.7, 0.72, 3.8);
+                    bar.rotation.y = (x < 0 ? -0.42 : 0.42);
+                    bar.rotation.x = 0.09;
+                    group.add(bar);
+                });
+                const hitchRing = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.04, 8, 16), darkSteel);
+                hitchRing.rotation.x = Math.PI / 2;
+                hitchRing.position.set(0, 0.65, 4.45);
+                group.add(hitchRing);
+
+                // 4 Military All-Terrain Wheels with Mudguards
+                [[-1.85, 1.3], [1.85, 1.3], [-1.85, -1.4], [1.85, -1.4]].forEach(([wx, wz]) => {
+                    const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.72, 0.72, 0.44, 20), rubberMat);
+                    tire.rotation.z = Math.PI / 2;
+                    tire.position.set(wx, 0.72, wz);
+
+                    const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.46, 16), rimMat);
+                    rim.rotation.z = Math.PI / 2;
+                    rim.position.set(wx, 0.72, wz);
+
+                    const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.20, 0.50, 12), darkSteel);
+                    hub.rotation.z = Math.PI / 2;
+                    hub.position.set(wx, 0.72, wz);
+
+                    const fender = new THREE.Mesh(new THREE.CylinderGeometry(0.86, 0.86, 0.52, 16, 1, true, 0, Math.PI), armorMat);
+                    fender.rotation.z = Math.PI / 2;
+                    fender.position.set(wx, 0.82, wz);
+
+                    group.add(tire, rim, hub, fender);
+                });
+
+                // 4 Leveling Outrigger Stabilizer Jacks
+                // ponytail: static deployed jacks; fold into transit brackets if mobile convoy mode added
+                [[-1.3, -2.5], [1.3, -2.5], [-1.3, 2.5], [1.3, 2.5]].forEach(([cx, cz]) => {
+                    const targetX = cx * 1.7;
+                    const targetZ = cz * 1.15;
+                    const midX = (cx + targetX) / 2;
+                    const midZ = (cz + targetZ) / 2;
+                    const dx = targetX - cx;
+                    const dz = targetZ - cz;
+                    const len = Math.sqrt(dx * dx + dz * dz);
+
+                    const leg = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.24, len), darkSteel);
+                    leg.position.set(midX, 0.62, midZ);
+                    leg.rotation.y = Math.atan2(dx, dz);
+
+                    const jack = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.58, 12), darkSteel);
+                    jack.position.set(targetX, 0.45, targetZ);
+
+                    const piston = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.40, 12), chromeMat);
+                    piston.position.set(targetX, 0.22, targetZ);
+
+                    const pad = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 0.08, 16), darkSteel);
+                    pad.position.set(targetX, 0.04, targetZ);
+
+                    group.add(leg, jack, piston, pad);
+                });
+
+                // 2. Electronics & Transmitter Van Cabin
+                const cabin = new THREE.Mesh(new THREE.BoxGeometry(4.4, 2.35, 5.2), vanMat);
+                cabin.position.set(0, 2.15, -0.05);
+                group.add(cabin);
+
+                const roofCap = new THREE.Mesh(new THREE.BoxGeometry(4.55, 0.14, 5.35), armorMat);
+                roofCap.position.set(0, 3.39, -0.05);
+                group.add(roofCap);
+
+                const walkway = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.06, 3.8), darkSteel);
+                walkway.position.set(0, 3.48, -0.1);
+                group.add(walkway);
+
+                // Rear double doors with latch & lock bar
+                const rearDoors = new THREE.Mesh(new THREE.BoxGeometry(1.7, 1.85, 0.08), armorMat);
+                rearDoors.position.set(0, 2.0, -2.68);
+                const doorSeam = new THREE.Mesh(new THREE.BoxGeometry(0.05, 1.85, 0.12), darkSteel);
+                doorSeam.position.set(0, 2.0, -2.68);
+                const doorHandle = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.06, 0.14), darkSteel);
+                doorHandle.position.set(0.18, 2.0, -2.74);
+                group.add(rearDoors, doorSeam, doorHandle);
+
+                // Technician access ladder on rear
+                [-0.2, 0.2].forEach(lx => {
+                    const rail = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 2.35, 8), darkSteel);
+                    rail.position.set(1.4 + lx, 2.18, -2.74);
+                    group.add(rail);
+                });
+                for (let r = 0; r < 6; r++) {
+                    const rung = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.035, 0.035), darkSteel);
+                    rung.position.set(1.4, 1.15 + r * 0.42, -2.74);
+                    group.add(rung);
+                }
+
+                // Louvered cooling vent frame & generator cable reel
+                const ventFrame = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.85, 1.25), darkSteel);
+                ventFrame.position.set(-2.23, 2.35, 0.6);
+                const cableReel = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.26, 16), darkSteel);
+                cableReel.rotation.z = Math.PI / 2;
+                cableReel.position.set(2.28, 1.8, -1.2);
+                group.add(ventFrame, cableReel);
+
+                // 3. Turntable Pedestal Base & Elevation Yoke
+                const turntable = new THREE.Mesh(new THREE.CylinderGeometry(1.65, 1.85, 0.32, 28), darkSteel);
+                turntable.position.set(0, 3.65, 0);
+                const gearRing = new THREE.Mesh(new THREE.CylinderGeometry(1.9, 1.9, 0.14, 32), armorMat);
+                gearRing.position.set(0, 3.58, 0);
+                const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 1.15, 1.3, 20), armorMat);
+                mast.position.set(0, 4.45, 0);
+                group.add(turntable, gearRing, mast);
+
+                [-0.78, 0.78].forEach(x => {
+                    const stanchion = new THREE.Mesh(new THREE.BoxGeometry(0.38, 1.5, 0.95), armorMat);
+                    stanchion.position.set(x, 5.55, 0);
+                    group.add(stanchion);
+                });
+
+                const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 2.1, 16), chromeMat);
+                shaft.rotation.z = Math.PI / 2;
+                shaft.position.set(0, 6.0, 0);
+                group.add(shaft);
+
+                // 4. Rotating Scanner Head Assembly (tracked by gameplay loop)
                 const scannerHead = new THREE.Group();
                 scannerHead.name = 'scannerHead';
-                scannerHead.position.y = 6.8;
+                scannerHead.position.set(0, 6.0, 0);
 
-                const horizDish = new THREE.Mesh(new THREE.CylinderGeometry(2.8, 2.8, 1.4, 20, 4, true, 0, Math.PI), dishMat);
-                horizDish.rotation.z = Math.PI / 2;
+                const hub = new THREE.Mesh(new THREE.BoxGeometry(1.7, 1.25, 1.6), armorMat);
+                hub.position.set(0, 0.25, -0.05);
+                scannerHead.add(hub);
+
+                const counterWeight = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.85, 0.75), darkSteel);
+                counterWeight.position.set(0, 0.15, -1.05);
+                scannerHead.add(counterWeight);
+
+                // 4a. Horizontal Trough Antenna (Elevation Scan - Quét góc tà)
+                const horizGeo = this.buildParabolicTrough(4.4, 1.2, 0.75, 0.08);
+                const horizDish = new THREE.Mesh(horizGeo, dishMat);
+                horizDish.rotation.x = Math.PI / 2;
+                horizDish.position.set(0, 0.45, 0.85);
                 scannerHead.add(horizDish);
 
-                const vertDish = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 2.6, 1.3, 20, 4, true, 0, Math.PI), dishMat);
-                vertDish.position.set(1.8, 0.6, 0);
+                [-1.5, -0.5, 0.5, 1.5].forEach(rx => {
+                    const rib = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.25, 0.35), darkSteel);
+                    rib.position.set(rx, 0.45, 0.65);
+                    scannerHead.add(rib);
+                });
+
+                const horizFeed = new THREE.Mesh(new THREE.BoxGeometry(3.7, 0.12, 0.14), brassMat);
+                horizFeed.position.set(0, 0.45, 1.6);
+                [-1.6, 1.6].forEach(sx => {
+                    const strut = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.05), darkSteel);
+                    strut.rotation.x = Math.PI / 4;
+                    strut.position.set(sx, 0.45, 1.2);
+                    scannerHead.add(strut);
+                });
+                scannerHead.add(horizFeed);
+
+                // 4b. Vertical Trough Antenna (Azimuth Scan - Quét phương vị)
+                const vertGeo = this.buildParabolicTrough(4.0, 1.2, 0.75, 0.08);
+                const vertDish = new THREE.Mesh(vertGeo, dishMat);
+                vertDish.rotation.set(0, Math.PI / 2, Math.PI / 2);
+                vertDish.position.set(1.95, 0.35, 0.25);
                 scannerHead.add(vertDish);
 
-                const parabola = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 0.2, 0.5, 16, 2, true), dishMat);
-                parabola.rotation.x = Math.PI / 2;
-                parabola.position.set(-1.6, 0.4, 1.2);
-                scannerHead.add(parabola);
+                [-1.2, -0.4, 0.4, 1.2].forEach(ry => {
+                    const rib = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.08, 1.25), darkSteel);
+                    rib.position.set(1.75, 0.35 + ry, 0.05);
+                    scannerHead.add(rib);
+                });
+
+                const vertFeed = new THREE.Mesh(new THREE.BoxGeometry(0.14, 3.4, 0.12), brassMat);
+                vertFeed.position.set(1.95, 0.35, 1.0);
+                [-1.4, 1.4].forEach(sy => {
+                    const strut = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.95), darkSteel);
+                    strut.rotation.x = Math.PI / 4;
+                    strut.position.set(1.95, 0.35 + sy, 0.65);
+                    scannerHead.add(strut);
+                });
+                const vertArm = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.35, 0.55), darkSteel);
+                vertArm.position.set(1.15, 0.35, 0.05);
+                scannerHead.add(vertFeed, vertArm);
+
+                // 4c. Forward Missile Command Uplink Parabolic Dish (Ăng-ten rãnh đạn V-750)
+                const cmdDishGroup = new THREE.Group();
+                cmdDishGroup.position.set(-1.55, -0.15, 1.05);
+
+                const cmdDish = new THREE.Mesh(new THREE.SphereGeometry(0.92, 24, 14, 0, Math.PI * 2, 0, Math.PI * 0.36), dishMat);
+                cmdDish.rotation.x = -Math.PI / 2;
+                cmdDishGroup.add(cmdDish);
+
+                const cmdRim = new THREE.Mesh(new THREE.TorusGeometry(0.83, 0.035, 8, 28), darkSteel);
+                cmdRim.position.z = -0.39;
+                cmdDishGroup.add(cmdRim);
+
+                const cmdFeed = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.10, 0.45, 12), brassMat);
+                cmdFeed.rotation.x = Math.PI / 2;
+                cmdFeed.position.z = 0.1;
+                cmdDishGroup.add(cmdFeed);
+
+                for (let a = 0; a < 3; a++) {
+                    const ang = (a * Math.PI * 2) / 3;
+                    const strut = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.95, 8), darkSteel);
+                    strut.position.set(Math.cos(ang) * 0.42, Math.sin(ang) * 0.42, -0.14);
+                    strut.rotation.z = -ang;
+                    strut.rotation.x = 0.48;
+                    cmdDishGroup.add(strut);
+                }
+
+                const cmdBoom = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.15, 0.8, 12), darkSteel);
+                cmdBoom.rotation.x = Math.PI / 2;
+                cmdBoom.position.set(0, 0, -1.0);
+                cmdDishGroup.add(cmdBoom);
+                scannerHead.add(cmdDishGroup);
+
+                // 4d. Secondary Narrow-Beam LORO Anti-Jamming Tracking Dish
+                const loroGroup = new THREE.Group();
+                loroGroup.position.set(-1.55, 1.15, 0.85);
+
+                const loroDish = new THREE.Mesh(new THREE.SphereGeometry(0.56, 18, 12, 0, Math.PI * 2, 0, Math.PI * 0.35), dishMat);
+                loroDish.rotation.x = -Math.PI / 2;
+                loroGroup.add(loroDish);
+
+                const loroRim = new THREE.Mesh(new THREE.TorusGeometry(0.50, 0.025, 8, 24), darkSteel);
+                loroRim.position.z = -0.25;
+                loroGroup.add(loroRim);
+
+                const loroFeed = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.07, 0.32, 12), brassMat);
+                loroFeed.rotation.x = Math.PI / 2;
+                loroFeed.position.z = 0.08;
+                loroGroup.add(loroFeed);
+
+                for (let a = 0; a < 3; a++) {
+                    const ang = (a * Math.PI * 2) / 3;
+                    const strut = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.58, 8), darkSteel);
+                    strut.position.set(Math.cos(ang) * 0.25, Math.sin(ang) * 0.25, -0.08);
+                    strut.rotation.z = -ang;
+                    strut.rotation.x = 0.46;
+                    loroGroup.add(strut);
+                }
+
+                const loroBoom = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 0.7, 10), darkSteel);
+                loroBoom.rotation.x = Math.PI / 2;
+                loroBoom.position.set(0, 0, -0.55);
+                loroGroup.add(loroBoom);
+                scannerHead.add(loroGroup);
+
+                // 4e. Historical "Karat" / PA-00 Optical Tracking Periscope
+                const opticGroup = new THREE.Group();
+                opticGroup.position.set(0, 1.18, 0.25);
+                const opticBody = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.44, 0.88), armorMat);
+                opticGroup.add(opticBody);
+
+                [-0.16, 0.16].forEach(ox => {
+                    const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.25, 16), darkSteel);
+                    barrel.rotation.x = Math.PI / 2;
+                    barrel.position.set(ox, 0, 0.46);
+                    const hood = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.13, 0.1, 16, 1, true), darkSteel);
+                    hood.rotation.x = Math.PI / 2;
+                    hood.position.set(ox, 0, 0.54);
+                    const lens = new THREE.Mesh(new THREE.CircleGeometry(0.12, 16), opticMat);
+                    lens.position.set(ox, 0, 0.55);
+                    opticGroup.add(barrel, hood, lens);
+                });
+
+                const prismCap = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.18, 0.35), darkSteel);
+                prismCap.position.set(0, 0.28, 0.15);
+                opticGroup.add(prismCap);
+                scannerHead.add(opticGroup);
+
+                // 4f. "Kremniy-2" IFF Dipole Array
+                const iffGroup = new THREE.Group();
+                iffGroup.position.set(0, 1.25, 0.85);
+                const iffBar = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.06, 0.06), darkSteel);
+                iffGroup.add(iffBar);
+                for (let d = -2; d <= 2; d++) {
+                    const dipole = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.46, 8), brassMat);
+                    dipole.position.set(d * 0.38, 0.20, 0);
+                    iffGroup.add(dipole);
+                }
+                scannerHead.add(iffGroup);
+
+                // 4g. Red Tactical Obstruction Warning Beacon Light
+                const beaconMast = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.07, 0.85, 10), darkSteel);
+                beaconMast.position.set(0, 1.65, -0.45);
+                const beaconBase = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.15, 0.18, 12), darkSteel);
+                beaconBase.position.set(0, 2.05, -0.45);
+                const beaconLight = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 8), beaconMat);
+                beaconLight.position.set(0, 2.18, -0.45);
+                scannerHead.add(beaconMast, beaconBase, beaconLight);
+
+                // 4h. Waveguide Microwave Conduits
+                [-0.7, 0.7].forEach(wx => {
+                    const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.2, 8), brassMat);
+                    pipe.position.set(wx, 0.2, 0.2);
+                    pipe.rotation.z = wx < 0 ? 0.35 : -0.35;
+                    scannerHead.add(pipe);
+                });
 
                 group.add(scannerHead);
                 return group;

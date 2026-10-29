@@ -254,6 +254,7 @@
         }
 
         function killBomber(b) {
+            b.downed = true;
             const idx = activeBombers.indexOf(b);
             if (idx < 0) return;
             if (b.damaged) missionStats.damaged = Math.max(0, missionStats.damaged - 1);
@@ -699,14 +700,14 @@
                 aaaTracerMat = new THREE.MeshBasicMaterial({ color: 0xFF6A2A, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false });
             }
 
-            const firing = currentMode === 'SAM2' && !gamePaused && (gameState === 'PLAYING' || gameState === 'MENU') &&
-                activeBombers.some(b => distKm(b) < 42);
+            const firing = (currentMode === 'SAM2' || currentMode === 'MIG21') && !gamePaused && (gameState === 'PLAYING' || gameState === 'MENU') &&
+                activeBombers.length > 0;
             if (firing) {
                 const nowS = performance.now() / 1000;
                 aaaSites.forEach(site => {
                     site.cd -= dt;
                     if (site.cd > 0 || aaaRounds.length > 160) return;
-                    site.cd = (site.heavy ? 4.8 : 3.2) + Math.random() * 4.2;
+                    site.cd = (site.heavy ? 4.2 : 2.6) + Math.random() * 3.8;
                     const b = activeBombers[Math.floor(Math.random() * activeBombers.length)];
                     const burstAlt = site.heavy ? 150 + Math.random() * 110 : 70 + Math.random() * 80;
                     const aim = new THREE.Vector3(b.mesh.position.x + (Math.random() - 0.5) * 260, burstAlt, b.mesh.position.z * 0.55 + (Math.random() - 0.5) * 260);
@@ -719,9 +720,11 @@
                         aaaRounds.push({ mesh, pos: site.pos.clone(), vel: d.multiplyScalar(speed), delay: k * (site.heavy ? 0.45 : 0.09),
                             burstAlt, heavy: site.heavy, started: false });
                     }
-                    if (nowS - lastAAASoundTime > 1.8 && (gameState === 'PLAYING' ? Math.random() < 0.35 : Math.random() < 0.15)) {
+                    if (nowS - lastAAASoundTime > 0.42) {
                         lastAAASoundTime = nowS;
-                        SoundFX.aaa(site.pos.distanceTo(camera.position), site.heavy);
+                        if (typeof SoundFX !== 'undefined' && SoundFX.aaa) {
+                            SoundFX.aaa(site.pos.distanceTo(camera.position), site.heavy);
+                        }
                     }
                 });
             }
@@ -742,7 +745,7 @@
                     spawnSmokePuff(r.pos.clone(), r.heavy ? 7 : 3, new THREE.Vector3((Math.random() - 0.5) * 2, 0.4, 0), r.heavy ? 4 : 2.2, 'blacksmoke');
                     if (typeof SoundFX !== 'undefined' && SoundFX.flakBurst) {
                         const nowS = performance.now() / 1000;
-                        if (nowS - lastFlakSoundTime > 1.4 && (r.heavy || Math.random() < 0.12)) {
+                        if (nowS - lastFlakSoundTime > 0.38) {
                             lastFlakSoundTime = nowS;
                             SoundFX.flakBurst(r.pos.distanceTo(camera.position), r.heavy);
                         }
@@ -2160,7 +2163,7 @@
 
                 // Anti-jamming (ECCM Frequency Hopping)
                 if (autoHopCooldown <= 0) {
-                    if (jamPromptState && jamPromptState.show) {
+                    if (jamPromptState && jamPromptState.show && !jamPromptState.info && jamPromptState.best !== 0) {
                         hopFrequency(jamPromptState.best < 0 ? -45 : 45);
                         autoHopCooldown = 1.4; // allow time on clean channel to acquire lock
                     }

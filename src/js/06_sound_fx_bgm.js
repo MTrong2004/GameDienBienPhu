@@ -418,45 +418,46 @@
                 this.burst({ t0: t + 0.15, type: 'highpass', freq: 3500, peak: 0.08, a: 0.02, hold: 0.1, rel: 0.3 });
             },
 
-            // Súng/Pháo phòng không bảo vệ bầu trời Hà Nội (Cao xạ 37mm, 57mm, 100mm) - âm lượng nền êm dịu, không chát chúa
+            // Súng/Pháo phòng không bảo vệ bầu trời Hà Nội (Cao xạ 37mm, 57mm, 100mm) - âm thanh đanh thép, chân thực
             aaa(dist, heavy) {
                 if (!this.ensure()) return;
                 const ctx = SoundEngine.ctx;
                 const d = Math.max(0, dist || 0);
                 const t = ctx.currentTime + Math.min(0.25, d * 0.001);
-                const atten = 1 / Math.sqrt(1 + d / 130);
-                const v = Math.min(0.25, (heavy ? 0.22 : 0.14) * atten);
+                // ponytail: Procedural synthesis calibrated for authentic artillery crack & low-end thump; upgrade to multi-sampled audio buffers if real field recordings are provided.
+                const atten = 1 / Math.sqrt(1 + d / 200);
+                const v = Math.min(0.65, (heavy ? 0.60 : 0.46) * atten);
 
                 if (heavy) {
-                    // Pháo cao xạ hạng nặng 100mm: Tiếng nổ trầm vọng từ xa, ấm và rền nhẹ
-                    this.tone({ t0: t, type: 'triangle', freq: 110, freqEnd: 32, peak: v * 0.6, a: 0.005, dur: 0.35, wet: 0.75 });
-                    this.burst({ t0: t, brown: true, type: 'lowpass', freq: 450, freqEnd: 120, peak: v * 0.65, a: 0.003, hold: 0.04, rel: 0.35, wet: 0.7 });
-                    this.burst({ t0: t, type: 'bandpass', freq: 900, Q: 1.0, peak: v * 0.25, a: 0.001, hold: 0.015, rel: 0.12 });
-                    this.tone({ t0: t + 0.14, type: 'sine', freq: 70, freqEnd: 24, peak: v * 0.3, a: 0.015, dur: 0.45, wet: 0.8 });
+                    // Pháo cao xạ hạng nặng 100mm: Tiếng nổ đầu nòng trầm vang uy lực, rền vang khắp trận địa
+                    this.tone({ t0: t, type: 'triangle', freq: 105, freqEnd: 28, peak: v * 0.85, a: 0.004, dur: 0.4, wet: 0.6 });
+                    this.burst({ t0: t, type: 'bandpass', freq: 850, Q: 1.0, peak: v * 0.75, a: 0.001, hold: 0.03, rel: 0.16, wet: 0.5 });
+                    this.burst({ t0: t, brown: true, type: 'lowpass', freq: 360, freqEnd: 90, peak: v * 0.85, a: 0.003, hold: 0.06, rel: 0.55, wet: 0.7 });
+                    this.tone({ t0: t + 0.08, type: 'sine', freq: 55, freqEnd: 22, peak: v * 0.40, a: 0.01, dur: 0.5, wet: 0.75 });
                 } else {
-                    // Pháo cao xạ 37mm / 57mm: Loạt bắn ngắn 2-3 viên điểm xuyết, âm trầm không chói tai
-                    const n = 2 + Math.floor(Math.random() * 2);
+                    // Pháo cao xạ 37mm / 57mm: Loạt bắn liên thanh 3-4 phát giòn giã, đanh gọn
+                    const n = 3 + Math.floor(Math.random() * 2);
                     for (let k = 0; k < n; k++) {
-                        const tk = t + k * 0.095;
-                        const roundV = v * (0.7 + Math.random() * 0.25);
-                        this.tone({ t0: tk, type: 'triangle', freq: 160, freqEnd: 55, peak: roundV * 0.4, a: 0.003, dur: 0.06, wet: 0.5 });
-                        this.burst({ t0: tk, type: 'bandpass', freq: 1100 + Math.random() * 250, Q: 1.2, peak: roundV * 0.4, a: 0.002, hold: 0.01, rel: 0.06, wet: 0.4 });
-                        this.burst({ t0: tk, brown: true, type: 'lowpass', freq: 380, peak: roundV * 0.3, a: 0.003, hold: 0.015, rel: 0.07 });
+                        const tk = t + k * 0.082;
+                        const roundV = v * (0.8 + Math.random() * 0.2);
+                        this.tone({ t0: tk, type: 'triangle', freq: 190, freqEnd: 55, peak: roundV * 0.65, a: 0.002, dur: 0.075, wet: 0.4 });
+                        this.burst({ t0: tk, type: 'bandpass', freq: 1600 + Math.random() * 300, Q: 1.2, peak: roundV * 0.70, a: 0.001, hold: 0.012, rel: 0.045, wet: 0.35 });
+                        this.burst({ t0: tk, brown: true, type: 'lowpass', freq: 450, peak: roundV * 0.50, a: 0.002, hold: 0.015, rel: 0.07, wet: 0.3 });
                     }
                 }
             },
 
-            // Đạn pháo phòng không phát nổ trên không (Flak airburst shrapnel) - tiếng nổ xa trầm ấm
+            // Đạn pháo phòng không phát nổ trên không (Flak airburst shrapnel) - tiếng nổ chụp rách trời
             flakBurst(dist, heavy) {
                 if (!this.ensure()) return;
                 const ctx = SoundEngine.ctx;
                 const d = Math.max(0, dist || 0);
                 const t = ctx.currentTime + Math.min(0.45, d * 0.0018);
-                const atten = 1 / Math.sqrt(1 + d / 140);
-                const v = Math.min(0.2, (heavy ? 0.18 : 0.11) * atten);
-                this.tone({ t0: t, type: 'triangle', freq: 120, freqEnd: 40, peak: v * 0.45, a: 0.004, dur: 0.16, wet: 0.75 });
-                this.burst({ t0: t, type: 'bandpass', freq: 1050, Q: 1.0, peak: v * 0.4, a: 0.002, hold: 0.015, rel: 0.12, wet: 0.6 });
-                this.burst({ t0: t + 0.01, brown: true, type: 'lowpass', freq: 380, freqEnd: 110, peak: v * 0.5, a: 0.004, hold: 0.02, rel: 0.22, wet: 0.8 });
+                const atten = 1 / Math.sqrt(1 + d / 200);
+                const v = Math.min(0.55, (heavy ? 0.52 : 0.38) * atten);
+                this.burst({ t0: t, type: 'bandpass', freq: 1600, Q: 1.1, peak: v * 0.70, a: 0.002, hold: 0.015, rel: 0.08, wet: 0.45 });
+                this.tone({ t0: t, type: 'triangle', freq: 140, freqEnd: 42, peak: v * 0.65, a: 0.003, dur: 0.18, wet: 0.6 });
+                this.burst({ t0: t + 0.01, brown: true, type: 'lowpass', freq: 480, freqEnd: 110, peak: v * 0.75, a: 0.004, hold: 0.025, rel: 0.26, wet: 0.7 });
             },
 
             // Đạn pháo 23mm MiG-21 (GSh-23L) hoặc súng máy phòng thủ đuôi B-52
@@ -618,6 +619,8 @@
 
         SoundEngine.playLaunch = function (isMiG) { this.init(); SoundFX.launch(isMiG); };
         SoundEngine.playExplosion = function (pos, big) { this.init(); SoundFX.boom(pos, big); };
+        SoundEngine.playAAA = function (dist, heavy) { this.init(); SoundFX.aaa(dist, heavy); };
+        SoundEngine.playFlakBurst = function (dist, heavy) { this.init(); SoundFX.flakBurst(dist, heavy); };
 
         /* ============================================================================
            BGM ENGINE: Đã tắt hoàn toàn nhạc nền theo yêu cầu của người chơi.

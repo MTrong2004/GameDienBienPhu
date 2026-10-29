@@ -428,13 +428,15 @@ function animateLoop(now) {
             Math.cos(hangarYaw) * Math.cos(hangarPitch) * hangarDist
         );
         camera.lookAt(0, 0, 0);
+        const hHead = hangarPivot.getObjectByName('scannerHead');
+        if (hHead) hHead.rotation.y = now * 0.0018;
         SoundFX.update();
         if (composer) composer.render();
         else renderer.render(scene, camera);
         return;
     }
 
-    if (currentMode === 'SAM2' && gameState === 'PLAYING' && !gamePaused && !guidedMissile && missileCamHold <= 0) {
+    if (currentMode === 'SAM2' && gameState === 'PLAYING' && !gamePaused && !guidedMissile && missileCamHold <= 0 && !autoPilotActive) {
         // cursor in the outer band of the screen turns the station, faster the closer to the edge
         const edge = v => { const a = Math.abs(v); return a > 0.62 ? Math.sign(v) * Math.pow((a - 0.62) / 0.38, 1.4) : 0; };
         viewYaw -= edge(smoothAimX) * 1.6 * dt;
