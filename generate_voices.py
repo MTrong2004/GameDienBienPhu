@@ -25,6 +25,8 @@ def clean_for_tts(text):
     t = t.replace('ЗАХВАТ', 'Zác-vát').replace('ASP-PFD', 'A S P').replace('SNR-75', 'S N R 75')
     t = t.replace('Pa-ri', 'Pa ri').replace('Ních-xơn', 'Ních xơn').replace('Nixon', 'Ních xơn')
     t = t.replace('U-Tapao', 'U Ta-pao').replace('Linebacker II', 'Lai-bếch-cơ hai')
+    t = re.sub(r'(\d+)/(\d+)/(\d{4})', r'\1 tháng \2 năm \3', t)
+    t = re.sub(r'(\d+)/(\d+)', r'\1 tháng \2', t)
     t = re.sub(r'(\d+)\s*km/h', r'\1 ki-lô-mét trên giờ', t)
     t = re.sub(r'(\d+)\s*km\b', r'\1 ki-lô-mét', t)
     t = re.sub(r'(\d+)\s*MHz\b', r'\1 mê-ga-héc', t)
@@ -41,13 +43,13 @@ missions_history = {
     'm3': 'Đêm 20 rạng sáng 21 tháng 12, quân dân Thủ đô bắn rơi 7 pháo đài bay B-52, lập kỷ lục tiêu diệt máy bay chiến lược nhiều nhất trong một đêm, trong đó Tiểu đoàn 77 bắn rơi tại chỗ một chiếc tại Vạn Thắng, Ba Vì.',
     'm4': 'Đêm 21 tháng 12, Tiểu đoàn 57 kiên cường bám trận địa Đại Đồng, xã Đại Mạch, Đông Anh, vạch nhiễu tìm thù, hạ gục 3 pháo đài bay B-52, bảo vệ vững chắc cửa ngõ phía Bắc Thủ đô.',
     'm5': 'Rạng sáng 22 tháng 12, bom rải thảm B-52 tàn phá Bệnh viện Bạch Mai. Biến đau thương thành hành động chiến đấu, bộ đội phòng không Hà Nội đánh trả quyết liệt, bắn rơi máy bay cánh cụp cánh xòe F-111 của địch.',
-    'm6': 'Đêm 23 tháng 12, Tiểu đoàn 82 chốt giữ trận địa, bắn rơi B-52 bảo vệ an toàn các kho xăng dầu và huyết mạch tiếp tế Thủ đô.',
+    'm6': 'Rạng sáng 23 tháng 12, Tiểu đoàn 82 tại trận địa An Lão và Tiểu đoàn 73 kiên cường đánh trả đợt tập kích B-52, bắn rơi 2 pháo đài bay B-52, mở đầu chiến công vẻ vang của quân dân Hải Phòng.',
     'm7': 'Đêm 24 tháng 12, trước giờ ngừng bắn Noel, quân dân miền Bắc giáng đòn quyết định, bắn rơi thêm 1 pháo đài bay B-52, khép lại 7 ngày đêm Đợt 1 với 18 chiếc B-52 bị tiêu diệt.',
     'm8': 'Ngày 25 tháng 12, ngày lễ Giáng sinh. Bộ đội tên lửa chạy đua với thời gian, nạp đạn, cân chỉnh khí tài, sẵn sàng bước vào trận quyết chiến lịch sử.',
     'm9': 'Đêm 26 tháng 12, đêm quyết chiến lịch sử. Toàn mặt trận hợp đồng tác chiến bắn rơi 8 máy bay B-52, đập tan đòn tập kích lớn nhất của không quân Mỹ.',
     'm10': 'Đêm 27 tháng 12, Anh hùng phi công Phạm Tuân trên chiếc Én bạc Mích 21 số hiệu 5121 xuất kích bắn rơi B-52 trên bầu trời Mộc Châu.',
     'm11': 'Đêm 28 tháng 12, Anh hùng phi công Vũ Xuân Thiều lái chiếc Mích 21 số hiệu 5046 dũng cảm biến máy bay của mình thành quả tên lửa thứ ba tiêu diệt B-52 địch.',
-    'm12': 'Đêm 29 tháng 12, trận đánh kết thúc chiến dịch. Tiểu đoàn 79 bắn rơi chiếc B-52 thứ 34, hoàn thành đại thắng Điện Biên Phủ trên không chấn động địa cầu.'
+    'm12': '23 giờ 16 phút đêm 29/12/1972, Tiểu đoàn tên lửa 79, Trung đoàn 257, bắn rơi chiếc B-52 cuối cùng của chiến dịch. Đến 23 giờ 29 phút, Tiểu đoàn 72, Trung đoàn 285, phóng quả tên lửa cuối cùng, khép lại 12 ngày đêm chiến đấu lịch sử. 7 giờ sáng ngày 30/12/1972, Tổng thống Mỹ Richard Nixon buộc phải tuyên bố ngừng ném bom từ vĩ tuyến 20 trở ra và đề nghị nối lại đàm phán Paris. Sau 12 ngày đêm, quân và dân miền Bắc tuyên bố bắn rơi 81 máy bay Mỹ, trong đó có 34 chiếc B-52 và 5 chiếc F-111. Ngày 27/1/1973, Hiệp định Paris về chấm dứt chiến tranh, lập lại hòa bình ở Việt Nam được ký kết.'
 }
 
 # Command cues using military voices

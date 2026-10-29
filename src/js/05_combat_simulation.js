@@ -73,12 +73,13 @@
             if (!this.ctx) return;
             const now = this.ctx.currentTime;
             const osc = this.ctx.createOscillator(), g = this.ctx.createGain();
-            osc.type = 'sawtooth';
+            osc.type = 'triangle';
             osc.frequency.setValueAtTime(locked ? 820 : 380, now);
-            g.gain.setValueAtTime(0.03, now);
+            g.gain.setValueAtTime(0.025, now);
             g.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
             osc.connect(g);
-            g.connect(this.ctx.destination);
+            if (typeof SoundFX !== 'undefined' && SoundFX.bus) g.connect(SoundFX.bus);
+            else g.connect(this.ctx.destination);
             osc.start(now);
             osc.stop(now + 0.09);
         };
@@ -1235,10 +1236,6 @@
             c.lookOff.lerp(lookWant, k);
             camera.position.copy(c.fromPos).lerp(_tmpV.copy(p).add(c.off), e);
             camera.position.addScaledVector(shakeVec, 0.12);
-            if (c.t < 1.0) {
-                const launchRumble = (1 - c.t) * 0.28;
-                camera.position.add(new THREE.Vector3((Math.random() - 0.5) * launchRumble, (Math.random() - 0.5) * launchRumble, (Math.random() - 0.5) * launchRumble));
-            }
             camera.up.copy(WORLD_UP).lerp(up, e).normalize();
             camera.lookAt(_tmpL.copy(c.fromLook).lerp(_tmpV2.copy(p).add(c.lookOff), e));
             camera.up.copy(WORLD_UP);   // every other view builds its lookAt on world-up
@@ -1708,6 +1705,15 @@
             cockpit3D = { group: g, ctx: canvas.getContext('2d'), tex, stick, throttleLever, lastDraw: 0, rainTex, lamps };
         }
 
+        let mig21CockpitImg = null;
+        function getMiG21CockpitImg() {
+            if (!mig21CockpitImg && typeof MIG21_COCKPIT_IMAGE_SRC !== 'undefined') {
+                mig21CockpitImg = new Image();
+                mig21CockpitImg.src = MIG21_COCKPIT_IMAGE_SRC;
+            }
+            return mig21CockpitImg;
+        }
+
         function renderMiG21CockpitDashboard(now) {
             const canvas = document.getElementById('mig21-cockpit-canvas');
             if (!canvas) return;
@@ -1734,6 +1740,81 @@
             const altM = Math.round(p.y * 25);
             const spdKmh = Math.round(mig.speed * 60);
             const hdgDeg = Math.round((Math.atan2(-mig.fwd.x, -mig.fwd.z) * 180 / Math.PI + 360) % 360);
+            const timeStr = activeMission ? activeMission.clock : '23:17';
+            const dateStr = activeMission ? activeMission.date : '26/12/1972';
+
+            const distKm = mig.dist ? (mig.dist * KM_PER_UNIT).toFixed(1) : '4.2';
+            const targetName = mig.target ? (mig.target.type || 'B-52') : 'B-52';
+            const isHot = mig.irLock >= 1.5;
+            const lockTag = isHot ? 'LOCK' : mig.irLock > 0 ? 'TRACK' : 'SEARCH';
+
+            const img = getMiG21CockpitImg();
+            if (img && img.complete && img.naturalWidth > 0) {
+                // ---- PHOTOREALISTIC AAA COCKPIT OVERLAY (EXACT REPLICA OF IMAGE 1) ----
+                ctx.drawImage(img, 0, 0, w, h);
+
+                // Live dynamic Glowing Orange ASP-PFD Collimator Reticle inside combiner glass
+                ctx.save();
+                const retX = w * 0.495 + smoothAimX * 18;
+                const retY = h * 0.395 + smoothAimY * 14;
+
+                ctx.strokeStyle = '#FB923C';
+                ctx.fillStyle = '#FDBA74';
+                ctx.shadowColor = '#EA580C';
+                ctx.shadowBlur = isHot ? 26 : 16;
+
+                // Outer circle
+                ctx.lineWidth = 3.5;
+                ctx.beginPath(); ctx.arc(retX, retY, 44, 0, Math.PI * 2); ctx.stroke();
+                // Inner circle
+                ctx.lineWidth = 2.5;
+                ctx.beginPath(); ctx.arc(retX, retY, 22, 0, Math.PI * 2); ctx.stroke();
+                // Crosshairs
+                ctx.beginPath();
+                ctx.moveTo(retX - 58, retY); ctx.lineTo(retX - 8, retY);
+                ctx.moveTo(retX + 8, retY); ctx.lineTo(retX + 58, retY);
+                ctx.moveTo(retX, retY - 58); ctx.lineTo(retX, retY - 8);
+                ctx.moveTo(retX, retY + 8); ctx.lineTo(retX, retY + 58);
+                ctx.stroke();
+                // Center pipper dot
+                ctx.beginPath(); ctx.arc(retX, retY, 3.5, 0, Math.PI * 2); ctx.fill();
+
+                // If IR lock achieved: flashing acquisition diamond
+                if (isHot && (now % 300 < 180)) {
+                    ctx.strokeStyle = '#FEF08A';
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath();
+                    ctx.moveTo(retX, retY - 52); ctx.lineTo(retX + 52, retY);
+                    ctx.lineTo(retX, retY + 52); ctx.lineTo(retX - 52, retY);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+                ctx.restore();
+
+                // Live HUD Telemetry: Top-Right updates
+                ctx.save();
+                ctx.fillStyle = 'rgba(2, 4, 3, 0.72)';
+                ctx.fillRect(w * 0.54, h * 0.035, w * 0.43, h * 0.045);
+                ctx.font = 'bold 15px "JetBrains Mono", monospace';
+                ctx.fillStyle = '#86EFAC';
+                ctx.shadowColor = '#4ADE80';
+                ctx.shadowBlur = 8;
+                ctx.textAlign = 'right';
+                ctx.fillText(`ĐỘ CAO: ${altM}m | TỐC ĐỘ: ${spdKmh} km/h | HEADING: ${hdgDeg}°`, w * 0.955, h * 0.055);
+
+                // Live HUD Telemetry: Bottom-Left updates
+                ctx.fillStyle = 'rgba(10, 10, 10, 0.85)';
+                ctx.fillRect(w * 0.035, h * 0.935, w * 0.28, h * 0.045);
+                ctx.textAlign = 'left';
+                ctx.fillStyle = isHot ? '#FB923C' : '#FDBA74';
+                ctx.shadowColor = isHot ? '#FB923C' : '#FDBA74';
+                ctx.shadowBlur = isHot ? 16 : 8;
+                ctx.font = 'bold 16px "JetBrains Mono", monospace';
+                ctx.fillText(`RADAR: ${lockTag} — ${targetName} / ${distKm}km / HOT`, w * 0.038, h - 38);
+                ctx.restore();
+
+                return;
+            }
 
             // ---- 1. Outer Heavy Canopy Arch Frame (Matching Image 1) ----
             ctx.save();
@@ -1804,23 +1885,17 @@
             ctx.shadowBlur = 8;
             ctx.textAlign = 'left';
             ctx.fillText('MÔ PHỎNG: HÀ NỘI 12 NGÀY ĐÊM', w * 0.045, h * 0.055);
-            const timeStr = activeMission ? activeMission.clock : '23:17';
-            const dateStr = activeMission ? activeMission.date : '26/12/1972';
             ctx.fillText(`THỜI GIAN: ${timeStr} ${dateStr}`, w * 0.045, h * 0.082);
 
             ctx.textAlign = 'right';
             ctx.fillText(`ĐỘ CAO: ${altM}m | TỐC ĐỘ: ${spdKmh} km/h | HEADING: ${hdgDeg}°`, w * 0.955, h * 0.055);
 
             // Bottom-Left Amber Radar Lock Readout
-            const distKm = mig.dist ? (mig.dist * KM_PER_UNIT).toFixed(1) : '4.2';
-            const targetName = mig.target ? (mig.target.type || 'B-52') : 'B-52';
-            const isHot = mig.irLock >= 1.5;
             ctx.textAlign = 'left';
             ctx.fillStyle = isHot ? '#FB923C' : '#FDBA74';
             ctx.shadowColor = isHot ? '#FB923C' : '#FDBA74';
             ctx.shadowBlur = isHot ? 16 : 8;
             ctx.font = 'bold 16px "JetBrains Mono", monospace';
-            const lockTag = isHot ? 'LOCK' : mig.irLock > 0 ? 'TRACK' : 'SEARCH';
             ctx.fillText(`RADAR: ${lockTag} — ${targetName} / ${distKm}km / HOT`, w * 0.038, h - 38);
             ctx.shadowBlur = 0;
 

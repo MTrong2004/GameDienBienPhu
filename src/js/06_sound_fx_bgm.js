@@ -96,23 +96,25 @@
                 this.brown = this.makeNoise(ctx, 'brown');
 
                 const L = this.L;
-                // ponytail: Brown/warm-filtered noise layers reduce harsh buzzing/static; upgrade to dynamic parametric EQ if fine tone controls added
-                L.rain = this.layer(this.loop(this.brown), [this.filter('highpass', 400), this.filter('lowpass', 2400)]);
-                L.rumble = this.layer(this.loop(this.brown), [this.filter('lowpass', 120)], 0.3);
-                L.jam = this.layer(this.loop(this.brown), [this.filter('bandpass', 1200, 0.5)]);
-                const d1 = this.osc('sawtooth', 52), d2 = this.osc('sawtooth', 55.3);
-                L.drone = this.layer(d1, [this.filter('lowpass', 140)], 0.2);
+                // ponytail: Pure sine/triangle layers and low-passed rumble eliminate harsh buzzing; upgrade to multi-sampled audio buffers if real field recordings are provided
+                L.rain = this.layer(this.loop(this.brown), [this.filter('highpass', 400), this.filter('lowpass', 1800)]);
+                L.rumble = this.layer(this.loop(this.brown), [this.filter('lowpass', 110)], 0.3);
+                const jm = this.osc('sine', 55);
+                L.jam = this.layer(jm, [this.filter('lowpass', 95)]);
+                L.jam.osc = jm;
+                const d1 = this.osc('triangle', 44), d2 = this.osc('sine', 47);
+                L.drone = this.layer(d1, [this.filter('lowpass', 85)], 0.25);
                 d2.connect(L.drone.f);
                 L.drone.oscs = [d1, d2];
-                const tb = this.osc('sawtooth', 800);
-                L.turbine = this.layer(tb, [this.filter('bandpass', 1500, 2)]);
+                const tb = this.osc('sine', 680);
+                L.turbine = this.layer(tb, [this.filter('bandpass', 1100, 1.2)]);
                 L.turbine.osc = tb;
-                L.burner = this.layer(this.loop(this.brown), [this.filter('lowpass', 700)]);
-                L.rush = this.layer(this.loop(this.white), [this.filter('bandpass', 700, 1.2)]);
+                L.burner = this.layer(this.loop(this.brown), [this.filter('lowpass', 600)]);
+                L.rush = this.layer(this.loop(this.brown), [this.filter('bandpass', 550, 1.0)]);
                 const tr = this.osc('sine', 900);
                 L.track = this.layer(tr, []);
                 L.track.osc = tr;
-                L.wind = this.layer(this.loop(this.brown), [this.filter('bandpass', 650, 1.0)], 0.15);
+                L.wind = this.layer(this.loop(this.brown), [this.filter('lowpass', 350)], 0.1);
                 this.ready = true;
             },
 
@@ -230,24 +232,23 @@
                 const air = currentMode === 'MIG21' && (gameState === 'PLAYING' || gameState === 'ENDING') && !archiveOpen;
                 const missileView = !archiveOpen && !!guidedMissile && guidedMissile.t > 0.7;
 
-                set(L.rain, world && !air ? (missileView ? 0.015 : 0.035) : 0);
-                set(L.rumble, world && !air ? 0.22 : air ? 0.08 : 0);
+                set(L.rain, 0); // Mute background hiss
+                set(L.rumble, world && !air ? 0.20 : air ? 0.08 : 0);
 
-                // Jamming static in headphones — toned down to avoid harsh buzzing/crackling
+                // Soviet radar cabin 55Hz power transformer hum — deep, warm, zero static
                 const jamOn = currentMode === 'SAM2' && gameState === 'PLAYING' && activeMission && activeMission.jam;
-                set(L.jam, jamOn ? jammingLevel * 0.016 : 0, 0.08);
-                if (jamOn) L.jam.f.frequency.setTargetAtTime(1100 + jammingLevel * 300, t, 0.1);
+                set(L.jam, jamOn ? 0.035 : 0, 0.15);
 
-                // B-52 engines: loudest bomber near the camera
+                // B-52 strategic bombers: deep sub-bass engine roar (clean fundamental, no buzz)
                 let near = Infinity;
                 activeBombers.forEach(b => { near = Math.min(near, b.mesh.position.distanceTo(camera.position)); });
                 const droneV = world ? Math.pow(Math.max(0, 1 - near / (air ? 500 : 900)), 2) * (air ? 0.35 : 0.22) : 0;
                 set(L.drone, droneV, 0.4);
 
-                // MiG-21: R-25 turbine whine follows the throttle, afterburner roar above 85 %
-                set(L.turbine, air ? 0.035 + mig.throttle * 0.04 : 0);
-                if (air) L.turbine.osc.frequency.setTargetAtTime(650 + mig.throttle * 650, t, 0.3);
-                set(L.burner, air ? (mig.throttle > 0.85 ? 0.32 : 0.1 + mig.throttle * 0.08) : 0);
+                // MiG-21: Clean R-25 turbine whistle
+                set(L.turbine, air ? 0.03 + mig.throttle * 0.035 : 0);
+                if (air) L.turbine.osc.frequency.setTargetAtTime(550 + mig.throttle * 550, t, 0.3);
+                set(L.burner, air ? (mig.throttle > 0.85 ? 0.30 : 0.1 + mig.throttle * 0.07) : 0);
 
                 // Canopy aerodynamic wind buffeting & G-load
                 const migG = (air && typeof mig !== 'undefined') ? (Math.abs(mig.bank || 0) * 0.5 + Math.abs(mig.pitch || 0) * 0.5) : 0;

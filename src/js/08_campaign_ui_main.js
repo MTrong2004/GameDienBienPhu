@@ -985,12 +985,12 @@ function showVictoryEpilogue() {
         vicEl.innerHTML = `
                     <div class="kicker text-amber-400 font-bold tracking-widest text-sm">CHIẾN DỊCH PHÒNG KHÔNG HÀ NỘI 18/12 – 29/12/1972</div>
                     <h1 class="screen-title text-amber-300 text-3xl sm:text-5xl">KỲ TÍCH ĐIỆN BIÊN PHỦ TRÊN KHÔNG</h1>
-                    <div class="my-5 p-6 bg-black/80 border border-amber-400/40 rounded-xl space-y-4 text-left">
-                        <p class="font-serif text-lg leading-relaxed text-alabaster">
+                    <div class="my-5 p-6 bg-black/80 border border-amber-400/40 rounded-xl space-y-4 text-center">
+                        <p class="font-serif text-lg leading-relaxed text-alabaster max-w-4xl mx-auto">
                             Trải qua <b>12 ngày đêm chiến đấu ngoan cường</b>, quân và dân ta đã bắn hạ <b>34 chiếc B-52</b> (16 chiếc rơi tại chỗ) và tổng cộng <b>81 máy bay</b> các loại của Không quân Mỹ.
                         </p>
                     </div>
-                    <div class="victory-player-stats text-alabaster font-mono text-sm">${text}</div>
+                    <div class="victory-player-stats text-alabaster font-mono text-sm text-center">${text}</div>
                 `;
     }
     showScreen('victory');

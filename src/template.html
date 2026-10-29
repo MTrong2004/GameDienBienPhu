@@ -197,8 +197,8 @@
             background: linear-gradient(90deg, rgba(3, 6, 10, 0.92) 0%, rgba(3, 6, 10, 0.72) 55%, rgba(3, 6, 10, 0.35) 100%);
             font-family: 'Oswald', 'Plus Jakarta Sans', sans-serif;
         }
-        .screen.is-open { display: flex; }
-        .screen-inner { width: 100%; max-width: 720px; margin: auto auto auto max(0px, 5vw); } /* auto margins centre without clipping tall content */
+        .screen.is-open { display: flex; justify-content: center; }
+        .screen-inner { width: 100%; max-width: 720px; margin: auto; } /* auto margins centre without clipping tall content */
         .screen-inner.wide { max-width: 1120px; }
         .screen-inner.narrow { max-width: 420px; }
         .screen-title { font-size: clamp(30px, 4vw, 56px); font-weight: 600; text-transform: uppercase; color: #CDF7A1; line-height: 1.05; margin: 4px 0 6px; text-shadow: 0 0 14px rgba(163, 255, 120, 0.25); }
@@ -1271,7 +1271,7 @@
 
     <!-- GRAND CAMPAIGN VICTORY EPILOGUE SCREEN (AFTER COMPLETING NIGHT 29/12) -->
     <div id="screen-victory" class="screen">
-        <div class="screen-inner wide">
+        <div class="screen-inner wide text-center">
             <div class="text-center space-y-3">
                 <div class="kicker text-amber-400 font-bold tracking-widest text-sm">CHIẾN DỊCH PHÒNG KHÔNG HÀ NỘI 18/12 – 29/12/1972</div>
                 <h1 class="screen-title text-amber-300 text-3xl sm:text-5xl" style="text-shadow: 0 0 25px rgba(251,191,36,0.5);">
@@ -1281,20 +1281,20 @@
             </div>
 
             <!-- Strategic Prophecy of President Ho Chi Minh -->
-            <div class="my-4 p-4 bg-amber-950/30 border-l-4 border-amber-400 rounded-r text-left shadow-lg">
+            <div class="my-4 p-4 bg-amber-950/30 border border-amber-400/40 rounded-xl text-center shadow-lg">
                 <div class="font-mono text-xs uppercase tracking-widest text-amber-300 font-bold mb-1">
                     DỰ BÁO CHIẾN LƯỢC THIÊN TÀI CỦA BÁC HỒ (MÙA XUÂN 1968):
                 </div>
-                <div class="font-serif italic text-base sm:text-lg text-amber-100 leading-relaxed">
+                <div class="font-serif italic text-base sm:text-lg text-amber-100 leading-relaxed max-w-4xl mx-auto">
                     “Sớm muộn rồi đế quốc Mỹ cũng sẽ đưa B-52 ra đánh Hà Nội, rồi có thua mới chịu thua... Ở Việt Nam, Mỹ nhất định thua, nhưng chỉ chịu thua sau khi thua trên bầu trời Hà Nội!”
                 </div>
-                <div class="text-right font-mono text-xs text-amber-300/80 mt-1">
-                    — Lời Chủ tịch Hồ Chí Minh căn dặn đồng chí Phùng Thế Tài (Tư lệnh PK-KQ)
+                <div class="text-center font-mono text-xs text-amber-300/80 mt-2">
+                    — Lời Chủ tịch Hồ Chí Minh căn dặn đồng chí Phùng Thế Tài (Tư lệnh PK-KQ) —
                 </div>
             </div>
 
-            <div class="my-5 p-6 bg-black/80 border border-amber-400/40 rounded-xl space-y-4 text-left">
-                <p class="font-serif text-lg leading-relaxed text-alabaster">
+            <div class="my-5 p-6 bg-black/80 border border-amber-400/40 rounded-xl space-y-4 text-center">
+                <p class="font-serif text-lg leading-relaxed text-alabaster max-w-4xl mx-auto">
                     Trải qua <b>12 ngày đêm chiến đấu ngoan cường</b> dưới mưa bom bão đạn, quân và dân Thủ đô Hà Nội cùng lực lượng Phòng không – Không quân nhân dân Việt Nam đã làm nên kỳ tích lịch sử vô tiền khoáng hậu: <b>đập tan hoàn toàn cuộc tập kích đường không chiến lược Linebacker II</b> của Không quân Mỹ.
                 </p>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center py-2">
@@ -1315,12 +1315,12 @@
                         <b class="text-2xl text-amber-300 font-mono">43 giặc lái</b>
                     </div>
                 </div>
-                <p class="font-serif text-base text-muted leading-relaxed">
+                <p class="font-serif text-base text-muted leading-relaxed max-w-4xl mx-auto">
                     Đúng <strong class="text-alabaster">7 giờ sáng ngày 30/12/1972</strong>, Tổng thống Mỹ Richard Nixon buộc phải tuyên bố ngừng ném bom từ vĩ tuyến 20 trở ra và chấp nhận ngồi lại đàm phán. Ngày <strong class="text-alabaster">27/1/1973</strong>, Hiệp định Paris về chấm dứt chiến tranh, lập lại hòa bình ở Việt Nam chính thức được ký kết.
                 </p>
             </div>
 
-            <div class="p-4 bg-emerald/10 border border-emerald/30 rounded-lg flex items-center justify-between flex-wrap gap-3 text-left">
+            <div class="p-4 bg-emerald/10 border border-emerald/30 rounded-lg flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
                 <div>
                     <span class="font-mono text-xs text-emerald font-bold uppercase block">THÀNH TÍCH TOÀN CHIẾN DỊCH CỦA BẠN</span>
                     <span id="victory-player-stats" class="text-alabaster font-mono text-sm"></span>
@@ -1690,10 +1690,28 @@
         </div>
 
         <!-- Left Museum Telemetry Plaque -->
-        <div class="fixed top-20 left-4 z-30 w-72 sm:w-80 max-w-[calc(100vw-32px)] p-4 rounded-xl bg-black/85 backdrop-blur-md border border-emerald-500/30 pointer-events-auto space-y-2.5 shadow-2xl hidden md:flex md:flex-col">
+        <div class="fixed top-20 left-4 z-30 w-72 sm:w-80 max-w-[calc(100vw-32px)] p-4 rounded-xl bg-black/85 backdrop-blur-md border border-emerald-500/30 pointer-events-auto space-y-2.5 shadow-2xl hidden md:flex md:flex-col max-h-[calc(100vh-140px)] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-emerald-500/20 pb-2">
                 <span class="text-[10px] font-mono uppercase tracking-widest text-emerald-400 font-bold">// THÔNG SỐ CHIẾN THUẬT</span>
                 <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">CAD 3D</span>
+            </div>
+
+            <!-- Authentic Historical Archive Photo -->
+            <div class="relative group rounded-lg overflow-hidden border border-emerald-500/30 bg-black/70 shadow-lg cursor-pointer" onclick="openHangarPhotoModal()" title="Nhấp để xem ảnh tư liệu lịch sử phóng to">
+                <div class="w-full h-36 bg-zinc-900 overflow-hidden relative">
+                    <img id="hangar-real-photo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Ảnh tư liệu lịch sử" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
+                    <div class="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-black/80 backdrop-blur border border-emerald-400/50 text-[9px] font-mono text-emerald-300 font-bold tracking-wider flex items-center gap-1 shadow">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        ẢNH TƯ LIỆU THẬT
+                    </div>
+                    <div class="absolute top-2 right-2 px-1.5 py-0.5 rounded bg-black/80 border border-white/20 text-[9px] font-mono text-zinc-300 opacity-80 group-hover:opacity-100 flex items-center gap-1 transition">
+                        <span>🔍 Phóng to</span>
+                    </div>
+                    <div class="absolute bottom-1.5 inset-x-2 text-[10px] font-sans text-zinc-200 leading-tight drop-shadow truncate" id="hangar-real-photo-caption">
+                        Tiêm kích MiG-21MF #5121 tại Bảo tàng Lịch sử Quân sự Việt Nam
+                    </div>
+                </div>
             </div>
 
             <!-- Structured Museum-grade Specifications Grid -->
@@ -1728,6 +1746,27 @@
                     <div class="font-mono text-[9px] font-bold text-cyan-400 uppercase">ĐÀI ĐIỀU KHIỂN</div>
                     <div class="font-serif text-xs sm:text-sm font-semibold truncate">Radar Fan Song</div>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HANGAR HISTORICAL PHOTO FULLSCREEN MODAL -->
+    <div id="hangar-photo-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 pointer-events-auto" onclick="closeHangarPhotoModal(event)">
+        <div class="relative max-w-3xl w-full bg-zinc-950/95 border border-emerald-500/40 rounded-2xl shadow-2xl overflow-hidden p-4 sm:p-5 flex flex-col gap-3" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between pb-2.5 border-b border-emerald-500/20">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
+                    <span class="font-mono text-xs text-emerald-400 uppercase tracking-widest font-bold">// TƯ LIỆU LỊCH SỬ THỰC TẾ (1972)</span>
+                </div>
+                <button onclick="closeHangarPhotoModal()" class="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white font-mono text-xs transition">Đóng [Esc]</button>
+            </div>
+            <div class="w-full max-h-[60vh] bg-black rounded-lg overflow-hidden border border-white/10 flex items-center justify-center">
+                <img id="hangar-modal-photo-img"  alt="Ảnh tư liệu lịch sử" class="max-h-[60vh] w-auto max-w-full object-contain">
+            </div>
+            <div class="space-y-1.5 pt-1">
+                <div id="hangar-modal-photo-title" class="font-serif text-sm sm:text-base font-bold text-white"></div>
+                <div id="hangar-modal-photo-desc" class="font-sans text-xs text-zinc-300 leading-relaxed"></div>
+                <div id="hangar-modal-photo-credit" class="font-mono text-[10px] text-emerald-400/80"></div>
             </div>
         </div>
     </div>

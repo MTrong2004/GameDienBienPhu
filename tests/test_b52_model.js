@@ -75,6 +75,32 @@ const THREE = {
             }
         };
     },
+    BufferGeometry: function() {
+        return {
+            setAttribute: () => {},
+            setIndex: () => {},
+            computeVertexNormals: () => {}
+        };
+    },
+    Float32BufferAttribute: function(arr, size) {
+        this.array = arr;
+        this.itemSize = size;
+    },
+    BufferGeometry: function() {
+        return {
+            setAttribute: () => {},
+            setIndex: () => {},
+            computeVertexNormals: () => {}
+        };
+    },
+    Float32BufferAttribute: function(arr, size) {
+        this.array = arr;
+        this.itemSize = size;
+    },
+    BufferAttribute: function(arr, size) {
+        this.array = arr;
+        this.itemSize = size;
+    },
     BoxGeometry: function() { return {}; },
     CylinderGeometry: function() { return {}; },
     ConeGeometry: function() { return {}; },

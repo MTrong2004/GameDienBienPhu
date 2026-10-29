@@ -483,46 +483,79 @@
                     const ctx = c.getContext ? c.getContext('2d') : null;
                     if (!ctx) return new THREE.CanvasTexture(c);
 
-                    // Base metal gradient
-                    const grad = ctx.createLinearGradient(0, 0, 1024, 1024);
-                    grad.addColorStop(0, '#D8DFE8');
-                    grad.addColorStop(0.5, '#C6CFDC');
-                    grad.addColorStop(1, '#DCE3EB');
+                    // Base metallic duralumin gradient along chord (0=LE, 1024=TE)
+                    const grad = ctx.createLinearGradient(0, 0, 1024, 0);
+                    grad.addColorStop(0, '#E2E8F0');
+                    grad.addColorStop(0.35, '#CBD5E1');
+                    grad.addColorStop(0.70, '#D8DFE8');
+                    grad.addColorStop(1, '#94A3B8');
                     ctx.fillStyle = grad;
                     ctx.fillRect(0, 0, 1024, 1024);
 
-                    // 57° Swept panel lines & structural spars
+                    // Spanwise spars (vertical lines: main spar @ 360, flap spar @ 720)
+                    ctx.lineWidth = 2.0;
+                    [360, 720].forEach(sx => {
+                        ctx.strokeStyle = '#64748B';
+                        ctx.beginPath(); ctx.moveTo(sx, 0); ctx.lineTo(sx, 1024); ctx.stroke();
+                        ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+                        ctx.beginPath(); ctx.moveTo(sx + 1.5, 0); ctx.lineTo(sx + 1.5, 1024); ctx.stroke();
+                    });
+
+                    // Flap / Aileron divider at mid-span
+                    ctx.strokeStyle = '#475569';
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath(); ctx.moveTo(720, 512); ctx.lineTo(1024, 512); ctx.stroke();
+
+                    // Chordwise rib seams (horizontal lines along chord)
                     ctx.strokeStyle = '#64748B';
-                    ctx.lineWidth = 1.8;
-                    for (let i = 0; i < 1024; i += 72) {
-                        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i + 340, 1024); ctx.stroke();
-                        ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(1024, i); ctx.stroke();
+                    ctx.lineWidth = 1.4;
+                    for (let y = 80; y < 1024; y += 96) {
+                        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(1024, y); ctx.stroke();
                     }
 
-                    // Aileron and flap hinge divide
-                    ctx.strokeStyle = '#334155';
-                    ctx.lineWidth = 3;
-                    ctx.beginPath(); ctx.moveTo(0, 820); ctx.lineTo(1024, 820); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(480, 820); ctx.lineTo(480, 1024); ctx.stroke();
+                    // Flush rivet rows along seams
+                    ctx.fillStyle = '#475569';
+                    for (let y = 80; y < 1024; y += 96) {
+                        for (let x = 24; x < 1000; x += 32) {
+                            ctx.fillRect(x, y - 1, 2, 2);
+                        }
+                    }
+                    for (let x = 360; x <= 720; x += 360) {
+                        for (let y = 16; y < 1024; y += 24) {
+                            ctx.fillRect(x - 1, y, 2, 2);
+                        }
+                    }
 
-                    // Red dashed walkway border lines
+                    // Red dashed walkway border lines near root
                     ctx.strokeStyle = '#DC2626';
                     ctx.lineWidth = 2.5;
                     if (ctx.setLineDash) ctx.setLineDash([12, 8]);
-                    ctx.strokeRect(80, 200, 780, 580);
+                    ctx.strokeRect(180, 50, 480, 240);
                     if (ctx.setLineDash) ctx.setLineDash([]);
-
                     ctx.fillStyle = '#DC2626';
-                    ctx.font = 'bold 20px monospace';
-                    ctx.fillText('НЕ СТАНОВИТЬСЯ // NO STEP', 120, 240);
+                    ctx.font = 'bold 18px monospace';
+                    ctx.fillText('НЕ СТАНОВИТЬСЯ // NO STEP', 210, 85);
 
-                    // Flush rivet rows
-                    ctx.fillStyle = '#64748B';
-                    for (let y = 100; y < 900; y += 36) {
-                        for (let x = 50; x < 950; x += 36) {
-                            ctx.fillRect(x, y, 1.5, 1.5);
-                        }
+                    // Authentic VPAF National Roundel baked flush on the wing skin
+                    ctx.save();
+                    ctx.translate(520, 600);
+                    ctx.fillStyle = '#DC2626';
+                    ctx.beginPath(); ctx.arc(0, 0, 135, 0, Math.PI * 2); ctx.fill();
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.lineWidth = 16; ctx.stroke();
+                    ctx.strokeStyle = '#B91C1C';
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath(); ctx.arc(0, 0, 143, 0, Math.PI * 2); ctx.stroke();
+                    ctx.fillStyle = '#FACC15';
+                    ctx.beginPath();
+                    for (let s = 0; s < 5; s++) {
+                        const a1 = (s * 72 - 90) * Math.PI / 180;
+                        const a2 = ((s * 72 + 36) - 90) * Math.PI / 180;
+                        ctx.lineTo(Math.cos(a1) * 110, Math.sin(a1) * 110);
+                        ctx.lineTo(Math.cos(a2) * 44, Math.sin(a2) * 44);
                     }
+                    ctx.closePath(); ctx.fill();
+                    ctx.restore();
 
                     const tex = new THREE.CanvasTexture(c);
                     tex.anisotropy = 4;
@@ -873,6 +906,139 @@
                 return new THREE.Mesh(geom, material);
             },
 
+            /**
+             * Precision analytical swept wing generator for Boeing B-52 Stratofortress.
+             * Eliminates backface culling inversion, normal flipping, and texture stretching.
+             * Generates a watertight NACA 6-series cambered airfoil grid with correct CCW winding.
+             */
+            buildB52SweptWing({
+                side = 1, rootX = 0.65, span = 16.5,
+                rootChord = 3.6, tipChord = 1.08,
+                rootZ_LE = 3.8, sweepLE = 6.6,
+                rootThick = 0.38, tipThick = 0.12,
+                anhedralDroop = 1.25, material
+            }) {
+                const spanSteps = 24;
+                const chordSteps = 20;
+                const verts = [];
+                const uvs = [];
+                const indices = [];
+
+                // Cambered transonic airfoil profile (NACA 63-219 style)
+                const getAirfoil = (v) => {
+                    const t = 4 * Math.sqrt(Math.max(0, v)) * (1 - v);
+                    const camber = Math.sin(v * Math.PI) * 0.16 * (1 - v);
+                    const yTop = t * 0.60 + camber;
+                    const yBot = -t * 0.40 + camber;
+                    return { yTop, yBot };
+                };
+
+                // Top surface
+                for (let i = 0; i <= spanSteps; i++) {
+                    const u = i / spanSteps;
+                    const x = side * (rootX + u * span);
+                    const yBase = -anhedralDroop * Math.pow(u, 1.75);
+                    const chord = rootChord + (tipChord - rootChord) * u;
+                    const zLE = rootZ_LE - u * sweepLE;
+                    const thick = (rootThick + (tipThick - rootThick) * u) * 0.5;
+
+                    for (let j = 0; j <= chordSteps; j++) {
+                        const v = j / chordSteps;
+                        const z = zLE - v * chord;
+                        const af = getAirfoil(v);
+                        const y = yBase + thick * af.yTop;
+                        verts.push(x, y, z);
+                        uvs.push(v, u);
+                    }
+                }
+
+                // Bottom surface
+                const botOffset = (spanSteps + 1) * (chordSteps + 1);
+                for (let i = 0; i <= spanSteps; i++) {
+                    const u = i / spanSteps;
+                    const x = side * (rootX + u * span);
+                    const yBase = -anhedralDroop * Math.pow(u, 1.75);
+                    const chord = rootChord + (tipChord - rootChord) * u;
+                    const zLE = rootZ_LE - u * sweepLE;
+                    const thick = (rootThick + (tipThick - rootThick) * u) * 0.5;
+
+                    for (let j = 0; j <= chordSteps; j++) {
+                        const v = j / chordSteps;
+                        const z = zLE - v * chord;
+                        const af = getAirfoil(v);
+                        const y = yBase + thick * af.yBot;
+                        verts.push(x, y, z);
+                        uvs.push(v, 1 - u);
+                    }
+                }
+
+                const row = chordSteps + 1;
+                // Top surface quads
+                for (let i = 0; i < spanSteps; i++) {
+                    for (let j = 0; j < chordSteps; j++) {
+                        const a = i * row + j;
+                        const b = (i + 1) * row + j;
+                        const c = (i + 1) * row + (j + 1);
+                        const d = i * row + (j + 1);
+                        if (side > 0) indices.push(a, b, c, a, c, d);
+                        else indices.push(a, c, b, a, d, c);
+                    }
+                }
+
+                // Bottom surface quads
+                for (let i = 0; i < spanSteps; i++) {
+                    for (let j = 0; j < chordSteps; j++) {
+                        const a = botOffset + i * row + j;
+                        const b = botOffset + (i + 1) * row + j;
+                        const c = botOffset + (i + 1) * row + (j + 1);
+                        const d = botOffset + i * row + (j + 1);
+                        if (side > 0) indices.push(a, c, b, a, d, c);
+                        else indices.push(a, b, c, a, c, d);
+                    }
+                }
+
+                // Tip cap
+                const topTipStart = spanSteps * row;
+                const botTipStart = botOffset + spanSteps * row;
+                for (let j = 0; j < chordSteps; j++) {
+                    const t1 = topTipStart + j, t2 = topTipStart + j + 1;
+                    const b1 = botTipStart + j, b2 = botTipStart + j + 1;
+                    if (side > 0) indices.push(t1, b1, b2, t1, b2, t2);
+                    else indices.push(t1, b2, b1, t1, t2, b2);
+                }
+
+                // Root cap
+                for (let j = 0; j < chordSteps; j++) {
+                    const t1 = j, t2 = j + 1;
+                    const b1 = botOffset + j, b2 = botOffset + j + 1;
+                    if (side > 0) indices.push(t1, b2, b1, t1, t2, b2);
+                    else indices.push(t1, b1, b2, t1, b2, t2);
+                }
+
+                // Trailing edge cap
+                for (let i = 0; i < spanSteps; i++) {
+                    const t1 = i * row + chordSteps, t2 = (i + 1) * row + chordSteps;
+                    const b1 = botOffset + i * row + chordSteps, b2 = botOffset + (i + 1) * row + chordSteps;
+                    if (side > 0) indices.push(t1, t2, b2, t1, b2, b1);
+                    else indices.push(t1, b2, t2, t1, b1, b2);
+                }
+
+                // Leading edge cap
+                for (let i = 0; i < spanSteps; i++) {
+                    const t1 = i * row, t2 = (i + 1) * row;
+                    const b1 = botOffset + i * row, b2 = botOffset + (i + 1) * row;
+                    if (side > 0) indices.push(t1, b2, b1, t1, t2, b2);
+                    else indices.push(t1, b1, b2, t1, b2, t2);
+                }
+
+                const geom = new THREE.BufferGeometry();
+                geom.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+                geom.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+                geom.setIndex(indices);
+                geom.computeVertexNormals();
+                return new THREE.Mesh(geom, material);
+            },
+
             buildVerticalFin({ height = 4.0, rootChord = 3.2, tipChord = 1.2, thickness = 0.11, sweepZ = 2.0, material }) {
                 const shape = new THREE.Shape();
                 shape.moveTo(0.5, 0);
@@ -914,6 +1080,127 @@
                     pos.setXYZ(i, x, y, z);
                 }
                 pos.needsUpdate = true;
+                geom.computeVertexNormals();
+                return new THREE.Mesh(geom, material);
+            },
+
+            /**
+             * Dedicated Supersonic Biconvex Delta Wing for MiG-21 (TsAGI S-12 Profile)
+             * Generates closed manifold surface with outward normals (top +Y, bot -Y) and planar UVs.
+             */
+            buildMiG21SupersonicWing({
+                side = 1, rootX = 0.60, span = 4.35,
+                rootChord = 4.85, tipChord = 0.58,
+                rootZ_LE = 2.50, sweepLE = 4.45,
+                rootThick = 0.16, tipThick = 0.035,
+                anhedral = 0.08, material
+            }) {
+                const spanSteps = 16;
+                const chordSteps = 16;
+                const verts = [];
+                const uvs = [];
+                const indices = [];
+
+                // Top surface (Biconvex profile: max thickness at mid-chord)
+                for (let i = 0; i <= spanSteps; i++) {
+                    const u = i / spanSteps; // 0=root, 1=tip
+                    const x = side * (rootX + u * span);
+                    const yBase = -0.05 - u * anhedral;
+                    const chord = rootChord + (tipChord - rootChord) * u;
+                    const zLE = rootZ_LE - u * sweepLE;
+                    const maxT = (rootThick + (tipThick - rootThick) * u) * 0.5;
+
+                    for (let j = 0; j <= chordSteps; j++) {
+                        const v = j / chordSteps; // 0=LE, 1=TE
+                        const z = zLE - v * chord;
+                        const y = yBase + maxT * 4 * v * (1 - v);
+                        verts.push(x, y, z);
+                        uvs.push(v, u);
+                    }
+                }
+
+                // Bottom surface
+                const botOffset = (spanSteps + 1) * (chordSteps + 1);
+                for (let i = 0; i <= spanSteps; i++) {
+                    const u = i / spanSteps;
+                    const x = side * (rootX + u * span);
+                    const yBase = -0.05 - u * anhedral;
+                    const chord = rootChord + (tipChord - rootChord) * u;
+                    const zLE = rootZ_LE - u * sweepLE;
+                    const maxT = (rootThick + (tipThick - rootThick) * u) * 0.5;
+
+                    for (let j = 0; j <= chordSteps; j++) {
+                        const v = j / chordSteps;
+                        const z = zLE - v * chord;
+                        const y = yBase - maxT * 4 * v * (1 - v);
+                        verts.push(x, y, z);
+                        uvs.push(v, 1 - u);
+                    }
+                }
+
+                const row = chordSteps + 1;
+                // Top surface quads
+                for (let i = 0; i < spanSteps; i++) {
+                    for (let j = 0; j < chordSteps; j++) {
+                        const a = i * row + j;
+                        const b = (i + 1) * row + j;
+                        const c = (i + 1) * row + (j + 1);
+                        const d = i * row + (j + 1);
+                        if (side > 0) indices.push(a, b, c, a, c, d);
+                        else indices.push(a, c, b, a, d, c);
+                    }
+                }
+
+                // Bottom surface quads
+                for (let i = 0; i < spanSteps; i++) {
+                    for (let j = 0; j < chordSteps; j++) {
+                        const a = botOffset + i * row + j;
+                        const b = botOffset + (i + 1) * row + j;
+                        const c = botOffset + (i + 1) * row + (j + 1);
+                        const d = botOffset + i * row + (j + 1);
+                        if (side > 0) indices.push(a, c, b, a, d, c);
+                        else indices.push(a, b, c, a, c, d);
+                    }
+                }
+
+                // Tip cap
+                const topTipStart = spanSteps * row;
+                const botTipStart = botOffset + spanSteps * row;
+                for (let j = 0; j < chordSteps; j++) {
+                    const t1 = topTipStart + j, t2 = topTipStart + j + 1;
+                    const b1 = botTipStart + j, b2 = botTipStart + j + 1;
+                    if (side > 0) indices.push(t1, b1, b2, t1, b2, t2);
+                    else indices.push(t1, b2, b1, t1, t2, b2);
+                }
+
+                // Root cap
+                for (let j = 0; j < chordSteps; j++) {
+                    const t1 = j, t2 = j + 1;
+                    const b1 = botOffset + j, b2 = botOffset + j + 1;
+                    if (side > 0) indices.push(t1, b2, b1, t1, t2, b2);
+                    else indices.push(t1, b1, b2, t1, b2, t2);
+                }
+
+                // Trailing edge cap
+                for (let i = 0; i < spanSteps; i++) {
+                    const t1 = i * row + chordSteps, t2 = (i + 1) * row + chordSteps;
+                    const b1 = botOffset + i * row + chordSteps, b2 = botOffset + (i + 1) * row + chordSteps;
+                    if (side > 0) indices.push(t1, t2, b2, t1, b2, b1);
+                    else indices.push(t1, b2, t2, t1, b1, b2);
+                }
+
+                // Leading edge cap
+                for (let i = 0; i < spanSteps; i++) {
+                    const t1 = i * row, t2 = (i + 1) * row;
+                    const b1 = botOffset + i * row, b2 = botOffset + (i + 1) * row;
+                    if (side > 0) indices.push(t1, b2, t2, t1, b1, b2);
+                    else indices.push(t1, t2, b2, t1, b2, b1);
+                }
+
+                const geom = new THREE.BufferGeometry();
+                geom.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+                geom.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+                geom.setIndex(indices);
                 geom.computeVertexNormals();
                 return new THREE.Mesh(geom, material);
             },
@@ -1217,48 +1504,35 @@
                 });
                 group.add(tankGroup);
 
-                // 57° Delta Wings + Wing Fences + APU-13 Pylons + K-13 Missiles + VPAF Decals
-                const roundelMat = new THREE.MeshBasicMaterial({
-                    map: this.textures.vpafRoundel,
-                    transparent: true,
-                    polygonOffset: true,
-                    polygonOffsetFactor: -1,
-                    polygonOffsetUnits: -1,
-                    side: THREE.DoubleSide
-                });
-
+                // 57° Delta Wings + Wing Fences + APU-13 Pylons + K-13 Missiles (Baked VPAF Roundels on Wing Skin)
                 [-1, 1].forEach(side => {
-                    const delta = this.buildNACAStreamlinedWing({
-                        span: 4.65, rootChord: 4.55, tipChord: 0.52,
-                        thickness: 0.09, sweepZ: 2.55, dihedralY: -0.08,
-                        side, material: wingMat
+                    const delta = this.buildMiG21SupersonicWing({
+                        side, rootX: 0.60, span: 4.35,
+                        rootChord: 4.85, tipChord: 0.58,
+                        rootZ_LE: 2.50, sweepLE: 4.45,
+                        rootThick: 0.16, tipThick: 0.035,
+                        anhedral: 0.08, material: wingMat
                     });
-                    delta.position.set(side * 0.64, -0.05, 0.5);
                     group.add(delta);
 
                     // Iconic Aerodynamic Wing Boundary Layer Fence
-                    const fence = new THREE.Mesh(new THREE.BoxGeometry(0.016, 0.14, 2.1), alumMat);
-                    fence.position.set(side * 2.85, 0.06, -0.6);
+                    const fence = new THREE.Mesh(new THREE.BoxGeometry(0.014, 0.13, 1.85), alumMat);
+                    fence.position.set(side * 3.10, 0.02, -0.55);
                     group.add(fence);
 
-                    // VPAF Roundel on Upper Wing Surface
-                    const wingRoundel = new THREE.Mesh(new THREE.PlaneGeometry(0.92, 0.92), roundelMat);
-                    wingRoundel.rotation.x = -Math.PI / 2;
-                    wingRoundel.rotation.z = side * 0.02;
-                    wingRoundel.position.set(side * 2.3, 0.04, -0.6);
-                    group.add(wingRoundel);
-
-                    // Flap actuator fairing pod under wing
+                    // Flap actuator fairing pod under wing trailing edge
                     const flapPod = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, 0.65), alumMat);
-                    flapPod.position.set(side * 1.6, -0.16, -1.2);
+                    flapPod.position.set(side * 1.85, -0.15, -2.15);
                     group.add(flapPod);
 
                     // Horizontal all-moving stabilator with -2° anhedral
-                    const hStab = this.buildNACAStreamlinedWing({
-                        span: 2.05, rootChord: 1.5, tipChord: 0.45,
-                        thickness: 0.09, sweepZ: 1.1, dihedralY: -0.04, side, material: alumMat
+                    const hStab = this.buildMiG21SupersonicWing({
+                        side, rootX: 0.54, span: 2.05,
+                        rootChord: 1.65, tipChord: 0.45,
+                        rootZ_LE: -4.10, sweepLE: 1.15,
+                        rootThick: 0.08, tipThick: 0.02,
+                        anhedral: 0.05, material: alumMat
                     });
-                    hStab.position.set(side * 0.56, 0.02, -4.85);
                     group.add(hStab);
 
                     // Wingtip Nav Light + Static Discharger Wicks
@@ -1266,19 +1540,19 @@
                         new THREE.SphereGeometry(0.10, 12, 12),
                         new THREE.MeshBasicMaterial({ color: side < 0 ? 0xEF4444 : 0x10B981 })
                     );
-                    navLight.position.set(side * 5.25, -0.12, -1.85);
+                    navLight.position.set(side * 4.95, -0.12, -2.10);
                     const wick = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.35, 6), chromeLipMat);
                     wick.rotation.x = Math.PI / 2;
-                    wick.position.set(side * 5.28, -0.12, -2.1);
+                    wick.position.set(side * 4.98, -0.12, -2.35);
                     group.add(navLight, wick);
 
                     // APU-13 Launch Rail + Enhanced K-13 Missile
-                    const pylon = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.24, 1.4), alumMat);
-                    pylon.position.set(side * 2.45, -0.24, -0.4);
+                    const pylon = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.22, 1.4), alumMat);
+                    pylon.position.set(side * 2.45, -0.22, -0.80);
                     group.add(pylon);
 
                     const k13 = this.createK13Missile();
-                    k13.position.set(side * 2.45, -0.42, -0.5);
+                    k13.position.set(side * 2.45, -0.40, -0.80);
                     group.add(k13);
                 });
 
@@ -1297,11 +1571,19 @@
                 tailWick.position.set(0, 3.2, -5.1);
                 group.add(finCap, tailWick);
 
-                // Roundels on vertical fin sides
+                // Roundels on vertical fin sides (Flush at mid-chord, zero protrusion)
+                const roundelMat = new THREE.MeshBasicMaterial({
+                    map: this.textures.vpafRoundel,
+                    transparent: true,
+                    polygonOffset: true,
+                    polygonOffsetFactor: -1,
+                    polygonOffsetUnits: -1,
+                    side: THREE.DoubleSide
+                });
                 [-1, 1].forEach(side => {
-                    const finRoundel = new THREE.Mesh(new THREE.PlaneGeometry(0.68, 0.68), roundelMat);
+                    const finRoundel = new THREE.Mesh(new THREE.PlaneGeometry(0.48, 0.48), roundelMat);
                     finRoundel.rotation.y = side < 0 ? -Math.PI / 2 : Math.PI / 2;
-                    finRoundel.position.set(side * 0.065, 2.05, -3.95);
+                    finRoundel.position.set(side * 0.088, 1.95, -4.68);
                     group.add(finRoundel);
                 });
 
@@ -1654,33 +1936,39 @@
                 });
                 group.add(tailTurretGroup);
 
-                // 2. Swept Wings + Engines + Wingtip Tanks & Gear
+                // 2. Swept Wings + Engines + Wingtip Tanks & Stabilizers
                 [-1, 1].forEach(side => {
-                    const wing = this.buildNACAStreamlinedWing({
-                        span: 16.5, rootChord: 3.6, tipChord: 1.08,
-                        thickness: 0.13, sweepZ: 6.6, dihedralY: -0.15,
-                        anhedralDroop: 1.18, side, material: upperMat
+                    const wing = this.buildB52SweptWing({
+                        side, rootX: 0.65, span: 16.5,
+                        rootChord: 3.6, tipChord: 1.08,
+                        rootZ_LE: 3.8, sweepLE: 6.6,
+                        rootThick: 0.38, tipThick: 0.12,
+                        anhedralDroop: 1.25, material: upperMat
                     });
-                    wing.position.set(side * 0.65, 0.55, 2.2);
+                    wing.position.set(0, 0.55, 0);
                     group.add(wing);
 
                     // Flap track canoe fairings under wing trailing edge
-                    [0.32, 0.54, 0.74].forEach(f => {
-                        const cx = side * (0.65 + f * 16.5);
-                        const cy = 0.55 + (-0.15 * f) - (1.18 * Math.pow(f, 1.75)) - 0.16;
-                        const cz = 2.2 - (6.6 * f) - (1.8 * (1 - 0.4 * f));
-                        const canoe = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.10, 1.6, 8), bellyMat);
-                        canoe.rotation.x = Math.PI / 2 + 0.08;
-                        canoe.position.set(cx, cy, cz);
+                    [0.32, 0.54, 0.76].forEach(u => {
+                        const chord = 3.6 + (1.08 - 3.6) * u;
+                        const zTE = 3.8 - u * 6.6 - chord;
+                        const cy = 0.55 - 1.25 * Math.pow(u, 1.75) - 0.14;
+                        const canoe = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.09, 1.4, 8), bellyMat);
+                        canoe.rotation.x = Math.PI / 2;
+                        canoe.position.set(side * (0.65 + u * 16.5), cy, zTE + 0.3);
                         group.add(canoe);
                     });
 
                     // Wingtip External Fuel Tank + Pylon + Stabilizing Fin
-                    const tankGroup = new THREE.Group();
-                    tankGroup.position.set(side * 16.8, -0.82, -4.2);
+                    const tipX = side * 17.15;
+                    const tipY = 0.55 - 1.25;
+                    const tipZ = 3.8 - 6.6 - 0.54;
 
-                    const tankPylon = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.35, 1.2), bellyMat);
-                    tankPylon.position.set(0, 0.38, 0.2);
+                    const tankGroup = new THREE.Group();
+                    tankGroup.position.set(tipX, tipY - 0.35, tipZ);
+
+                    const tankPylon = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.38, 1.2), bellyMat);
+                    tankPylon.position.set(0, 0.28, 0.1);
                     tankGroup.add(tankPylon);
 
                     const tipTank = this.buildLatheFuselage({
@@ -1696,46 +1984,31 @@
                     tankGroup.add(tankFin);
                     group.add(tankGroup);
 
-                    // Wingtip Outrigger Gear Assembly (dual wheels + strut)
-                    const outrigger = new THREE.Group();
-                    const fracOut = 15.6 / 16.5;
-                    outrigger.position.set(side * 15.6, 0.55 - 0.15 * fracOut - 1.18 * Math.pow(fracOut, 1.75) - 0.05, 2.2 - 6.6 * fracOut);
-                    const gearStrut = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.65, 8), titaniumMat);
-                    gearStrut.position.set(0, -0.32, 0);
-                    outrigger.add(gearStrut);
-                    [-0.08, 0.08].forEach(wx => {
-                        const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.06, 12), rubberMat);
-                        wheel.rotation.z = Math.PI / 2;
-                        wheel.position.set(wx, -0.62, 0);
-                        outrigger.add(wheel);
-                    });
-                    group.add(outrigger);
-
                     // High-intensity Navigation Lights
                     const navLight = new THREE.Mesh(
                         new THREE.SphereGeometry(0.24, 12, 12),
                         new THREE.MeshBasicMaterial({ color: side < 0 ? 0x10B981 : 0xFF2A4B })
                     );
-                    navLight.position.set(side * 17.15, -0.82, -4.2);
+                    navLight.position.set(side * 17.38, tipY, tipZ);
                     group.add(navLight);
 
                     // 4 Twin Pratt & Whitney TF33 Engine Pods (8 Engines total)
-                    [0.29, 0.56].forEach(frac => {
-                        const px = side * (0.65 + frac * 16.5);
-                        const py = 0.55 - 0.15 * frac - 1.18 * Math.pow(frac, 1.75);
-                        const pz = 2.2 - 6.6 * frac + 0.9;
+                    [0.28, 0.58].forEach(u => {
+                        const px = side * (0.65 + u * 16.5);
+                        const py = 0.55 - 1.25 * Math.pow(u, 1.75);
+                        const pzLE = 3.8 - u * 6.6;
 
                         const podGroup = new THREE.Group();
-                        podGroup.position.set(px, py - 0.92, pz + 0.6);
+                        podGroup.position.set(px, py - 0.72, pzLE + 0.9);
 
                         // Swept Cantilevered Wing Pylon
-                        const pylon = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.95, 2.8), bellyMat);
-                        pylon.rotation.x = -0.18;
-                        pylon.position.set(0, 0.52, -0.2);
+                        const pylon = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.78, 2.6), bellyMat);
+                        pylon.rotation.x = -0.12;
+                        pylon.position.set(0, 0.42, -0.45);
                         podGroup.add(pylon);
-                        const pylonLeadingEdge = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.92, 0.12), titaniumMat);
-                        pylonLeadingEdge.rotation.x = -0.18;
-                        pylonLeadingEdge.position.set(0, 0.52, 1.22);
+                        const pylonLeadingEdge = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.75, 0.12), titaniumMat);
+                        pylonLeadingEdge.rotation.x = -0.12;
+                        pylonLeadingEdge.position.set(0, 0.42, 0.82);
                         podGroup.add(pylonLeadingEdge);
 
                         // Twin nacelle center fairing
@@ -1796,12 +2069,14 @@
                     });
 
                     // Horizontal Stabilizers
-                    const hStab = this.buildNACAStreamlinedWing({
-                        span: 4.9, rootChord: 1.9, tipChord: 0.75,
-                        thickness: 0.11, sweepZ: 2.1, dihedralY: 0.15,
-                        side, material: upperMat
+                    const hStab = this.buildB52SweptWing({
+                        side, rootX: 0.25, span: 4.8,
+                        rootChord: 2.0, tipChord: 0.75,
+                        rootZ_LE: -7.0, sweepLE: 2.2,
+                        rootThick: 0.16, tipThick: 0.04,
+                        anhedralDroop: -0.15, material: upperMat
                     });
-                    hStab.position.set(side * 0.25, 0.45, -8.0);
+                    hStab.position.set(0, 0.45, 0);
                     group.add(hStab);
 
                     const hStabTrim = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 4.8, 6), titaniumMat);

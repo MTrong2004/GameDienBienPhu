@@ -74,9 +74,9 @@ const MISSIONS = [
         mode: "SAM2",
         camera: "DECK",
         briefing: [
-            "Sau đêm 18/12, địch phát hiện hệ thống hỏa lực phòng không của ta ở phía Bắc. Đêm 19 rạng sáng 20/12, các tốp B-52 thay đổi đường bay, chuyển sang tiếp cận Thủ đô từ hướng Tây và Tây Bắc.",
-            "Tiểu đoàn 77 chốt giữ trận địa Chèm – Thượng Cát. Đồng chí Tiểu đoàn trưởng Đinh Thế Văn chỉ đạo trắc thủ vạch nhiễu đón lõng, áp dụng thành công phương pháp bắn đón nửa góc khi B-52 nghiêng cánh cắt bom.",
-            "Địch tăng cường gây nhiễu rãnh đạn và dùng F-4 bắn tên lửa Shrike vào đài radar. Hãy phát sóng chớp nhoáng và cơ động nhảy tần số kịp thời."
+            "Sau đêm đầu của chiến dịch, Mỹ tiếp tục điều chỉnh đường bay và tăng cường các biện pháp gây nhiễu điện tử nhằm đối phó với mạng lưới phòng không miền Bắc. Đêm 19 rạng sáng 20/12/1972, theo thống kê phía Mỹ, có 93 lần xuất kích B-52 trong đêm.",
+            "Tiểu đoàn 77, Trung đoàn 257, tại trận địa Chèm do đồng chí Đinh Thế Văn chỉ huy, tiếp tục bảo vệ hướng Tây và Tây Bắc Thủ đô. Bộ đội tên lửa kiên trì phân biệt tín hiệu mục tiêu giữa các dải nhiễu, vận dụng những phương pháp điều khiển và bám sát phù hợp để đối phó với B-52.",
+            "Địch tăng cường gây nhiễu radar và sử dụng máy bay chế áp phòng không mang tên lửa chống radar Shrike. Các đơn vị phải chủ động phát sóng hợp lý, bám sát mục tiêu và cơ động khi cần thiết."
         ],
         forces: "địch huy động <b>93 lần chiếc B-52 (theo phía Mỹ)</b> cùng hàng trăm lượt máy bay chiến thuật F-4, F-105 yểm trợ dọn đường.",
         kills: 2, ammo: 6, timeLimit: 260, speed: 1.0,
@@ -107,7 +107,7 @@ const MISSIONS = [
     },
     {
         id: "m3",
-        story: "Đêm 20 tháng 12 năm 1972. Sau hai đêm đầu chiến dịch, không quân chiến lược Mỹ tiếp tục huy động lực lượng B-52 quy mô lớn, đánh phá Hà Nội và một số mục tiêu trọng yếu ở miền Bắc. Ga Yên Viên cùng các khu vực trọng điểm quanh Thủ đô chìm trong những đợt bom dữ dội. Bầu trời Hà Nội đêm nay lại rực lửa.",
+        story: "Đêm 20 rạng sáng 21 tháng 12 năm 1972. Sau hai đêm đầu của Chiến dịch Linebacker II, không quân chiến lược Mỹ tiếp tục huy động lực lượng B-52 quy mô lớn, đánh phá Hà Nội và một số mục tiêu trọng yếu ở miền Bắc. Các khu vực mục tiêu quanh Thủ đô, trong đó có vùng ga Yên Viên, tiếp tục hứng chịu những đợt không kích dữ dội. Bầu trời Hà Nội lại rực sáng bởi bom đạn.",
         date: "20.12.1972",
         dateLabel: "Đêm 20/12/1972",
         clock: [20, 0],
@@ -117,11 +117,11 @@ const MISSIONS = [
         mode: "SAM2",
         camera: "DECK",
         briefing: [
-            "Sau hai đêm đầu, các đơn vị tên lửa rút kinh nghiệm: B-52 bay theo những đường bay cố định. Trắc thủ chuyển sang bám vào <b>dải nhiễu</b> do chính máy bay phát ra và chỉ phát sóng ngắn để tránh tên lửa chống radar Shrike.",
-            "Đêm 20/12, địch tiếp tục đánh vào ga Yên Viên, Gia Lâm, Đông Anh. Đi trước các tốp B-52, tiêm kích F-4 rải <b>dải kim loại (chaff)</b> tạo hành lang nhiễu tiêu cực: radar thấy hàng loạt mục tiêu giả, cổng bám bị kéo lệch khỏi máy bay thật.",
-            "Khi đạn đi vào hành lang nhiễu chaff, hãy chuyển sang chế độ lái đạn thủ công (góc nhìn theo đạn) để điều khiển tên lửa bám thẳng vào B-52 thật."
+            "Qua hai đêm đầu, các đơn vị phòng không rút kinh nghiệm về quy luật hoạt động của B-52. Các tốp B-52 lặp lại những đường bay tương đối cố định. Dù hệ thống gây nhiễu điện tử khiến radar gặp nhiều khó khăn, bộ đội ra-đa vẫn khai thác các dải nhiễu đặc trưng để phát hiện và nhận diện đội hình B-52. Các đơn vị tên lửa áp dụng phương pháp phát sóng ngắn hoặc ngắt quãng nhằm giảm nguy cơ bị tên lửa chống radar Shrike phát hiện.",
+            "Đêm 20 rạng sáng 21/12, máy bay Mỹ tiếp tục đánh phá các mục tiêu tại Hà Nội và vùng phụ cận. Các máy bay F-4 trong lực lượng yểm trợ thả những dải kim loại gây nhiễu (chaff), tạo thêm tín hiệu phản xạ trên màn hình radar, khiến việc phân biệt mục tiêu thật trở nên khó khăn hơn.",
+            "Để đối phó với nhiễu điện tử, các kíp tên lửa linh hoạt thay đổi phương pháp điều khiển và bám bắt mục tiêu. Tại Tiểu đoàn 93, sau hai quả đạn theo phương pháp ba điểm không đạt kết quả, quả thứ ba được bắn theo phương pháp “vượt nửa góc”, tiêu diệt một máy bay B-52 tại khu vực Yên Thường."
         ],
-        forces: "địch huy động <b>99 lần chiếc B-52 (theo phía Mỹ)</b> cùng gần 100 lần máy bay chiến thuật yểm trợ.",
+        forces: "Theo thống kê phía Mỹ, có <b>99 phi vụ B-52</b> cùng khoảng <b>99 phi vụ máy bay chiến thuật yểm trợ</b>.",
         kills: 7, ammo: 18, timeLimit: 320, speed: 1.0,
         waves: [3, 15, 30, 48, 66, 85, 105, 125],
         jam: { "power": 6.0, "barrage": 0.12, "retune": 18, "lookThrough": 2.0, "chaff": true, "startFreq": 3040 },
@@ -153,7 +153,7 @@ const MISSIONS = [
     },
     {
         id: "m4",
-        story: "Đêm 21 rạng sáng 22 tháng 12 năm 1972. Bão nhiễu điện tử của không quân Mỹ tiếp tục giăng kín bầu trời Thủ đô. Sĩ quan chỉ huy Nguyễn Văn Phiệt cùng kíp chiến đấu Tiểu đoàn 57 kiên cường bám trận địa Đại Đồng (Đại Mạch, Đông Anh) vạch nhiễu tìm thù, bảo vệ cửa ngõ phía Bắc Thủ đô.",
+        story: "Đêm 21 rạng sáng 22 tháng 12 năm 1972. Bão nhiễu điện tử của không quân Mỹ tiếp tục bao trùm bầu trời Hà Nội. Tại trận địa Đại Đồng, xã Đại Mạch (Đông Anh), Tiểu đoàn trưởng Nguyễn Văn Phiệt cùng kíp chiến đấu Tiểu đoàn 57 kiên cường bám bắt mục tiêu, quyết tâm đánh bại những thủ đoạn gây nhiễu của đối phương.",
         date: "21.12.1972",
         dateLabel: "Đêm 21/12/1972",
         clock: [21, 30],
@@ -163,11 +163,11 @@ const MISSIONS = [
         mode: "SAM2",
         camera: "DECK",
         briefing: [
-            "Sau ba đêm tổn thất nặng nề, Mỹ dốc toàn lực tăng cường mật độ gây nhiễu tích cực và rải dày đặc dải kim loại chaff. Màn hiện sóng radar phủ kín dải nhiễu râu tôm và nhiễu xung kim đan chéo.",
-            "Tại trận địa Đại Đồng (xã Đại Mạch, huyện Đông Anh), Tiểu đoàn trưởng Nguyễn Văn Phiệt chỉ đạo trắc thủ góc tà và trắc thủ phương vị hiệp đồng chặt chẽ: đo dải nhiễu quét, xác định đúng tâm tín hiệu B-52 thật.",
-            "Hãy tiết kiệm cơ số đạn, kiên quyết bám sát mục tiêu cho đến cự ly phóng tối ưu 25–28 km mới phát lệnh điểm hỏa."
+            "Sau những tổn thất trong các đêm trước, không quân Mỹ tiếp tục sử dụng hệ thống gây nhiễu điện tử nhằm che giấu đội hình B-52. Những dải nhiễu chồng lấn khiến việc phân biệt mục tiêu thật với tín hiệu giả trên màn hiện sóng trở nên vô cùng khó khăn.",
+            "Tại trận địa thôn Đại Đồng, xã Đại Mạch (Đông Anh, Hà Nội), Tiểu đoàn 57 do Nguyễn Văn Phiệt chỉ huy tập trung phân tích dải nhiễu, xác định mục tiêu B-52 và hiệp đồng chặt chẽ giữa các thành phần trong kíp chiến đấu.",
+            "Rạng sáng 22/12, lúc 3 giờ 42 phút, Tiểu đoàn 57 phóng hai quả tên lửa, bắn rơi một máy bay B-52. Chiếc máy bay rơi tại khu vực Chợ Bến, Hòa Bình, góp phần lập nên chiến công của lực lượng phòng không trong đêm chiến đấu ác liệt."
         ],
-        forces: "địch huy động <b>30 lần chiếc B-52 (theo phía Mỹ)</b> cùng các tốp F-111 cánh cụp cánh xòe đánh phá ác liệt.",
+        forces: "<b>24 lần chiếc B-52</b> và <b>36 lần chiếc máy bay chiến thuật hộ tống</b>; ngoài ra, <b>18 lần chiếc F-111</b> hoạt động xen kẽ ở độ cao thấp. Theo tài liệu tổng kết chiến dịch của Việt Nam.",
         kills: 3, ammo: 9, timeLimit: 285, speed: 1.05,
         waves: [3, 25, 50, 75, 100],
         jam: { "power": 6.5, "barrage": 0.13, "retune": 20, "lookThrough": 1.9, "chaff": true, "startFreq": 2950 },
@@ -197,7 +197,7 @@ const MISSIONS = [
     },
     {
         id: "m5",
-        story: "Đêm 22 tháng 12 năm 1972. Hồi rạng sáng, bom rải thảm B-52 đã tàn phá Bệnh viện Bạch Mai, vùi lấp nhiều y bác sĩ và bệnh nhân. Đúng ngày kỷ niệm 28 năm thành lập QĐND Việt Nam, Tiểu đoàn 78 cùng lưới lửa phòng không Hà Nội nén đau thương thành sức mạnh, quyết trả thù cho đồng bào.",
+        story: "Rạng sáng 22 tháng 12 năm 1972, B-52 Mỹ ném bom Bệnh viện Bạch Mai, làm sập nhiều khu nhà và vùi lấp những người đang trú ẩn. Giữa ngày kỷ niệm 28 năm thành lập Quân đội nhân dân Việt Nam, nỗi đau của Thủ đô càng thôi thúc quân và dân Hà Nội kiên cường chiến đấu, quyết tâm bảo vệ đồng bào.",
         date: "22.12.1972",
         dateLabel: "Đêm 22/12/1972",
         clock: [3, 45],
@@ -207,11 +207,11 @@ const MISSIONS = [
         mode: "SAM2",
         camera: "DECK",
         briefing: [
-            "Rạng sáng 22/12, các tốp B-52 trút bom xuống Bệnh viện Bạch Mai – cơ sở chữa bệnh lớn nhất miền Bắc, cướp đi sinh mạng của nhiều y bác sĩ và người bệnh.",
-            "Tin đau thương truyền tới các bệ phóng. Chiến sĩ Tiểu đoàn 78 và tự vệ Thủ đô siết chặt tay súng, biến đau thương thành ngọn lửa căm thù ngùn ngụt.",
-            "Địch tăng cường các tốp tiêm kích F-4 bay yểm hộ dọn đường và rải hành lang dải kim loại (chaff) tạo mục tiêu giả. Hãy quan sát dải nhiễu quét để nhắm đúng B-52 thật."
+            "Rạng sáng 22/12, các tốp B-52 tập kích khu vực Hà Nội. Bệnh viện Bạch Mai trúng bom, nhiều khu nhà điều trị, phòng làm việc và khu hầm trú ẩn bị phá hủy hoặc vùi lấp. Nhiều cán bộ y tế, nhân viên và sinh viên y khoa hy sinh trong thảm họa.",
+            "Theo tường thuật lịch sử phía Việt Nam, trong đợt tập kích rạng sáng, Mỹ sử dụng 24 chiếc B-52 cùng 36 máy bay chiến thuật; 18 lượt F-111 hoạt động xen kẽ ở độ cao thấp nhằm đánh phá các mục tiêu đã trinh sát.",
+            "Trước những đợt không kích và thủ đoạn gây nhiễu điện tử, các đơn vị phòng không Hà Nội tiếp tục bám sát trận địa, phối hợp phát hiện, phân biệt mục tiêu thật và đánh trả đội hình tập kích. Những trận đánh ác liệt trong ngày 22/12 tiếp tục thể hiện tinh thần chiến đấu kiên cường của quân và dân Thủ đô."
         ],
-        forces: "địch huy động <b>30 lần chiếc B-52 (theo phía Mỹ)</b> cùng các máy bay chiến thuật ném bom ngoại vi Hà Nội, Hải Phòng và các vùng phụ cận.",
+        forces: "Theo bảng thống kê phía Mỹ, có <b>30 phi vụ B-52</b> cùng các phi vụ máy bay chiến thuật yểm trợ, chế áp phòng không và rải kim loại gây nhiễu (chaff).",
         kills: 3, ammo: 9, timeLimit: 280, speed: 1.05,
         waves: [3, 22, 45, 70, 95],
         jam: { "power": 6.8, "barrage": 0.14, "retune": 20, "lookThrough": 1.8, "chaff": true, "startFreq": 3010 },
@@ -241,21 +241,21 @@ const MISSIONS = [
     },
     {
         id: "m6",
-        story: "Đêm 23 tháng 12 năm 1972. Bị tổn thất nặng, Mỹ điều chỉnh hướng tấn công sang các tuyến giao thông tiếp tế và kho tàng huyết mạch. Tiểu đoàn 82 (Trung đoàn 238) kiên cường bám trận địa chốt giữ bầu trời.",
+        story: "Rạng sáng 23 tháng 12 năm 1972. Sau những tổn thất trong các đêm trước, không quân Mỹ tiếp tục tập kích Hải Phòng bằng lực lượng B-52 và máy bay chiến thuật yểm trợ. Giữa màn nhiễu điện tử dày đặc, Tiểu đoàn 82, Trung đoàn 238 kiên cường bám trận địa An Lão, quyết tâm bảo vệ bầu trời thành phố cảng.",
         date: "23.12.1972",
         dateLabel: "Đêm 23/12/1972",
         clock: [22, 15],
         title: "Chặn đứng đòn chia cắt",
         unit: "Tiểu đoàn 82 · Trung đoàn 238",
-        place: "Hướng Đông Bắc – Bảo vệ mạch máu giao thông",
+        place: "Trận địa An Lão (Hải Phòng) – Bảo vệ thành phố cảng",
         mode: "SAM2",
         camera: "DECK",
         briefing: [
-            "Địch chuyển trọng tâm sang phá hủy các đầu mối giao thông tiếp tế: ga đường sắt Bắc Giang, Đồng Mỏ, Lưu Xá và kho tàng hậu cần nhằm cắt đứt nguồn chi viện.",
-            "Tiểu đoàn 82 (Trung đoàn 238) cơ động trận địa chốt chặn hướng tấn công từ phía Đông và Đông Bắc, bảo vệ các huyết mạch chi viện cho Hà Nội.",
-            "Máy bay địch bay theo cự ly giãn cách rộng hơn, cơ động đổi độ cao liên tục. Cần phán đoán quỹ đạo và phóng đón kịp thời trước khi chúng cắt bom."
+            "Rạng sáng 23/12, không quân Mỹ huy động 24 lần chiếc B-52 cùng 30 lần chiếc máy bay chiến thuật tập kích Hải Phòng. Các trận địa phòng không phải đối mặt với hệ thống gây nhiễu điện tử mạnh, gây nhiều khó khăn cho việc phát hiện và nhận dạng mục tiêu.",
+            "Tại trận địa An Lão, Tiểu đoàn 82 thuộc Trung đoàn 238 kiên trì bám sát mục tiêu, vận dụng kinh nghiệm đánh B-52 để tổ chức chiến đấu. Đơn vị đã bắn rơi một máy bay B-52, mở đầu chiến công bắn rơi B-52 của quân dân Hải Phòng trong chiến dịch.",
+            "Tiếp đó, Tiểu đoàn 73 thuộc Trung đoàn 285 cũng lập công, bắn rơi thêm một chiếc B-52. Hai chiến công góp phần khẳng định khả năng chiến đấu của lực lượng phòng không bảo vệ thành phố cảng trước các đợt tập kích đường không quy mô lớn."
         ],
-        forces: "địch dùng <b>30 lần chiếc B-52 (theo phía Mỹ)</b> cùng các máy bay chiến thuật yểm trợ.",
+        forces: "<b>24 lần chiếc B-52</b> và <b>30 lần chiếc máy bay chiến thuật</b> tham gia đợt tập kích Hải Phòng. Theo tài liệu tổng kết lịch sử phía Việt Nam.",
         kills: 2, ammo: 6, timeLimit: 260, speed: 1.1,
         waves: [3, 24, 52, 85],
         jam: { "power": 7.0, "barrage": 0.14, "retune": 21, "lookThrough": 1.8, "chaff": true, "startFreq": 2975 },
@@ -284,7 +284,7 @@ const MISSIONS = [
     },
     {
         id: "m7",
-        story: "Đêm 24 tháng 12 năm 1972. Trước áp lực quốc tế và thiệt hại ngoài dự liệu, Mỹ chuẩn bị tạm ngừng ném bom 36 giờ nhân dịp Giáng sinh. Nhưng trước giờ ngừng bắn, địch điên cuồng tung đợt ném bom dữ dội đánh ga Kép, Thái Nguyên và cửa ngõ Thủ đô.",
+        story: "Đêm 24 tháng 12 năm 1972. Trước thời điểm tạm ngừng ném bom nhân dịp Giáng sinh, không quân Mỹ tiếp tục mở đợt tập kích vào các mục tiêu giao thông và hậu cần ở miền Bắc. Ga Kép, khu vực Thái Nguyên cùng những đầu mối vận tải trọng yếu trở thành mục tiêu đánh phá. Trước giờ tạm ngừng, các lực lượng phòng không vẫn kiên cường bám trận địa, quyết tâm bảo vệ các tuyến chi viện chiến lược.",
         date: "24.12.1972",
         dateLabel: "Đêm 24/12/1972",
         clock: [19, 40],
@@ -294,11 +294,11 @@ const MISSIONS = [
         mode: "SAM2",
         camera: "DECK",
         briefing: [
-            "Trước thời điểm 24h ngày 24/12 – thời điểm Nhà Trắng tuyên bố tạm ngừng ném bom 36 tiếng, không quân chiến lược Mỹ liều mạng mở đợt tập kích quy mô lớn.",
-            "Địch nhắm vào ga Kép, sân bay Kép và các tuyến đường sắt kết nối Hà Nội với biên giới phía Bắc.",
-            "Tiểu đoàn 71 kiên cường bám trận địa đón đánh các tốp B-52 từ hướng biển và hướng Đông Bắc tràn vào. Phải giáng đòn tiêu diệt dứt khoát trước nửa đêm."
+            "Trong ngày 24/12, máy bay chiến thuật Mỹ đánh phá khu vực Thái Nguyên và Hà Bắc. Đến tối cùng ngày, các tốp B-52 tiếp tục tập kích những đầu mối giao thông quan trọng, trong đó có ga Kép và khu vực Thái Nguyên; các máy bay chiến thuật tham gia yểm trợ, đánh phá những mục tiêu liên quan.",
+            "Các đợt không kích nhằm gây gián đoạn mạng lưới giao thông, vận tải và tiếp tế của miền Bắc. Trước sức ép từ những đợt tập kích liên tiếp, lực lượng phòng không vẫn duy trì chiến đấu, phối hợp phát hiện mục tiêu và tổ chức đánh trả từ các trận địa.",
+            "Đến 24 giờ ngày 24/12, không quân Mỹ tạm ngừng ném bom miền Bắc nhân dịp Giáng sinh. Khoảng lặng này kéo dài 36 giờ theo kế hoạch của Mỹ, trước khi chiến dịch tập kích được nối lại ngày 26/12/1972."
         ],
-        forces: "địch tung <b>30 lần chiếc B-52 (theo phía Mỹ)</b> ném bom dồn dập trước giờ Giáng sinh.",
+        forces: "<b>30 lần chiếc B-52</b> theo tài liệu phía Mỹ, cùng các máy bay chiến thuật yểm trợ. Tài liệu tổng kết phía Việt Nam ghi <b>33 lần chiếc B-52</b> trong đêm. Hai số liệu được dẫn theo các nguồn thống kê khác nhau.",
         kills: 2, ammo: 6, timeLimit: 255, speed: 1.1,
         waves: [3, 26, 56, 88],
         jam: { "power": 7.2, "barrage": 0.15, "retune": 22, "lookThrough": 1.7, "chaff": true, "startFreq": 3030 },
@@ -327,7 +327,7 @@ const MISSIONS = [
     },
     {
         id: "m8",
-        story: "Ngày 25 tháng 12 năm 1972, ngày lễ Giáng sinh. Địch tạm ngừng ném bom 36 giờ. Bộ Tư lệnh Quân chủng PK-KQ nhận định: địch tạm dừng để củng cố lực lượng, sau Noel chắc chắn sẽ đánh ác liệt hơn. Thời khắc này quý hơn vàng: nạp đạn, cân chỉnh radar, cơ động trận địa sẵn sàng giáng trả.",
+        story: "Ngày 25 tháng 12 năm 1972, ngày lễ Giáng sinh. Từ 0 giờ, không quân Mỹ tạm ngừng ném bom miền Bắc trong khoảng 36 giờ. Bộ Tư lệnh Quân chủng Phòng không - Không quân nhận định địch sẽ trở lại đánh phá ác liệt hơn. Trong khoảng lặng quý giá này, các đơn vị khẩn trương rút kinh nghiệm, củng cố lực lượng và chuẩn bị phương án chiến đấu cho những trận đánh tiếp theo.",
         date: "25.12.1972",
         dateLabel: "Ngày 25/12/1972",
         clock: [14, 0],
@@ -337,11 +337,11 @@ const MISSIONS = [
         mode: "SAM2",
         camera: "DECK",
         briefing: [
-            "Ngày 25/12 là khoảng lặng chiến lược vô cùng quý giá. Toàn bộ các trung đoàn tên lửa, pháo cao xạ khẩn trương cơ động trận địa dự bị, tiếp nhận đạn tên lửa mới vận chuyển từ Quân khu 4 ra.",
-            "Địch không ném bom rải thảm B-52 ban ngày nhưng vẫn cho máy bay trinh sát tầng cao SR-71 và máy bay trinh sát không người lái bay thăm dò trận địa của ta.",
-            "Nhiệm vụ: Cảnh giác cao độ, bắt bám và tiêu diệt các tốp máy bay trinh sát xâm nhập tầng cao, bảo vệ tuyệt đối bí mật vị trí bố phòng mới."
+            "Ngày 25/12 là khoảng lặng chiến lược giữa chiến dịch Linebacker II. Bộ Tư lệnh Quân chủng Phòng không - Không quân tổ chức hội nghị rút kinh nghiệm giai đoạn đầu, đồng thời khẩn trương triển khai các phương án chuẩn bị chiến đấu. Từ 19 giờ, các đơn vị tên lửa được lệnh sẵn sàng chiến đấu 100%.",
+            "Việc tạm ngừng ném bom không đồng nghĩa hoạt động trinh sát chấm dứt. Theo một báo cáo quân sự Mỹ, trong ngày 25/12 có 18 phi vụ trinh sát đường không, gồm 2 phi vụ SR-71 và 4 phi vụ máy bay trinh sát không người lái.",
+            "Các đơn vị ra-đa phải phân biệt chính xác mục tiêu thật, giả, kịp thời thông báo B-52 và chú ý các máy bay hoạt động ở độ cao thấp. Pháo phòng không bố trí đón đánh F-111, đồng thời bảo vệ các trận địa tên lửa. Toàn bộ lực lượng duy trì cảnh giác, giữ bí mật bố trí và sẵn sàng đối phó khi các đợt tập kích được nối lại."
         ],
-        forces: "địch tạm ngừng B-52, tung <b>máy bay trinh sát tầng cao SR-71 và máy bay trinh sát không người lái</b> luồn lách do thám.",
+        forces: "Tạm ngừng ném bom miền Bắc; hoạt động trinh sát đường không vẫn tiếp diễn. Tài liệu phía Mỹ ghi nhận <b>18 phi vụ trinh sát</b>, trong đó có <b>2 phi vụ SR-71</b> và <b>4 phi vụ máy bay không người lái</b>. Theo báo cáo quân sự Mỹ.",
         kills: 1, ammo: 4, timeLimit: 220, speed: 1.15,
         waves: [3, 35, 75],
         jam: { "power": 6.0, "barrage": 0.1, "retune": 18, "lookThrough": 2.0, "chaff": false, "startFreq": 2940 },
@@ -370,7 +370,7 @@ const MISSIONS = [
     },
     {
         id: "m9",
-        story: "Đêm 26 tháng 12 năm 1972, đêm quyết chiến lịch sử. Mỹ mở cuộc tập kích quy mô lớn nhất với 105 lần chiếc B-52 đánh phá Hà Nội, Hải Phòng và Thái Nguyên. Riêng tại Hà Nội, 56 lần chiếc B-52 ồ ạt trút bom; lúc 22h40 bom rải thảm tàn khốc xuống phố Khâm Thiên và khu đông dân. Toàn mặt trận giáng đòn sấm sét.",
+        story: "Đêm 26 tháng 12 năm 1972, đêm quyết chiến ác liệt nhất của Chiến dịch Linebacker II. Không quân Mỹ mở cuộc tập kích quy mô lớn vào Hà Nội, Hải Phòng và Thái Nguyên. Khoảng 22 giờ 40, bom B-52 trút xuống phố Khâm Thiên và nhiều khu dân cư, gây nên những mất mát đau thương cho nhân dân Thủ đô. Trước đòn tập kích dữ dội, các lực lượng phòng không Hà Nội kiên cường chiến đấu, bảo vệ bầu trời thành phố.",
         date: "26.12.1972",
         dateLabel: "Đêm 26/12/1972",
         clock: [22, 5],
@@ -380,11 +380,11 @@ const MISSIONS = [
         mode: "SAM2",
         camera: "DECK",
         briefing: [
-            "Từ 22h05 đêm 26/12, vừa hết 36 giờ ngừng ném bom Noel, Mỹ mở cuộc tập kích lớn nhất chiến dịch: 105 lần chiếc B-52 (phía Mỹ ghi 120) đánh phá ba khu vực Hà Nội, Hải Phòng, Thái Nguyên. Riêng hướng Hà Nội, địch huy động 56 lần chiếc B-52 từ nhiều hướng lao vào trút bom.",
-            "Khoảng 22h40, bom rải thảm tàn bạo xuống phố Khâm Thiên, khu Định Công, An Dương, cướp đi sinh mạng của 287 người dân vô tội, làm bị thương 290 người. Khâm Thiên chìm trong biển lửa căm thù.",
-            "Toàn bộ lưới lửa tên lửa phòng không Hà Nội vào trận quyết chiến lịch sử. Hãy giữ vững ý chí, đánh hiệp đồng tập trung hỏa lực bắn rơi tại chỗ pháo đài bay địch."
+            "Từ 22 giờ 05 phút ngày 26/12, không quân Mỹ mở đợt tập kích quy mô lớn, đánh phá đồng thời các mục tiêu tại Hà Nội, Hải Phòng và Thái Nguyên. Theo thống kê phía Việt Nam, địch sử dụng 105 lần chiếc B-52 cùng 110 lần chiếc máy bay chiến thuật yểm hộ. Phía Mỹ ghi nhận 120 chiếc B-52 tham gia đợt tập kích.",
+            "Khoảng 22 giờ 40, bom B-52 rải thảm xuống nhiều khu vực nội, ngoại thành Hà Nội, đặc biệt là phố Khâm Thiên và khu vực lân cận. Trận bom đã khiến 287 người thiệt mạng, 290 người bị thương theo số liệu công bố tại Đài tưởng niệm Khâm Thiên; nhiều ngôi nhà và công trình dân sinh bị phá hủy.",
+            "Trên khắp các trận địa, bộ đội tên lửa, pháo cao xạ và lực lượng phòng không ba thứ quân phối hợp chiến đấu quyết liệt. Trong hơn một giờ giao chiến, lực lượng phòng không Hà Nội, Hải Phòng và Thái Nguyên bắn rơi 8 máy bay B-52 cùng nhiều máy bay chiến thuật; riêng Hà Nội bắn rơi 5 chiếc B-52, trong đó 4 chiếc rơi tại chỗ."
         ],
-        forces: "cuộc tập kích lớn nhất chiến dịch: <b>105 lần chiếc B-52</b> đánh 3 khu vực Hà Nội, Hải Phòng, Thái Nguyên (trong đó có <b>56 lần chiếc B-52</b> đánh phá Hà Nội) cùng hơn 100 lần chiếc máy bay chiến thuật.",
+        forces: "<b>105 lần chiếc B-52</b> và <b>110 lần chiếc máy bay chiến thuật</b> theo thống kê phía Việt Nam. Tài liệu phía Mỹ ghi nhận <b>120 chiếc B-52</b> và <b>114 máy bay chiến thuật</b>.",
         kills: 7, ammo: 18, timeLimit: 320, speed: 1.15,
         waves: [3, 12, 24, 40, 58, 76, 95, 115],
         jam: { "power": 8.0, "barrage": 0.16, "retune": 25, "lookThrough": 1.6, "chaff": true, "startFreq": 2930 },
@@ -415,7 +415,7 @@ const MISSIONS = [
     },
     {
         id: "m10",
-        story: "Đêm 27 tháng 12 năm 1972. Phi công Phạm Tuân lái chiếc MiG-21 số hiệu 5121 cất cánh từ sân bay dã chiến Yên Bái, bay thấp vượt qua hàng rào tiêm kích F-4 rồi vọt lên tầng cao. Lần đầu tiên trong lịch sử, én bạc MiG-21 xuất kích bắn rơi pháo đài bay B-52 trên không.",
+        story: "Đêm 27 tháng 12 năm 1972. Phi công Phạm Tuân lái chiếc MiG-21 số hiệu 5121, cất cánh từ sân bay Yên Bái. Được sở chỉ huy mặt đất dẫn đường, ông vượt qua đội hình F-4 hộ tống, tiếp cận B-52 trên vùng trời Sơn La và phóng hai tên lửa K-13. Chiếc B-52 bốc cháy, đánh dấu chiến công đầu tiên của Không quân Việt Nam bắn rơi pháo đài bay B-52 trong Chiến dịch Hà Nội – Điện Biên Phủ trên không.",
         date: "27.12.1972",
         dateLabel: "Đêm 27/12/1972",
         clock: [22, 20],
@@ -426,11 +426,11 @@ const MISSIONS = [
         camera: "COCKPIT",
         pilot: "5121",
         briefing: [
-            "Đêm 27/12, địch dùng 60 lần chiếc B-52 (theo phía Mỹ) đánh phá Hà Nội. Để tránh radar tiêm kích F-4 yểm hộ dày đặc, phi công Phạm Tuân bí mật cất cánh từ đường băng dã chiến ngắn tại Yên Bái.",
-            "Bay men theo thung lũng ở độ cao thấp, sau đó tắt đài vô tuyến, theo lệnh Sở chỉ huy bất ngờ vọt lên độ cao 10.000m tiếp cận tốp B-52 từ phía sau trên vùng trời Mộc Châu.",
-            "Bạn đang ở trong buồng lái MiG-21 số hiệu 5121. Tăng ga bật tăng lực, bám sát góc đuôi B-52 trong góc ±35°, đưa mục tiêu vào vòng ngắm ASP-PFD đến khi đèn <b>ЗАХВАТ</b> sáng đỏ rồi ấn phóng tên lửa K-13!"
+            "Tối 27/12, không quân Mỹ tiếp tục tập kích Hà Nội bằng lực lượng B-52 được máy bay chiến thuật yểm hộ. Theo biên niên sử của Bộ Tư lệnh Lăng, trong khoảng 19 giờ đến 22 giờ, Mỹ huy động 36 lần chiếc B-52, cùng 66 lần chiếc máy bay chiến thuật và 17 lần chiếc F-111 hoạt động xen kẽ.",
+            "Lúc 22 giờ 20 phút, phi công Phạm Tuân được lệnh xuất kích bằng chiếc MiG-21 số hiệu 5121 từ sân bay Yên Bái. Dưới sự dẫn đường của sở chỉ huy và ra-đa mặt đất, ông tiếp cận đội hình B-52, tránh các máy bay F-4 hộ tống và áp sát mục tiêu.",
+            "Khi còn cách B-52 khoảng 2–3 km, Phạm Tuân điều chỉnh đường ngắm và phóng hai tên lửa K-13. Một chiếc B-52 bốc cháy trên bầu trời khu vực Mộc Châu – Sơn La. Ông nhanh chóng thoát ly khỏi khu vực chiến đấu và trở về an toàn. Chiến công này đánh dấu lần đầu tiên Không quân Việt Nam bắn rơi B-52 trong chiến dịch 12 ngày đêm."
         ],
-        forces: "địch dùng <b>60 lần chiếc B-52 (theo phía Mỹ)</b> đánh phá Hà Nội. Không quân nhân dân Việt Nam bí mật xuất kích từ sân bay ngắn dã chiến.",
+        forces: "<b>36 lần chiếc B-52</b>, <b>66 lần chiếc máy bay chiến thuật yểm hộ</b> và <b>17 lần chiếc F-111</b> hoạt động xen kẽ trong khung giờ 19–22 giờ, theo biên niên sử của Bộ Tư lệnh Lăng.",
         kills: 1, ammo: 2, timeLimit: 180, speed: 1.2,
         waves: [4, 60],
         jam: null,
@@ -459,7 +459,7 @@ const MISSIONS = [
     },
     {
         id: "m11",
-        story: "Đêm 28 tháng 12 năm 1972. Phi công Vũ Xuân Thiều xuất kích trên chiếc MiG-21MF số hiệu 5046 từ sân bay Cẩm Thủy. Vượt qua màn nhiễu dày đặc, anh tiếp cận tốp B-52. Ở cự ly quá gần, sau khi phóng hai quả tên lửa K-13, người anh hùng đã dũng cảm biến chiếc máy bay của mình thành quả tên lửa thứ ba tiêu diệt pháo đài bay địch.",
+        story: "Đêm 28 tháng 12 năm 1972. Từ sân bay dã chiến Cẩm Thủy, phi công Vũ Xuân Thiều cất cánh trên chiếc MiG-21 theo lệnh Sở chỉ huy, vòng ra phía sau đội hình B-52 và truy kích đến vùng trời Sơn La. Trong đêm tối và màn nhiễu điện tử, ông tiếp cận mục tiêu ở cự ly gần, phóng hai tên lửa K-13. Chiến công và sự hy sinh của người phi công trẻ trở thành biểu tượng của tinh thần quyết chiến bảo vệ bầu trời Tổ quốc.",
         date: "28.12.1972",
         dateLabel: "Đêm 28/12/1972",
         clock: [21, 48],
@@ -471,11 +471,11 @@ const MISSIONS = [
         camera: "COCKPIT",
         pilot: "5046",
         briefing: [
-            "Đêm 28/12, địch điên cuồng tung các tốp B-52 đánh phá các tuyến giao thông liên tỉnh. Thượng úy phi công Vũ Xuân Thiều được lệnh xuất kích từ sân bay dã chiến Cẩm Thủy (Thanh Hóa).",
-            "Được Sở chỉ huy dẫn đường khéo léo, chiếc MiG-21MF số hiệu 5046 bay vọt lên vùng trời Yên Châu (Sơn La), đón lõng tốp B-52 đang trên đường tháo chạy.",
-            "Khoảng cách rút ngắn rất nhanh, màn đêm đen đặc. Khi đèn <b>ЗАХВАТ</b> sáng, hãy phóng tên lửa K-13. Nếu mục tiêu chưa rơi ở cự ly cận chiến, tinh thần quyết tử vì Tổ quốc sẽ dẫn lối cho chiến công bất tử."
+            "Từ 20 giờ đến 22 giờ ngày 28/12, không quân Mỹ sử dụng khoảng 60 lần chiếc B-52 đánh phá các khu vực Đông Anh, Đa Phúc, Cầu Đuống, Yên Viên và Gia Lâm. Các trận địa phòng không Hà Nội tiếp tục chiến đấu trong điều kiện địch sử dụng nhiều thủ đoạn gây nhiễu điện tử.",
+            "Lúc 21 giờ 41 phút, phi công Vũ Xuân Thiều nhận lệnh xuất kích từ sân bay dã chiến Cẩm Thủy, Thanh Hóa. Được Sở chỉ huy dẫn đường, ông vòng ra phía sau đội hình B-52 và truy kích đến vùng trời Sơn La. Khi phát hiện mục tiêu ở cự ly gần, ông xin phép công kích và phóng hai tên lửa K-13.",
+            "Theo tường thuật lịch sử phổ biến của Việt Nam, hai tên lửa đầu làm B-52 bị thương nhưng chưa rơi; Vũ Xuân Thiều tiếp tục công kích và hy sinh trong trận đánh. Câu chuyện ông biến chiếc MiG-21 thành “quả tên lửa thứ ba” được lưu truyền như biểu tượng của tinh thần quyết tử. Tuy nhiên, chi tiết về cách chiếc B-52 bị tiêu diệt vẫn có những cách diễn giải khác nhau trong các tài liệu."
         ],
-        forces: "địch huy động <b>khoảng 60 lần chiếc B-52</b> đánh phá khu vực quanh Hà Nội và các tuyến giao thông liên tỉnh.",
+        forces: "Khoảng <b>60 lần chiếc B-52</b> đánh phá khu vực Đông Anh, Đa Phúc, Cầu Đuống, Yên Viên và Gia Lâm trong khung giờ 20–22 giờ.",
         kills: 1, ammo: 2, timeLimit: 180, speed: 1.2,
         waves: [4, 50],
         jam: null,
@@ -504,7 +504,7 @@ const MISSIONS = [
     },
     {
         id: "m12",
-        story: "Đêm 29 tháng 12 năm 1972, đêm cuối cùng của chiến dịch 12 ngày đêm. Mười hai ngày đêm kiên cường đứng vững dưới mưa bom. Tiểu đoàn tên lửa 79 và 72 đón đánh những tốp B-52 cuối cùng, khép lại bản anh hùng ca Điện Biên Phủ trên không chấn động địa cầu.",
+        story: "Đêm 29 tháng 12 năm 1972, đêm cuối cùng của Chiến dịch Linebacker II. Sau 11 ngày tập kích với những tổn thất nặng nề, không quân Mỹ chuyển hướng đánh phá các mục tiêu ở Thái Nguyên, Lạng Sơn và Vĩnh Phú, thay vì tiếp tục tập trung lực lượng vào Hà Nội. Trên các trận địa phòng không, cán bộ, chiến sĩ vẫn kiên cường chiến đấu đến những giờ phút cuối cùng, khép lại 12 ngày đêm lịch sử.",
         date: "29.12.1972",
         dateLabel: "Đêm 29/12/1972",
         clock: [23, 16],
@@ -514,11 +514,11 @@ const MISSIONS = [
         mode: "SAM2",
         camera: "DECK",
         briefing: [
-            "Sau 11 ngày đêm bị giáng đòn tiêu hao nặng nề, lực lượng B-52 của Mỹ hoàn toàn kiệt quệ về tinh thần và vũ khí. Đêm 29/12 là đêm cuối cùng của chiến dịch Linebacker II.",
-            "Địch tung những tốp B-52 cuối cùng đánh phá khu gang thép Thái Nguyên, Đồng Mỏ (Lạng Sơn) và sân bay Kim Anh.",
-            "Kho đạn tên lửa đã vơi sau nhiều ngày đêm chiến đấu ròng rã: tiểu đoàn chỉ còn những quả đạn quý giá cuối cùng trên bệ. Hãy chắt chiu từng phát bắn, bám chắc phương pháp 3 điểm để kết thúc chiến dịch trong khúc ca toàn thắng."
+            "Ban ngày 29/12, Mỹ sử dụng 36 lần chiếc máy bay chiến thuật đánh phá nhà máy điện Cao Ngạn, khu vực Đồng Hỷ và cây số 4 Bắc Thái Nguyên. Đến 23 giờ 16 phút, địch huy động 60 lần chiếc B-52 tập kích ba khu vực trọng điểm: khu Gang thép Thái Nguyên và Trại Cau, Đồng Mỏ (Lạng Sơn), cùng khu vực Kim Anh (Vĩnh Phú).",
+            "Trong đợt tập kích ban đêm, 70 lần chiếc máy bay chiến thuật hoạt động xen kẽ, đánh phá các sân bay Thọ Xuân, Yên Bái, Hòa Lạc, Kép và các khu vực Kim Anh, Đông Anh, ngoại vi Hải Phòng và Quảng Ninh.",
+            "Trước đợt tập kích cuối cùng của chiến dịch, các đơn vị phòng không tiếp tục duy trì cảnh giác, phối hợp phát hiện mục tiêu và tổ chức đánh trả. Các đơn vị phòng không vòng ngoài bắn rơi hai máy bay, trong đó có một B-52 và một F-4. Những trận đánh này khép lại 12 ngày đêm chiến đấu bảo vệ Hà Nội và miền Bắc."
         ],
-        forces: "Từ 23 giờ 16 phút, địch huy động <b>60 lần chiếc B-52</b> chia làm nhiều mũi đánh vào khu gang thép Thái Nguyên – Trại Cau, Đồng Mỏ (Lạng Sơn) và khu vực Kim Anh – Đa Phúc.",
+        forces: "<b>60 lần chiếc B-52</b> cùng <b>70 lần chiếc máy bay chiến thuật</b> đánh phá các mục tiêu tại Thái Nguyên, Lạng Sơn, Vĩnh Phú và các khu vực lân cận.",
         kills: 2, ammo: 6, timeLimit: 260, speed: 1.2,
         waves: [3, 28, 55, 80],
         jam: { "power": 8.5, "barrage": 0.16, "retune": 26, "lookThrough": 1.6, "chaff": true, "startFreq": 3075 },
@@ -541,9 +541,9 @@ const MISSIONS = [
             win: "Tiểu đoàn 79 đã bắn rơi B-52 trong đêm cuối cùng — Toàn thắng chiến dịch Điện Biên Phủ trên không!"
         },
         history: [
-            "23 giờ 29 phút đêm 29/12/1972, Tiểu đoàn tên lửa 79 (Trung đoàn 257) tại trận địa Đa Phúc phóng 2 quả đạn, bắn rơi tại chỗ <b>1 chiếc B-52</b> rơi tại Phúc Yên – Vĩnh Phú, khép lại chiến dịch 12 ngày đêm lịch sử.",
-            "<b>7 giờ sáng ngày 30/12/1972</b>, Tổng thống Mỹ Richard Nixon buộc phải tuyên bố ngừng hoàn toàn chiến dịch ném bom Linebacker II từ vĩ tuyến 20 trở ra và chấp nhận ngồi lại bàn đàm phán Paris.",
-            "Sau 12 ngày đêm, quân dân miền Bắc bắn rơi <b>81 máy bay Mỹ, trong đó có 34 chiếc B-52, 5 chiếc F-111</b>, bắt sống nhiều phi công Mỹ. Ngày <b>27/1/1973</b>, Hiệp định Paris được ký kết, buộc quân đội viễn chinh Mỹ phải rút hoàn toàn khỏi Việt Nam."
+            "<b>23 giờ 16 phút đêm 29/12/1972</b>, Tiểu đoàn tên lửa 79, Trung đoàn 257, bắn rơi chiếc B-52 cuối cùng của chiến dịch. Đến <b>23 giờ 29 phút</b>, Tiểu đoàn 72, Trung đoàn 285, phóng quả tên lửa cuối cùng, khép lại 12 ngày đêm chiến đấu lịch sử.",
+            "<b>7 giờ sáng ngày 30/12/1972</b>, Tổng thống Mỹ Richard Nixon buộc phải tuyên bố ngừng ném bom từ vĩ tuyến 20 trở ra và đề nghị nối lại đàm phán Paris.",
+            "Sau 12 ngày đêm, quân và dân miền Bắc tuyên bố bắn rơi <b>81 máy bay Mỹ, trong đó có 34 chiếc B-52 và 5 chiếc F-111</b>. Ngày <b>27/1/1973</b>, Hiệp định Paris về chấm dứt chiến tranh, lập lại hòa bình ở Việt Nam được ký kết."
         ]
     }
 ];
