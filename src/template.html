@@ -563,17 +563,20 @@
         .tl-ms.is-active { border-left-color: #34d399; background: rgba(5,150,105,0.15); }
         .tl-ms.is-active::before { background: #34d399; width: 10px; height: 10px; left: -6px; top: 17px; }
         .tl-ms.is-active .tl-ms-title { color: #cdf7a1; }
-        .tl-ms-date { display: block; font-family: monospace; font-size: 12px; color: #fbbf24; font-weight: bold; }
-        .tl-ms-title { display: block; font-size: 13px; font-weight: 600; color: #e4e4e7; line-height: 1.4; margin-top: 2px; }
-        .tl-ms-badge { display: block; font-family: monospace; font-size: 10px; color: #a1a1aa; margin-top: 3px; }
+        .tl-ms-date { display: block; font-family: monospace; font-size: 13px; color: #fbbf24; font-weight: bold; }
+        .tl-ms-title { display: block; font-size: 14px; font-weight: 600; color: #e4e4e7; line-height: 1.4; margin-top: 2px; }
+        .tl-ms-badge { display: block; font-family: monospace; font-size: 11px; color: #a1a1aa; margin-top: 3px; }
         .archive-detail { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 22px; }
         .archive-detail > div:first-child { padding-bottom: 12px; margin-bottom: 20px; }
-        .archive-detail > div:first-child span:first-child { font-size: 17px; }
+        .archive-detail > div:first-child span:first-child { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px; font-weight: 700; }
+        .archive-col-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: #fbbf24; font-weight: bold; margin-bottom: 12px; }
+        .archive-cols-3 > div:first-child > *:last-child, .archive-cols-2 > div:first-child > *:last-child { max-width: 72ch; }
         .archive-detail > div:first-child > span { font-size: 12px; padding: 4px 10px; }
         .archive-cols-3 { display: grid; grid-template-columns: 1.5fr 1fr 1.2fr; gap: 20px; align-items: start; }
         .archive-cols-2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; align-items: start; }
         @media (max-width: 900px) { .archive-cols-3, .archive-cols-2 { grid-template-columns: 1fr; } }
-        #screen-archive #archive-content-area { font-size: 15px; line-height: 1.8; }
+        #screen-archive #archive-content-area { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 17px; line-height: 1.9; color: #f4f4f5; }
+        #screen-archive #archive-content-area .text-zinc-300 { color: #f4f4f5; }
         #screen-archive #archive-content-area .text-xs { font-size: 14px; }
         #screen-archive #archive-content-area .text-\[11px\] { font-size: 13px; }
         #screen-archive #archive-content-area .text-\[10px\] { font-size: 12px; }
