@@ -870,12 +870,18 @@
                 const crateMat = new THREE.MeshStandardMaterial({ map: this.textures.crateTex, roughness: 0.7, metalness: 0.15 });
                 const concreteMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.8, metalness: 0.15 });
 
-                // Semi-circular Sandbag Wall
+                // Large Arc Sandbag Revetment behind launcher #03 (clears camera orbit & pitch slide)
+                // ponytail: static circular arc around (2.8, 20.5); add procedural height noise if terrain uneven
+                const bagGeo = new THREE.SphereGeometry(0.58, 8, 6);
+                const arcR = 21, arcSpan = 2.8, numBags = 38, step = arcSpan / (numBags - 1);
                 for (let row = 0; row < 4; row++) {
-                    for (let i = -8; i <= 8; i++) {
-                        const bag = new THREE.Mesh(new THREE.SphereGeometry(0.58, 10, 8), bagMat);
+                    const r = arcR - row * 0.08, y = 0.35 + row * 0.48;
+                    for (let i = 0; i < numBags; i++) {
+                        const phi = -arcSpan / 2 + (i + (row % 2) * 0.5) * step;
+                        const bag = new THREE.Mesh(bagGeo, bagMat);
                         bag.scale.set(1.5, 0.62, 0.95);
-                        bag.position.set(i * 1.35 + (row % 2) * 0.4, 0.35 + row * 0.48, 28.5 + Math.abs(i) * 0.18);
+                        bag.position.set(2.8 + r * Math.sin(phi), y, 20.5 + r * Math.cos(phi));
+                        bag.rotation.y = phi;
                         g.add(bag);
                     }
                 }

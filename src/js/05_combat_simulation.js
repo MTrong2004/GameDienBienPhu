@@ -2102,42 +2102,67 @@
             if (currentMode === 'SAM2') {
                 // Priority 1: Keep tracking current guided missile target if alive
                 let tgt = (guidedMissile && guidedMissile.target && !guidedMissile.target.downed) ? guidedMissile.target : null;
-                // Priority 2: Currently selected target if alive
+                // Priority 2: Currently selected target if alive and still within effective envelope (<= 46 km)
                 if (!tgt && selectedTarget && !selectedTarget.downed && activeBombers.includes(selectedTarget)) {
-                    tgt = selectedTarget;
+                    const d = distKm(selectedTarget);
+                    if (d >= 10 && d <= 46 && computeTargetQuality(selectedTarget) >= 0.2) {
+                        tgt = selectedTarget;
+                    }
                 }
-                // Priority 3: Nearest alive bomber
+                // Priority 3: Score all alive bombers and pick best tactical target in 15-42 km window
                 if (!tgt) {
-                    let bestD = Infinity;
+                    let bestScore = Infinity;
                     aliveBombers.forEach(b => {
                         const d = distKm(b);
-                        if (d < bestD) { bestD = d; tgt = b; }
+                        const q = computeTargetQuality(b);
+                        let score = d;
+                        if (d > 44) score += (d - 44) * 4;
+                        if (d < 12) score += 35;
+                        if (q < 0.25) score += 45;
+                        if (score < bestScore) {
+                            bestScore = score;
+                            tgt = b;
+                        }
                     });
                 }
                 if (!tgt) tgt = aliveBombers[0];
 
+                const tPos = tgt.mesh.position;
+                const rPos = RADAR_POS;
+                const targetYaw = Math.atan2(-(tPos.x - rPos.x), -(tPos.z - rPos.z));
+                const horizD = Math.hypot(tPos.x - rPos.x, tPos.z - rPos.z);
+                const targetPitch = Math.atan2(tPos.y - rPos.y, horizD);
+                let diffYaw = ((targetYaw - viewYaw + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+                let diffPitch = targetPitch - viewPitch;
+
                 // Turn station or aim towards target
-                const p = _tmpV.copy(tgt.mesh.position).project(camera);
-                if (p.z > 0 && p.z < 1) {
-                    mouseAimX += (p.x - mouseAimX) * Math.min(1, dt * 8);
-                    mouseAimY += (p.y - mouseAimY) * Math.min(1, dt * 8);
-                } else if (!guidedMissile && missileCamHold <= 0) {
-                    const targetYaw = Math.atan2(-tgt.mesh.position.x, -tgt.mesh.position.z);
-                    const horizD = Math.hypot(tgt.mesh.position.x, tgt.mesh.position.z);
-                    const targetPitch = Math.atan2(tgt.mesh.position.y, horizD);
-                    let diffYaw = ((targetYaw - viewYaw + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
-                    viewYaw += Math.sign(diffYaw) * Math.min(Math.abs(diffYaw), dt * 2.2);
-                    let clampedPitch = Math.max(0.04, Math.min(VIEW_PITCH_MAX, targetPitch));
-                    viewPitch += (clampedPitch - viewPitch) * Math.min(1, dt * 2.2);
-                    mouseAimX += (0 - mouseAimX) * Math.min(1, dt * 5);
-                    mouseAimY += (0 - mouseAimY) * Math.min(1, dt * 5);
+                if (!guidedMissile && missileCamHold <= 0) {
+                    const p = _tmpV.copy(tPos).project(camera);
+                    const onScreen = p.z > 0 && p.z < 1 && Math.abs(p.x) < 0.95 && Math.abs(p.y) < 0.85;
+
+                    if (onScreen) {
+                        // Fine tracking crosshair directly onto target for firm lock
+                        mouseAimX += (Math.max(-0.95, Math.min(0.95, p.x)) - mouseAimX) * Math.min(1, dt * 10);
+                        mouseAimY += (Math.max(-0.85, Math.min(0.85, p.y)) - mouseAimY) * Math.min(1, dt * 10);
+                        // Station slews to center target in antenna beam
+                        if (Math.abs(diffYaw) > 0.04) viewYaw += Math.sign(diffYaw) * Math.min(Math.abs(diffYaw), dt * 1.6);
+                        if (Math.abs(diffPitch) > 0.04) viewPitch += Math.sign(diffPitch) * Math.min(Math.abs(diffPitch), dt * 1.3);
+                        viewPitch = Math.max(0.04, Math.min(VIEW_PITCH_MAX, viewPitch));
+                    } else {
+                        // Coarse slew: quickly swing Fan Song antenna toward target azimuth & elevation
+                        viewYaw += Math.sign(diffYaw) * Math.min(Math.abs(diffYaw), dt * 3.2);
+                        let clampedPitch = Math.max(0.04, Math.min(VIEW_PITCH_MAX, targetPitch));
+                        viewPitch += Math.sign(clampedPitch - viewPitch) * Math.min(Math.abs(clampedPitch - viewPitch), dt * 2.4);
+                        mouseAimX += (0 - mouseAimX) * Math.min(1, dt * 6);
+                        mouseAimY += (0 - mouseAimY) * Math.min(1, dt * 6);
+                    }
                 }
 
                 // Anti-jamming (ECCM Frequency Hopping)
                 if (autoHopCooldown <= 0) {
                     if (jamPromptState && jamPromptState.show) {
                         hopFrequency(jamPromptState.best < 0 ? -45 : 45);
-                        autoHopCooldown = 0.65;
+                        autoHopCooldown = 1.4; // allow time on clean channel to acquire lock
                     }
                 } else {
                     autoHopCooldown -= dt;
@@ -2146,49 +2171,96 @@
                 // Fire & Guidance & Reloading
                 if (!guidedMissile && missileCamHold <= 0) {
                     const launcher = samLaunchers.find(l => l.loaded);
-                    const canFire = launcher && trackTimer >= TRACK_TIME && distKm(tgt) <= 55 && targetQuality >= 0.28;
+                    const dTgt = distKm(tgt);
+                    const inRange = dTgt >= 10 && dTgt <= 44;
+                    const canFire = launcher && trackTimer >= TRACK_TIME && inRange && targetQuality >= 0.28;
                     if (canFire) {
                         triggerPrimaryWeaponFire();
                     } else if (!launcher && missionReserve > 0 && !reloadingLauncher) {
                         startReload();
                     }
                 } else if (guidedMissile && guidedMissile.target) {
-                    const mPos = guidedMissile.mesh.position;
-                    const tPos = guidedMissile.target.mesh.position;
-                    const d = mPos.distanceTo(tPos);
-                    if (guidedMissile.t > 2.2 && d < 28) {
-                        triggerPrimaryWeaponFire(); // Proximity command detonation
+                    const m = guidedMissile;
+                    const mPos = m.mesh.position;
+                    const tgtPos = m.target.mesh.position;
+                    const d = mPos.distanceTo(tgtPos);
+
+                    // Lead tracking: project predicted intercept point onto missile chase camera
+                    const tgo = d / Math.max(25, m.speed);
+                    const leadPoint = _tmpV2.copy(tgtPos).addScaledVector(m.target.vel, tgo * 0.8);
+                    const pLead = _tmpV.copy(leadPoint).project(camera);
+                    if (pLead.z > 0 && pLead.z < 1) {
+                        mouseAimX += (Math.max(-0.85, Math.min(0.85, pLead.x)) - mouseAimX) * Math.min(1, dt * 7);
+                        mouseAimY += (Math.max(-0.85, Math.min(0.85, pLead.y)) - mouseAimY) * Math.min(1, dt * 7);
+                    } else {
+                        mouseAimX += (0 - mouseAimX) * Math.min(1, dt * 4);
+                        mouseAimY += (0 - mouseAimY) * Math.min(1, dt * 4);
                     }
+
+                    // Proximity command detonation:
+                    // Built-in radio fuze naturally explodes at closest approach (<15m).
+                    // Trigger emergency detonation only if inside lethal radius (d <= 8.5) and target starts drawing away.
+                    if (m.t > 2.2 && d <= 8.5 && m._prevDist && d > m._prevDist) {
+                        triggerPrimaryWeaponFire();
+                    }
+                    m._prevDist = d;
                 }
             } else if (currentMode === 'MIG21') {
-                let tgt = (mig.target && !mig.target.downed) ? mig.target : aliveBombers[0];
+                let tgt = (mig.target && !mig.target.downed && activeBombers.includes(mig.target)) ? mig.target : null;
+                if (!tgt) {
+                    let bestDist = Infinity;
+                    aliveBombers.forEach(b => {
+                        const d = playerMiG21.position.distanceTo(b.mesh.position);
+                        if (d < bestDist) { bestDist = d; tgt = b; }
+                    });
+                }
+                if (!tgt) tgt = aliveBombers[0];
                 if (!tgt) return;
 
+                mig.target = tgt;
                 const pMig = playerMiG21.position;
                 const toTgt = _tmpV2.copy(tgt.mesh.position).sub(pMig);
                 const dist = toTgt.length();
+                const offBore = THREE.MathUtils.radToDeg(mig.fwd.angleTo(toTgt));
+                const aspect = THREE.MathUtils.radToDeg(tgt.vel.clone().negate().angleTo(toTgt.clone().negate()));
 
-                const desiredYaw = Math.atan2(-toTgt.x, -toTgt.z);
-                let diffYaw = ((desiredYaw - mig.yaw + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
-                const horizD = Math.hypot(toTgt.x, toTgt.z);
-                const desiredPitch = Math.atan2(toTgt.y, horizD);
-                let diffPitch = desiredPitch - mig.pitch;
-
-                mouseAimX = Math.max(-1, Math.min(1, diffYaw * 2.2));
-                mouseAimY = Math.max(-0.85, Math.min(0.85, diffPitch * 2.8));
-
-                if (dist > 150) {
-                    mig.throttle = Math.min(1.0, mig.throttle + dt * 0.7);
-                } else if (dist < 50) {
-                    mig.throttle = Math.max(0.35, mig.throttle - dt * 0.7);
+                // Tactical navigation:
+                // K-13 (R-3S) requires rear hemisphere engagement (aspect <= 35 deg, dist 40-200).
+                // If aspect > 35, navigate toward a rendezvous waypoint ~70 units behind B-52's tail.
+                let aimPoint;
+                if (aspect > 35 && dist > 55) {
+                    const tailOffset = _tmpL.copy(tgt.vel).normalize().multiplyScalar(-70);
+                    aimPoint = _tmpV.copy(tgt.mesh.position).add(tailOffset);
+                } else {
+                    const leadSec = Math.min(1.2, dist / 45);
+                    aimPoint = _tmpV.copy(tgt.mesh.position).addScaledVector(tgt.vel, leadSec * 0.4);
                 }
 
-                mig.target = tgt;
+                const steerVec = _tmpV2.copy(aimPoint).sub(pMig);
+                const desiredYaw = Math.atan2(-steerVec.x, -steerVec.z);
+                let diffYaw = ((desiredYaw - mig.yaw + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+                const horizD = Math.hypot(steerVec.x, steerVec.z);
+                const desiredPitch = Math.atan2(steerVec.y, horizD);
+                let diffPitch = desiredPitch - mig.pitch;
+
+                // Correct sign: turning right requires positive mouseAimX (-diffYaw)
+                mouseAimX = Math.max(-1, Math.min(1, -diffYaw * 2.5));
+                mouseAimY = Math.max(-0.85, Math.min(0.85, diffPitch * 2.8));
+
+                // Smart Throttle Control
+                if (dist > 180 || (aspect > 45 && dist > 75)) {
+                    mig.throttle = Math.min(1.0, mig.throttle + dt * 0.8); // Afterburner to close in / get behind
+                } else if (dist < 55) {
+                    mig.throttle = Math.max(0.35, mig.throttle - dt * 0.8); // Airbrake / idle to avoid overshoot
+                } else {
+                    mig.throttle += (0.68 - mig.throttle) * Math.min(1, dt * 1.5); // Cruise speed match
+                }
+
+                // Weapon firing
                 if (mig.irLock >= 1.5 && missionAmmo > 0) {
                     fireK13();
                 } else if (dist < 130 && (mig.cannonAmmo || 0) > 0) {
-                    const offBore = THREE.MathUtils.radToDeg(mig.fwd.angleTo(toTgt));
-                    if (offBore < 15) {
+                    if (offBore < 12) {
                         fireMiGCannon();
                     }
                 }
