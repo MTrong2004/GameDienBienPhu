@@ -378,53 +378,13 @@
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 8px 16px;
+            gap: 12px;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(245, 158, 11, 0.08);
-        }
-        .debrief-stats .medal-hero-card .medal-badge {
-            margin-bottom: 0;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-        }
-        .debrief-stats .medal-hero-card .medal-quote {
-            font-size: 13px;
-            line-height: 1.45;
-            color: rgba(254, 240, 138, 0.9);
-            font-family: 'Newsreader', Georgia, serif;
-            font-style: italic;
-            text-align: left;
-            max-width: 480px;
         }
         .debrief-stats .medal-hero-card.is-fail {
             background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(185, 28, 28, 0.08) 100%);
             border-color: rgba(239, 68, 68, 0.45);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(239, 68, 68, 0.08);
-        }
-        .audio-narrator-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #FDE047;
-            background: rgba(245, 158, 11, 0.18);
-            border: 1px solid rgba(245, 158, 11, 0.45);
-            padding: 4px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            white-space: nowrap;
-            flex-shrink: 0;
-            transition: all 0.2s ease;
-        }
-        .audio-narrator-btn:hover {
-            background: rgba(245, 158, 11, 0.32);
-            border-color: #FDE047;
-            color: #FFFFFF;
-            transform: translateY(-1px);
         }
         .debrief-stats .stat-kpi-card {
             padding: 10px 14px;
@@ -600,9 +560,9 @@
         .tl-ms { position: relative; display: flex; gap: 12px; width: 100%; text-align: left; background: transparent; border: none; border-left: 2px solid rgba(255,255,255,0.15); padding: 10px 12px 10px 20px; cursor: pointer; }
         .tl-ms::before { content: ""; position: absolute; left: -5px; top: 18px; width: 8px; height: 8px; border-radius: 999px; background: #52525b; border: 2px solid #0a0f0d; }
         .tl-ms:hover { background: rgba(255,255,255,0.05); }
-        .tl-ms.is-active { border-left-color: #34d399; background: rgba(5,150,105,0.15); }
-        .tl-ms.is-active::before { background: #34d399; width: 10px; height: 10px; left: -6px; top: 17px; }
-        .tl-ms.is-active .tl-ms-title { color: #cdf7a1; }
+        .tl-ms.is-active { border-left-color: #fbbf24; background: rgba(251,191,36,0.12); }
+        .tl-ms.is-active::before { background: #fbbf24; width: 10px; height: 10px; left: -6px; top: 17px; }
+        .tl-ms.is-active .tl-ms-title { color: #fde68a; }
         .tl-ms-date { display: block; font-family: monospace; font-size: 13px; color: #fbbf24; font-weight: bold; }
         .tl-ms-title { display: block; font-size: 14px; font-weight: 600; color: #e4e4e7; line-height: 1.4; margin-top: 2px; }
         .tl-ms-badge { display: block; font-family: monospace; font-size: 11px; color: #a1a1aa; margin-top: 3px; }
@@ -627,12 +587,6 @@
             padding: 3px 10px; color: #E4E4E7; background: rgba(4, 8, 10, 0.6); border: 1px solid rgba(255, 255, 255, 0.16); cursor: pointer;
         }
         .tool-btn:hover { border-color: #CDF7A1; color: #FFFFFF; }
-        .tool-btn.is-active {
-            background: rgba(16, 185, 129, 0.28) !important;
-            border-color: #34D399 !important;
-            color: #A3F58A !important;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.45);
-        }
         kbd { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 0 5px; margin-left: 4px; border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 3px; color: #A1A1AA; }
         #radio-box {
             position: fixed; left: 16px; top: 108px; transform: translateY(-6px);
@@ -1128,7 +1082,7 @@
                         </div>
                     </div>
                     <div class="classified-stamp">
-                        <span>MỆNH LỆNH TÁC CHIẾN · TỐI MẬT</span>
+                        <span>MỆNH LỆNH TÁC CHIẾN // TỐI MẬT</span>
                     </div>
                 </div>
 
@@ -1147,7 +1101,7 @@
                         <div id="brief-story-quote" class="brief-prologue p-3.5 bg-amber-950/20 border-l-4 border-amber-400 font-serif italic text-amber-200/95 text-xs sm:text-sm leading-relaxed rounded-r shadow-md"></div>
                         <div class="p-3.5 bg-black/60 border border-emerald-500/20 rounded-lg">
                             <div class="text-[11px] uppercase font-mono tracking-widest text-emerald-400 font-bold mb-2 flex items-center gap-1.5">
-                                <span class="text-amber-400">★</span> TÌNH BÁO TÁC CHIẾN &amp; DIỄN BIẾN
+                                <span class="font-mono text-amber-400">//</span> TÌNH BÁO TÁC CHIẾN &amp; DIỄN BIẾN
                             </div>
                             <div class="brief-body" id="brief-body"></div>
                         </div>
@@ -1158,7 +1112,7 @@
                         <!-- Direct Objectives Card -->
                         <div class="p-3.5 bg-emerald/10 border border-emerald/30 rounded-lg">
                             <div class="text-xs uppercase font-mono tracking-widest text-emerald font-bold mb-2 flex items-center gap-1.5">
-                                <span class="text-emerald-400">★</span> NHIỆM VỤ TIÊU DIỆT
+                                <span class="font-mono text-emerald-400">//</span> NHIỆM VỤ TIÊU DIỆT
                             </div>
                             <ul id="brief-objectives" class="brief-list"></ul>
                         </div>
@@ -1238,21 +1192,20 @@
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
                     <!-- Left Column: Combat record & KPIs (7 cols on lg) -->
                     <div class="lg:col-span-7 flex flex-col gap-2.5">
-                        <div class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-semibold flex items-center gap-1.5">
-                            <span class="text-amber-400">★</span> BÁO CÁO THÀNH TÍCH TÁC CHIẾN
+                        <div class="text-xs uppercase font-mono tracking-widest text-emerald-400 font-semibold flex items-center gap-2">
+                            <span class="font-mono text-amber-400 mr-1">[★]</span> BÁO CÁO THÀNH TÍCH TÁC CHIẾN &amp; HUÂN CHƯƠNG
                         </div>
                         <div class="debrief-stats" id="debrief-stats"></div>
                     </div>
 
                     <!-- Right Column: Historical dispatch dossier (5 cols on lg) -->
                     <div class="lg:col-span-5 flex flex-col gap-2.5">
-                        <div class="flex items-center justify-between gap-2">
-                            <div class="text-xs uppercase font-mono tracking-widest text-amber-400 font-semibold flex items-center gap-1.5 whitespace-nowrap">
-                                <span class="text-amber-400">★</span> HỒ SƠ CHIẾN SỰ 1972
+                        <div class="flex items-center justify-between">
+                            <div class="text-xs uppercase font-mono tracking-widest text-amber-400 font-semibold flex items-center gap-2">
+                                <span class="font-mono text-amber-400 mr-1">//</span> HỒ SƠ LỊCH SỬ &amp; CHIẾN SỰ 1972
                             </div>
-                            <button id="btn-debrief-audio-toggle" class="audio-narrator-btn" onclick="Voice.toggleDebriefHistory()" title="Bật / dừng thuyết minh diễn biến lịch sử">
-                                <span class="text-amber-300">🔊</span>
-                                <span id="btn-debrief-audio-label">Thuyết minh</span>
+                            <button class="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800/80 border border-zinc-700 hover:border-emerald-400 text-zinc-300 hover:text-emerald-300 transition-colors flex items-center gap-1.5" onclick="toggleRadioLog(true)" title="Xem lại các bức điện đài vô tuyến trong trận">
+                                <span class="font-mono text-emerald-400 mr-1">[L]</span> Nhật ký đài
                             </button>
                         </div>
                         <div class="debrief-history-card">
@@ -1532,9 +1485,8 @@
             <path id="bracket-path" d="M16 4 H4 V16 M56 4 H68 V16 M16 68 H4 V56 M56 68 H68 V56" stroke="#10B981" stroke-width="1.8"/>
             <polygon id="bracket-diamond" points="36,8 64,36 36,64 8,36" stroke="#E11D48" stroke-width="1.2" stroke-dasharray="3 2" fill="none"/>
         </svg>
-        <div class="mt-0.5 text-center font-mono text-[9px] leading-none tracking-tight whitespace-nowrap flex items-center justify-center gap-1">
+        <div class="mt-0.5 text-center font-mono text-[9px] leading-none tracking-tight whitespace-nowrap">
             <span id="bracket-callsign" class="px-1 py-0.5 bg-canvas/90 text-alabaster border hairline-border">B-52G #01</span>
-            <span id="bracket-range" class="px-1 py-0.5 bg-cyan-950/90 text-cyan-300 border border-cyan-400/50 font-bold">-- KM</span>
             <span id="bracket-dist" class="px-1 py-0.5 bg-emerald text-canvas font-bold">LOCKED</span>
         </div>
     </div>
@@ -1550,7 +1502,6 @@
             <line x1="64" y1="48" x2="88" y2="48" stroke="#10B981" stroke-width="1.4"/>
             <circle cx="48" cy="48" r="2.5" fill="#E11D48"/>
         </svg>
-        <div id="reticle-range-tag" class="text-center font-mono text-[10px] font-bold tracking-wider -mt-1 hidden"></div>
     </div>
 
     <!-- 5B. TACTICAL CORNER HUD (MISSION TITLE + CLOCK / OBJECTIVE TRACKER) + TOOLBAR -->
@@ -1571,7 +1522,6 @@
         </div>
         <div class="poster-h2 poster-amber">CÒN: <span id="obj-timer" class="tabular-nums">02:30</span> · <span id="poster-state">SẴN SÀNG</span></div>
         <div id="game-toolbar" class="pointer-events-auto flex justify-end gap-2 mt-2">
-            <button id="btn-auto-pilot" class="tool-btn text-amber-300 border-amber-500/40 hover:border-amber-400" onclick="toggleAutoPilot()">Tự động: TẮT<kbd>P</kbd></button>
             <button class="tool-btn text-amber-300 border-amber-500/40 hover:border-amber-400" onclick="toggleRadioLog(true)">Nhật ký<kbd>L</kbd></button>
             <button class="tool-btn text-teal-300 border-teal-500/40 hover:border-teal-400" onclick="toggleTacticalGuide(true)">Cẩm nang<kbd>H</kbd></button>
             <button class="tool-btn" onclick="pauseMission()">Tạm dừng<kbd>Esc</kbd></button>
